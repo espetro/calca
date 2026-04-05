@@ -1,8 +1,6 @@
-# Canvas by Otto
+# Gosto
 
-**[→ Try it live at canvas.otto.design](https://canvas.otto.design)**
-
-An open-source AI design tool by [Otto](https://otto.design). Describe what you want, get multiple design variations on an infinite canvas, then click to refine.
+An open-source AI design tool. Describe what you want, get multiple design variations on an infinite canvas, then click to refine.
 
 **Vibe designing.**
 
@@ -35,8 +33,8 @@ An open-source AI design tool by [Otto](https://otto.design). Describe what you 
 
 ```bash
 # Clone the repo
-git clone https://github.com/dylanfeltus/otto-canvas.git
-cd otto-canvas
+git clone https://github.com/joaquindev/gosto.git
+cd gosto
 
 # Install dependencies
 npm install
@@ -86,7 +84,7 @@ Try these to get started:
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+AGPL-3.0 — see [LICENSE](LICENSE) for details.
 
 ## Built With
 

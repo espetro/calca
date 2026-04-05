@@ -1,5 +1,5 @@
 {
-  "name": "otto-canvas",
+  "name": "gosto",
   "version": "1.0.0",
   "description": "AI design tool with infinite canvas — vibe coding for design",
   "main": "index.js",
@@ -9,8 +9,8 @@
     "start": "next start"
   },
   "keywords": [],
-  "author": "Stratus Labs LLC",
-  "license": "MIT",
+  "author": "Joaquin Terrasa Moya",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
