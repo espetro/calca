@@ -1,30 +1,27 @@
 {
   "name": "gosto",
-  "version": "1.0.0",
+  "private": true,
+  "version": "0.1.0",
   "description": "AI design tool with infinite canvas — vibe coding for design",
-  "main": "index.js",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "keywords": [],
-  "author": "Joaquin Terrasa Moya",
   "license": "AGPL-3.0-only",
   "type": "module",
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.74.0",
-    "@google/genai": "^1.41.0",
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "^25.2.3",
-    "@types/react": "^19.2.14",
-    "html-to-image": "^1.11.13",
-    "html2canvas-pro": "^1.6.7",
-    "next": "^16.1.6",
-    "postcss": "^8.5.6",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "validate": "turbo validate",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
   }
 }

@@ -1,0 +1,14 @@
+{
+  "name": "@app/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'dev: not yet implemented'",
+    "build": "echo 'build: not yet implemented'",
+    "typecheck": "echo 'typecheck: not yet implemented'",
+    "test": "echo 'test: not yet implemented'",
+    "lint": "echo 'lint: not yet implemented'",
+    "validate": "echo 'validate: not yet implemented'"
+  }
+}
