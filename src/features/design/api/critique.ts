@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateWithFallback } from "@/shared/ai/client";
+import { generateWithFallback } from "@app/core/ai/client";
 import type { ModelMessage } from "ai";
+import { buildCritiquePrompt } from "@app/core/prompts/critique";
 
 export const maxDuration = 30;
 
@@ -21,19 +22,7 @@ export async function handleCritique(req: NextRequest) {
 
     const messages: ModelMessage[] = [{
       role: "user",
-      content: `You are a design critic. Analyze this HTML/CSS design and provide specific, actionable feedback for improving the NEXT variation.
-
-Original request: "${prompt}"
-
-HTML:
-${stripped}
-
-Provide 3-5 bullet points of specific improvements. Focus on:
-- What works well (keep this in the next variation)
-- What could be better (typography, spacing, color, layout)
-- A different creative direction to try
-
-Be specific and concise. This feedback will be injected into the next generation prompt.`,
+      content: buildCritiquePrompt(prompt, stripped),
     }];
 
     const { result } = await generateWithFallback({

@@ -47,6 +47,19 @@
       "name": "@app/web",
       "version": "0.1.0",
     },
+    "packages/core": {
+      "name": "@app/core",
+      "version": "0.1.0",
+      "dependencies": {
+        "@ai-sdk/anthropic": "^3.0.68",
+        "@ai-sdk/google": "^3.0.61",
+        "ai": "^6.0.156",
+        "zod": "^4.3.6",
+      },
+      "devDependencies": {
+        "typescript": "^5.9.3",
+      },
+    },
     "packages/desktop": {
       "name": "@app/desktop",
       "version": "0.1.0",
@@ -70,6 +83,8 @@
     "@alloc/quick-lru": ["@alloc/quick-lru@5.2.0", "", {}, "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw=="],
 
     "@app/cli": ["@app/cli@workspace:apps/cli"],
+
+    "@app/core": ["@app/core@workspace:packages/core"],
 
     "@app/desktop": ["@app/desktop@workspace:packages/desktop"],
 

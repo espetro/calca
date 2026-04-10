@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateWithFallback } from "@/shared/ai/client";
+import { generateWithFallback } from "@app/core/ai/client";
 
 export const maxDuration = 60;
 
