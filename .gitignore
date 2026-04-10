@@ -9,6 +9,7 @@ build/
 # next.js specific
 .next/
 .vercel
+next-env.d.ts
 
 # dev specific
 .env
