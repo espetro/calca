@@ -1,6 +1,26 @@
+# OS specific
+.DS_STORE
+
+# JS/TS specific
 node_modules/
+dist/
+build/
+
+# next.js specific
 .next/
+.vercel
+
+# dev specific
 .env
 .env.local
-.vercel
 .env*.local
+coverage/
+.turbo/
+
+# ai specific
+.opencode/
+.sisyphus/
+.worktrees/
+
+# project specific
+*.db*
