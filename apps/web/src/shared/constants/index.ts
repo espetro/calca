@@ -1,0 +1,2 @@
+// Shared application constants
+export {};
