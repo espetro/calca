@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { Comment, CommentMessage } from "@/lib/types";
+import type { Comment, CommentMessage } from "@/shared/types";
 
 interface CommentThreadProps {
   comment: Comment;

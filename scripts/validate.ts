@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+/// <reference types="bun" />
 import { $ } from 'bun';
 
 const checks = [

@@ -1,23 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type RefCallback } from "react";
-import { useCanvas } from "@/hooks/use-canvas";
-import { useSettings } from "@/hooks/use-settings";
-import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/components/design-card";
-import { usePersistedGroups } from "@/hooks/use-persisted-groups";
-import { PromptBar } from "@/components/prompt-bar";
-import { Toolbar } from "@/components/toolbar";
-import { CommentInput } from "@/components/comment-input";
-import { CommentThread } from "@/components/comment-thread";
-import { SettingsModal } from "@/components/settings-modal";
-import { PromptLibrary } from "@/components/prompt-library";
-import { PipelineStatusOverlay } from "@/components/pipeline-status";
-import { OnboardingModal } from "@/components/onboarding-modal";
-import { GuidedTour } from "@/components/guided-tour";
-import { useOnboarding } from "@/hooks/use-onboarding";
-import { usePersistedImages } from "@/hooks/use-persisted-images";
-import type { PipelineStatus } from "@/lib/pipeline";
+import { useCanvas } from "@/features/canvas/hooks/use-canvas";
+import { useSettings } from "@/features/settings/hooks/use-settings";
+import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
+import { usePersistedGroups } from "@/features/design/hooks/use-persisted-groups";
+import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
+import { Toolbar } from "@/widgets/toolbar";
+import { CommentInput, CommentThread } from "@/features/comments";
+import { SettingsModal } from "@/features/settings";
+import { PipelineStatusOverlay } from "@/features/canvas";
+import { OnboardingModal, GuidedTour } from "@/features/onboarding";
+import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
+import { usePersistedImages } from "@/features/design/hooks/use-persisted-images";
 import type {
+  PipelineStatus,
   DesignIteration,
   GenerationGroup,
   ToolMode,
@@ -25,7 +22,7 @@ import type {
   CommentMessage,
   Point,
   CanvasImage,
-} from "@/lib/types";
+} from "@/shared/types";
 
 export default function Home() {
   const canvas = useCanvas();

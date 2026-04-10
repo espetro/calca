@@ -1,6 +1,6 @@
 "use client";
 
-import { type PipelineStatus, STAGE_CONFIG } from "@/lib/pipeline";
+import { type PipelineStatus, STAGE_CONFIG } from "@/shared/types";
 
 interface PipelineStatusBarProps {
   status: PipelineStatus;

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { DesignIteration, Comment as CommentType, Point } from "@/lib/types";
-import type { PipelineStatus } from "@/lib/pipeline";
-import { STAGE_CONFIG } from "@/lib/pipeline";
-import { ExportMenu } from "./export-menu";
+import type { DesignIteration, Comment as CommentType, Point, PipelineStatus } from "@/shared/types";
+import { STAGE_CONFIG } from "@/shared/types";
+import { ExportMenu } from "@/features/export";
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // kept for export compat

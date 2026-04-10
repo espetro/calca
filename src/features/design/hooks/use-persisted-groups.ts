@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import type { GenerationGroup } from "@/lib/types";
+import type { GenerationGroup } from "@/shared/types";
 
 const STORAGE_KEY = "otto-canvas-session";
 const IMG_DB_NAME = "otto-canvas-images";

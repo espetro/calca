@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import type { CanvasImage } from "@/lib/types";
+import type { CanvasImage } from "@/shared/types";
 
 const DB_NAME = "otto-canvas-images";
 const STORE_NAME = "ref-images";

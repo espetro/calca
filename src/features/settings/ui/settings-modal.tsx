@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MODELS, type Settings } from "@/hooks/use-settings";
+import { MODELS, type Settings } from "@/features/settings/hooks/use-settings";
 
 const SYSTEM_PROMPT_PRESETS = [
   {

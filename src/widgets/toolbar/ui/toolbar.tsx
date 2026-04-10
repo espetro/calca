@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { ToolMode } from "@/lib/types";
-import { MODELS } from "@/hooks/use-settings";
+import type { ToolMode } from "@/shared/types";
+import { MODELS } from "@/features/settings/hooks/use-settings";
 
 interface ToolbarProps {
   mode: ToolMode;
