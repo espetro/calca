@@ -1,0 +1,20 @@
+project:
+  name: Gosto
+  description: AI-powered design tool with infinite canvas and multi-model AI generation
+  version: 2.0.0
+  language: typescript
+
+tools:
+  - claude
+  - opencode
+
+management:
+  type: openspec
+
+specifications:
+  - name: features
+    path: openspec/changes/features
+    description: Feature specifications for MVP features
+  - name: technical
+    path: openspec/changes/technical
+    description: Technical architecture decisions and guidelines
