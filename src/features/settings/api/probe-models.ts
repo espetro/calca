@@ -1,5 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { generateText } from "ai";
+import { getClaudeModel } from "@/shared/ai/providers";
 
 const MODELS = [
   "claude-opus-4-6",
@@ -15,17 +16,18 @@ export async function handleProbeModels(req: NextRequest) {
       return NextResponse.json({ error: "apiKey required" }, { status: 400 });
     }
 
-    const client = new Anthropic({ apiKey });
+    const headers: Record<string, string> = { "x-anthropic-key": apiKey };
 
     // Probe sequentially to avoid rate limits
     const available: Record<string, boolean> = {};
 
     for (const model of MODELS) {
       try {
-        await client.messages.create({
-          model,
-          max_tokens: 1,
+        await generateText({
+          model: getClaudeModel(model),
+          maxOutputTokens: 1,
           messages: [{ role: "user", content: "hi" }],
+          headers,
         });
         available[model] = true;
       } catch (err: unknown) {

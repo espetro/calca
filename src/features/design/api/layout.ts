@@ -1,14 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { type ImagePart, type ModelMessage, type TextPart } from "ai";
 import { NextRequest } from "next/server";
+import { streamAnthropic } from "@/shared/ai/client";
 
 export const maxDuration = 300;
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-
-function getClient(apiKey?: string): Anthropic {
-  if (apiKey) return new Anthropic({ apiKey });
-  return new Anthropic();
-}
 
 function parseHtmlWithSize(raw: string): { html: string; width?: number; height?: number; comment?: string } {
   let cleaned = raw.trim();
@@ -178,7 +174,6 @@ export async function handleLayout(req: NextRequest) {
     } = body;
 
     const useModel = model || DEFAULT_MODEL;
-    const client = getClient(apiKey);
     const isRevision = !!(revision && existingHtml);
 
     let userContent: string;
@@ -224,6 +219,7 @@ Examples:
 - <!--otto:Centered the pool section and balanced the spacing on both sides.-->
 - <!--otto:Wasn't sure if you meant the icon or the text — I adjusted both. Let me know!-->
 - <!--otto:Done! You might also want to bump up the font size on the headers to match.-->
+
 Keep it to 1-2 short sentences. Be helpful, specific, and conversational — like a design teammate.
 
 OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL CSS in a <style> tag.`;
@@ -231,10 +227,8 @@ OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL CSS in a 
       userContent = buildNewPrompt(systemPrompt, critique, prompt, style, availableSources);
     }
 
-    // Build message content — text + optional context images
-    type MediaType = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
-    type ContentBlock = { type: "text"; text: string } | { type: "image"; source: { type: "base64"; media_type: MediaType; data: string } };
-    const messageContent: ContentBlock[] = [];
+    // Build message parts — text + optional context images
+    const userParts: (TextPart | ImagePart)[] = [];
 
     // Add user-provided images — these should appear IN the design as <img> tags
     const imageTokenMap: Record<string, string> = {}; // [USER_IMAGE_1] -> data:image/...
@@ -249,16 +243,15 @@ OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL CSS in a 
           const token = `[USER_IMAGE_${i + 1}]`;
           imageTokenMap[token] = dataUrl;
 
-          // Send the image as a vision block so Claude can see it
-          messageContent.push({
+          userParts.push({
             type: "image",
-            source: { type: "base64", media_type: match[1] as MediaType, data: match[2] },
+            image: dataUrl,
           });
           imageRefs.push(`- Image ${i + 1}: Use src="${token}" to place this image`);
         }
       }
 
-      messageContent.push({
+      userParts.push({
         type: "text",
         text: `USER-PROVIDED IMAGES — USE THESE IN THE DESIGN:
 The ${imageRefs.length} image${imageRefs.length > 1 ? "s" : ""} above ${imageRefs.length > 1 ? "are" : "is"} provided by the user to include IN the design.
@@ -277,13 +270,24 @@ RULES FOR USER IMAGES:
       });
     }
 
-    messageContent.push({ type: "text", text: userContent });
+    userParts.push({ type: "text", text: userContent });
+
+    // Build messages array
+    const messages: ModelMessage[] = [
+      {
+        role: "user",
+        content: userParts.length === 1 && userParts[0].type === "text"
+          ? userParts[0].text
+          : userParts,
+      },
+    ];
 
     // Use streaming to avoid Vercel timeout — stream keeps connection alive
-    const stream = client.messages.stream({
+    const stream = streamAnthropic({
       model: useModel,
-      max_tokens: 16384,
-      messages: [{ role: "user", content: messageContent.length === 1 ? userContent : messageContent }],
+      apiKey,
+      messages,
+      maxTokens: 16384,
     });
 
     // Collect the full response via streaming, then return JSON
@@ -293,8 +297,6 @@ RULES FOR USER IMAGES:
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          let fullText = "";
-
           // Send a space immediately to establish the connection
           controller.enqueue(encoder.encode(" "));
 
@@ -306,10 +308,8 @@ RULES FOR USER IMAGES:
             }
           }, 5000);
 
-          const message = await stream.finalMessage();
+          const fullText = await stream.text;
           clearInterval(pingInterval);
-
-          fullText = message.content[0].type === "text" ? message.content[0].text : "";
 
           let result = parseHtmlWithSize(fullText);
           if (restoreFn) {

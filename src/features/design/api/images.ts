@@ -1,5 +1,7 @@
-import { GoogleGenAI } from "@google/genai";
+import { generateImage } from "ai";
 import { NextRequest, NextResponse } from "next/server";
+
+import { getGeminiImageModel } from "@/shared/ai/providers";
 
 export const maxDuration = 300;
 
@@ -12,12 +14,6 @@ interface Placeholder {
   height: number;
   source: ImageSource;
   query?: string;
-}
-
-function getGeminiClient(apiKey?: string): GoogleGenAI | null {
-  const key = apiKey || process.env.GEMINI_API_KEY;
-  if (!key) return null;
-  return new GoogleGenAI({ apiKey: key });
 }
 
 async function generateUnsplashImage(ph: Placeholder, unsplashKey: string): Promise<string | null> {
@@ -51,24 +47,15 @@ async function generateDalleImage(ph: Placeholder, openaiKey: string): Promise<s
 }
 
 async function generateGeminiImage(ph: Placeholder, geminiKey: string): Promise<string | null> {
-  const gemini = getGeminiClient(geminiKey);
-  if (!gemini) return null;
-  const response = await gemini.models.generateContent({
-    model: "gemini-2.5-flash-image",
-    contents: `Generate a high quality design asset image: ${ph.description}. Clean, professional, suitable for web/marketing design. No text unless specifically requested. Output only the image.`,
-    config: { responseModalities: ["TEXT", "IMAGE"] },
-  });
-  const parts = response.candidates?.[0]?.content?.parts;
-  if (parts) {
-    for (const part of parts) {
-      if (part.inlineData?.mimeType?.startsWith("image/")) {
-        const b64 = part.inlineData.data;
-        const mime = part.inlineData.mimeType;
-        if (b64) return `data:${mime};base64,${b64}`;
-      }
-    }
+  try {
+    const { image } = await generateImage({
+      model: getGeminiImageModel(geminiKey),
+      prompt: `Generate a high quality design asset image: ${ph.description}. Clean, professional, suitable for web/marketing design. No text unless specifically requested. Output only the image.`,
+    });
+    return `data:${image.mediaType};base64,${image.base64}`;
+  } catch {
+    return null;
   }
-  return null;
 }
 
 export async function handleImages(req: NextRequest) {

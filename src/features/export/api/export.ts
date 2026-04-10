@@ -1,14 +1,9 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { generateWithFallback } from "@/shared/ai/client";
 
 export const maxDuration = 60;
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-
-function getClient(apiKey?: string): Anthropic {
-  if (apiKey) return new Anthropic({ apiKey });
-  return new Anthropic();
-}
 
 function htmlToSvg(html: string): string {
   const widthMatch = html.match(/width\s*:\s*(\d+)px/);
@@ -53,26 +48,24 @@ RULES:
 - Make it a clean, production-ready component
 - Import React at the top`;
 
-async function convertWithAI(client: Anthropic, model: string, html: string, systemPrompt: string): Promise<string> {
-  const message = await client.messages.create({
+async function convertWithAI(apiKey: string | undefined, model: string, html: string, systemPrompt: string): Promise<string> {
+  const { result } = await generateWithFallback({
+    apiKey,
     model,
-    max_tokens: 4096,
     messages: [
-      {
-        role: "user",
-        content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}`,
-      },
+      { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
     ],
+    maxTokens: 4096,
   });
 
-  let result = message.content[0].type === "text" ? message.content[0].text : "";
+  let resultText = result.text;
 
-  result = result.trim();
-  if (result.startsWith("```")) {
-    result = result.replace(/^```(?:html|tsx|jsx|typescript)?\n?/, "").replace(/\n?```$/, "");
+  resultText = resultText.trim();
+  if (resultText.startsWith("```")) {
+    resultText = resultText.replace(/^```(?:html|tsx|jsx|typescript)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  return result.trim();
+  return resultText.trim();
 }
 
 export async function handleExport(req: NextRequest) {
@@ -86,7 +79,6 @@ export async function handleExport(req: NextRequest) {
     // Strip base64 images to reduce payload size for AI conversion
     const html = rawHtml.replace(/src="data:image\/[^"]+"/g, 'src="[image]"');
 
-    const client = getClient(apiKey);
     const useModel = model || DEFAULT_MODEL;
 
     switch (format) {
@@ -94,10 +86,10 @@ export async function handleExport(req: NextRequest) {
         return NextResponse.json({ result: htmlToSvg(html) });
 
       case "tailwind":
-        return NextResponse.json({ result: await convertWithAI(client, useModel, html, TAILWIND_PROMPT) });
+        return NextResponse.json({ result: await convertWithAI(apiKey, useModel, html, TAILWIND_PROMPT) });
 
       case "react":
-        return NextResponse.json({ result: await convertWithAI(client, useModel, html, REACT_PROMPT) });
+        return NextResponse.json({ result: await convertWithAI(apiKey, useModel, html, REACT_PROMPT) });
 
       default:
         return NextResponse.json({ error: "Invalid format" }, { status: 400 });

@@ -1,56 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { generateWithFallback } from "@/shared/ai/client";
+import type { ModelMessage } from "ai";
 
 export const maxDuration = 300;
 
-// Fallback chain — if requested model fails, try next one down
-const MODEL_FALLBACK_CHAIN = [
-  "claude-opus-4-6",
-  "claude-sonnet-4-5",
-  "claude-opus-4",
-  "claude-sonnet-4",
-];
-
 const DEFAULT_MODEL = "claude-opus-4-6";
-
-function getClient(apiKey?: string): Anthropic {
-  if (apiKey) return new Anthropic({ apiKey });
-  return new Anthropic();
-}
-
-/** Try a model call, falling back to cheaper models on "not found" errors */
-async function callWithFallback(
-  client: Anthropic,
-  preferredModel: string,
-  messages: Anthropic.MessageCreateParams["messages"],
-  maxTokens: number
-): Promise<{ result: Anthropic.Message; usedModel: string }> {
-  // Build fallback list: preferred model first, then remaining chain models
-  const idx = MODEL_FALLBACK_CHAIN.indexOf(preferredModel);
-  const fallbacks =
-    idx >= 0
-      ? MODEL_FALLBACK_CHAIN.slice(idx)
-      : [preferredModel, ...MODEL_FALLBACK_CHAIN];
-
-  let lastError: unknown;
-  for (const model of fallbacks) {
-    try {
-      const result = await client.messages.create({ model, max_tokens: maxTokens, messages });
-      return { result, usedModel: model };
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      // Only fallback on model-not-found / not-available errors
-      if (msg.includes("not_found") || msg.includes("404") || msg.includes("model")) {
-        console.warn(`Model ${model} unavailable, trying fallback...`);
-        lastError = err;
-        continue;
-      }
-      // Any other error (auth, rate limit, etc.) — throw immediately
-      throw err;
-    }
-  }
-  throw lastError;
-}
 
 const VARIATION_STYLES = [
   "Refined and premium — think Stripe or Linear. Subtle gradients, generous whitespace, sophisticated color palette, polished micro-details",
@@ -81,16 +35,16 @@ function parseHtmlWithSize(raw: string): { html: string; width?: number; height?
 }
 
 async function generateVariation(
-  client: Anthropic,
   model: string,
   prompt: string,
   style: string,
   index: number,
-  systemPrompt?: string
+  systemPrompt?: string,
+  apiKey?: string,
 ): Promise<{ html: string; label: string; width?: number; height?: number }> {
   const customInstructions = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
 
-  const { result: message } = await callWithFallback(client, model, [
+  const messages: ModelMessage[] = [
     {
       role: "user",
       content: `You are a world-class visual designer. Generate a stunning, self-contained HTML/CSS design.${customInstructions}
@@ -148,11 +102,16 @@ OUTPUT RULES:
 - IMPORTANT: Keep CSS concise. No animations, no transitions, no keyframes.
 - CRITICAL: Generate exactly ONE design per response. Never include multiple designs, multiple ad variations, or multiple versions in one HTML file. The system handles variations externally — you only produce a single, complete design each time.`,
     },
-  ], 8192);
+  ];
 
-  const html =
-    message.content[0].type === "text" ? message.content[0].text : "";
+  const { result } = await generateWithFallback({
+    apiKey,
+    model,
+    messages,
+    maxTokens: 8192,
+  });
 
+  const html = result.text;
   const { html: cleaned, width, height } = parseHtmlWithSize(html);
 
   return {
@@ -164,14 +123,14 @@ OUTPUT RULES:
 }
 
 async function generateSingle(
-  client: Anthropic,
   model: string,
   originalPrompt: string,
   revision: string,
   existingHtml: string,
+  apiKey?: string,
   styleVariation?: string,
   variationIndex?: number,
-  systemPrompt?: string
+  systemPrompt?: string,
 ): Promise<{ html: string; label: string; width?: number; height?: number }> {
   const customInstructions = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
   const styleInstruction = styleVariation
@@ -191,7 +150,7 @@ async function generateSingle(
     return r;
   };
 
-  const { result: message } = await callWithFallback(client, model, [
+  const messages: ModelMessage[] = [
     {
       role: "user",
       content: `You are a world-class visual designer. You are EDITING an existing design — not creating a new one.${customInstructions}
@@ -225,11 +184,16 @@ OUTPUT FORMAT:
 - Self-contained, no external dependencies
 - Use the same dimensions as the original`,
     },
-  ], 8192);
+  ];
 
-  const html =
-    message.content[0].type === "text" ? message.content[0].text : "";
+  const { result } = await generateWithFallback({
+    apiKey,
+    model,
+    messages,
+    maxTokens: 8192,
+  });
 
+  const html = result.text;
   const parsed = parseHtmlWithSize(html);
   return {
     html: restoreImages(parsed.html),
@@ -247,26 +211,25 @@ export async function handleGenerate(req: NextRequest) {
       return NextResponse.json({ error: "Prompt required" }, { status: 400 });
     }
 
-    const client = getClient(apiKey);
     const useModel = model || DEFAULT_MODEL;
 
     if (revision && existingHtml) {
       const style = variationIndex !== undefined ? VARIATION_STYLES[variationIndex] || VARIATION_STYLES[0] : undefined;
-      const result = await generateSingle(client, useModel, prompt, revision, existingHtml, style, variationIndex, systemPrompt);
+      const result = await generateSingle(useModel, prompt, revision, existingHtml, apiKey, style, variationIndex, systemPrompt);
       return NextResponse.json({ iteration: result });
     }
 
     // Single variation mode (sequential generation from frontend)
     if (variationIndex !== undefined) {
       const style = concept || VARIATION_STYLES[variationIndex] || VARIATION_STYLES[0];
-      const result = await generateVariation(client, useModel, prompt, style, variationIndex, systemPrompt);
+      const result = await generateVariation(useModel, prompt, style, variationIndex, systemPrompt, apiKey);
       return NextResponse.json({ iteration: result });
     }
 
     // Legacy: generate all at once
     const variations = VARIATION_STYLES.slice(0, count);
     const results = await Promise.all(
-      variations.map((style, i) => generateVariation(client, useModel, prompt, style, i))
+      variations.map((style, i) => generateVariation(useModel, prompt, style, i, undefined, apiKey))
     );
 
     return NextResponse.json({ iterations: results });

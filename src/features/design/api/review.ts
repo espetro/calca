@@ -1,14 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { generateWithFallback } from "@/shared/ai/client";
+import type { ModelMessage } from "ai";
 
 export const maxDuration = 300;
 
 const DEFAULT_MODEL = "claude-opus-4-6";
-
-function getClient(apiKey?: string): Anthropic {
-  if (apiKey) return new Anthropic({ apiKey });
-  return new Anthropic();
-}
 
 function stripBase64Images(html: string): { stripped: string; restore: (output: string) => string } {
   const images: string[] = [];
@@ -51,16 +47,12 @@ export async function handleReview(req: NextRequest) {
   try {
     const { html, prompt, width, height, model, apiKey } = await req.json();
     const useModel = model || DEFAULT_MODEL;
-    const client = getClient(apiKey);
 
     const { stripped, restore } = stripBase64Images(html);
 
-    const message = await client.messages.create({
-      model: useModel,
-      max_tokens: 16384,
-      messages: [{
-        role: "user",
-        content: `You are a design quality reviewer. Review this HTML/CSS design and fix any issues.
+    const messages: ModelMessage[] = [{
+      role: "user",
+      content: `You are a design quality reviewer. Review this HTML/CSS design and fix any issues.
 
 Original request: "${prompt}"
 Target size: ${width || "auto"}x${height || "auto"}
@@ -87,10 +79,16 @@ RULES:
 - Keep the same structure and images (don't remove <img> tags)
 - No animations, transitions, or hover effects
 - Self-contained, no external dependencies`,
-      }],
+    }];
+
+    const { result } = await generateWithFallback({
+      apiKey,
+      model: useModel,
+      messages,
+      maxTokens: 16384,
     });
 
-    const raw = message.content[0].type === "text" ? message.content[0].text : "";
+    const raw = result.text;
     const parsed = parseHtmlWithSize(raw);
     return NextResponse.json({ html: restore(parsed.html), width: parsed.width || width, height: parsed.height || height });
   } catch (err) {

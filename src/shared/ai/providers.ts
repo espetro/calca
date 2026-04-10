@@ -1,5 +1,5 @@
 import { anthropic } from '@ai-sdk/anthropic';
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI, google } from '@ai-sdk/google';
 
 export const claudeModels = {
   'claude-opus-4-6': anthropic('claude-opus-4-6'),
@@ -36,3 +36,10 @@ export const MODEL_FALLBACK_CHAIN: string[] = [
   'claude-opus-4',
   'claude-sonnet-4',
 ];
+
+const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
+
+export function getGeminiImageModel(apiKey?: string) {
+  const provider = apiKey ? createGoogleGenerativeAI({ apiKey }) : google;
+  return provider.image(GEMINI_IMAGE_MODEL);
+}

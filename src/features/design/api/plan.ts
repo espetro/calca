@@ -1,12 +1,8 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { generateWithFallback } from "@/shared/ai/client";
+import type { ModelMessage } from "ai";
 
 export const maxDuration = 30;
-
-function getClient(apiKey?: string): Anthropic {
-  if (apiKey) return new Anthropic({ apiKey });
-  return new Anthropic();
-}
 
 export async function handlePlan(req: NextRequest) {
   try {
@@ -16,15 +12,10 @@ export async function handlePlan(req: NextRequest) {
       return NextResponse.json({ error: "Prompt required" }, { status: 400 });
     }
 
-    const client = getClient(apiKey);
-
-    const message = await client.messages.create({
-      model: model || "claude-sonnet-4-5-20250514",
-      max_tokens: 300,
-      messages: [
-        {
-          role: "user",
-          content: `You are a creative director planning VISUAL STYLE variations for a design. Given this design request, decide how many distinct visual directions to create (between 2 and 6) and describe each one.
+    const messages: ModelMessage[] = [
+      {
+        role: "user",
+        content: `You are a creative director planning VISUAL STYLE variations for a design. Given this design request, decide how many distinct visual directions to create (between 2 and 6) and describe each one.
 
 Design request: "${prompt}"
 
@@ -47,11 +38,17 @@ Consider:
 
 Respond in EXACTLY this JSON format, nothing else:
 {"count":N,"concepts":["visual style direction 1","visual style direction 2",...]}`,
-        },
-      ],
+      },
+    ];
+
+    const { result } = await generateWithFallback({
+      apiKey,
+      model: model || "claude-sonnet-4-5-20250514",
+      messages,
+      maxTokens: 300,
     });
 
-    const text = message.content[0].type === "text" ? message.content[0].text : "";
+    const text = result.text;
     
     try {
       // Extract JSON from response (handle markdown wrapping)
