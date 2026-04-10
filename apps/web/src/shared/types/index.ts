@@ -1,2 +1,0 @@
-// Shared domain types
-export {};
