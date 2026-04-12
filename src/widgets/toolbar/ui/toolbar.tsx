@@ -41,7 +41,7 @@ export function Toolbar({
   showZoomControls,
   onToggleZoomControls,
 }: ToolbarProps) {
-  const modelLabel = MODELS.find((m) => m.id === model)?.label || "Sonnet 4.5";
+  const modelLabel = MODELS.find((m) => m.id === model)?.label || model || "Sonnet 4.5";
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
