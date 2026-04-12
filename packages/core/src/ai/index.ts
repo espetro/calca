@@ -1,5 +1,5 @@
-export { claudeModels, geminiModels, getClaudeModel, getGeminiModel, MODEL_FALLBACK_CHAIN, getGeminiImageModel } from './providers';
-export type { ClaudeModelId, GeminiModelId } from './providers';
+export { claudeModels, geminiModels, openaiModels, getClaudeModel, getGeminiModel, MODEL_FALLBACK_CHAIN, getGeminiImageModel, getAIProvider } from './providers';
+export type { ProviderType, ClaudeModelId, GeminiModelId, OpenAIModelId } from './providers';
 export { generateWithFallback, streamAnthropic } from './client';
 export type { GenerateOptions } from './client';
 export { generateDesign } from './generate';

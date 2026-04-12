@@ -1,5 +1,41 @@
 import { anthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI, google } from '@ai-sdk/google';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import type { LanguageModelV3 } from '@ai-sdk/provider';
+
+export type ProviderType = 'anthropic' | 'openai-compatible';
+
+type CallableProvider = {
+  (modelId: string): LanguageModelV3;
+};
+
+export function getAIProvider(
+  providerType: ProviderType,
+  apiKey?: string,
+  baseURL?: string,
+): CallableProvider {
+  switch (providerType) {
+    case 'anthropic':
+      return anthropic;
+    case 'openai-compatible':
+      return createOpenAICompatible({
+        name: 'openai-compatible',
+        apiKey,
+        baseURL: baseURL ?? '',
+        supportsStructuredOutputs: true,
+      });
+  }
+}
+
+export const openaiModels = {
+  'gpt-4': 'gpt-4',
+  'gpt-4-turbo': 'gpt-4-turbo',
+  'gpt-4o': 'gpt-4o',
+  'gpt-4o-mini': 'gpt-4o-mini',
+  'gpt-3.5-turbo': 'gpt-3.5-turbo',
+} as const;
+
+export type OpenAIModelId = keyof typeof openaiModels;
 
 export const claudeModels = {
   'claude-opus-4-6': anthropic('claude-opus-4-6'),

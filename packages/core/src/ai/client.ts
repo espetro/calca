@@ -1,11 +1,14 @@
 import { generateText, streamText, type ModelMessage } from 'ai';
-import { getClaudeModel, MODEL_FALLBACK_CHAIN } from './providers';
+import { getClaudeModel, getAIProvider, MODEL_FALLBACK_CHAIN } from './providers';
+import type { ProviderType } from './providers';
 
 const DEFAULT_MODEL = 'claude-opus-4-6';
 
 export interface GenerateOptions {
   model?: string;
   apiKey?: string;
+  providerType?: ProviderType;
+  baseURL?: string;
   messages: ModelMessage[];
   maxTokens: number;
   temperature?: number;
@@ -30,7 +33,21 @@ function isModelNotFoundError(err: unknown): boolean {
   return msg.includes('not_found') || msg.includes('404') || msg.includes('Could not resolve') || msg.includes('does not exist') || msg.includes('model');
 }
 
+function getModel(
+  modelId: string,
+  providerType: ProviderType,
+  apiKey?: string,
+  baseURL?: string,
+) {
+  if (providerType === 'anthropic') {
+    return getClaudeModel(modelId);
+  }
+  const provider = getAIProvider(providerType, apiKey, baseURL);
+  return provider(modelId);
+}
+
 export async function generateWithFallback(options: GenerateOptions) {
+  const providerType = options.providerType ?? 'anthropic';
   const preferredModel = options.model || DEFAULT_MODEL;
   const idx = MODEL_FALLBACK_CHAIN.indexOf(preferredModel);
   const fallbacks = idx >= 0 ? MODEL_FALLBACK_CHAIN.slice(idx) : [preferredModel, ...MODEL_FALLBACK_CHAIN];
@@ -40,13 +57,13 @@ export async function generateWithFallback(options: GenerateOptions) {
 
   for (const modelId of fallbacks) {
     try {
-      const model = getClaudeModel(modelId);
+      const model = getModel(modelId, providerType, options.apiKey, options.baseURL);
       const result = await generateText({
         model,
         messages: options.messages,
         maxOutputTokens: options.maxTokens,
         temperature: options.temperature,
-        headers,
+        ...(providerType === 'anthropic' ? { headers } : {}),
       });
       return { result, usedModel: modelId };
     } catch (err: unknown) {
@@ -63,14 +80,15 @@ export async function generateWithFallback(options: GenerateOptions) {
 }
 
 export function streamAnthropic(options: GenerateOptions) {
+  const providerType = options.providerType ?? 'anthropic';
   const modelId = options.model || DEFAULT_MODEL;
-  const model = getClaudeModel(modelId);
+  const model = getModel(modelId, providerType, options.apiKey, options.baseURL);
   const headers = buildHeaders(options.apiKey, options.headers);
   return streamText({
     model,
     messages: options.messages,
     maxOutputTokens: options.maxTokens,
     temperature: options.temperature,
-    headers,
+    ...(providerType === 'anthropic' ? { headers } : {}),
   });
 }
