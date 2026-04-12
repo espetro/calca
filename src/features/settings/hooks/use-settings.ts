@@ -1,22 +1,40 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import type { ProviderType } from "@app/core/ai/providers";
+import type {
+  ProviderConfig,
+  ModelInfo,
+} from "../types";
+import { FALLBACK_MODELS } from "../types";
+import { migrateSettings, MigratedSettings } from "../lib/migrate-settings";
+import { deriveProviderFields } from "../lib/derive-provider-fields";
+
+export type { ProviderType };
 
 export interface Settings {
   apiKey: string;
   geminiKey: string;
   unsplashKey: string;
   openaiKey: string;
+  providerType: ProviderType | undefined;
+  baseURL: string;
   model: string;
   systemPrompt: string;
   systemPromptPreset: string;
   conceptCount: number;
   quickMode: boolean;
   showZoomControls: boolean;
+  providers: ProviderConfig[];
+  ideateModel?: string;
 }
 
+export { FALLBACK_MODELS };
+
 const STORAGE_KEY = "otto-settings";
-const DEFAULT_MODEL = "claude-opus-4-6";
+const DEFAULT_MODEL = process.env.NEXT_PUBLIC_AI_MODEL || "claude-opus-4-6";
+const DEFAULT_BASE_URL = process.env.NEXT_PUBLIC_AI_BASE_URL || "";
+const DEFAULT_API_KEY = process.env.NEXT_PUBLIC_AI_API_KEY || "";
 
 export const MODELS = [
   { id: "claude-opus-4-6", label: "Opus 4.6", desc: "Best quality, slowest" },
@@ -28,36 +46,51 @@ export const MODELS = [
 
 export function useSettings() {
   const [settings, setSettingsState] = useState<Settings>({
-    apiKey: "",
+    apiKey: DEFAULT_API_KEY,
     geminiKey: "",
     unsplashKey: "",
     openaiKey: "",
+    providerType: undefined,
+    baseURL: DEFAULT_BASE_URL,
     model: DEFAULT_MODEL,
     systemPrompt: "",
     systemPromptPreset: "custom",
     conceptCount: 4,
     quickMode: false,
     showZoomControls: false,
+    providers: [],
+    ideateModel: undefined,
   });
   const [loaded, setLoaded] = useState(false);
 
-  // Load settings from localStorage
+  // Load settings from localStorage (fall back to env defaults)
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw);
+        let parsed = JSON.parse(raw);
+
+        const migrated = migrateSettings(parsed);
+        if (migrated) {
+          parsed = { ...parsed, ...migrated };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+
         setSettingsState({
-          apiKey: parsed.apiKey || "",
-          geminiKey: parsed.geminiKey || "",
-          unsplashKey: parsed.unsplashKey || "",
-          openaiKey: parsed.openaiKey || "",
-          model: parsed.model || DEFAULT_MODEL,
-          systemPrompt: parsed.systemPrompt || "",
-          systemPromptPreset: parsed.systemPromptPreset || "custom",
-          conceptCount: parsed.conceptCount || 4,
+          apiKey: parsed.apiKey ?? DEFAULT_API_KEY,
+          geminiKey: parsed.geminiKey ?? "",
+          unsplashKey: parsed.unsplashKey ?? "",
+          openaiKey: parsed.openaiKey ?? "",
+          providerType: parsed.providerType,
+          baseURL: parsed.baseURL ?? DEFAULT_BASE_URL,
+          model: parsed.model ?? DEFAULT_MODEL,
+          systemPrompt: parsed.systemPrompt ?? "",
+          systemPromptPreset: parsed.systemPromptPreset ?? "custom",
+          conceptCount: parsed.conceptCount ?? 4,
           quickMode: parsed.quickMode ?? false,
           showZoomControls: parsed.showZoomControls ?? false,
+          providers: parsed.providers ?? [],
+          ideateModel: parsed.ideateModel,
         });
       }
     } catch {}
@@ -74,14 +107,71 @@ export function useSettings() {
     });
   }, []);
 
-  const isOwnKey = !!settings.apiKey;
+  const testProvider = useCallback(async (
+    config: Omit<ProviderConfig, "models" | "lastTested">
+  ): Promise<{ models: ModelInfo[]; error?: string }> => {
+    try {
+      const res = await fetch("/api/probe-models", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: config.apiKey,
+          providerType: config.apiType,
+          baseURL: config.baseUrl,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        return { models: [], error: text || `HTTP ${res.status}` };
+      }
+
+      const data = await res.json();
+      const available = data.available as Record<string, boolean> | undefined;
+
+      if (!available) {
+        return { models: FALLBACK_MODELS };
+      }
+
+      const models: ModelInfo[] = Object.entries(available)
+        .filter(([, isAvailable]) => isAvailable)
+        .map(([id]) => ({
+          id,
+          displayName: id,
+          description: "",
+        }));
+
+      if (models.length === 0) {
+        return { models: FALLBACK_MODELS };
+      }
+
+      return { models };
+    } catch (error) {
+      return {
+        models: [],
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }, []);
+
+  const derived = deriveProviderFields(settings.providers, settings.model);
+
+  // For anthropic we need an API key; for openai-compatible a baseURL is enough
+  const isOwnKey =
+    !!derived.apiKey ||
+    (derived.providerType === "openai-compatible" && !!derived.baseURL);
   const hasGeminiKey = !!settings.geminiKey;
 
-  // All models always available — errors show at generation time
-  const availableModels: Record<string, boolean> = {};
-  for (const m of MODELS) {
-    availableModels[m.id] = true;
-  }
-
-  return { settings, setSettings, isOwnKey, hasGeminiKey, loaded, availableModels, isProbing: false };
+  return {
+    settings: {
+      ...settings,
+      ...derived,
+    },
+    setSettings,
+    isOwnKey,
+    hasGeminiKey,
+    loaded,
+    providers: settings.providers,
+    testProvider,
+  };
 }
