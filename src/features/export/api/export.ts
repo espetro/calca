@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateWithFallback } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
 
 export const maxDuration = 60;
 
@@ -48,7 +49,7 @@ RULES:
 - Make it a clean, production-ready component
 - Import React at the top`;
 
-async function convertWithAI(apiKey: string | undefined, model: string, html: string, systemPrompt: string): Promise<string> {
+async function convertWithAI(apiKey: string | undefined, model: string, html: string, systemPrompt: string, providerType?: ProviderType, baseURL?: string): Promise<string> {
   const { result } = await generateWithFallback({
     apiKey,
     model,
@@ -56,6 +57,8 @@ async function convertWithAI(apiKey: string | undefined, model: string, html: st
       { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
     ],
     maxTokens: 4096,
+    providerType: providerType as ProviderType | undefined,
+    baseURL,
   });
 
   let resultText = result.text;
@@ -70,7 +73,7 @@ async function convertWithAI(apiKey: string | undefined, model: string, html: st
 
 export async function handleExport(req: NextRequest) {
   try {
-    const { html: rawHtml, format, apiKey, model } = await req.json();
+    const { html: rawHtml, format, apiKey, model, providerType, baseURL } = await req.json();
 
     if (!rawHtml || !format) {
       return NextResponse.json({ error: "html and format required" }, { status: 400 });
@@ -86,10 +89,10 @@ export async function handleExport(req: NextRequest) {
         return NextResponse.json({ result: htmlToSvg(html) });
 
       case "tailwind":
-        return NextResponse.json({ result: await convertWithAI(apiKey, useModel, html, TAILWIND_PROMPT) });
+        return NextResponse.json({ result: await convertWithAI(apiKey, useModel, html, TAILWIND_PROMPT, providerType as ProviderType | undefined, baseURL) });
 
       case "react":
-        return NextResponse.json({ result: await convertWithAI(apiKey, useModel, html, REACT_PROMPT) });
+        return NextResponse.json({ result: await convertWithAI(apiKey, useModel, html, REACT_PROMPT, providerType as ProviderType | undefined, baseURL) });
 
       default:
         return NextResponse.json({ error: "Invalid format" }, { status: 400 });

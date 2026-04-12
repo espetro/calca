@@ -10,6 +10,8 @@ interface ExportMenuProps {
   width?: number;
   apiKey?: string;
   model?: string;
+  providerType?: string;
+  baseURL?: string;
 }
 
 const CODE_FORMATS: { id: ExportFormat; label: string; icon: string; ext: string }[] = [
@@ -101,7 +103,7 @@ async function htmlToImageBlob(html: string, width: number, type: "image/png" | 
   }
 }
 
-export function ExportMenu({ html, label, width = 480, apiKey, model }: ExportMenuProps) {
+export function ExportMenu({ html, label, width = 480, apiKey, model, providerType, baseURL }: ExportMenuProps) {
   const [open, setOpen] = useState(false);
   const [exporting, setExporting] = useState<ExportFormat | null>(null);
   const [preview, setPreview] = useState<{ format: ExportFormat; code: string } | null>(null);
@@ -164,7 +166,7 @@ export function ExportMenu({ html, label, width = 480, apiKey, model }: ExportMe
         const res = await fetch("/api/export", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ html, format, apiKey, model }),
+          body: JSON.stringify({ html, format, apiKey, model, providerType: providerType || undefined, baseURL: baseURL || undefined }),
         });
 
         if (!res.ok) throw new Error("Export failed");
@@ -183,7 +185,7 @@ export function ExportMenu({ html, label, width = 480, apiKey, model }: ExportMe
         setExporting(null);
       }
     },
-    [html, width, label]
+    [html, width, label, apiKey, model, providerType, baseURL]
   );
 
   const handleCopy = useCallback(() => {
