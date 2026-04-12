@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateWithFallback } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildPlanPrompt } from "@app/core/prompts/plan";
 
@@ -7,7 +8,7 @@ export const maxDuration = 30;
 
 export async function handlePlan(req: NextRequest) {
   try {
-    const { prompt, apiKey, model } = await req.json();
+    const { prompt, apiKey, model, providerType, baseURL } = await req.json();
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt required" }, { status: 400 });
@@ -25,6 +26,8 @@ export async function handlePlan(req: NextRequest) {
       model: model || "claude-sonnet-4-5-20250514",
       messages,
       maxTokens: 300,
+      providerType: providerType as ProviderType | undefined,
+      baseURL,
     });
 
     const text = result.text;

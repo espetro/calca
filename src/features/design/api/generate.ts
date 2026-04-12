@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateWithFallback } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildVariationPrompt, VARIATION_STYLES } from "@app/core/prompts/generate";
 
@@ -35,6 +36,8 @@ async function generateVariation(
   index: number,
   systemPrompt?: string,
   apiKey?: string,
+  providerType?: ProviderType,
+  baseURL?: string,
 ): Promise<{ html: string; label: string; width?: number; height?: number }> {
   const messages: ModelMessage[] = [
     {
@@ -48,6 +51,8 @@ async function generateVariation(
     model,
     messages,
     maxTokens: 8192,
+    providerType,
+    baseURL,
   });
 
   const html = result.text;
@@ -70,6 +75,8 @@ async function generateSingle(
   styleVariation?: string,
   variationIndex?: number,
   systemPrompt?: string,
+  providerType?: ProviderType,
+  baseURL?: string,
 ): Promise<{ html: string; label: string; width?: number; height?: number }> {
   const customInstructions = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
   const styleInstruction = styleVariation
@@ -130,6 +137,8 @@ OUTPUT FORMAT:
     model,
     messages,
     maxTokens: 8192,
+    providerType,
+    baseURL,
   });
 
   const html = result.text;
@@ -144,7 +153,7 @@ OUTPUT FORMAT:
 
 export async function handleGenerate(req: NextRequest) {
   try {
-    const { prompt, count = 4, revision, existingHtml, apiKey, model, variationIndex, concept, systemPrompt } = await req.json();
+    const { prompt, count = 4, revision, existingHtml, apiKey, model, variationIndex, concept, systemPrompt, providerType, baseURL } = await req.json();
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt required" }, { status: 400 });
@@ -154,21 +163,21 @@ export async function handleGenerate(req: NextRequest) {
 
     if (revision && existingHtml) {
       const style = variationIndex !== undefined ? VARIATION_STYLES[variationIndex] || VARIATION_STYLES[0] : undefined;
-      const result = await generateSingle(useModel, prompt, revision, existingHtml, apiKey, style, variationIndex, systemPrompt);
+      const result = await generateSingle(useModel, prompt, revision, existingHtml, apiKey, style, variationIndex, systemPrompt, providerType, baseURL);
       return NextResponse.json({ iteration: result });
     }
 
     // Single variation mode (sequential generation from frontend)
     if (variationIndex !== undefined) {
       const style = concept || VARIATION_STYLES[variationIndex] || VARIATION_STYLES[0];
-      const result = await generateVariation(useModel, prompt, style, variationIndex, systemPrompt, apiKey);
+      const result = await generateVariation(useModel, prompt, style, variationIndex, systemPrompt, apiKey, providerType, baseURL);
       return NextResponse.json({ iteration: result });
     }
 
     // Legacy: generate all at once
     const variations = VARIATION_STYLES.slice(0, count);
     const results = await Promise.all(
-      variations.map((style, i) => generateVariation(useModel, prompt, style, i, undefined, apiKey))
+      variations.map((style, i) => generateVariation(useModel, prompt, style, i, undefined, apiKey, providerType, baseURL))
     );
 
     return NextResponse.json({ iterations: results });

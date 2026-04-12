@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateWithFallback } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildCritiquePrompt } from "@app/core/prompts/critique";
 
@@ -15,7 +16,7 @@ function stripBase64Images(html: string): string {
 
 export async function handleCritique(req: NextRequest) {
   try {
-    const { html, prompt, model, apiKey } = await req.json();
+    const { html, prompt, model, apiKey, providerType, baseURL } = await req.json();
     const useModel = model || DEFAULT_MODEL;
 
     const stripped = stripBase64Images(html);
@@ -30,6 +31,8 @@ export async function handleCritique(req: NextRequest) {
       model: useModel,
       messages,
       maxTokens: 1024,
+      providerType: providerType as ProviderType | undefined,
+      baseURL,
     });
 
     const critique = result.text;

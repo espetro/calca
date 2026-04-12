@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateWithFallback } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildReviewPrompt } from "@app/core/prompts/review";
 
@@ -46,7 +47,7 @@ function parseHtmlWithSize(raw: string): { html: string; width?: number; height?
 
 export async function handleReview(req: NextRequest) {
   try {
-    const { html, prompt, width, height, model, apiKey } = await req.json();
+    const { html, prompt, width, height, model, apiKey, providerType, baseURL } = await req.json();
     const useModel = model || DEFAULT_MODEL;
 
     const { stripped, restore } = stripBase64Images(html);
@@ -61,6 +62,8 @@ export async function handleReview(req: NextRequest) {
       model: useModel,
       messages,
       maxTokens: 16384,
+      providerType: providerType as ProviderType | undefined,
+      baseURL,
     });
 
     const raw = result.text;

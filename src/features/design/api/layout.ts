@@ -1,6 +1,7 @@
 import { type ImagePart, type ModelMessage, type TextPart } from "ai";
 import { NextRequest } from "next/server";
 import { streamAnthropic } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
 import { buildNewPrompt, buildRevisionUserContent } from "@app/core/prompts/layout";
 
 export const maxDuration = 300;
@@ -70,6 +71,8 @@ export async function handleLayout(req: NextRequest) {
       prompt, style, model, apiKey, systemPrompt, critique,
       availableSources = [], revision, existingHtml,
       contextImages = [],
+      providerType,
+      baseURL,
     } = body;
 
     const useModel = model || DEFAULT_MODEL;
@@ -145,6 +148,8 @@ RULES FOR USER IMAGES:
     const stream = streamAnthropic({
       model: useModel,
       apiKey,
+      providerType: providerType as ProviderType | undefined,
+      baseURL,
       messages,
       maxTokens: 16384,
     });

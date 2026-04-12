@@ -23,6 +23,8 @@ interface DesignCardProps {
   scale: number;
   apiKey?: string;
   model?: string;
+  providerType?: string;
+  baseURL?: string;
   pipelineStatus?: PipelineStatus;
 }
 
@@ -48,6 +50,8 @@ export function DesignCard({
   scale,
   apiKey,
   model,
+  providerType,
+  baseURL,
   pipelineStatus,
 }: DesignCardProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -138,7 +142,7 @@ setTimeout(reportHeight, 1500);
         {!iteration.isLoading && iteration.html && (
           <div className="ml-auto flex items-center gap-1 opacity-0 group-hover/label:opacity-100 transition-opacity">
             <RemixButton iteration={iteration} onRemix={onRemix} />
-            <ExportMenu html={iteration.html} label={iteration.label} width={iteration.width} apiKey={apiKey} model={model} />
+            <ExportMenu html={iteration.html} label={iteration.label} width={iteration.width} apiKey={apiKey} model={model} providerType={providerType} baseURL={baseURL} />
           </div>
         )}
       </div>
