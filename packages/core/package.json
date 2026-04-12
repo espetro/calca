@@ -17,9 +17,11 @@
     "clean": "echo 'clean: not yet implemented'"
   },
   "dependencies": {
-    "ai": "^6.0.156",
     "@ai-sdk/anthropic": "^3.0.68",
     "@ai-sdk/google": "^3.0.61",
+    "@ai-sdk/openai-compatible": "^2.0.41",
+    "@ai-sdk/provider": "3.0.8",
+    "ai": "^6.0.156",
     "zod": "^4.3.6"
   },
   "devDependencies": {

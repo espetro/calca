@@ -93,7 +93,10 @@ Always enabled. No exceptions.
 # Install dependencies
 bun install
 
-# Run development server
+# Run development server (web app at https://gosto.localhost)
+bun run dev-web
+
+# Run all services via Turborepo
 bun run dev
 
 # Build all packages
@@ -106,7 +109,46 @@ bun test
 bun run typecheck
 ```
 
+### Portless (Named Dev URLs)
+
+Dev servers use [portless](https://github.com/vercel-labs/portless) for stable `.localhost` URLs instead of port numbers. First run auto-starts the HTTPS proxy on port 443 and generates a local CA (run `npx portless trust` if you see certificate warnings).
+
+| Script | URL |
+|--------|-----|
+| `bun run dev-web` | `https://gosto.localhost` |
+
+- **Git worktrees**: each worktree gets a unique subdomain (e.g. `fix-ui.gosto.localhost`)
+- **Bypass**: set `PORTLESS=0` to run without the proxy (e.g. `PORTLESS=0 bun run dev-web`)
+- **Install**: already included as a dev dependency (`npx portless` or via scripts)
+
 ---
+
+## Local Testing with LM Studio
+
+For development and testing without consuming paid API credits, the app defaults to a local LM Studio instance via the OpenAI-compatible provider.
+
+**Default environment values (already set in `.env` and `.env.local.example`):**
+```bash
+NEXT_PUBLIC_AI_BASE_URL=http://localhost:1234/v1
+NEXT_PUBLIC_AI_API_KEY=""
+NEXT_PUBLIC_AI_MODEL=lfm2.5-1.2b-instruct
+```
+
+**Steps:**
+1. Install [LM Studio](https://lmstudio.ai/)
+2. Download and load the `lfm2.5-1.2b-instruct` model (or any other OpenAI-compatible model)
+3. Start the local server on port `1234`
+4. In Settings, select **OpenAI-Compatible** provider — the Base URL and Model will be pre-filled
+5. Leave the API Key field empty (local servers usually don't require auth)
+6. The app will probe `/models` and allow generation immediately
+
+These defaults are wired into `use-settings.ts` via `NEXT_PUBLIC_*` variables so they persist across browser sessions and fresh clones.
+
+---
+
+## E2E Testing
+Specs are written in Gauge Markdown and run via agent-browser.
+See [docs/testing/e2e-specs.md](docs/testing/e2e-specs.md) for conventions, built-in steps, and how to add new ones.
 
 ## Package-Specific Guides
 
