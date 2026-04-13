@@ -19,7 +19,7 @@
 ### CSS Transform Canvas → **CARRY**
 - **Why it worked**: 171-line `useCanvas()` hook provides smooth pan/zoom with native wheel events. Figma-like feel. No dependencies
 - **Evidence**: Smooth zoom (clamped delta, transform origin), rubber-band selection, zoom-to-fit animation
-- **v2 Action**: Keep CSS transforms. Add Zustand for state management. Add virtualization for 50+ frames. Add minimap component
+- **v2 Action**: Keep CSS transforms. Add virtualization for 50+ frames. Add minimap component
 
 ### Design Preset System → **CARRY**
 - **Why it worked**: Three detailed presets (UI/UX, Marketing, Brand/Ad) with typography scales, spacing systems, color palettes, and anti-patterns
@@ -41,14 +41,14 @@
 - **Evidence**: Working export in `export/route.ts` with format-specific prompts
 - **v2 Action**: Add more formats (Figma plugin, vanilla CSS, Vue SFC). Cache conversions
 
+### Turborepo Monorepo → **CARRY** ✅ (reversed from SKIP)
+- **Why it was SKIP'd**: POC directories contained only `node_modules/` — source code was removed. No `turbo.json` existed. The monorepo structure was created but never operational
+- **Why reversed**: `turbo.json` was added and Turborepo is now actively used for monorepo orchestration (parallel builds, task caching, pipeline execution across `apps/*` and `packages/*`)
+- **v2 Action**: Continue using Turborepo alongside Bun workspaces. Leverage `turbo run build`, `turbo run dev`, and task dependencies for CI/CD
+
 ---
 
 ## What Didn't ❌ (SKIP)
-
-### Full Turborepo Monorepo → **SKIP**
-- **Why it didn't work**: POC directories contain only `node_modules/` — source code was removed. No `turbo.json` was ever created. The monorepo structure was created but never operational
-- **Root cause**: Tried to decompose everything at once instead of extracting incrementally. 1,700-line page component can't be split into 6 packages simultaneously
-- **v2 Action**: Use Bun workspace (simpler). Start with `packages/shared` (types only), then `packages/core` (AI logic). Add Turborepo later only if needed
 
 ### Hono Server Migration → **SKIP**
 - **Why it didn't work**: No functional benefit over Next.js API routes. The current routes already use streaming (ReadableStream), handle timeouts (maxDuration), and manage base64 limits. Rewriting to Hono would be pure churn
@@ -77,11 +77,11 @@
 ### Canvas State Management → **REDESIGN**
 - **Current**: All state (groups, positions, selections, drag state, comments, images) lives in `page.tsx` as 20+ `useState` hooks
 - **Problem**: 1,700-line component with deeply nested state updates. Can't test canvas logic without rendering the full page
-- **v2 Target**: Zustand store for canvas state. Separation of:
-  - `useCanvasStore` — pan/zoom, viewport
-  - `useDesignStore` — groups, iterations, positions
-  - `useSelectionStore` — selected IDs, rubber band
-  - `useCommentStore` — comments, threads, queue
+- **v2 Target**: Custom React hooks and context for canvas state. Separation of:
+  - `useCanvas()` — pan/zoom, viewport
+  - `useDesigns()` — groups, iterations, positions
+  - `useSelection()` — selected IDs, rubber band
+  - `useComments()` — comments, threads, queue
 
 ### API Route Coupling → **REDESIGN**
 - **Current**: Each API route constructs its own prompts, calls SDKs directly, and parses responses inline. ~350 lines in `layout/route.ts` alone
@@ -124,18 +124,17 @@
 
 | Technology | Verdict | Reason |
 |-----------|---------|--------|
-| Turborepo monorepo | SKIP | Never operational, premature decomposition |
+| Turborepo monorepo | CARRY | Reversed: turbo.json added, actively used for orchestration |
 | Bun workspace monorepo | CARRY | Simpler alternative, use for v2 |
 | Hono server | SKIP | No benefit over Next.js API routes |
 | Next.js App Router | CARRY | Works well for SPA + API routes |
 | TanStack Router | SKIP | Over-engineering for single-page app |
 | React Flow canvas | SKIP | Wrong abstraction (graph vs canvas) |
-| CSS transform canvas | CARRY | Proven, performant, needs Zustand |
+| CSS transform canvas | CARRY | Proven, performant, add virtualization + minimap |
 | SQLite + Drizzle | CARRY | Right persistence for desktop/server |
 | Mastra AI framework | SKIP | Over-abstraction for sequential pipeline |
 | Direct SDK calls | CARRY | Works, extract to shared package |
 | Electrobun desktop | SKIP | Too early, defer to post-MVP |
-| Zustand state management | CARRY | Replace 20+ useState hooks |
 | Multi-model pipeline | CARRY | Core IP, extract to packages/core |
 | Design presets | CARRY | Core IP, extract to packages/core |
 | Comment/revision queue | CARRY | Proven pattern, move to server |

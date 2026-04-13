@@ -1,5 +1,12 @@
 # 0003 — Use localStorage + IndexedDB for Client-Side Persistence
 
+| Attribute | Value |
+|-----------|-------|
+| Status | **DEPRECATED** |
+| Superseded By | ADR 0007 (SQLite + Drizzle) |
+
+> **Note:** SQLite + Drizzle (ADR 0007) is the target persistence layer but is **NOT YET IMPLEMENTED**. The current app uses no persistent database — state is session-based (in-memory).
+
 ## Context and Problem Statement
 
 Otto Canvas is a client-side-only application with no backend database, no user accounts, and no server-side state. Users generate design iterations (HTML/CSS content with embedded base64 images), configure API keys and settings, and drag reference images onto the canvas. All of this state must persist across browser sessions without requiring any server infrastructure.

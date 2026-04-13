@@ -56,7 +56,7 @@ For the multi-model pipeline (image generation + visual QA), also add your Gemin
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Styling:** Tailwind CSS v4
 - **Canvas:** CSS transforms + @use-gesture/react
 - **AI:** Claude (Anthropic) for layout + QA, Gemini (Google) for image generation

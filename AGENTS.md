@@ -25,6 +25,25 @@ gosto/
 
 ---
 
+> **⚠️ Current State — Read This First**
+>
+> The monorepo structure diagram above describes the **target** architecture. The **actual** codebase differs today:
+>
+> | Area | Status |
+> |------|--------|
+> | **Active app** | The Next.js application lives in `src/` at the repo root, organized with **Feature-Sliced Design (FSD)** |
+> | **FSD features** | `canvas`, `design`, `settings`, `comments`, `export`, `onboarding` |
+> | **`packages/core/`** | ✅ Implemented — AI SDK v6 provider abstraction |
+> | **`packages/shared/`** | ✅ Implemented — types & contracts |
+> | **`apps/web/`** | Scaffolding only (no active code) |
+> | **`apps/server/`** | Scaffolding only |
+> | **`apps/desktop/`** | Scaffolding only |
+> | **`packages/database/`** | Scaffolding only |
+>
+> **Additional packages not in the target diagram:** `packages/config/`, `packages/logger/`, `packages/types/`, `apps/cli/`, `apps/landing/`
+
+---
+
 ## Universal Rules (Apply Everywhere)
 
 ### Cross-Package Import Rules
@@ -78,10 +97,8 @@ Always enabled. No exceptions.
 | Frontend | Next.js | 16.x |
 | UI | React | 19.x |
 | Styling | Tailwind CSS | 4.x |
-| State | Zustand | latest |
 | Database | SQLite + Drizzle ORM | latest |
-| AI Layout | Anthropic SDK (Claude) | 0.74.x |
-| AI Images | Google GenAI SDK (Gemini) | 1.41.x |
+| AI | AI SDK | latest |
 | Desktop | Electrobun | latest |
 | Testing | Vitest | latest |
 
@@ -173,6 +190,8 @@ Every AI design concept has three components:
 - **Aesthetic** — Visual refinement ("elegant", "gritty")
 
 ### Pipeline Stages
+See [PRD v2 — Pipeline](docs/prd-v2.md) for full details.
+
 1. **Plan** — Determine concept count and visual directions
 2. **Layout** — Generate HTML/CSS with sizing hints
 3. **Images** — Fill placeholders with real images
@@ -180,13 +199,15 @@ Every AI design concept has three components:
 5. **Critique** — Generate improvement feedback
 
 ### Design Presets
-Three built-in presets: `ui-ux`, `marketing`, `brand`
+Three built-in presets: `ui-ux`, `marketing`, `brand` — see [PRD v2 — Presets](docs/prd-v2.md)
 
 ---
 
 ## References
 
-- **PRD v2**: `docs/prd-v2.md` — Complete feature requirements
-- **POC Learnings**: `docs/poc-learnings.md` — Architecture decisions
-- **MADRs**: `docs/decisions/` — Technology decision documents
-- **Sisyphus Plans**: `.sisyphus/plans/` — Implementation planning
+- **PRD v2**: [docs/prd-v2.md](docs/prd-v2.md) — Complete feature requirements
+- **PRD v2 Delta**: [docs/prd-v2-delta.md](docs/prd-v2-delta.md) — Incremental changes from v1
+- **POC Learnings**: [docs/poc-learnings.md](docs/poc-learnings.md) — Architecture decisions from prototyping
+- **MADRs**: [docs/decisions/](docs/decisions/) — Architecture Decision Records (numbered `NNNN-description.md`)
+- **Roadmap**: [docs/roadmap/README.md](docs/roadmap/README.md) — Planned features and milestones
+- **Sisyphus Plans**: [.sisyphus/plans/](.sisyphus/plans/) — Implementation planning

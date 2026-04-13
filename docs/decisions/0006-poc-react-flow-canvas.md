@@ -2,9 +2,9 @@
 
 | Attribute | Value |
 |-----------|-------|
-| Status | **REDESIGN** (POC verdict) |
+| Status | **ACCEPTED** (CSS transforms approach) |
 | Date | 2026-04-05 |
-| Decision | Attempted, reconsider approach for v2 |
+| Decision | Keep CSS transforms canvas; React Flow rejected |
 
 ## Context
 
@@ -52,19 +52,21 @@ The POC attempted to replace this with **React Flow** — a graph/flowchart libr
 | Image overlay | Dropped images as absolute-positioned elements |
 | Comment pins | Positioned relative to design frame |
 
-## Current Canvas Limitations (Fix in v2)
+## Current Canvas Limitations (Roadmap)
 
-1. **No virtualization** — 100+ frames would slow down (all in DOM)
+1. **No virtualization** — 100+ frames would slow down (all in DOM) → consider @tanstack/virtual
 2. **No minimap** — Users get lost on large canvases
 3. **No connection lines** — Can't visually show iteration lineage
 4. **State in component** — Canvas state (groups, positions) lives in the page component, not a store
 5. **No undo/redo** — No history tracking for canvas operations
 
+> **Note:** These are known limitations, not blockers. The CSS transforms canvas is accepted and functional.
+
 ## Consequences
 
 ### For v2
 - **Keep CSS transforms** for the canvas layer (proven, performant)
-- **Add a state manager** (Zustand) for canvas state instead of React state
+- ~~Add a state manager (Zustand)~~ — REJECTED: not needed at this time
 - **Add virtualization** for frames beyond viewport (render only visible)
 - **Add minimap** as a separate overlay component
 - **Skip React Flow** entirely — wrong abstraction for design canvas

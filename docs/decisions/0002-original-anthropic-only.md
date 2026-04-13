@@ -1,5 +1,7 @@
 # 0002 — Use Anthropic (Claude) as Primary AI Provider
 
+> **Status: SUPERSEDED** — See [0010 — AI SDK v6 Multi-Provider Architecture](./0010-ai-sdk-v6-multi-provider.md)
+
 ## Context and Problem Statement
 
 Otto Canvas needs an AI model capable of generating production-quality HTML/CSS designs from natural language descriptions. The model must handle complex prompts with design rules, output self-contained HTML with inline styles, and support vision capabilities for design review/QA. Additionally, the application needs a model for generating design critique and improvement feedback.

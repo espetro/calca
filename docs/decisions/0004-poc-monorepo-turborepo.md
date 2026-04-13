@@ -2,9 +2,10 @@
 
 | Attribute | Value |
 |-----------|-------|
-| Status | **SKIP** (POC verdict) |
+| Status | **CARRY** (reversed from SKIP) |
 | Date | 2026-04-05 |
-| Decision | Attempted but abandoned mid-implementation |
+| Reversed | 2026-04-12 |
+| Decision | Originally abandoned mid-implementation; reversed — Turborepo now active |
 
 ## Context
 
@@ -23,7 +24,9 @@ The POC attempted to decompose into a Turborepo monorepo with:
 
 ## Decision
 
-**Abandoned.** Only `node_modules/` directories remain in the POC structure — source code was stripped. No `turbo.json` was ever created at the root, indicating Turborepo was never configured.
+**Reversal Note (2026-04-12):** This decision was reversed. A `turbo.json` now exists at the repo root with active task pipelines (build, dev, typecheck, test, lint, format, validate, clean). Turborepo is actively used for build orchestration and caching. The original SKIP rationale below is preserved as historical context.
+
+**Original Decision (SKIP):** Only `node_modules/` directories remain in the POC structure — source code was stripped. No `turbo.json` was ever created at the root, indicating Turborepo was never configured.
 
 ## Rationale for Attempting
 
