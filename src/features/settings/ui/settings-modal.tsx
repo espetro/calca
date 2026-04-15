@@ -272,7 +272,6 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers, testProvider }: SettingsModalProps) {
-  const [key, setKey] = useState(settings.apiKey);
   const [geminiKey, setGeminiKey] = useState(settings.geminiKey);
   const [unsplashKey, setUnsplashKey] = useState(settings.unsplashKey);
   const [openaiKey, setOpenaiKey] = useState(settings.openaiKey);
@@ -286,14 +285,7 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  const handleSaveKey = () => {
-    onUpdate({ apiKey: key.trim() });
-  };
-
-  const handleClearKey = () => {
-    setKey("");
-    onUpdate({ apiKey: "" });
-  };
+  
 
   const handleAddProvider = (provider: ProviderConfig) => {
     const newProviders = [...settings.providers, provider];
@@ -370,47 +362,7 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
 
             
 
-            {/* API Key */}
-            <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-[12px] font-medium text-gray-500 uppercase tracking-wider">
-                API Key
-              </label>
-              {isOwnKey && (
-                <span className="text-[11px] font-medium text-emerald-600 bg-emerald-50/80 px-2 py-0.5 rounded-full">
-                  Using your key
-                </span>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="password"
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-                placeholder="sk-ant-..."
-                className="flex-1 text-[13px] text-gray-800 placeholder-gray-400/50 bg-white/70 backdrop-blur-sm rounded-xl px-5 py-3.5 outline-none border border-white/50 focus:border-blue-300/60 focus:bg-white/90 transition-all font-mono"
-              />
-              {(key !== settings.apiKey) && (
-                <button
-                  onClick={handleSaveKey}
-                  className="text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-4 py-2.5 rounded-xl transition-all shrink-0"
-                >
-                  Save
-                </button>
-              )}
-            </div>
-            {isOwnKey && (
-              <button
-                onClick={handleClearKey}
-                className="mt-2 text-[11px] text-gray-500 hover:text-red-500 transition-colors"
-              >
-                Remove key &amp; use demo
-              </button>
-            )}
-            <p className="mt-2 text-[11px] text-gray-500 leading-relaxed">
-              Your key is stored in localStorage. It passes through our server to reach Anthropic but is never logged or persisted.
-            </p>
-          </div>
+            
 
           {/* Models being used */}
           <div>
