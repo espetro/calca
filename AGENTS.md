@@ -46,6 +46,32 @@ gosto/
 
 ## Universal Rules (Apply Everywhere)
 
+### Git Worktree Location
+
+All git worktrees **must** be created under `./.worktrees/` (relative to the repo root). Never create worktrees in the repo root or elsewhere.
+
+```bash
+# ✅ Correct
+git worktree add .worktrees/feature-name feat/feature-name
+
+# ❌ Wrong
+git worktree add feature-name feat/feature-name
+```
+
+### Worktree-Local Sisyphus State
+
+When running in a worktree, agents **must** use a worktree-local boulder path instead of the project-wide `.sisyphus/boulder.json`. This prevents parallel agents in different worktrees from overwriting each other's state.
+
+```bash
+# ✅ Correct — worktree-local state
+.worktrees/feature-name/.sisyphus/boulder.json
+
+# ❌ Wrong — project-wide state (shared across all worktrees)
+.sisyphus/boulder.json
+```
+
+Agents running from the main worktree may use `.sisyphus/boulder.json` as normal.
+
 ### Cross-Package Import Rules
 
 **Imports flow inward only:**
@@ -134,7 +160,7 @@ Dev servers use [portless](https://github.com/vercel-labs/portless) for stable `
 |--------|-----|
 | `bun run dev-web` | `https://gosto.localhost` |
 
-- **Git worktrees**: each worktree gets a unique subdomain (e.g. `fix-ui.gosto.localhost`)
+- **Git worktrees**: must live under `./.worktrees/` (see Universal Rules). Each gets a unique subdomain (e.g. `fix-ui.gosto.localhost`)
 - **Bypass**: set `PORTLESS=0` to run without the proxy (e.g. `PORTLESS=0 bun run dev-web`)
 - **Install**: already included as a dev dependency (`npx portless` or via scripts)
 
