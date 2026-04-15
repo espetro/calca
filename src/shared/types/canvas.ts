@@ -3,4 +3,4 @@ export interface Point {
   y: number;
 }
 
-export type ToolMode = "select" | "comment";
+export type ToolMode = "select" | "draw-area" | "edit-component" | "comment";
