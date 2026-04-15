@@ -1436,15 +1436,12 @@ export default function Home() {
         onZoomOut={canvas.zoomOut}
         onResetView={canvas.resetView}
         onOpenSettings={() => setShowSettings(true)}
-        onOpenLibrary={() => setShowLibrary(true)}
         onNewSession={() => setShowResetConfirm(true)}
         onExport={handleExportOtto}
         onImport={handleImportOtto}
         isOwnKey={isOwnKey}
         model={settings.model}
         hasFrames={groups.length > 0}
-        showZoomControls={settings.showZoomControls}
-        onToggleZoomControls={() => setSettings({ showZoomControls: !settings.showZoomControls })}
       />
 
       <PromptBar onSubmit={handleGenerate} isGenerating={isGenerating} genStatus={genStatus} onCancel={() => abortRef.current?.abort()} imageCount={canvasImages.length} />
