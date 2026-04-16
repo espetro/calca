@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { ToolMode } from "@/shared/types";
+import type { ProviderConfig } from "@/features/settings/types";
 import { MODELS } from "@/features/settings/hooks/use-settings";
 
 interface ToolbarProps {
@@ -17,6 +18,7 @@ interface ToolbarProps {
   onImport: () => void;
   isOwnKey: boolean;
   model: string;
+  providers: ProviderConfig[];
   hasFrames: boolean;
 }
 
@@ -33,9 +35,13 @@ export function Toolbar({
   onImport,
   isOwnKey,
   model,
+  providers,
   hasFrames,
 }: ToolbarProps) {
-  const modelLabel = MODELS.find((m) => m.id === model)?.label || model || "Sonnet 4.5";
+  const [providerId, modelId] = model.includes("/") ? model.split("/") : [null, model];
+  const provider = providerId ? providers.find((p) => p.id === providerId) : undefined;
+  const displayModel = provider?.models.find((m) => m.id === modelId)?.displayName || modelId;
+  const modelLabel = MODELS.find((m) => m.id === modelId)?.label || displayModel || model || "Sonnet 4.5";
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

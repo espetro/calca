@@ -1443,6 +1443,7 @@ export default function Home() {
         onImport={handleImportOtto}
         isOwnKey={isOwnKey}
         model={settings.model}
+        providers={settings.providers}
         hasFrames={groups.length > 0}
       />
 
