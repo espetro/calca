@@ -1,10 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type RefCallback } from "react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCanvas } from "@/features/canvas/hooks/use-canvas";
-import { useSettings } from "@/features/settings/hooks/use-settings";
 import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
-import { usePersistedGroups } from "@/features/design/hooks/use-persisted-groups";
 import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
 import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
@@ -12,7 +11,19 @@ import { SettingsModal } from "@/features/settings";
 import { PipelineStatusOverlay } from "@/features/canvas";
 import { OnboardingModal, GuidedTour } from "@/features/onboarding";
 import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
-import { usePersistedImages } from "@/features/design/hooks/use-persisted-images";
+import { usePipelinePost } from "@/features/design/hooks/use-pipeline-post";
+import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
+import { settingsAtom, isOwnKeyAtom, hasGeminiKeyAtom } from "@/features/settings/state/settings-atoms";
+import { groupsAtom, resetSessionAtom } from "@/features/design/state/groups-atoms";
+import { canvasImagesAtom } from "@/features/design/state/images-atoms";
+import {
+  showResetConfirmAtom, toolModeAtom, isGeneratingAtom, pipelineStagesAtom, genStatusAtom,
+  spaceHeldAtom, showGitHashAtom, showLibraryAtom, selectedIdsAtom, rubberBandAtom, draggingImageIdAtom,
+} from "@/features/design/state/generation-atoms";
+import {
+  commentDraftAtom, draggingIdAtom, activeCommentAtom, activeCommentIterationIdAtom, commentCountAtom,
+} from "@/features/design/state/comment-atoms";
+import type { Settings } from "@/features/settings/state/settings-atoms";
 import type {
   PipelineStatus,
   DesignIteration,
@@ -26,33 +37,35 @@ import type {
 
 export default function Home() {
   const canvas = useCanvas();
-  const { settings, setSettings, isOwnKey, hasGeminiKey, providers, testProvider } = useSettings();
+  // Settings atoms
+  const [settings, setSettings] = useAtom(settingsAtom);
+  const isOwnKey = useAtomValue(isOwnKeyAtom);
+  const hasGeminiKey = useAtomValue(hasGeminiKeyAtom);
+  const probeModels = useProbeModels();
   const onboarding = useOnboarding();
   const canvasElRef = useRef<HTMLDivElement | null>(null);
   const combinedCanvasRef: RefCallback<HTMLDivElement> = useCallback((el) => {
     canvasElRef.current = el;
     canvas.setCanvasRef(el);
   }, [canvas.setCanvasRef]);
-  const { groups, setGroups, resetSession } = usePersistedGroups();
-  const groupsRef = useRef(groups);
-  useEffect(() => { groupsRef.current = groups; }, [groups]);
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [toolMode, setToolMode] = useState<ToolMode>("select");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [pipelineStages, setPipelineStages] = useState<Record<string, PipelineStatus>>({});
-  const [genStatus, setGenStatus] = useState("");
+
+  // Groups atoms (replaces usePersistedGroups + groupsRef)
+  const [groups, setGroups] = useAtom(groupsAtom);
+  const resetSession = useSetAtom(resetSessionAtom);
+
+  // Generation state atoms
+  const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
+  const [toolMode, setToolMode] = useAtom(toolModeAtom);
+  const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
+  const [pipelineStages, setPipelineStages] = useAtom(pipelineStagesAtom);
+  const [genStatus, setGenStatus] = useAtom(genStatusAtom);
   const abortRef = useRef<AbortController | null>(null);
-  const [spaceHeld, setSpaceHeld] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [spaceHeld, setSpaceHeld] = useAtom(spaceHeldAtom);
+  const [showSettings, setShowSettings] = useState(false); // UI-only toggle, kept as useState
   const quickMode = settings.quickMode;
-  const [showGitHash, setShowGitHash] = useState(false);
-  const [showLibrary, setShowLibrary] = useState(false);
-  const [commentDraft, setCommentDraft] = useState<{
-    iterationId: string;
-    position: Point;
-    screenX: number;
-    screenY: number;
-  } | null>(null);
+  const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
+  const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
+  const [commentDraft, setCommentDraft] = useAtom(commentDraftAtom);
 
   // Drag state for moving frames
   const dragRef = useRef<{
@@ -60,19 +73,20 @@ export default function Home() {
     startMouse: Point;
     startPos: Point;
   } | null>(null);
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [activeComment, setActiveComment] = useState<CommentType | null>(null);
-  const [activeCommentIterationId, setActiveCommentIterationId] = useState<string | null>(null);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [draggingId, setDraggingId] = useAtom(draggingIdAtom);
+  const [activeComment, setActiveComment] = useAtom(activeCommentAtom);
+  const [activeCommentIterationId, setActiveCommentIterationId] = useAtom(activeCommentIterationIdAtom);
+  const [selectedIds, setSelectedIds] = useAtom(selectedIdsAtom);
   // Rubber band selection state
-  const [rubberBand, setRubberBand] = useState<{ startX: number; startY: number; currentX: number; currentY: number } | null>(null);
-  // Dropped reference images (persisted in IndexedDB)
-  const { images: canvasImages, setImages: setCanvasImages } = usePersistedImages();
-  const [draggingImageId, setDraggingImageId] = useState<string | null>(null);
+  const [rubberBand, setRubberBand] = useAtom(rubberBandAtom);
+  // Dropped reference images (replaces usePersistedImages)
+  const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
+  const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
   const imgDragRef = useRef<{ id: string; startMouse: Point; startPos: Point } | null>(null);
   const imgDragStartPositions = useRef<Map<string, Point>>(new Map());
 
-  const commentCountRef = useRef(0);
+  // Comment count atom (replaces useRef)
+  const [commentCount, setCommentCount] = useAtom(commentCountAtom);
 
   // Process dropped/uploaded image files into CanvasImage objects
   const processImageFiles = useCallback((files: File[], dropX?: number, dropY?: number) => {
@@ -318,30 +332,7 @@ export default function Home() {
     "Dark and dramatic — dark backgrounds, glowing accents, cinematic feel, high contrast, moody atmosphere",
   ];
 
-  /** Helper: post JSON and return parsed response, throwing on error */
-  const pipelinePost = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async (url: string, body: Record<string, unknown>, signal: AbortSignal): Promise<any> => {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-        signal,
-      });
-      const text = await res.text();
-      // The streaming layout route sends whitespace pings followed by JSON — strip leading spaces
-      const trimmed = text.trim();
-      let data: any;
-      try {
-        data = JSON.parse(trimmed);
-      } catch {
-        throw new Error(`Invalid response from ${url}: ${trimmed.slice(0, 120)}`);
-      }
-      if (!res.ok || data.error) throw new Error(data.error || `Request to ${url} failed`);
-      return data;
-    },
-    []
-  );
+  const pipelinePost = usePipelinePost();
 
   /** Post-process: cap oversized sections */
   const capOversizedSections = useCallback((html: string): string => {
@@ -956,7 +947,7 @@ export default function Home() {
       let currentHtml = "";
       let currentPrompt = "";
       let latestThread: CommentMessage[] = [];
-      for (const g of groupsRef.current) {
+      for (const g of groups) {
         for (const iter of g.iterations) {
           if (iter.id === iterationId) {
             currentHtml = iter.html;
@@ -1043,7 +1034,8 @@ export default function Home() {
   const handleCommentSubmit = useCallback(
     (text: string) => {
       if (!commentDraft) return;
-      commentCountRef.current += 1;
+      const nextCount = commentCount + 1;
+      setCommentCount(nextCount);
 
       const commentId = `comment-${Date.now()}`;
       const userMessage: CommentMessage = {
@@ -1056,7 +1048,7 @@ export default function Home() {
         id: commentId,
         position: commentDraft.position,
         text,
-        number: commentCountRef.current,
+        number: nextCount,
         createdAt: Date.now(),
         status: "waiting",
         thread: [userMessage],
@@ -1488,11 +1480,11 @@ export default function Home() {
       {showSettings && (
         <SettingsModal
           settings={settings}
-          onUpdate={setSettings}
+          onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
           onClose={() => setShowSettings(false)}
           isOwnKey={isOwnKey}
           providers={settings.providers}
-          testProvider={testProvider}
+          testProvider={(config) => probeModels.mutateAsync({ apiKey: config.apiKey, providerType: config.apiType, baseURL: config.baseUrl })}
         />
       )}
 
@@ -1529,12 +1521,13 @@ export default function Home() {
       {onboarding.showWelcome && (
         <OnboardingModal
           onComplete={(keys) => {
-            setSettings({
+            setSettings((prev) => ({
+              ...prev,
               apiKey: keys.anthropicKey,
               geminiKey: keys.geminiKey,
               unsplashKey: keys.unsplashKey,
               openaiKey: keys.openaiKey,
-            });
+            }));
             onboarding.completeKeys();
           }}
           onDismiss={() => onboarding.dismiss()}

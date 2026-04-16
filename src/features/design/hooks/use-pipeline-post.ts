@@ -1,20 +1,14 @@
 import { useCallback } from "react";
 
-/**
- * Custom hook for making POST requests to pipeline endpoints.
- *
- * Handles streaming responses where the server may send whitespace pings
- * before the actual JSON data. Strips leading/trailing whitespace before parsing.
- *
- * @returns A memoized function that performs POST requests to pipeline endpoints
- */
-export const usePipelinePost = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const usePipelinePost = (): ((url: string, body: Record<string, unknown>, signal: AbortSignal) => Promise<any>) => {
   const pipelinePost = useCallback(
     async (
       url: string,
       body: Record<string, unknown>,
       signal: AbortSignal
-    ): Promise<Record<string, unknown>> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): Promise<any> => {
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -25,10 +19,10 @@ export const usePipelinePost = () => {
       const text = await res.text();
       const trimmed = text.trim();
 
-      let data: Record<string, unknown>;
+      let data: any;
 
       try {
-        data = JSON.parse(trimmed) as Record<string, unknown>;
+        data = JSON.parse(trimmed);
       } catch {
         throw new Error(
           `Invalid response from ${url}: ${trimmed.slice(0, 120)}`
@@ -36,9 +30,7 @@ export const usePipelinePost = () => {
       }
 
       if (!res.ok || data.error) {
-        throw new Error(
-          (data.error as string) || `Request to ${url} failed`
-        );
+        throw new Error(data.error || `Request to ${url} failed`);
       }
 
       return data;
