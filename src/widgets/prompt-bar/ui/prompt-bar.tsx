@@ -1,18 +1,34 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Hammer, Sparkles, Send } from "lucide-react";
+import { Hammer, Sparkles } from "lucide-react";
 import { useSettings } from "@/features/settings/hooks";
 import {
   PromptInputContainer,
   PromptInputHeader,
   PromptInputBody,
   PromptInputTextarea,
+  PromptInputFooter,
 } from "./ai-prompt-input";
 import { ImagePill } from "./image-pill";
 import { AddMediaButton } from "./add-media-button";
 import { VariationsButton } from "./variations-button";
 import { CritiqueModeButton } from "./critique-mode-button";
+
+const ArrowUpIcon = () => (
+  <svg
+    className="w-4 h-4"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="12" y1="19" x2="12" y2="5" />
+    <polyline points="5 12 12 5 19 12" />
+  </svg>
+);
 
 const HISTORY_KEY = "otto-prompt-history";
 const MAX_HISTORY = 50;
@@ -149,40 +165,14 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
           /* Full input bar */
           <>
             <PromptInputHeader>
-              {/* Build/Ideate toggle */}
-              <button
-                onClick={() => setIsIdeating(!settings.isIdeating)}
-                disabled={isGenerating}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${
-                  settings.isIdeating
-                    ? "bg-purple-500/20 backdrop-blur-sm border-purple-400/50 text-purple-300 shadow-sm"
-                    : "bg-white/10 backdrop-blur-sm border-white/20 text-gray-400 hover:bg-white/15"
-                }`}
-                title={settings.isIdeating ? "Ideate mode" : "Build mode"}
-              >
-                {settings.isIdeating ? <Sparkles className="w-4 h-4" /> : <Hammer className="w-4 h-4" />}
-                <span className="text-sm">{settings.isIdeating ? "Ideate" : "Build"}</span>
-              </button>
-
               {/* Image pills */}
-              {settings.selectedImages.map((image: { id: string; src: string }) => (
-                <ImagePill key={image.id} image={image} onRemove={removeImage} />
-              ))}
-
-              {/* Add media button */}
-              <AddMediaButton onSelect={handleImageSelect} />
-
-              {/* Variations selector */}
-              <VariationsButton
-                value={settings.variations}
-                onChange={setVariations}
-              />
-
-              {/* Critique mode toggle */}
-              <CritiqueModeButton
-                active={settings.critiqueMode}
-                onClick={() => setCritiqueMode(!settings.critiqueMode)}
-              />
+              {settings.selectedImages.length > 0 && (
+                <div className="flex items-center gap-2 mb-2">
+                  {settings.selectedImages.map((image: { id: string; src: string }) => (
+                    <ImagePill key={image.id} image={image} onRemove={removeImage} />
+                  ))}
+                </div>
+              )}
             </PromptInputHeader>
 
             <PromptInputBody>
@@ -194,15 +184,44 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
                 placeholder="Describe a design..."
                 disabled={isGenerating}
               />
-              <button
-                onClick={handleSubmit}
-                disabled={!value.trim() || isGenerating}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0"
-                title="Send (Enter)"
-              >
-                <Send className="w-4 h-4" />
-              </button>
             </PromptInputBody>
+
+            <PromptInputFooter>
+              <div className="flex items-center gap-2">
+                <AddMediaButton onSelect={handleImageSelect} />
+                <VariationsButton
+                  value={settings.variations}
+                  onChange={setVariations}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <CritiqueModeButton
+                  active={settings.critiqueMode}
+                  onClick={() => setCritiqueMode(!settings.critiqueMode)}
+                />
+                <button
+                  onClick={() => setIsIdeating(!settings.isIdeating)}
+                  disabled={isGenerating}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
+                    settings.isIdeating
+                      ? "bg-violet-500/10 text-violet-700 hover:bg-violet-500/15 border border-violet-300/30"
+                      : "bg-gray-900/10 text-gray-600 hover:bg-gray-900/15"
+                  }`}
+                  title={settings.isIdeating ? "Ideate mode" : "Build mode"}
+                >
+                  {settings.isIdeating ? "◈ Ideate" : "✦ Build"}
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={!value.trim() || isGenerating}
+                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0"
+                  title="Send (Enter)"
+                >
+                  <ArrowUpIcon />
+                </button>
+              </div>
+            </PromptInputFooter>
           </>
         )}
       </PromptInputContainer>

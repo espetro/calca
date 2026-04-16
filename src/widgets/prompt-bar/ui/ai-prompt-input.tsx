@@ -15,7 +15,7 @@ export const PromptInputContainer = ({
 }: PromptInputContainerProps) => {
   return (
     <div
-      className={`flex flex-col items-stretch rounded-[20px] px-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] bg-white/20 backdrop-blur-3xl border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(255,255,255,0.15)] ${
+      className={`flex flex-col items-stretch rounded-[20px] px-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] bg-white/20 backdrop-blur-3xl border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(255,255,255,0.15)] pointer-events-auto ${
         isGenerating
           ? "w-[280px] py-2.5 px-3"
           : "w-[600px] max-w-[90vw] py-4 focus-within:shadow-[0_12px_48px_rgba(59,130,246,0.1),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.3)] focus-within:bg-white/30 focus-within:border-white/50"
@@ -53,6 +53,22 @@ export const PromptInputBody = ({
 }: PromptInputBodyProps) => {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+interface PromptInputFooterProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const PromptInputFooter = ({ 
+  children, 
+  className = ""
+}: PromptInputFooterProps) => {
+  return (
+    <div className={`flex items-center justify-between gap-2 ${className}`}>
       {children}
     </div>
   );
