@@ -13,6 +13,11 @@ import { useProbeModels } from "./use-probe-models";
 
 export type { ProviderType };
 
+export interface SelectedImage {
+  id: string;
+  src: string;
+}
+
 export interface Settings {
   apiKey: string;
   geminiKey: string;
@@ -28,6 +33,10 @@ export interface Settings {
   showZoomControls: boolean;
   providers: ProviderConfig[];
   ideateModel?: string;
+  isIdeating: boolean;
+  variations: number;
+  critiqueMode: boolean;
+  selectedImages: SelectedImage[];
 }
 
 export { FALLBACK_MODELS };
@@ -81,6 +90,10 @@ export function useSettings() {
     showZoomControls: false,
     providers: [],
     ideateModel: undefined,
+    isIdeating: false,
+    variations: 1,
+    critiqueMode: false,
+    selectedImages: [],
   });
   const [loaded, setLoaded] = useState(false);
   const probeModels = useProbeModels();
@@ -121,6 +134,10 @@ export function useSettings() {
           showZoomControls: parsed.showZoomControls ?? false,
           providers,
           ideateModel: parsed.ideateModel,
+          isIdeating: parsed.isIdeating ?? false,
+          variations: parsed.variations ?? 1,
+          critiqueMode: parsed.critiqueMode ?? false,
+          selectedImages: parsed.selectedImages ?? [],
         });
       } else {
         // No localStorage yet — seed env provider if env vars are set
@@ -153,6 +170,42 @@ export function useSettings() {
     });
   }, [probeModels.mutateAsync]);
 
+  const setIsIdeating = useCallback((value: boolean) => {
+    setSettings({ isIdeating: value });
+  }, [setSettings]);
+
+  const setVariations = useCallback((value: number) => {
+    setSettings({ variations: Math.max(1, Math.min(4, value)) });
+  }, [setSettings]);
+
+  const setCritiqueMode = useCallback((value: boolean) => {
+    setSettings({ critiqueMode: value });
+  }, [setSettings]);
+
+  const addImage = useCallback((image: SelectedImage) => {
+    setSettingsState((prev) => {
+      const next = { ...prev, selectedImages: [...prev.selectedImages, image] };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const removeImage = useCallback((id: string) => {
+    setSettingsState((prev) => {
+      const next = { ...prev, selectedImages: prev.selectedImages.filter((img) => img.id !== id) };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const clearImages = useCallback(() => {
+    setSettings({ selectedImages: [] });
+  }, [setSettings]);
+
   const derived = deriveProviderFields(settings.providers, settings.model);
 
   // For anthropic we need an API key; for openai-compatible a baseURL is enough
@@ -167,6 +220,12 @@ export function useSettings() {
       ...derived,
     },
     setSettings,
+    setIsIdeating,
+    setVariations,
+    setCritiqueMode,
+    addImage,
+    removeImage,
+    clearImages,
     isOwnKey,
     hasGeminiKey,
     loaded,

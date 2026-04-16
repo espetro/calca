@@ -23,6 +23,7 @@ export function ImagePill({ image, onRemove }: ImagePillProps) {
         onClick={() => onRemove(image.id)}
         className="ml-1 p-1 rounded hover:bg-white/10 transition-colors"
         title="Remove image"
+        aria-label="Remove image"
       >
         <X className="w-3.5 h-3.5 text-gray-400" />
       </button>
