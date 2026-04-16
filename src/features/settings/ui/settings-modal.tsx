@@ -285,8 +285,6 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  
-
   const handleAddProvider = (provider: ProviderConfig) => {
     const newProviders = [...settings.providers, provider];
     onUpdate({ providers: newProviders });
@@ -357,13 +355,7 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
           </button>
         </div>
 
-<div className="p-6 space-y-8">
-            
-
-            
-
-            
-
+        <div className="p-6 space-y-8">
           {/* Models being used */}
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -602,7 +594,7 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
         {/* Footer */}
         <div className="p-6 border-t border-gray-200/30 flex items-center justify-between">
           <span className="text-[11px] text-gray-500">
-            {isOwnKey ? "🔑 Own key" : "🌐 Demo key"} · {MODELS.find((m) => m.id === (settings.model.split('/')[1] || settings.model))?.label || settings.model.split('/')[1] || settings.model}
+            {MODELS.find((m) => m.id === (settings.model.split('/')[1] || settings.model))?.label || settings.model.split('/')[1] || settings.model}
             {settings.ideateModel && ` · 🎨 Ideate: ${settings.ideateModel.split('/')[1] || settings.ideateModel}`}
             {(settings.unsplashKey || settings.openaiKey || settings.geminiKey) && ` · 🖼️ ${[settings.unsplashKey && "Unsplash", settings.openaiKey && "DALL·E", settings.geminiKey && "Gemini"].filter(Boolean).join(", ")}`}
           </span>
@@ -610,7 +602,6 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
             onClick={() => {
               // Auto-save keys if changed
               const updates: Partial<Settings> = {};
-              if (key.trim() !== settings.apiKey) updates.apiKey = key.trim();
               if (geminiKey.trim() !== settings.geminiKey) updates.geminiKey = geminiKey.trim();
               if (unsplashKey.trim() !== settings.unsplashKey) updates.unsplashKey = unsplashKey.trim();
               if (openaiKey.trim() !== settings.openaiKey) updates.openaiKey = openaiKey.trim();

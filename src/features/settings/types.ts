@@ -14,6 +14,7 @@ export interface ProviderConfig {
   apiKey: string;
   models: ModelInfo[];
   lastTested: number | null;
+  isEnv?: boolean;
 }
 
 export const FALLBACK_MODELS: ModelInfo[] = [
