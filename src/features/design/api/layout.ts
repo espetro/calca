@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { streamAnthropic } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import { buildNewPrompt, buildRevisionUserContent } from "@app/core/prompts/layout";
+import { validateLayout } from "@app/shared";
 
 export const maxDuration = 300;
 
@@ -152,6 +153,8 @@ RULES FOR USER IMAGES:
       baseURL,
       messages,
       maxTokens: 16384,
+      enableCaching: true, // Enable prompt caching for layout stage (highest ROI)
+      systemPrompt: systemPrompt || '', // Include system prompt in cache key
     });
 
     // Collect the full response via streaming, then return JSON
@@ -175,7 +178,15 @@ RULES FOR USER IMAGES:
           const fullText = await stream.text;
           clearInterval(pingInterval);
 
-          let result = parseHtmlWithSize(fullText);
+          // Try schema-validated parsing first, fall back to regex parser
+          let result;
+          try {
+            result = validateLayout(fullText);
+          } catch (validationErr) {
+            console.warn("Layout validation failed:", validationErr);
+            result = parseHtmlWithSize(fullText);
+          }
+
           if (restoreFn) {
             result = { ...result, html: restoreFn(result.html) };
           }

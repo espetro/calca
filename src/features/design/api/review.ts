@@ -3,6 +3,7 @@ import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildReviewPrompt } from "@app/core/prompts/review";
+import { validateReview } from "@app/shared";
 
 export const maxDuration = 300;
 
@@ -67,8 +68,14 @@ export async function handleReview(req: NextRequest) {
     });
 
     const raw = result.text;
-    const parsed = parseHtmlWithSize(raw);
-    return NextResponse.json({ html: restore(parsed.html), width: parsed.width || width, height: parsed.height || height });
+    try {
+      const validated = validateReview(raw);
+      return NextResponse.json({ html: restore(validated.html), width: validated.width || width, height: validated.height || height });
+    } catch (validationErr) {
+      console.warn("Review validation failed, returning raw output:", validationErr);
+      const parsed = parseHtmlWithSize(raw);
+      return NextResponse.json({ html: restore(parsed.html), width: parsed.width || width, height: parsed.height || height });
+    }
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Review failed";
     console.error("Review error:", msg);

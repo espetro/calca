@@ -3,6 +3,7 @@ import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildCritiquePrompt } from "@app/core/prompts/critique";
+import { validateCritique } from "@app/shared";
 
 export const maxDuration = 30;
 
@@ -35,8 +36,14 @@ export async function handleCritique(req: NextRequest) {
       baseURL,
     });
 
-    const critique = result.text;
-    return NextResponse.json({ critique });
+    const raw = result.text;
+    try {
+      const validated = validateCritique(raw);
+      return NextResponse.json({ critique: validated });
+    } catch (validationErr) {
+      console.warn("Critique validation failed, returning raw output:", validationErr);
+      return NextResponse.json({ critique: raw });
+    }
   } catch (err) {
     console.error("Critique error:", err);
     return NextResponse.json({ critique: "" });
