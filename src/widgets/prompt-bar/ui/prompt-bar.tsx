@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Hammer, Sparkles } from "lucide-react";
 import { useSettings } from "@/features/settings/hooks";
 import {
@@ -14,6 +14,7 @@ import { ImagePill } from "./image-pill";
 import { AddMediaButton } from "./add-media-button";
 import { VariationsButton } from "./variations-button";
 import { CritiqueModeButton } from "./critique-mode-button";
+import { usePromptHistory } from "../hooks/use-prompt-history";
 
 const ArrowUpIcon = () => (
   <svg
@@ -30,22 +31,6 @@ const ArrowUpIcon = () => (
   </svg>
 );
 
-const HISTORY_KEY = "otto-prompt-history";
-const MAX_HISTORY = 50;
-
-function loadHistory(): string[] {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
-
-function saveHistory(history: string[]): void {
-  try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, MAX_HISTORY)));
-  } catch {}
-}
-
 interface PromptBarProps {
   onSubmit: (prompt: string) => void;
   isGenerating: boolean;
@@ -56,9 +41,6 @@ interface PromptBarProps {
 
 export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCount = 0 }: PromptBarProps) {
   const [value, setValue] = useState("");
-  const [history, setHistory] = useState<string[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const [draft, setDraft] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const {
@@ -70,24 +52,20 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
     removeImage,
   } = useSettings();
 
-  useEffect(() => {
-    setHistory(loadHistory());
-  }, []);
+  const { history, addToHistory, navigateHistory, resetHistoryIndex, clearDraft } = usePromptHistory({
+    onSave: (prompt) => {
+      setValue("");
+      if (inputRef.current) inputRef.current.style.height = "auto";
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     const trimmed = value.trim();
     if (!trimmed || isGenerating) return;
 
-    const newHistory = [trimmed, ...history.filter((h) => h !== trimmed)].slice(0, MAX_HISTORY);
-    setHistory(newHistory);
-    saveHistory(newHistory);
-
+    addToHistory(trimmed);
     onSubmit(trimmed);
-    setValue("");
-    setHistoryIndex(-1);
-    setDraft("");
-    if (inputRef.current) inputRef.current.style.height = "auto";
-  }, [value, isGenerating, history, onSubmit]);
+  }, [value, isGenerating, addToHistory, onSubmit]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -104,25 +82,19 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
     const input = inputRef.current;
     if (!input) return;
 
-    if (e.key === "ArrowUp" && input.selectionStart === 0 && input.selectionEnd === 0) {
-      e.preventDefault();
-      if (history.length === 0) return;
-      const newIndex = historyIndex + 1;
-      if (newIndex >= history.length) return;
-      if (historyIndex === -1) setDraft(value);
-      setHistoryIndex(newIndex);
-      setValue(history[newIndex]);
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      const direction = e.key === "ArrowUp" ? "up" : "down";
+      const newValue = navigateHistory(
+        direction,
+        value,
+        { start: input.selectionStart, end: input.selectionEnd },
+      );
+      if (newValue !== value) {
+        e.preventDefault();
+        setValue(newValue);
+      }
     }
-
-    if (e.key === "ArrowDown" && input.selectionStart === value.length && input.selectionEnd === value.length) {
-      e.preventDefault();
-      if (historyIndex <= -1) return;
-      const newIndex = historyIndex - 1;
-      setHistoryIndex(newIndex);
-      if (newIndex === -1) setValue(draft);
-      else setValue(history[newIndex]);
-    }
-  }, [handleSubmit, isGenerating, onCancel, history, historyIndex, value, draft]);
+  }, [handleSubmit, isGenerating, onCancel, value, navigateHistory]);
 
   const handleImageSelect = useCallback(async (files: File[]) => {
     for (const file of files) {
@@ -179,7 +151,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
               <PromptInputTextarea
                 ref={inputRef}
                 value={value}
-                onChange={(e) => { setValue(e.target.value); setHistoryIndex(-1); }}
+                onChange={(e) => { setValue(e.target.value); resetHistoryIndex(); }}
                 onKeyDown={handleKeyDown}
                 placeholder="Describe a design..."
                 disabled={isGenerating}
