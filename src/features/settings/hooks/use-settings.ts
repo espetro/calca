@@ -36,6 +36,26 @@ const DEFAULT_MODEL = process.env.NEXT_PUBLIC_AI_MODEL || "claude-opus-4-6";
 const DEFAULT_BASE_URL = process.env.NEXT_PUBLIC_AI_BASE_URL || "";
 const DEFAULT_API_KEY = process.env.NEXT_PUBLIC_AI_API_KEY || "";
 
+const ENV_PROVIDER_ID = "environment";
+
+const createEnvProvider = (): ProviderConfig | null => {
+  const baseUrl = process.env.NEXT_PUBLIC_AI_BASE_URL;
+  if (!baseUrl) return null;
+
+  const modelName = process.env.NEXT_PUBLIC_AI_MODEL;
+  return {
+    id: ENV_PROVIDER_ID,
+    apiType: "openai-compatible",
+    baseUrl,
+    apiKey: process.env.NEXT_PUBLIC_AI_API_KEY || "",
+    models: modelName
+      ? [{ id: modelName, displayName: modelName, description: "" }]
+      : [],
+    lastTested: null,
+    isEnv: true,
+  };
+};
+
 export const MODELS = [
   { id: "claude-opus-4-6", label: "Opus 4.6", desc: "Best quality, slowest" },
   { id: "claude-opus-4-5-20250918", label: "Opus 4.5", desc: "Creative + powerful" },
@@ -76,6 +96,14 @@ export function useSettings() {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
         }
 
+        let providers = parsed.providers ?? [];
+        const envProvider = createEnvProvider();
+
+        // Always ensure env provider is present if env vars are set
+        if (envProvider && !providers.some((p: ProviderConfig) => p.isEnv)) {
+          providers = [envProvider, ...providers];
+        }
+
         setSettingsState({
           apiKey: parsed.apiKey ?? DEFAULT_API_KEY,
           geminiKey: parsed.geminiKey ?? "",
@@ -89,9 +117,15 @@ export function useSettings() {
           conceptCount: parsed.conceptCount ?? 4,
           quickMode: parsed.quickMode ?? false,
           showZoomControls: parsed.showZoomControls ?? false,
-          providers: parsed.providers ?? [],
+          providers,
           ideateModel: parsed.ideateModel,
         });
+      } else {
+        // No localStorage yet — seed env provider if env vars are set
+        const envProvider = createEnvProvider();
+        if (envProvider) {
+          setSettingsState((prev) => ({ ...prev, providers: [envProvider] }));
+        }
       }
     } catch {}
     setLoaded(true);
