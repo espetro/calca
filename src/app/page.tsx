@@ -14,8 +14,8 @@ import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
 import { usePipelinePost } from "@/features/design/hooks/use-pipeline-post";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { settingsAtom, isOwnKeyAtom, hasGeminiKeyAtom } from "@/features/settings/state/settings-atoms";
-import { groupsAtom, resetSessionAtom } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom } from "@/features/design/state/images-atoms";
+import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
+import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
 import {
   showResetConfirmAtom, toolModeAtom, isGeneratingAtom, pipelineStagesAtom, genStatusAtom,
   spaceHeldAtom, showGitHashAtom, showLibraryAtom, selectedIdsAtom, rubberBandAtom, draggingImageIdAtom,
@@ -53,6 +53,10 @@ export default function Home() {
   const [groups, setGroups] = useAtom(groupsAtom);
   const resetSession = useSetAtom(resetSessionAtom);
 
+  useEffect(() => {
+    hydrateGroups(setGroups);
+  }, [setGroups]);
+
   // Generation state atoms
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
   const [toolMode, setToolMode] = useAtom(toolModeAtom);
@@ -81,6 +85,10 @@ export default function Home() {
   const [rubberBand, setRubberBand] = useAtom(rubberBandAtom);
   // Dropped reference images (replaces usePersistedImages)
   const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
+
+  useEffect(() => {
+    hydrateImages(setCanvasImages);
+  }, [setCanvasImages]);
   const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
   const imgDragRef = useRef<{ id: string; startMouse: Point; startPos: Point } | null>(null);
   const imgDragStartPositions = useRef<Map<string, Point>>(new Map());
