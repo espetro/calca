@@ -63,15 +63,20 @@ export function DesignCard({
   const frameW = iteration.width || FRAME_WIDTH;
   const srcdoc = iteration.html && !iteration.isLoading
     ? `<!DOCTYPE html>
-<html style="height:auto;overflow:hidden;"><head><meta charset="utf-8"><style>
-  html, body { margin: 0; padding: 0; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: hidden; }
-  body { background: white; width: ${frameW}px; }
-  #otto-measure { width: ${frameW}px; overflow: hidden; }
-  img, video, svg { max-width: 100%; height: auto; display: block; object-fit: cover; }
-  * { animation: none !important; transition: none !important; }
-  /* Kill common viewport-height patterns that inflate measurement */
-  [style*="100vh"], [style*="min-height: 100vh"], [style*="height: 100vh"] { height: auto !important; min-height: 0 !important; }
-</style></head><body><div id="otto-measure">${iteration.html}</div>
+<html style="height:auto;overflow:hidden;"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: hidden; }
+    body { background: white; width: ${frameW}px; }
+    #otto-measure { width: ${frameW}px; overflow: hidden; }
+    img, video, svg { max-width: 100%; height: auto; display: block; object-fit: cover; }
+    * { animation: none !important; transition: none !important; }
+    /* Kill common viewport-height patterns that inflate measurement */
+    [style*="100vh"], [style*="min-height: 100vh"], [style*="height: 100vh"] { height: auto !important; min-height: 0 !important; }
+  </style>
+</head><body><div id="otto-measure">${iteration.html}</div>
 <script>
 function reportHeight() {
   var el = document.getElementById('otto-measure');
