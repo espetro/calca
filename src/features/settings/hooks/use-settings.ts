@@ -71,7 +71,7 @@ export function useSettings() {
     geminiKey: "",
     unsplashKey: "",
     openaiKey: "",
-    providerType: undefined,
+    providerType: createEnvProvider() ? "openai-compatible" : undefined,
     baseURL: DEFAULT_BASE_URL,
     model: DEFAULT_MODEL,
     systemPrompt: "",

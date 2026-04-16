@@ -54,7 +54,7 @@ const createDefaultSettings = (): Settings => {
     geminiKey: "",
     unsplashKey: "",
     openaiKey: "",
-    providerType: undefined,
+    providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
     baseURL: DEFAULT_BASE_URL,
     model: DEFAULT_MODEL,
     systemPrompt: "",
