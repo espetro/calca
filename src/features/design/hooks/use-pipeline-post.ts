@@ -1,42 +1,39 @@
-import { useCallback } from "react";
+import { useMutation } from "@tanstack/react-query";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const usePipelinePost = (): ((url: string, body: Record<string, unknown>, signal: AbortSignal) => Promise<any>) => {
-  const pipelinePost = useCallback(
-    async (
-      url: string,
-      body: Record<string, unknown>,
-      signal: AbortSignal
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ): Promise<any> => {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-        signal,
-      });
+interface PipelinePostProps {
+  url: string;
+  body: Record<string, unknown>;
+  signal: AbortSignal;
+}
 
-      const text = await res.text();
-      const trimmed = text.trim();
+const postToPipeline = async ({ url, body, signal }: PipelinePostProps) => {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal,
+  });
 
-      let data: any;
+  const text = await res.text();
+  const trimmed = text.trim();
 
-      try {
-        data = JSON.parse(trimmed);
-      } catch {
-        throw new Error(
-          `Invalid response from ${url}: ${trimmed.slice(0, 120)}`
-        );
-      }
+  let data: any;
 
-      if (!res.ok || data.error) {
-        throw new Error(data.error || `Request to ${url} failed`);
-      }
+  try {
+    data = JSON.parse(trimmed);
+  } catch {
+    throw new Error(`Invalid response from ${url}: ${trimmed.slice(0, 120)}`);
+  }
 
-      return data;
-    },
-    []
-  );
+  if (!res.ok || data.error) {
+    throw new Error(data.error || `Request to ${url} failed`);
+  }
 
-  return pipelinePost;
+  return data;
+};
+
+export const usePipelinePost = () => {
+  return useMutation({
+    mutationFn: postToPipeline,
+  });
 };

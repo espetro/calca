@@ -12,6 +12,7 @@ import { PipelineStatusOverlay } from "@/features/canvas";
 import { OnboardingModal, GuidedTour } from "@/features/onboarding";
 import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
 import { usePipelinePost } from "@/features/design/hooks/use-pipeline-post";
+import { usePlanConcepts } from "@/features/design/hooks/use-plan-concepts";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { settingsAtom, isOwnKeyAtom, hasGeminiKeyAtom } from "@/features/settings/state/settings-atoms";
 import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
@@ -340,7 +341,8 @@ export default function Home() {
     "Dark and dramatic — dark backgrounds, glowing accents, cinematic feel, high contrast, moody atmosphere",
   ];
 
-  const pipelinePost = usePipelinePost();
+  const pipelineMutation = usePipelinePost();
+  const planConceptsMutation = usePlanConcepts();
 
   /** Post-process: cap oversized sections */
   const capOversizedSections = useCallback((html: string): string => {
@@ -390,7 +392,7 @@ export default function Home() {
       // --- Step 1: Layout ---
       setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "layout", progress: 0.2 } }));
 
-      const layoutResult = await pipelinePost("/api/pipeline/layout", {
+      const layoutResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/layout", body: {
         prompt, style, model: settings.model,
         apiKey: settings.apiKey || undefined,
         providerType: settings.providerType || undefined,
@@ -399,7 +401,7 @@ export default function Home() {
         critique, availableSources,
         ...(revisionOpts || {}),
         ...(contextImages && contextImages.length > 0 ? { contextImages } : {}),
-      }, signal);
+      }, signal });
 
       let html: string = layoutResult.html;
       const width: number | undefined = layoutResult.width;
@@ -421,12 +423,12 @@ export default function Home() {
         setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "images", progress: 0.45 } }));
 
         try {
-          const imgResult = await pipelinePost("/api/pipeline/images", {
+          const imgResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/images", body: {
             html,
             geminiKey: settings.geminiKey || undefined,
             unsplashKey: settings.unsplashKey || undefined,
             openaiKey: settings.openaiKey || undefined,
-          }, signal);
+          }, signal });
 
           if (imgResult.html && imgResult.imageCount > 0) {
             html = imgResult.html;
@@ -462,13 +464,13 @@ export default function Home() {
             reviewImages.push(uri);
             return `src="[IMG_STRIPPED_${idx}]"`;
           });
-          const qaResult = await pipelinePost("/api/pipeline/review", {
+          const qaResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/review", body: {
             html: htmlForReview, prompt, width, height,
             model: settings.model,
             apiKey: settings.apiKey || undefined,
             providerType: settings.providerType || undefined,
             baseURL: settings.baseURL || undefined,
-          }, signal);
+          }, signal });
           if (qaResult.html) {
             // Restore base64 images into reviewed HTML
             let reviewed = qaResult.html;
@@ -503,13 +505,13 @@ export default function Home() {
       try {
         // Strip base64 images client-side to avoid 413 FUNCTION_PAYLOAD_TOO_LARGE
         const htmlForCritique = html.replace(/src="(data:image\/[^"]+)"/g, () => 'src="[IMG_STRIPPED]"');
-        const critiqueResult = await pipelinePost("/api/pipeline/critique", {
+        const critiqueResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/critique", body: {
           html: htmlForCritique, prompt,
           model: settings.model,
           apiKey: settings.apiKey || undefined,
           providerType: settings.providerType || undefined,
           baseURL: settings.baseURL || undefined,
-        }, signal);
+        }, signal });
         critiqueText = critiqueResult.critique || undefined;
       } catch {
         // Critique is optional
@@ -517,7 +519,7 @@ export default function Home() {
 
       return { html, label, width, height, critique: critiqueText, comment: aiComment };
     },
-    [settings.apiKey, settings.model, settings.systemPrompt, settings.geminiKey, settings.unsplashKey, settings.openaiKey, settings.providerType, settings.baseURL, pipelinePost, capOversizedSections]
+    [settings.apiKey, settings.model, settings.systemPrompt, settings.geminiKey, settings.unsplashKey, settings.openaiKey, settings.providerType, settings.baseURL, capOversizedSections]
   );
 
   const handleGenerate = useCallback(
@@ -539,16 +541,16 @@ export default function Home() {
         let concepts: string[] = [];
 
         try {
-          const planRes = await fetch("/api/plan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt, count: iterationCount, apiKey: settings.apiKey || undefined, model: settings.model, providerType: settings.providerType || undefined, baseURL: settings.baseURL || undefined }),
+          const plan = await planConceptsMutation.mutateAsync({
+            prompt,
+            count: iterationCount,
+            apiKey: settings.apiKey || undefined,
+            model: settings.model,
+            providerType: settings.providerType || undefined,
+            baseURL: settings.baseURL || undefined,
             signal: controller.signal,
           });
-          if (planRes.ok) {
-            const plan = await planRes.json();
-            concepts = (plan.concepts || []).slice(0, iterationCount);
-          }
+          concepts = plan.concepts;
         } catch {
           // Planning failed — continue with defaults
         }

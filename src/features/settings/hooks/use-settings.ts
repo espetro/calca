@@ -9,6 +9,7 @@ import type {
 import { FALLBACK_MODELS } from "../types";
 import { migrateSettings, MigratedSettings } from "../lib/migrate-settings";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
+import { useProbeModels } from "./use-probe-models";
 
 export type { ProviderType };
 
@@ -82,6 +83,7 @@ export function useSettings() {
     ideateModel: undefined,
   });
   const [loaded, setLoaded] = useState(false);
+  const probeModels = useProbeModels();
 
   // Load settings from localStorage (fall back to env defaults)
   useEffect(() => {
@@ -144,49 +146,12 @@ export function useSettings() {
   const testProvider = useCallback(async (
     config: Omit<ProviderConfig, "models" | "lastTested">
   ): Promise<{ models: ModelInfo[]; error?: string }> => {
-    try {
-      const res = await fetch("/api/probe-models", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          apiKey: config.apiKey,
-          providerType: config.apiType,
-          baseURL: config.baseUrl,
-        }),
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        return { models: [], error: text || `HTTP ${res.status}` };
-      }
-
-      const data = await res.json();
-      const available = data.available as Record<string, boolean> | undefined;
-
-      if (!available) {
-        return { models: FALLBACK_MODELS };
-      }
-
-      const models: ModelInfo[] = Object.entries(available)
-        .filter(([, isAvailable]) => isAvailable)
-        .map(([id]) => ({
-          id,
-          displayName: id,
-          description: "",
-        }));
-
-      if (models.length === 0) {
-        return { models: FALLBACK_MODELS };
-      }
-
-      return { models };
-    } catch (error) {
-      return {
-        models: [],
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }, []);
+    return probeModels.mutateAsync({
+      apiKey: config.apiKey,
+      providerType: config.apiType,
+      baseURL: config.baseUrl,
+    });
+  }, [probeModels.mutateAsync]);
 
   const derived = deriveProviderFields(settings.providers, settings.model);
 
