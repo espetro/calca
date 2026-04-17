@@ -5,18 +5,33 @@ export const VARIATION_STYLES = [
   "Dark and dramatic — dark backgrounds, glowing accents, cinematic feel, high contrast, moody atmosphere",
 ];
 
+export interface ViewportDimensions {
+  width: number;
+  height: number;
+}
+
 export function buildVariationPrompt(
   prompt: string,
   style: string,
-  systemPrompt?: string
+  systemPrompt?: string,
+  viewport?: ViewportDimensions
 ): string {
   const customInstructions = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
+  const aspectRatio = viewport
+    ? `${(viewport.width / viewport.height).toFixed(2)}:1`
+    : null;
+  const viewportHint = viewport
+    ? `\nVIEWPORT: The design will be displayed in a frame that is ${viewport.width}px wide and ${viewport.height}px tall (aspect ratio ~${aspectRatio}). Your design MUST match this aspect ratio. Set <!--size:WIDTHxHEIGHT--> to ${viewport.width}x${viewport.height}.\n`
+    : "";
+  const sizeConstraint = viewport
+    ? `IMPORTANT: Match the viewport aspect ratio (${viewport.width}x${viewport.height}). The <!--size:WIDTHxHEIGHT--> comment MUST be ${viewport.width}x${viewport.height}.\n`
+    : "";
 
   return `You are a world-class visual designer. Generate a stunning, self-contained HTML/CSS design.${customInstructions}
 
 Design request: "${prompt}"
 Style direction: ${style}
-
+${viewportHint}
 FIRST, determine the design category:
 - MARKETING (social media cards, banners, ads, email headers, OG images) → Focus on visual impact, bold typography, abstract/decorative graphics via CSS. NO buttons, NO forms, NO interactive elements. Think poster design, not web UI.
 - UI COMPONENT (navbars, forms, modals, cards, settings panels) → Focus on usability, clean layout, proper interactive patterns.
@@ -25,7 +40,7 @@ FIRST, determine the design category:
 SIZE — output a size comment on the FIRST line:
 <!--size:WIDTHxHEIGHT-->
 
-Size guidelines:
+${sizeConstraint}Size guidelines (use these only when no viewport dimensions are provided):
 - Social media card/banner: 1200x630
 - Instagram post: 1080x1080
 - Navigation bar: 1200x70

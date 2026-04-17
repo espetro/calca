@@ -190,6 +190,12 @@ export default function Home() {
     setShowGitHash(new URLSearchParams(window.location.search).has("devMode"));
   }, []);
 
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
+      setSettings({ quickMode: true });
+    }
+  }, [setSettings]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -382,7 +388,8 @@ export default function Home() {
     ): Promise<{ html: string; label: string; width?: number; height?: number; critique?: string; comment?: string }> => {
       const isRevision = !!revisionOpts;
       const enableImages = !!(settings.geminiKey || settings.unsplashKey || settings.openaiKey);
-      const enableQA = !isRevision;
+      const enableQA = !isRevision && !quickMode;
+      const skipCritique = !isRevision && quickMode;
 
       const availableSources: string[] = [];
       if (settings.unsplashKey) availableSources.push("unsplash");
@@ -428,7 +435,8 @@ export default function Home() {
             geminiKey: settings.geminiKey || undefined,
             unsplashKey: settings.unsplashKey || undefined,
             openaiKey: settings.openaiKey || undefined,
-          }, signal });
+            viewport: width && height ? { width, height } : undefined,
+          }, signal);
 
           if (imgResult.html && imgResult.imageCount > 0) {
             html = imgResult.html;
@@ -498,28 +506,30 @@ export default function Home() {
 
       const label = isRevision ? "Revised" : `Variation ${index + 1}`;
 
-      // --- Step 4: Critique (fire and don't block result) ---
       let critiqueText: string | undefined;
       setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "done", progress: 1.0 } }));
 
-      try {
-        // Strip base64 images client-side to avoid 413 FUNCTION_PAYLOAD_TOO_LARGE
-        const htmlForCritique = html.replace(/src="(data:image\/[^"]+)"/g, () => 'src="[IMG_STRIPPED]"');
-        const critiqueResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/critique", body: {
-          html: htmlForCritique, prompt,
-          model: settings.model,
-          apiKey: settings.apiKey || undefined,
-          providerType: settings.providerType || undefined,
-          baseURL: settings.baseURL || undefined,
-        }, signal });
-        critiqueText = critiqueResult.critique || undefined;
-      } catch {
-        // Critique is optional
+      if (!skipCritique) {
+        try {
+          // Strip base64 images client-side to avoid 413 FUNCTION_PAYLOAD_TOO_LARGE
+          const htmlForCritique = html.replace(/src="(data:image\/[^"]+)"/g, () => 'src="[IMG_STRIPPED]"');
+          const critiqueResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/critique", body: {
+            html: htmlForCritique, prompt,
+            model: settings.model,
+            apiKey: settings.apiKey || undefined,
+            providerType: settings.providerType || undefined,
+            baseURL: settings.baseURL || undefined,
+          }, signal });
+          critiqueText = critiqueResult.critique || undefined;
+        } catch {
+          // Critique is optional
+        }
+      }
       }
 
       return { html, label, width, height, critique: critiqueText, comment: aiComment };
     },
-    [settings.apiKey, settings.model, settings.systemPrompt, settings.geminiKey, settings.unsplashKey, settings.openaiKey, settings.providerType, settings.baseURL, capOversizedSections]
+    [settings.apiKey, settings.model, settings.systemPrompt, settings.geminiKey, settings.unsplashKey, settings.openaiKey, settings.providerType, settings.baseURL, quickMode, capOversizedSections]
   );
 
   const handleGenerate = useCallback(

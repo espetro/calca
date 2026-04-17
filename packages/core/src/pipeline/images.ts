@@ -4,6 +4,21 @@ import { getGeminiImageModel } from "../ai/providers";
 
 export type ImageSource = "unsplash" | "dalle" | "gemini";
 
+export function getClosestDalleSize(width: number, height: number): string {
+  const DALLE_MAX_WIDTH = 1024;
+  const DALLE_MAX_HEIGHT = 1792;
+
+  const aspectRatio = width / height;
+
+  if (aspectRatio >= 1.3) {
+    return "1792x1024";
+  }
+  if (aspectRatio <= 0.77) {
+    return "1024x1792";
+  }
+  return "1024x1024";
+}
+
 export interface Placeholder {
   id: string;
   description: string;
@@ -11,6 +26,8 @@ export interface Placeholder {
   height: number;
   source: ImageSource;
   query?: string;
+  originalWidth?: number;
+  originalHeight?: number;
 }
 
 async function generateUnsplashImage(ph: Placeholder, unsplashKey: string): Promise<string | null> {
@@ -26,13 +43,13 @@ async function generateUnsplashImage(ph: Placeholder, unsplashKey: string): Prom
 }
 
 async function generateDalleImage(ph: Placeholder, openaiKey: string): Promise<string | null> {
-  const size = ph.width > ph.height * 1.3 ? "1792x1024" : ph.height > ph.width * 1.3 ? "1024x1792" : "1024x1024";
+  const size = getClosestDalleSize(ph.width, ph.height);
   const res = await fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
     body: JSON.stringify({
       model: "dall-e-3",
-      prompt: `${ph.description}. Clean, professional design asset suitable for web/marketing. No text unless specifically requested.`,
+      prompt: `${ph.description}. Generate at ${ph.width}x${ph.height} (scaled to fit within model limits). Clean, professional design asset suitable for web/marketing. No text unless specifically requested.`,
       n: 1, size, response_format: "b64_json",
     }),
   });
@@ -47,10 +64,11 @@ async function generateGeminiImage(ph: Placeholder, geminiKey: string): Promise<
   try {
     const { image } = await generateImage({
       model: getGeminiImageModel(geminiKey),
-      prompt: `Generate a high quality design asset image: ${ph.description}. Clean, professional, suitable for web/marketing design. No text unless specifically requested. Output only the image.`,
+      prompt: `Generate a high quality design asset image at ${ph.width}x${ph.height}: ${ph.description}. Clean, professional, suitable for web/marketing design. No text unless specifically requested. Output only the image.`,
     });
     return `data:${image.mediaType};base64,${image.base64}`;
-  } catch {
+  } catch (err) {
+    console.warn('[Images] Gemini generation failed:', err instanceof Error ? err.message : err);
     return null;
   }
 }
@@ -60,8 +78,13 @@ export async function generateImages(params: {
   geminiKey?: string;
   unsplashKey?: string;
   openaiKey?: string;
+  viewport?: { width: number; height: number };
 }): Promise<{ html: string; imageCount: number; skipped?: boolean; reason?: string }> {
-  const { html, geminiKey, unsplashKey, openaiKey } = params;
+  const { html, geminiKey, unsplashKey, openaiKey, viewport } = params;
+
+  const DEFAULT_FRAME_WIDTH = 480;
+  const viewportWidth = viewport?.width || DEFAULT_FRAME_WIDTH;
+  const viewportHeight = viewport?.height;
 
   // Parse placeholders from HTML
   const availableSources: string[] = [];
@@ -81,13 +104,19 @@ export async function generateImages(params: {
   while ((match = regex.exec(html)) !== null) {
     let source = (match[4] || defaultSource) as ImageSource;
     if (!availableSources.includes(source)) source = defaultSource;
+
+    const htmlWidth = parseInt(match[2], 10);
+    const htmlHeight = parseInt(match[3], 10);
+
     placeholders.push({
       id: `ph-${idx++}`,
       description: match[1],
-      width: parseInt(match[2], 10),
-      height: parseInt(match[3], 10),
+      width: viewportWidth || htmlWidth,
+      height: viewportHeight || htmlHeight,
       source,
       query: match[5] || undefined,
+      originalWidth: htmlWidth,
+      originalHeight: htmlHeight,
     });
   }
 
@@ -102,13 +131,22 @@ export async function generateImages(params: {
   if (openaiKey) fallbackChain.push("dalle");
   if (geminiKey) fallbackChain.push("gemini");
 
-  const batchSize = 3;
-  for (let i = 0; i < placeholders.length; i += batchSize) {
+  const batchSize = 6; // Tuned for better parallelism while respecting provider rate limits
+  const batchCount = Math.ceil(placeholders.length / batchSize);
+  console.log(`[Images] Starting generation for ${placeholders.length} images in ${batchCount} batches of ${batchSize}`);
+
+  for (let batchNum = 0; batchNum < batchCount; batchNum++) {
+    const batchStart = Date.now();
+    const i = batchNum * batchSize;
     const batch = placeholders.slice(i, i + batchSize);
-    await Promise.allSettled(
+
+    console.log(`[Images] Batch ${batchNum + 1}/${batchCount} started (${batch.length} images: ${i}-${Math.min(i + batchSize - 1, placeholders.length - 1)})`);
+
+    const results = await Promise.allSettled(
       batch.map(async (ph, batchIdx) => {
         const globalIdx = i + batchIdx;
         const sources = [ph.source, ...fallbackChain.filter(s => s !== ph.source)];
+
         for (const source of sources) {
           try {
             let result: string | null = null;
@@ -117,13 +155,22 @@ export async function generateImages(params: {
               case "dalle": if (openaiKey) result = await generateDalleImage(ph, openaiKey); break;
               case "gemini": if (geminiKey) result = await generateGeminiImage(ph, geminiKey); break;
             }
-            if (result) { imageMap.set(globalIdx, result); return; }
+            if (result) {
+              console.log(`[Images] Image ${globalIdx} generated successfully using ${source}`);
+              imageMap.set(globalIdx, result);
+              return;
+            }
           } catch (err) {
-            console.error(`Image ${globalIdx} ${source} failed:`, err instanceof Error ? err.message : err);
+            console.error(`[Images] Image ${globalIdx} failed with ${source}:`, err instanceof Error ? err.message : err);
           }
         }
+        console.log(`[Images] Image ${globalIdx} failed - all providers exhausted`);
       })
     );
+
+    const batchElapsed = Date.now() - batchStart;
+    const successCount = results.filter(r => r.status === 'fulfilled' && imageMap.has(i + (results.indexOf(r)))).length;
+    console.log(`[Images] Batch ${batchNum + 1}/${batchCount} completed in ${batchElapsed}ms (${successCount}/${batch.length} successful)`);
   }
 
   // Composite images into HTML
@@ -135,7 +182,9 @@ export async function generateImages(params: {
     const ph = placeholders[replaceIdx];
     replaceIdx++;
     if (dataUrl && ph) {
-      return `<img src="${dataUrl}" alt="${ph.description}" style="width:${ph.width}px;height:${ph.height}px;object-fit:cover;border-radius:8px;display:block;" />`;
+      const displayWidth = ph.originalWidth || ph.width;
+      const displayHeight = ph.originalHeight || ph.height;
+      return `<img src="${dataUrl}" alt="${ph.description}" style="width:${displayWidth}px;height:${displayHeight}px;object-fit:cover;border-radius:8px;display:block;" />`;
     }
     return matchStr;
   });

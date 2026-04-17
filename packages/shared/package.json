@@ -7,8 +7,15 @@
     "dev": "echo 'dev: not yet implemented'",
     "build": "echo 'build: not yet implemented'",
     "typecheck": "echo 'typecheck: not yet implemented'",
-    "test": "echo 'test: not yet implemented'",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "echo 'lint: not yet implemented'",
     "validate": "echo 'validate: not yet implemented'"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
   }
 }

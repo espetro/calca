@@ -46,8 +46,8 @@ CRITICAL RULES:
 - ONLY modify what was specifically requested — change nothing else
 
 IMAGE PLACEHOLDERS — where the design needs a NEW photo/visual (only if the revision requires new imagery):
-- Use: <div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" style="width:WIDTHpx;height:HEIGHTpx;background:#e5e7eb;display:flex;align-items:center;justify-content:center;border-radius:8px;overflow:hidden;">
-    <span style="color:#9ca3af;font-size:12px;text-align:center;padding:8px;">DESCRIPTION</span>
+- Use: <div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" class="w-[WIDTHpx] h-[HEIGHTpx] bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+    <span class="text-gray-400 text-xs text-center p-2">DESCRIPTION</span>
   </div>
 - Keep any existing <img> tags as-is unless the revision specifically asks to change them
 
@@ -56,7 +56,13 @@ ABSOLUTELY NO MOTION — no CSS animations, transitions, @keyframes, hover effec
 SIZE — output a size comment on the FIRST line:
 <!--size:WIDTHxHEIGHT-->
 
-OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL CSS in a <style> tag.`;
+TAILWIND CSS — USE UTILITY CLASSES:
+- Apply ALL styling via Tailwind utility classes on the class attribute (e.g., class="p-4 bg-blue-500 rounded-lg shadow-md")
+- Do NOT use <style> tags — everything must be Tailwind classes
+- Use arbitrary value syntax for custom values: bg-[#hex], w-[Npx], text-[Npx], etc.
+- Small inline styles are acceptable ONLY for truly dynamic values that cannot be expressed in Tailwind
+
+OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL styling via Tailwind utility classes — NO <style> tags.`;
 }
 
 export function buildNewPrompt(
@@ -69,7 +75,7 @@ export function buildNewPrompt(
   const critiqueBlock = critique ? `\n\nIMPROVEMENT FEEDBACK from previous variation (apply these learnings):\n${critique}\n` : "";
   const customBlock = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
 
-  return `You are a world-class visual designer. Generate a stunning, self-contained HTML/CSS design.${customBlock}${critiqueBlock}
+  return `You are a world-class visual designer. Generate a stunning HTML design using Tailwind CSS utility classes.${customBlock}${critiqueBlock}
 
 Design request: "${prompt}"
 Style direction: ${style}
@@ -79,8 +85,8 @@ Every design MUST contain at least 1-3 image placeholder divs. This is NON-NEGOT
 Do NOT use colored boxes, CSS gradients, or background-image as substitutes for real imagery.
 Do NOT use <img> tags with URLs. Use ONLY placeholder divs in this EXACT format:
 
-<div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" data-img-source="SOURCE" data-img-query="SEARCH_TERMS" style="width:WIDTHpx;height:HEIGHTpx;background:#e5e7eb;display:flex;align-items:center;justify-content:center;border-radius:8px;overflow:hidden;">
-  <span style="color:#9ca3af;font-size:12px;text-align:center;padding:8px;">DESCRIPTION</span>
+<div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" data-img-source="SOURCE" data-img-query="SEARCH_TERMS" class="w-[WIDTHpx] h-[HEIGHTpx] bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+  <span class="text-gray-400 text-xs text-center p-2">DESCRIPTION</span>
 </div>
 
 REQUIRED ATTRIBUTES on every placeholder:
@@ -103,11 +109,18 @@ Rules:
 SIZE — output a size comment on the FIRST line:
 <!--size:WIDTHxHEIGHT-->
 
+TAILWIND CSS — USE UTILITY CLASSES:
+- Apply ALL styling via Tailwind utility classes on the class attribute (e.g., class="p-4 bg-blue-500 rounded-lg shadow-md")
+- Do NOT use <style> tags — everything must be Tailwind classes
+- Use arbitrary value syntax for custom values: bg-[#hex], w-[Npx], text-[Npx], etc.
+- Use Tailwind v4 syntax (standard utility classes)
+- Small inline styles are acceptable ONLY for truly dynamic values that cannot be expressed in Tailwind (e.g., CSS custom properties, calc() expressions)
+
 DESIGN QUALITY RULES:
 - Rich color palettes, gradients, accent colors
-- Strong typography hierarchy (48-72px headlines, 14-16px body)
+- Strong typography hierarchy (text-5xl/text-7xl headlines, text-sm/body)
 - Visual texture: layered shadows, glassmorphism, patterns
-- System font stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif
+- System font stack: font-sans (Tailwind's default)
 
 ABSOLUTELY NO MOTION:
 - No CSS animations, transitions, @keyframes, hover effects
@@ -115,7 +128,7 @@ ABSOLUTELY NO MOTION:
 OUTPUT:
 - First line: <!--size:WIDTHxHEIGHT-->
 - Then HTML only — no explanation, no markdown, no code fences
-- ALL CSS in a <style> tag at the top
+- ALL styling via Tailwind utility classes — NO <style> tags
 - Self-contained, no external dependencies
 - Generate exactly ONE design`;
 }
@@ -151,8 +164,8 @@ CRITICAL RULES:
 - ONLY modify what was specifically requested — change nothing else
 
 IMAGE PLACEHOLDERS — where the design needs a NEW photo/visual (only if the revision requires new imagery):
-- Use: <div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" style="width:WIDTHpx;height:HEIGHTpx;background:#e5e7eb;display:flex;align-items:center;justify-content:center;border-radius:8px;overflow:hidden;">
-    <span style="color:#9ca3af;font-size:12px;text-align:center;padding:8px;">DESCRIPTION</span>
+- Use: <div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" class="w-[WIDTHpx] h-[HEIGHTpx] bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+    <span class="text-gray-400 text-xs text-center p-2">DESCRIPTION</span>
   </div>
 - Keep any existing <img> tags as-is unless the revision specifically asks to change them
 
@@ -160,6 +173,12 @@ ABSOLUTELY NO MOTION — no CSS animations, transitions, @keyframes, hover effec
 
 SIZE — output a size comment on the FIRST line:
 <!--size:WIDTHxHEIGHT-->
+
+TAILWIND CSS — USE UTILITY CLASSES:
+- Apply ALL styling via Tailwind utility classes on the class attribute (e.g., class="p-4 bg-blue-500 rounded-lg shadow-md")
+- Do NOT use <style> tags — everything must be Tailwind classes
+- Use arbitrary value syntax for custom values: bg-[#hex], w-[Npx], text-[Npx], etc.
+- Small inline styles are acceptable ONLY for truly dynamic values that cannot be expressed in Tailwind
 
 DESIGNER COMMENT — on the LAST line, add a brief comment about what you did:
 <!--otto:Your brief, friendly comment here-->
@@ -170,5 +189,5 @@ Examples:
 
 Keep it to 1-2 short sentences. Be helpful, specific, and conversational — like a design teammate.
 
-OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL CSS in a <style> tag.`;
+OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL styling via Tailwind utility classes — NO <style> tags.`;
 }
