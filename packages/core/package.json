@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "echo 'build: not yet implemented'",
-    "typecheck": "echo 'typecheck: not yet implemented'",
+    "typecheck": "tsc --noEmit",
     "clean": "echo 'clean: not yet implemented'"
   },
   "dependencies": {

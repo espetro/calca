@@ -18,12 +18,11 @@ src/
 │   ├── export/       #   Export to Figma, Tailwind CSS, React components
 │   └── onboarding/   #   Tutorial, walkthrough, first-run experience
 ├── shared/           # Code shared across features
+│   ├── ai/           #   AI client stubs (empty, being removed)
 │   ├── types/        #   Domain type definitions
 │   ├── constants/    #   Application-wide constants
 │   └── utils/        #   Pure utility functions
-├── components/       # Shared UI components (buttons, inputs, etc.) - TO BE MOVED
-├── hooks/            # Shared React hooks - TO BE MOVED
-└── lib/              # Third-party integrations & shared utilities
+└── lib/              # Cross-cutting utilities (empty, being removed)
 ```
 
 ## Feature Slice Template
@@ -41,17 +40,21 @@ features/{feature}/
 
 ## Import Rules
 
-- `app/` may import from `widgets/`, `features/`, `shared/`, `components/`, `hooks/`, `lib/`
-- `widgets/` may import from `features/`, `shared/`, `components/`
-- `features/` may import from `shared/`, `components/`
+- `app/` may import from `widgets/`, `features/`, `shared/`, `lib/`
+- `widgets/` may import from `features/`, `shared/`
+- `features/` may import from `shared/`
 - `features/` must NOT import from other `features/` (use shared/ for cross-feature code)
 - `shared/` must NOT import from any other layer
 
 ## Migration Progress
 
-- [ ] Stage 1: File structure created (THIS TASK)
-- [ ] Stage 1.2: Move types to src/shared/types/
-- [ ] Stage 1.3: Move hooks to feature slices
-- [ ] Stage 1.4: Move components to feature slices
-- [ ] Stage 1.5: Extract API logic to feature slices
-- [ ] Stage 1.6: Clean up old directories and update imports
+- [x] Stage 1: File structure created
+- [x] Stage 1.2: Move types to src/shared/types/
+- [x] Stage 1.3: Move hooks to feature slices
+- [x] Stage 1.4: Move components to feature slices
+- [x] Stage 1.5: Extract API logic to feature slices
+- [x] Stage 1.6: Clean up old directories and update imports
+
+## AI Client
+
+AI client code lives in `packages/core/`, not in `apps/web/src/shared/ai/`. The `shared/ai/` directory is a stub being removed in a cleanup task.

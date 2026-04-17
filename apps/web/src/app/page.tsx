@@ -24,7 +24,7 @@ import {
 import {
   commentDraftAtom, draggingIdAtom, activeCommentAtom, activeCommentIterationIdAtom, commentCountAtom,
 } from "@/features/design/state/comment-atoms";
-import type { Settings } from "@/features/settings/state/settings-atoms";
+import type { Settings } from "@/features/settings/types";
 import type {
   PipelineStatus,
   DesignIteration,
@@ -408,7 +408,7 @@ export default function Home() {
         critique, availableSources,
         ...(revisionOpts || {}),
         ...(contextImages && contextImages.length > 0 ? { contextImages } : {}),
-      }, signal });
+      }, signal }) as { html: string; width?: number; height?: number; comment?: string };
 
       let html: string = layoutResult.html;
       const width: number | undefined = layoutResult.width;
@@ -436,9 +436,9 @@ export default function Home() {
             unsplashKey: settings.unsplashKey || undefined,
             openaiKey: settings.openaiKey || undefined,
             viewport: width && height ? { width, height } : undefined,
-          }, signal });
+          }, signal }) as { html?: string; imageCount?: number };
 
-          if (imgResult.html && imgResult.imageCount > 0) {
+          if (imgResult.html && imgResult.imageCount && imgResult.imageCount > 0) {
             html = imgResult.html;
             // Show composited preview
             setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "compositing", progress: 0.65 } }));
@@ -478,7 +478,7 @@ export default function Home() {
             apiKey: settings.apiKey || undefined,
             providerType: settings.providerType || undefined,
             baseURL: settings.baseURL || undefined,
-          }, signal });
+          }, signal }) as { html?: string };
           if (qaResult.html) {
             // Restore base64 images into reviewed HTML
             let reviewed = qaResult.html;
@@ -519,7 +519,7 @@ export default function Home() {
             apiKey: settings.apiKey || undefined,
             providerType: settings.providerType || undefined,
             baseURL: settings.baseURL || undefined,
-          }, signal });
+          }, signal }) as { critique?: string };
           critiqueText = critiqueResult.critique || undefined;
         } catch {
           // Critique is optional

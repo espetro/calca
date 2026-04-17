@@ -36,7 +36,7 @@ async function generateUnsplashImage(ph: Placeholder, unsplashKey: string): Prom
   const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=1&orientation=${ph.width > ph.height * 1.3 ? "landscape" : ph.height > ph.width * 1.3 ? "portrait" : "squarish"}`;
   const res = await fetch(url, { headers: { Authorization: `Client-ID ${unsplashKey}` } });
   if (!res.ok) return null;
-  const data = await res.json();
+  const data = await res.json() as { results?: Array<{ urls: { raw: string } }> };
   const photo = data.results?.[0];
   if (!photo) return null;
   return `${photo.urls.raw}&w=${ph.width}&h=${ph.height}&fit=crop&auto=format`;
@@ -54,7 +54,7 @@ async function generateDalleImage(ph: Placeholder, openaiKey: string): Promise<s
     }),
   });
   if (!res.ok) return null;
-  const data = await res.json();
+  const data = await res.json() as { data?: Array<{ b64_json: string }> };
   const b64 = data.data?.[0]?.b64_json;
   if (!b64) return null;
   return `data:image/png;base64,${b64}`;

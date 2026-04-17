@@ -17,7 +17,7 @@ const postToPipeline = async ({ url, body, signal }: PipelinePostProps) => {
   const text = await res.text();
   const trimmed = text.trim();
 
-  let data: any;
+  let data: unknown;
 
   try {
     data = JSON.parse(trimmed);
@@ -25,11 +25,20 @@ const postToPipeline = async ({ url, body, signal }: PipelinePostProps) => {
     throw new Error(`Invalid response from ${url}: ${trimmed.slice(0, 120)}`);
   }
 
-  if (!res.ok || data.error) {
-    throw new Error(data.error || `Request to ${url} failed`);
+  // Runtime type guard for error response
+  if (typeof data !== "object" || data === null) {
+    throw new Error(`Invalid response format from ${url}`);
   }
 
-  return data;
+  if (!res.ok || "error" in data) {
+    const errorMessage =
+      typeof (data as { error?: unknown }).error === "string"
+        ? (data as { error: string }).error
+        : `Request to ${url} failed`;
+    throw new Error(errorMessage);
+  }
+
+  return data as Record<string, unknown>;
 };
 
 export const usePipelinePost = () => {

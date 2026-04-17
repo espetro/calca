@@ -1,34 +1,8 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ProviderConfig } from "../types";
+import type { ProviderConfig, Settings } from "../types";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
-
-export interface SelectedImage {
-  id: string;
-  src: string;
-}
-
-export interface Settings {
-  apiKey: string;
-  geminiKey: string;
-  unsplashKey: string;
-  openaiKey: string;
-  providerType: ProviderType | undefined;
-  baseURL: string;
-  model: string;
-  systemPrompt: string;
-  systemPromptPreset: string;
-  conceptCount: number;
-  quickMode: boolean;
-  showZoomControls: boolean;
-  providers: ProviderConfig[];
-  ideateModel?: string;
-  isIdeating: boolean;
-  variations: number;
-  critiqueMode: boolean;
-  selectedImages: SelectedImage[];
-}
 
 const STORAGE_KEY = "otto-settings";
 const DEFAULT_MODEL = process.env.NEXT_PUBLIC_AI_MODEL || "claude-opus-4-6";

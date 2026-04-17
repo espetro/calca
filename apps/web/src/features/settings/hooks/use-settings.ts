@@ -1,44 +1,13 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import type { ProviderType } from "@app/core/ai/providers";
-import type {
-  ProviderConfig,
-  ModelInfo,
-} from "../types";
+import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
 import { FALLBACK_MODELS } from "../types";
 import { migrateSettings, MigratedSettings } from "../lib/migrate-settings";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 import { useProbeModels } from "./use-probe-models";
 
-export type { ProviderType };
-
-export interface SelectedImage {
-  id: string;
-  src: string;
-}
-
-export interface Settings {
-  apiKey: string;
-  geminiKey: string;
-  unsplashKey: string;
-  openaiKey: string;
-  providerType: ProviderType | undefined;
-  baseURL: string;
-  model: string;
-  systemPrompt: string;
-  systemPromptPreset: string;
-  conceptCount: number;
-  quickMode: boolean;
-  showZoomControls: boolean;
-  providers: ProviderConfig[];
-  ideateModel?: string;
-  isIdeating: boolean;
-  variations: number;
-  critiqueMode: boolean;
-  selectedImages: SelectedImage[];
-}
-
+export type { ProviderType, Settings, SelectedImage };
 export { FALLBACK_MODELS };
 
 const STORAGE_KEY = "otto-settings";
