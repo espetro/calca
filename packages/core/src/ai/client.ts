@@ -106,7 +106,7 @@ function getModel(
 }
 
 export async function generateWithFallback(options: GenerateOptions): Promise<{ result: Awaited<ReturnType<typeof generateText>>; usedModel: string }> {
-  const providerType = options.providerType ?? 'anthropic';
+  const providerType = options.providerType ?? (options.baseURL ? 'openai-compatible' : 'anthropic');
   const preferredModel = options.model || DEFAULT_MODEL;
   const idx = MODEL_FALLBACK_CHAIN.indexOf(preferredModel);
   const fallbacks = idx >= 0 ? MODEL_FALLBACK_CHAIN.slice(idx) : [preferredModel, ...MODEL_FALLBACK_CHAIN];
@@ -167,7 +167,7 @@ function messagesToText(messages: ModelMessage[]): string {
 }
 
 export function streamAnthropic(options: GenerateOptions): ReturnType<typeof streamText> {
-  const providerType = options.providerType ?? 'anthropic';
+  const providerType = options.providerType ?? (options.baseURL ? 'openai-compatible' : 'anthropic');
   const modelId = options.model || DEFAULT_MODEL;
   const model = getModel(modelId, providerType, options.apiKey, options.baseURL);
 
