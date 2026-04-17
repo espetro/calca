@@ -4,64 +4,12 @@ import { streamAnthropic } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import { buildNewPrompt, buildRevisionUserContent } from "@app/core/prompts/layout";
 import { validateLayout } from "@app/shared";
+import { parseHtmlWithSize } from "../lib/parse-html";
+import { stripBase64Images } from "../lib/strip-base64";
 
 export const maxDuration = 300;
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-
-function parseHtmlWithSize(raw: string): { html: string; width?: number; height?: number; comment?: string } {
-  let cleaned = raw.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
-  }
-  const fenceMatch = cleaned.match(/```(?:html)?\n?([\s\S]*?)\n?```/);
-  if (fenceMatch) cleaned = fenceMatch[1];
-  cleaned = cleaned.trim();
-
-  const sizeMatch = cleaned.match(/<!--size:(\d+)x(\d+)-->/);
-  let width: number | undefined;
-  let height: number | undefined;
-  if (sizeMatch) {
-    width = parseInt(sizeMatch[1], 10);
-    height = parseInt(sizeMatch[2], 10);
-    cleaned = cleaned.replace(/<!--size:\d+x\d+-->\n?/, "").trim();
-  }
-
-  // Extract Otto's designer comment
-  let comment: string | undefined;
-  const commentMatch = cleaned.match(/<!--otto:(.*?)-->/);
-  if (commentMatch) {
-    comment = commentMatch[1].trim();
-    cleaned = cleaned.replace(/<!--otto:.*?-->\n?/, "").trim();
-  }
-
-  const htmlStart = cleaned.match(/^[\s\S]*?(<(?:!DOCTYPE|html|head|style|div|section|main|body|meta|link)[>\s])/i);
-  if (htmlStart && htmlStart.index !== undefined && htmlStart.index > 0) {
-    cleaned = cleaned.substring(htmlStart.index);
-  }
-  const lastTagMatch = cleaned.match(/([\s\S]*<\/(?:html|div|section|main|body)>)/i);
-  if (lastTagMatch) cleaned = lastTagMatch[1];
-
-  return { html: cleaned.trim(), width, height, comment };
-}
-
-/** Strip base64 data URIs from HTML */
-function stripBase64Images(html: string): { stripped: string; restore: (output: string) => string } {
-  const images: string[] = [];
-  const stripped = html.replace(/src="(data:image\/[^"]+)"/g, (_match, dataUri) => {
-    const idx = images.length;
-    images.push(dataUri);
-    return `src="[IMAGE_PLACEHOLDER_${idx}]"`;
-  });
-  const restore = (output: string): string => {
-    let result = output;
-    for (let i = 0; i < images.length; i++) {
-      result = result.replace(`[IMAGE_PLACEHOLDER_${i}]`, images[i]);
-    }
-    return result;
-  };
-  return { stripped, restore };
-}
 
 
 
@@ -178,13 +126,12 @@ RULES FOR USER IMAGES:
           const fullText = await stream.text;
           clearInterval(pingInterval);
 
-          // Try schema-validated parsing first, fall back to regex parser
           let result;
           try {
             result = validateLayout(fullText);
           } catch (validationErr) {
             console.warn("Layout validation failed:", validationErr);
-            result = parseHtmlWithSize(fullText);
+            result = parseHtmlWithSize(fullText, { extractComments: true });
           }
 
           if (restoreFn) {

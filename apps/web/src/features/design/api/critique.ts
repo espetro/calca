@@ -4,23 +4,18 @@ import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildCritiquePrompt } from "@app/core/prompts/critique";
 import { validateCritique } from "@app/shared";
+import { stripBase64Images } from "../lib/strip-base64";
 
 export const maxDuration = 30;
 
 const DEFAULT_MODEL = "claude-opus-4-6";
-
-function stripBase64Images(html: string): string {
-  return html.replace(/src="(data:image\/[^"]+)"/g, (_match, _dataUri) => {
-    return `src="[IMAGE]"`;
-  });
-}
 
 export async function handleCritique(req: NextRequest) {
   try {
     const { html, prompt, model, apiKey, providerType, baseURL } = await req.json();
     const useModel = model || DEFAULT_MODEL;
 
-    const stripped = stripBase64Images(html);
+    const { stripped } = stripBase64Images(html);
 
     const messages: ModelMessage[] = [{
       role: "user",

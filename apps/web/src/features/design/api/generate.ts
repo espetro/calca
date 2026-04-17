@@ -3,31 +3,12 @@ import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildVariationPrompt, VARIATION_STYLES } from "@app/core/prompts/generate";
+import { parseHtmlWithSize } from "../lib/parse-html";
+import { stripBase64Images } from "../lib/strip-base64";
 
 export const maxDuration = 300;
 
 const DEFAULT_MODEL = "claude-opus-4-6";
-
-function parseHtmlWithSize(raw: string): { html: string; width?: number; height?: number } {
-  let cleaned = raw.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
-  }
-  cleaned = cleaned.trim();
-
-  // Extract size hint: <!--size:WIDTHxHEIGHT-->
-  const sizeMatch = cleaned.match(/<!--size:(\d+)x(\d+)-->/);
-  let width: number | undefined;
-  let height: number | undefined;
-
-  if (sizeMatch) {
-    width = parseInt(sizeMatch[1], 10);
-    height = parseInt(sizeMatch[2], 10);
-    cleaned = cleaned.replace(/<!--size:\d+x\d+-->\n?/, "").trim();
-  }
-
-  return { html: cleaned, width, height };
-}
 
 async function generateVariation(
   model: string,
@@ -83,18 +64,7 @@ async function generateSingle(
     ? `\n\nStyle direction for THIS variation: ${styleVariation}\nMake this variation feel distinctly different from others while keeping the same concept and revision.`
     : "";
 
-  // Strip base64 images to avoid token explosion
-  const imageStore: string[] = [];
-  const strippedHtml = existingHtml.replace(/src="(data:image\/[^"]+)"/g, (_m, uri) => {
-    const idx = imageStore.length;
-    imageStore.push(uri);
-    return `src="[IMAGE_PLACEHOLDER_${idx}]"`;
-  });
-  const restoreImages = (output: string) => {
-    let r = output;
-    for (let i = 0; i < imageStore.length; i++) r = r.replace(`[IMAGE_PLACEHOLDER_${i}]`, imageStore[i]);
-    return r;
-  };
+  const { stripped: strippedHtml, restore: restoreImages } = stripBase64Images(existingHtml);
 
   const messages: ModelMessage[] = [
     {
