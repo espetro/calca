@@ -192,7 +192,7 @@ export default function Home() {
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
-      setSettings({ quickMode: true });
+      setSettings((prev) => ({ ...prev, quickMode: true }));
     }
   }, [setSettings]);
 
@@ -436,7 +436,7 @@ export default function Home() {
             unsplashKey: settings.unsplashKey || undefined,
             openaiKey: settings.openaiKey || undefined,
             viewport: width && height ? { width, height } : undefined,
-          }, signal);
+          }, signal });
 
           if (imgResult.html && imgResult.imageCount > 0) {
             html = imgResult.html;
@@ -524,7 +524,6 @@ export default function Home() {
         } catch {
           // Critique is optional
         }
-      }
       }
 
       return { html, label, width, height, critique: critiqueText, comment: aiComment };

@@ -4,6 +4,11 @@ import type { ProviderType } from "@app/core/ai/providers";
 import type { ProviderConfig } from "../types";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
+export interface SelectedImage {
+  id: string;
+  src: string;
+}
+
 export interface Settings {
   apiKey: string;
   geminiKey: string;
@@ -19,6 +24,10 @@ export interface Settings {
   showZoomControls: boolean;
   providers: ProviderConfig[];
   ideateModel?: string;
+  isIdeating: boolean;
+  variations: number;
+  critiqueMode: boolean;
+  selectedImages: SelectedImage[];
 }
 
 const STORAGE_KEY = "otto-settings";
@@ -64,6 +73,10 @@ const createDefaultSettings = (): Settings => {
     showZoomControls: false,
     providers: envProvider ? [envProvider] : [],
     ideateModel: undefined,
+    isIdeating: false,
+    variations: 1,
+    critiqueMode: false,
+    selectedImages: [],
   };
 };
 
