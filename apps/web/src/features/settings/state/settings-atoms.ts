@@ -74,3 +74,10 @@ export const hasGeminiKeyAtom = atom((get) => {
 });
 
 export const loadedAtom = atom(true);
+
+export const updateSettingsAtom = atom(
+  null,
+  (_get, set, update: Partial<Settings>) => {
+    set(settingsAtom, (prev) => ({ ...prev, ...update }));
+  }
+);

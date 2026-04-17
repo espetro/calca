@@ -38,7 +38,9 @@ export interface Settings {
   providers: ProviderConfig[];
   ideateModel?: string;
   isIdeating: boolean;
+  /** @deprecated Use conceptCount instead */
   variations: number;
+  /** @deprecated Use quickMode instead */
   critiqueMode: boolean;
   selectedImages: SelectedImage[];
 }

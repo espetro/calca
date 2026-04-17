@@ -155,14 +155,6 @@ export function useSettings() {
     setSettings({ isIdeating: value });
   }, [setSettings]);
 
-  const setVariations = useCallback((value: number) => {
-    setSettings({ variations: Math.max(1, Math.min(4, value)) });
-  }, [setSettings]);
-
-  const setCritiqueMode = useCallback((value: boolean) => {
-    setSettings({ critiqueMode: value });
-  }, [setSettings]);
-
   const addImage = useCallback((image: SelectedImage) => {
     setSettingsState((prev) => {
       const next = { ...prev, selectedImages: [...prev.selectedImages, image] };
@@ -202,8 +194,6 @@ export function useSettings() {
     },
     setSettings,
     setIsIdeating,
-    setVariations,
-    setCritiqueMode,
     addImage,
     removeImage,
     clearImages,

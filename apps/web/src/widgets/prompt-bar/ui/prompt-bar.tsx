@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Hammer, Sparkles } from "lucide-react";
+import { useAtom } from "jotai";
 import { useSettings } from "@/features/settings/hooks";
+import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import {
   PromptInputContainer,
   PromptInputHeader,
@@ -14,6 +15,8 @@ import { ImagePill } from "./image-pill";
 import { AddMediaButton } from "./add-media-button";
 import { VariationsButton } from "./variations-button";
 import { CritiqueModeButton } from "./critique-mode-button";
+import { FloatingPresetButton } from "./floating-preset-button";
+import { FloatingSystemPromptButton } from "./floating-system-prompt-button";
 import { usePromptHistory } from "../hooks/use-prompt-history";
 
 const ArrowUpIcon = () => (
@@ -43,11 +46,10 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const [settings, setSettings] = useAtom(settingsAtom);
+
   const {
-    settings,
     setIsIdeating,
-    setVariations,
-    setCritiqueMode,
     addImage,
     removeImage,
   } = useSettings();
@@ -162,15 +164,15 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
               <div className="flex items-center gap-2">
                 <AddMediaButton onSelect={handleImageSelect} />
                 <VariationsButton
-                  value={settings.variations}
-                  onChange={setVariations}
+                  value={settings.conceptCount}
+                  onChange={(value) => setSettings((prev) => ({ ...prev, conceptCount: value }))}
                 />
               </div>
 
               <div className="flex items-center gap-2">
                 <CritiqueModeButton
-                  active={settings.critiqueMode}
-                  onClick={() => setCritiqueMode(!settings.critiqueMode)}
+                  active={settings.quickMode}
+                  onClick={() => setSettings((prev) => ({ ...prev, quickMode: !prev.quickMode }))}
                 />
                 <button
                   onClick={() => setIsIdeating(!settings.isIdeating)}
@@ -197,6 +199,13 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
           </>
         )}
       </PromptInputContainer>
+
+      {!isGenerating && (
+        <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 pointer-events-auto">
+          <FloatingPresetButton />
+          <FloatingSystemPromptButton />
+        </div>
+      )}
     </div>
   );
 }
