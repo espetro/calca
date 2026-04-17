@@ -31,11 +31,11 @@ gosto/
 >
 > | Area | Status |
 > |------|--------|
-> | **Active app** | The Next.js application lives in `src/` at the repo root, organized with **Feature-Sliced Design (FSD)** |
+> | **Active app** | The Next.js application lives in `apps/web/`, organized with **Feature-Sliced Design (FSD)** |
 > | **FSD features** | `canvas`, `design`, `settings`, `comments`, `export`, `onboarding` |
 > | **`packages/core/`** | ✅ Implemented — AI SDK v6 provider abstraction |
 > | **`packages/shared/`** | ✅ Implemented — types & contracts |
-> | **`apps/web/`** | Scaffolding only (no active code) |
+> | **`apps/web/`** | ✅ Active — contains the full Next.js app with FSD features |
 > | **`apps/server/`** | Scaffolding only |
 > | **`apps/desktop/`** | Scaffolding only |
 > | **`packages/database/`** | Scaffolding only |
