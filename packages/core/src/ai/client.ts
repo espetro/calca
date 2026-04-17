@@ -80,11 +80,11 @@ function addCacheControlToMessages(
             cache_control: { type: 'ephemeral' as const },
           }))
         : {
-            ...(msg.content as Record<string, unknown>),
+            ...((msg.content as unknown) as Record<string, unknown>),
             cache_control: { type: 'ephemeral' as const },
           }
       : msg.content,
-  }));
+  })) as ModelMessage[];
 }
 
 function isModelNotFoundError(err: unknown): boolean {
@@ -105,7 +105,7 @@ function getModel(
   return provider(modelId);
 }
 
-export async function generateWithFallback(options: GenerateOptions) {
+export async function generateWithFallback(options: GenerateOptions): Promise<{ result: Awaited<ReturnType<typeof generateText>>; usedModel: string }> {
   const providerType = options.providerType ?? 'anthropic';
   const preferredModel = options.model || DEFAULT_MODEL;
   const idx = MODEL_FALLBACK_CHAIN.indexOf(preferredModel);
@@ -166,7 +166,7 @@ function messagesToText(messages: ModelMessage[]): string {
     .join('|');
 }
 
-export function streamAnthropic(options: GenerateOptions) {
+export function streamAnthropic(options: GenerateOptions): ReturnType<typeof streamText> {
   const providerType = options.providerType ?? 'anthropic';
   const modelId = options.model || DEFAULT_MODEL;
   const model = getModel(modelId, providerType, options.apiKey, options.baseURL);
