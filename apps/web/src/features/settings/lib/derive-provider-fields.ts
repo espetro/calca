@@ -33,6 +33,17 @@ export const deriveProviderFields = (
         model: modelId,
       };
     }
+    // Fallback to environment provider if available
+    const envProvider = providers.find((p) => p.isEnv || p.baseUrl);
+    if (envProvider) {
+      return {
+        apiKey: envProvider.apiKey,
+        providerType: envProvider.apiType,
+        baseURL: envProvider.baseUrl,
+        model: modelId,
+      };
+    }
+    // Last resort: anthropic
     return {
       apiKey: "",
       providerType: "anthropic",
@@ -41,6 +52,17 @@ export const deriveProviderFields = (
     };
   }
 
+  // Fallback to environment provider if available
+  const envProvider = providers.find((p) => p.isEnv || p.baseUrl);
+  if (envProvider) {
+    return {
+      apiKey: envProvider.apiKey,
+      providerType: envProvider.apiType,
+      baseURL: envProvider.baseUrl,
+      model,
+    };
+  }
+  // Last resort: anthropic
   return {
     apiKey: "",
     providerType: "anthropic",
