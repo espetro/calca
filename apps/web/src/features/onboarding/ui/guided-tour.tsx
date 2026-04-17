@@ -68,11 +68,12 @@ export function GuidedTour({ onComplete, hasFrames }: GuidedTourProps) {
   const [rect, setRect] = useState<SpotlightRect | null>(null);
   const [waiting, setWaiting] = useState(false);
   const rafRef = useRef<number>(0);
+  const stoppedRef = useRef(false);
 
   const currentStep = TOUR_STEPS[step];
 
-  // Find and track the target element
   const updateRect = useCallback(() => {
+    if (stoppedRef.current) return;
     if (!currentStep) return;
     const el = document.querySelector(`[data-tour="${currentStep.target}"]`);
     if (el) {
@@ -85,8 +86,12 @@ export function GuidedTour({ onComplete, hasFrames }: GuidedTourProps) {
   }, [currentStep]);
 
   useEffect(() => {
+    stoppedRef.current = false;
     rafRef.current = requestAnimationFrame(updateRect);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      stoppedRef.current = true;
+      cancelAnimationFrame(rafRef.current);
+    };
   }, [updateRect]);
 
   // Handle waitForGeneration steps

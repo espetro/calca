@@ -1,194 +1,52 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type RefCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCanvas } from "@/features/canvas/hooks/use-canvas";
-import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
+import { useCanvas } from "@/features/canvas";
+import { CanvasArea } from "@/widgets/canvas-area";
 import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
 import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
-import { PipelineStatusOverlay } from "@/features/canvas";
 import { OnboardingModal, GuidedTour } from "@/features/onboarding";
 import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
-import { usePipelinePost } from "@/features/design/hooks/use-pipeline-post";
-import { usePlanConcepts } from "@/features/design/hooks/use-plan-concepts";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
-import { settingsAtom, isOwnKeyAtom, hasGeminiKeyAtom } from "@/features/settings/state/settings-atoms";
+import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
+import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
+import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
+import { settingsAtom, isOwnKeyAtom } from "@/features/settings/state/settings-atoms";
 import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
 import {
-  showResetConfirmAtom, toolModeAtom, isGeneratingAtom, pipelineStagesAtom, genStatusAtom,
-  spaceHeldAtom, showGitHashAtom, showLibraryAtom, selectedIdsAtom, rubberBandAtom, draggingImageIdAtom,
+  showResetConfirmAtom, toolModeAtom, showGitHashAtom, showLibraryAtom,
 } from "@/features/design/state/generation-atoms";
-import {
-  commentDraftAtom, draggingIdAtom, activeCommentAtom, activeCommentIterationIdAtom, commentCountAtom,
-} from "@/features/design/state/comment-atoms";
-import type { Settings } from "@/features/settings/types";
-import type {
-  PipelineStatus,
-  DesignIteration,
-  GenerationGroup,
-  ToolMode,
-  Comment as CommentType,
-  CommentMessage,
-  Point,
-  CanvasImage,
-} from "@/shared/types";
+import { useMountEffect } from "@/shared/utils/use-mount-effect";
 
 export default function Home() {
   const canvas = useCanvas();
-  // Settings atoms
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
-  const hasGeminiKey = useAtomValue(hasGeminiKeyAtom);
   const probeModels = useProbeModels();
   const onboarding = useOnboarding();
-  const canvasElRef = useRef<HTMLDivElement | null>(null);
-  const combinedCanvasRef: RefCallback<HTMLDivElement> = useCallback((el) => {
-    canvasElRef.current = el;
-    canvas.setCanvasRef(el);
-  }, [canvas.setCanvasRef]);
 
-  // Groups atoms (replaces usePersistedGroups + groupsRef)
+  useKeyboardShortcuts();
+
   const [groups, setGroups] = useAtom(groupsAtom);
   const resetSession = useSetAtom(resetSessionAtom);
-
-  useEffect(() => {
-    hydrateGroups(setGroups);
-  }, [setGroups]);
-
-  // Generation state atoms
-  const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
-  const [toolMode, setToolMode] = useAtom(toolModeAtom);
-  const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
-  const [pipelineStages, setPipelineStages] = useAtom(pipelineStagesAtom);
-  const [genStatus, setGenStatus] = useAtom(genStatusAtom);
-  const abortRef = useRef<AbortController | null>(null);
-  const [spaceHeld, setSpaceHeld] = useAtom(spaceHeldAtom);
-  const [showSettings, setShowSettings] = useState(false); // UI-only toggle, kept as useState
-  const quickMode = settings.quickMode;
-  const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
-  const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
-  const [commentDraft, setCommentDraft] = useAtom(commentDraftAtom);
-
-  // Drag state for moving frames
-  const dragRef = useRef<{
-    iterationId: string;
-    startMouse: Point;
-    startPos: Point;
-  } | null>(null);
-  const [draggingId, setDraggingId] = useAtom(draggingIdAtom);
-  const [activeComment, setActiveComment] = useAtom(activeCommentAtom);
-  const [activeCommentIterationId, setActiveCommentIterationId] = useAtom(activeCommentIterationIdAtom);
-  const [selectedIds, setSelectedIds] = useAtom(selectedIdsAtom);
-  // Rubber band selection state
-  const [rubberBand, setRubberBand] = useAtom(rubberBandAtom);
-  // Dropped reference images (replaces usePersistedImages)
   const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
 
-  useEffect(() => {
-    hydrateImages(setCanvasImages);
-  }, [setCanvasImages]);
-  const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
-  const imgDragRef = useRef<{ id: string; startMouse: Point; startPos: Point } | null>(null);
-  const imgDragStartPositions = useRef<Map<string, Point>>(new Map());
+  useMountEffect(() => { hydrateGroups(setGroups); });
+  useMountEffect(() => { hydrateImages(setCanvasImages); });
 
-  // Comment count atom (replaces useRef)
-  const [commentCount, setCommentCount] = useAtom(commentCountAtom);
+  const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
+  const setToolMode = useSetAtom(toolModeAtom);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
+  const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
 
-  // Process dropped/uploaded image files into CanvasImage objects
-  const processImageFiles = useCallback((files: File[], dropX?: number, dropY?: number) => {
-    files.forEach((file, idx) => {
-      if (!file.type.startsWith("image/")) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target?.result as string;
-        const img = new Image();
-        img.onload = () => {
-          // Compress for API: max 1024px on longest edge, JPEG 70%
-          const maxDim = 1024;
-          const apiScale = Math.min(maxDim / Math.max(img.width, img.height), 1);
-          const apiCanvas = document.createElement("canvas");
-          apiCanvas.width = img.width * apiScale;
-          apiCanvas.height = img.height * apiScale;
-          const apiCtx = apiCanvas.getContext("2d")!;
-          apiCtx.drawImage(img, 0, 0, apiCanvas.width, apiCanvas.height);
-          const compressedDataUrl = apiCanvas.toDataURL("image/jpeg", 0.7);
-
-          // Create thumbnail (max 128px)
-          const thumbScale = Math.min(128 / img.width, 128 / img.height, 1);
-          const thumbCanvas = document.createElement("canvas");
-          thumbCanvas.width = img.width * thumbScale;
-          thumbCanvas.height = img.height * thumbScale;
-          const thumbCtx = thumbCanvas.getContext("2d")!;
-          thumbCtx.drawImage(img, 0, 0, thumbCanvas.width, thumbCanvas.height);
-          const thumbnail = thumbCanvas.toDataURL("image/jpeg", 0.7);
-
-          // Position on canvas
-          const cx = dropX !== undefined ? (dropX - canvas.offset.x) / canvas.scale : 100 + idx * 220;
-          const cy = dropY !== undefined ? (dropY - canvas.offset.y) / canvas.scale : 100;
-
-          // Scale display size to max 200px wide
-          const displayScale = Math.min(200 / img.width, 1);
-
-          setCanvasImages((prev) => [
-            ...prev,
-            {
-              id: `img-${Date.now()}-${idx}`,
-              dataUrl: compressedDataUrl,
-              name: file.name,
-              width: img.width * displayScale,
-              height: img.height * displayScale,
-              position: { x: cx, y: cy },
-              thumbnail,
-            },
-          ]);
-        };
-        img.src = dataUrl;
-      };
-      reader.readAsDataURL(file);
-    });
-  }, [canvas.offset.x, canvas.offset.y, canvas.scale]);
-
-  // Image drag handlers
-  const handleImageDragStart = useCallback((id: string, e: React.MouseEvent) => {
-    if (toolMode !== "select" || spaceHeld) return;
-    e.stopPropagation();
-    const img = canvasImages.find((i) => i.id === id);
-    if (!img) return;
-    imgDragRef.current = { id, startMouse: { x: e.clientX, y: e.clientY }, startPos: { ...img.position } };
-    // Also capture start positions of all selected images for multi-drag
-    imgDragStartPositions.current.clear();
-    const movingIds = selectedIds.has(id) ? selectedIds : new Set([id]);
-    for (const ci of canvasImages) {
-      if (movingIds.has(ci.id)) imgDragStartPositions.current.set(ci.id, { ...ci.position });
-    }
-    setDraggingImageId(id);
-  }, [toolMode, spaceHeld, canvasImages, selectedIds]);
-
-  const handleImageDragMove = useCallback((e: React.MouseEvent) => {
-    if (!imgDragRef.current) return;
-    const dx = (e.clientX - imgDragRef.current.startMouse.x) / canvas.scale;
-    const dy = (e.clientY - imgDragRef.current.startMouse.y) / canvas.scale;
-    const dragId = imgDragRef.current.id;
-    const movingIds = selectedIds.has(dragId) ? selectedIds : new Set([dragId]);
-    setCanvasImages((prev) => prev.map((img) => {
-      if (!movingIds.has(img.id)) return img;
-      const startPos = imgDragStartPositions.current.get(img.id) || img.position;
-      return { ...img, position: { x: startPos.x + dx, y: startPos.y + dy } };
-    }));
-  }, [canvas.scale, selectedIds]);
-
-  const handleImageDragEnd = useCallback(() => {
-    imgDragRef.current = null;
-    setDraggingImageId(null);
-  }, []);
-
-  // Dev mode from URL
   useEffect(() => {
     setShowGitHash(new URLSearchParams(window.location.search).has("devMode"));
-  }, []);
+  }, [setShowGitHash]);
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
@@ -196,81 +54,8 @@ export default function Home() {
     }
   }, [setSettings]);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === "v" || e.key === "V") setToolMode("select");
-      if (e.key === "c" || e.key === "C") setToolMode("comment");
-      if (e.key === " ") {
-        e.preventDefault();
-        setSpaceHeld(true);
-      }
-      if (e.key === "Escape") {
-        setCommentDraft(null);
-        setActiveComment(null);
-        setSelectedIds(new Set());
-      }
-      if ((e.key === "Delete" || e.key === "Backspace") && selectedIds.size > 0) {
-        setGroups((prev) =>
-          prev.map((g) => ({
-            ...g,
-            iterations: g.iterations.filter((iter) => !selectedIds.has(iter.id)),
-          })).filter((g) => g.iterations.length > 0)
-        );
-        setCanvasImages((prev) => prev.filter((img) => !selectedIds.has(img.id)));
-        setSelectedIds(new Set());
-      }
-    };
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key === " ") setSpaceHeld(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keyup", onKeyUp);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("keyup", onKeyUp);
-    };
-  }, [selectedIds]);
-
-  // Grid positioning — 2 columns, centered in viewport
-  const H_GAP = 60;
-  const GROUP_GAP = 120;
-  const ROW_HEIGHT = 700;
-  const ITEM_WIDTH = 640;
-
-  const getGridPositions = useCallback(
-    (count: number): Point[] => {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const gridW = count * ITEM_WIDTH + (count - 1) * H_GAP;
-
-      let startX: number;
-      let startY: number;
-
-      if (groups.length === 0) {
-        // Center first row in viewport
-        startX = (vw / 2 - canvas.offset.x) / canvas.scale - gridW / 2;
-        startY = (vh / 3 - canvas.offset.y) / canvas.scale;
-      } else {
-        let maxBottom = 0;
-        for (const g of groups) {
-          for (const iter of g.iterations) {
-            maxBottom = Math.max(maxBottom, iter.position.y + (iter.height || ROW_HEIGHT));
-          }
-        }
-        startX = groups[0].iterations[0]?.position.x ?? 0;
-        startY = maxBottom + GROUP_GAP;
-      }
-
-      // All frames in a single horizontal row
-      return Array.from({ length: count }, (_, i) => ({
-        x: startX + i * (ITEM_WIDTH + H_GAP),
-        y: startY,
-      }));
-    },
-    [canvas.offset, canvas.scale, groups]
-  );
+  const pipeline = useGenerationPipeline(canvas);
+  const commentHandlers = useCommentHandlers(pipeline.runPipelineForFrame);
 
   const handleExportOtto = useCallback(() => {
     const data = {
@@ -337,1110 +122,17 @@ export default function Home() {
       reader.readAsText(file);
     };
     input.click();
-  }, []);
-
-  // Variation styles for the pipeline
-  const VARIATION_STYLES = [
-    "Refined and premium — think Stripe or Linear. Subtle gradients, generous whitespace, sophisticated color palette",
-    "Bold and expressive — vibrant colors, large confident typography, strong visual hierarchy, creative shapes",
-    "Warm and approachable — friendly rounded shapes, warm color palette, inviting feel, human-centered",
-    "Dark and dramatic — dark backgrounds, glowing accents, cinematic feel, high contrast, moody atmosphere",
-  ];
-
-  const pipelineMutation = usePipelinePost();
-  const planConceptsMutation = usePlanConcepts();
-
-  /** Post-process: cap oversized sections */
-  const capOversizedSections = useCallback((html: string): string => {
-    let result = html;
-    result = result.replace(
-      /(<(?:section|div)\s[^>]*style="[^"]*?)height\s*:\s*(\d+)px/gi,
-      (_match: string, prefix: string, heightStr: string) => {
-        const h = parseInt(heightStr, 10);
-        return h > 800 ? `${prefix}height:${h}px;max-height:800px;overflow:hidden` : _match;
-      }
-    );
-    result = result.replace(
-      /(<(?:section|div)\s[^>]*style="[^"]*?)min-height\s*:\s*(\d+)px/gi,
-      (_match: string, prefix: string, heightStr: string) => {
-        const h = parseInt(heightStr, 10);
-        return h > 800 ? `${prefix}min-height:${h}px;max-height:800px;overflow:hidden` : _match;
-      }
-    );
-    result = result.replace(
-      /(<(?:section|div)\s[^>]*style="[^"]*?)(?:min-)?height\s*:\s*100vh/gi,
-      (_match: string, prefix: string) => `${prefix}height:auto;max-height:800px;overflow:hidden`
-    );
-    return result;
-  }, []);
-
-  /** Process a single frame through chained API calls (layout → images → review → critique) */
-  const runPipelineForFrame = useCallback(
-    async (
-      iterId: string,
-      prompt: string,
-      style: string,
-      index: number,
-      critique: string | undefined,
-      signal: AbortSignal,
-      revisionOpts?: { revision: string; existingHtml: string },
-      contextImages?: string[],
-    ): Promise<{ html: string; label: string; width?: number; height?: number; critique?: string; comment?: string }> => {
-      const isRevision = !!revisionOpts;
-      const enableImages = !!(settings.geminiKey || settings.unsplashKey || settings.openaiKey);
-      const enableQA = !isRevision && !quickMode;
-      const skipCritique = !isRevision && quickMode;
-
-      const availableSources: string[] = [];
-      if (settings.unsplashKey) availableSources.push("unsplash");
-      if (settings.openaiKey) availableSources.push("dalle");
-      if (settings.geminiKey) availableSources.push("gemini");
-
-      // --- Step 1: Layout ---
-      setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "layout", progress: 0.2 } }));
-
-      const layoutResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/layout", body: {
-        prompt, style, model: settings.model,
-        apiKey: settings.apiKey || undefined,
-        providerType: settings.providerType || undefined,
-        baseURL: settings.baseURL || undefined,
-        systemPrompt: settings.systemPrompt || undefined,
-        critique, availableSources,
-        ...(revisionOpts || {}),
-        ...(contextImages && contextImages.length > 0 ? { contextImages } : {}),
-      }, signal }) as { html: string; width?: number; height?: number; comment?: string };
-
-      let html: string = layoutResult.html;
-      const width: number | undefined = layoutResult.width;
-      const height: number | undefined = layoutResult.height;
-      const aiComment: string | undefined = layoutResult.comment;
-
-      // Show layout preview immediately (set isLoading false so iframe renders)
-      setGroups((prev) =>
-        prev.map((g) => ({
-          ...g,
-          iterations: g.iterations.map((iter) =>
-            iter.id !== iterId ? iter : { ...iter, html, width: width || iter.width, height: height || iter.height, isLoading: false }
-          ),
-        }))
-      );
-
-      // --- Step 2: Images ---
-      if (enableImages) {
-        setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "images", progress: 0.45 } }));
-
-        try {
-          const imgResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/images", body: {
-            html,
-            geminiKey: settings.geminiKey || undefined,
-            unsplashKey: settings.unsplashKey || undefined,
-            openaiKey: settings.openaiKey || undefined,
-            viewport: width && height ? { width, height } : undefined,
-          }, signal }) as { html?: string; imageCount?: number };
-
-          if (imgResult.html && imgResult.imageCount && imgResult.imageCount > 0) {
-            html = imgResult.html;
-            // Show composited preview
-            setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "compositing", progress: 0.65 } }));
-            setGroups((prev) =>
-              prev.map((g) => ({
-                ...g,
-                iterations: g.iterations.map((iter) =>
-                  iter.id !== iterId ? iter : { ...iter, html }
-                ),
-              }))
-            );
-          }
-        } catch (imgErr) {
-          console.warn("Image step failed, continuing with placeholders:", imgErr);
-        }
-      } else {
-        setPipelineStages((prev) => ({
-          ...prev,
-          [iterId]: { stage: "images", progress: 0.45, skipped: true, reason: "No image API keys — add Unsplash, DALL·E, or Gemini key in Settings" },
-        }));
-      }
-
-      // --- Step 3: Visual QA ---
-      if (enableQA) {
-        setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "review", progress: 0.8 } }));
-        try {
-          // Strip base64 images client-side to avoid 413 FUNCTION_PAYLOAD_TOO_LARGE
-          const reviewImages: string[] = [];
-          const htmlForReview = html.replace(/src="(data:image\/[^"]+)"/g, (_m: string, uri: string) => {
-            const idx = reviewImages.length;
-            reviewImages.push(uri);
-            return `src="[IMG_STRIPPED_${idx}]"`;
-          });
-          const qaResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/review", body: {
-            html: htmlForReview, prompt, width, height,
-            model: settings.model,
-            apiKey: settings.apiKey || undefined,
-            providerType: settings.providerType || undefined,
-            baseURL: settings.baseURL || undefined,
-          }, signal }) as { html?: string };
-          if (qaResult.html) {
-            // Restore base64 images into reviewed HTML
-            let reviewed = qaResult.html;
-            for (let i = 0; i < reviewImages.length; i++) {
-              reviewed = reviewed.replace(`[IMG_STRIPPED_${i}]`, reviewImages[i]);
-            }
-            html = reviewed;
-            // Show reviewed/polished version immediately
-            setGroups((prev) =>
-              prev.map((g) => ({
-                ...g,
-                iterations: g.iterations.map((iter) =>
-                  iter.id !== iterId ? iter : { ...iter, html }
-                ),
-              }))
-            );
-          }
-        } catch (qaErr) {
-          console.warn("Visual QA failed, using unreviewed version:", qaErr);
-        }
-      }
-
-      // Post-process
-      html = capOversizedSections(html);
-
-      const label = isRevision ? "Revised" : `Variation ${index + 1}`;
-
-      let critiqueText: string | undefined;
-      setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "done", progress: 1.0 } }));
-
-      if (!skipCritique) {
-        try {
-          // Strip base64 images client-side to avoid 413 FUNCTION_PAYLOAD_TOO_LARGE
-          const htmlForCritique = html.replace(/src="(data:image\/[^"]+)"/g, () => 'src="[IMG_STRIPPED]"');
-          const critiqueResult = await pipelineMutation.mutateAsync({ url: "/api/pipeline/critique", body: {
-            html: htmlForCritique, prompt,
-            model: settings.model,
-            apiKey: settings.apiKey || undefined,
-            providerType: settings.providerType || undefined,
-            baseURL: settings.baseURL || undefined,
-          }, signal }) as { critique?: string };
-          critiqueText = critiqueResult.critique || undefined;
-        } catch {
-          // Critique is optional
-        }
-      }
-
-      return { html, label, width, height, critique: critiqueText, comment: aiComment };
-    },
-    [settings.apiKey, settings.model, settings.systemPrompt, settings.geminiKey, settings.unsplashKey, settings.openaiKey, settings.providerType, settings.baseURL, quickMode, capOversizedSections]
-  );
-
-  const handleGenerate = useCallback(
-    async (prompt: string) => {
-      // Auto-include all canvas images as context
-      const contextImages = canvasImages.length > 0
-        ? canvasImages.map((img) => img.dataUrl)
-        : undefined;
-      setIsGenerating(true);
-      setGenStatus("Planning concepts…");
-      const groupId = `group-${Date.now()}`;
-
-      try {
-        abortRef.current?.abort();
-        const controller = new AbortController();
-        abortRef.current = controller;
-
-        let iterationCount = settings.conceptCount || 4;
-        let concepts: string[] = [];
-
-        try {
-          const plan = await planConceptsMutation.mutateAsync({
-            prompt,
-            count: iterationCount,
-            apiKey: settings.apiKey || undefined,
-            model: settings.model,
-            providerType: settings.providerType || undefined,
-            baseURL: settings.baseURL || undefined,
-            signal: controller.signal,
-          });
-          concepts = plan.concepts;
-        } catch {
-          // Planning failed — continue with defaults
-        }
-
-        const positions = getGridPositions(iterationCount);
-
-        const newGroup: GenerationGroup = {
-          id: groupId,
-          prompt,
-          iterations: [],
-          position: positions[0],
-          createdAt: Date.now(),
-        };
-
-        setGroups((prev) => [...prev, newGroup]);
-
-        // Track completed frame dimensions for sequential positioning
-        const completedFrames: { x: number; y: number; w: number; h: number }[] = [];
-
-        const getNextPosition = (index: number): Point => {
-          if (index === 0 || completedFrames.length === 0) return positions[0];
-          // Always place to the right of previous frame — single horizontal row
-          const prev = completedFrames[completedFrames.length - 1];
-          return { x: prev.x + prev.w + H_GAP, y: prev.y };
-        };
-
-        const addPlaceholder = (iterId: string, index: number, pos: Point) => {
-          setPipelineStages((prev) => ({
-            ...prev,
-            [iterId]: { stage: "layout", progress: 0.2 },
-          }));
-          setGroups((prev) =>
-            prev.map((g) => {
-              if (g.id !== groupId) return g;
-              return {
-                ...g,
-                iterations: [
-                  ...g.iterations,
-                  {
-                    id: iterId,
-                    html: "",
-                    label: `Variation ${index + 1}`,
-                    position: pos,
-                    width: 400,
-                    height: 300,
-                    prompt,
-                    comments: [],
-                    isLoading: true,
-                  },
-                ],
-              };
-            })
-          );
-        };
-
-        const completeFrame = (iterId: string, result: { html: string; label: string; width?: number; height?: number }, pos: Point) => {
-          const w = result.width || FRAME_WIDTH;
-          const h = result.height || 400;
-          completedFrames.push({ x: pos.x, y: pos.y, w, h });
-
-          setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "done", progress: 1 } }));
-          setGroups((prev) =>
-            prev.map((g) => {
-              if (g.id !== groupId) return g;
-              return {
-                ...g,
-                iterations: g.iterations.map((existing) => {
-                  if (existing.id !== iterId) return existing;
-                  return {
-                    ...existing,
-                    html: result.html || "<p>Failed to generate</p>",
-                    label: result.label || existing.label,
-                    width: result.width || existing.width,
-                    height: result.height || existing.height,
-                    isLoading: false,
-                  };
-                }),
-              };
-            })
-          );
-
-          // Zoom to fit all completed frames
-          setTimeout(() => {
-            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            for (const f of completedFrames) {
-              minX = Math.min(minX, f.x);
-              minY = Math.min(minY, f.y);
-              maxX = Math.max(maxX, f.x + f.w);
-              maxY = Math.max(maxY, f.y + f.h);
-            }
-            canvas.zoomToFit({ minX, minY, maxX, maxY });
-          }, 150);
-        };
-
-        if (quickMode) {
-          // Quick mode: create all placeholders upfront, run in parallel
-          const iterIds: string[] = [];
-          for (let i = 0; i < iterationCount; i++) {
-            const iterId = `${groupId}-iter-${i}`;
-            iterIds.push(iterId);
-            addPlaceholder(iterId, i, positions[i]);
-          }
-
-          setGenStatus(`Running ${iterationCount} frames in parallel…`);
-          const results = await Promise.allSettled(
-            iterIds.map((iterId, i) =>
-              runPipelineForFrame(
-                iterId,
-                prompt,
-                concepts[i] || VARIATION_STYLES[i % VARIATION_STYLES.length],
-                i,
-                undefined,
-                controller.signal,
-                undefined,
-                contextImages,
-              ).then((result) => {
-                completeFrame(iterId, result, positions[i]);
-                return result;
-              })
-            )
-          );
-
-          results.forEach((r, i) => {
-            if (r.status === "rejected") {
-              const msg = r.reason instanceof Error ? r.reason.message : "Failed";
-              setPipelineStages((prev) => ({ ...prev, [iterIds[i]]: { stage: "error", progress: 0 } }));
-              completeFrame(iterIds[i], {
-                html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ ${msg}</p></div>`,
-                label: `Variation ${i + 1}`,
-              }, positions[i]);
-            }
-          });
-
-        } else {
-          // Sequential critique loop: one frame at a time
-          let critique: string | undefined;
-
-          for (let i = 0; i < iterationCount; i++) {
-            if (controller.signal.aborted) break;
-            const iterId = `${groupId}-iter-${i}`;
-            const pos = getNextPosition(i);
-
-            setGenStatus(
-              critique
-                ? `Designing ${i + 1} of ${iterationCount}…`
-                : `Designing ${i + 1} of ${iterationCount}…`
-            );
-
-            // Create this frame's placeholder NOW (not upfront)
-            addPlaceholder(iterId, i, pos);
-
-            try {
-              const result = await runPipelineForFrame(
-                iterId,
-                prompt,
-                concepts[i] || VARIATION_STYLES[i % VARIATION_STYLES.length],
-                i,
-                critique,
-                controller.signal,
-                undefined,
-                contextImages,
-              );
-
-              // Update position to use actual dimensions for layout
-              setGroups((prev) =>
-                prev.map((g) => {
-                  if (g.id !== groupId) return g;
-                  return {
-                    ...g,
-                    iterations: g.iterations.map((iter) => {
-                      if (iter.id !== iterId) return iter;
-                      return { ...iter, position: pos };
-                    }),
-                  };
-                })
-              );
-
-              completeFrame(iterId, result, pos);
-              critique = result.critique;
-            } catch (err) {
-              if (err instanceof Error && err.name === "AbortError") throw err;
-              const msg = err instanceof Error ? err.message : "Failed";
-              setPipelineStages((prev) => ({ ...prev, [iterId]: { stage: "error", progress: 0 } }));
-              completeFrame(iterId, {
-                html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ ${msg}</p></div>`,
-                label: `Variation ${i + 1}`,
-              }, pos);
-            }
-          }
-        }
-
-      } catch (err: unknown) {
-        if (err instanceof Error && err.name === "AbortError") {
-          setGroups((prev) =>
-            prev.map((g) => {
-              if (g.id !== groupId) return g;
-              const kept = g.iterations.filter((iter) => !iter.isLoading);
-              const removedIds = g.iterations.filter((iter) => iter.isLoading).map((iter) => iter.id);
-              if (removedIds.length) {
-                setPipelineStages((prev) => {
-                  const next = { ...prev };
-                  removedIds.forEach((id) => delete next[id]);
-                  return next;
-                });
-              }
-              return { ...g, iterations: kept };
-            }).filter((g) => g.iterations.length > 0)
-          );
-        } else {
-          const msg = err instanceof Error ? err.message : "Generation failed";
-          console.error("Generation failed:", msg);
-          setGroups((prev) =>
-            prev.map((g) => {
-              if (g.id !== groupId) return g;
-              return {
-                ...g,
-                iterations: g.iterations.map((iter) => {
-                  if (!iter.isLoading) return iter;
-                  return {
-                    ...iter,
-                    html: `<div style="padding:32px;color:#666;font-family:system-ui">
-                      <p style="font-size:14px">⚠ ${msg}</p>
-                      <p style="font-size:12px;margin-top:8px;color:#999">Check Settings or try again</p>
-                    </div>`,
-                    isLoading: false,
-                  };
-                }),
-              };
-            })
-          );
-        }
-      } finally {
-        abortRef.current = null;
-        setIsGenerating(false);
-        setGenStatus("");
-      }
-    },
-    [getGridPositions, settings, canvas, quickMode, runPipelineForFrame, canvasImages]
-  );
-
-  const handleRemix = useCallback(
-    async (sourceIteration: DesignIteration, remixPrompt: string) => {
-      setIsGenerating(true);
-      const positions = getGridPositions(1);
-      const remixId = `remix-${Date.now()}`;
-
-      const placeholder: DesignIteration = {
-        id: remixId,
-        html: "",
-        label: "Remixing...",
-        position: positions[0],
-        width: sourceIteration.width || 400,
-        height: sourceIteration.height || 300,
-        prompt: remixPrompt,
-        comments: [],
-        isLoading: true,
-      };
-
-      // Find the group this iteration belongs to, or create a new one
-      const sourceGroup = groups.find((g) => g.iterations.some((it) => it.id === sourceIteration.id));
-      const newGroup: GenerationGroup = {
-        id: `group-${remixId}`,
-        prompt: `Remix: ${remixPrompt}`,
-        iterations: [placeholder],
-        position: positions[0],
-        createdAt: Date.now(),
-      };
-
-      setGroups((prev) => [...prev, newGroup]);
-      setPipelineStages((prev) => ({ ...prev, [remixId]: { stage: "layout", progress: 0.2 } }));
-
-      try {
-        const controller = new AbortController();
-        abortRef.current = controller;
-
-        const result = await runPipelineForFrame(
-          remixId,
-          sourceIteration.prompt || "",
-          "remix",
-          0,
-          undefined,
-          controller.signal,
-          { revision: remixPrompt, existingHtml: sourceIteration.html },
-        );
-
-        setPipelineStages((prev) => ({ ...prev, [remixId]: { stage: "done", progress: 1 } }));
-        setGroups((prev) =>
-          prev.map((g) => {
-            if (g.id !== newGroup.id) return g;
-            return {
-              ...g,
-              iterations: [{
-                ...placeholder,
-                html: result.html || "<p>Remix failed</p>",
-                label: result.label || "Remix",
-                width: result.width || placeholder.width,
-                height: result.height || placeholder.height,
-                isLoading: false,
-              }],
-            };
-          })
-        );
-      } catch (err: unknown) {
-        if (err instanceof Error && err.name === "AbortError") {
-          setGroups((prev) =>
-            prev.map((g) => {
-              if (g.id !== newGroup.id) return g;
-              return { ...g, iterations: g.iterations.filter((iter) => !iter.isLoading) };
-            }).filter((g) => g.iterations.length > 0)
-          );
-        } else {
-          const msg = err instanceof Error ? err.message : "Remix failed";
-          setGroups((prev) =>
-            prev.map((g) => {
-              if (g.id !== newGroup.id) return g;
-              return {
-                ...g,
-                iterations: [{ ...placeholder, html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ ${msg}</p></div>`, isLoading: false }],
-              };
-            })
-          );
-        }
-      } finally {
-        abortRef.current = null;
-        setIsGenerating(false);
-      }
-    },
-    [getGridPositions, settings.apiKey, settings.model, groups]
-  );
-
-  const handleAddComment = useCallback(
-    (iterationId: string, position: Point) => {
-      const rect = canvasElRef.current?.getBoundingClientRect();
-      if (!rect) return;
-
-      // Find the iteration to compute screen position
-      for (const group of groups) {
-        const iter = group.iterations.find((it) => it.id === iterationId);
-        if (iter) {
-          const absScreenX =
-            (iter.position.x + position.x) * canvas.scale +
-            canvas.offset.x +
-            rect.left;
-          const absScreenY =
-            (iter.position.y + position.y) * canvas.scale +
-            canvas.offset.y +
-            rect.top;
-          setCommentDraft({
-            iterationId,
-            position,
-            screenX: absScreenX,
-            screenY: absScreenY,
-          });
-          return;
-        }
-      }
-    },
-    [canvas.offset, canvas.scale, groups]
-  );
-
-  // --- Comment revision queue ---
-  // Allows users to keep adding comments while revisions process one at a time.
-  interface RevisionJob {
-    iterationId: string;
-    commentId: string;
-    text: string;
-    thread: CommentMessage[];
-  }
-  const revisionQueueRef = useRef<RevisionJob[]>([]);
-  const isProcessingRevisionRef = useRef(false);
-
-  const updateComment = useCallback((iterId: string, cId: string, update: Partial<CommentType>) => {
-    setGroups((prev) =>
-      prev.map((g) => ({
-        ...g,
-        iterations: g.iterations.map((iter) => {
-          if (iter.id !== iterId) return iter;
-          return {
-            ...iter,
-            comments: iter.comments.map((c) =>
-              c.id === cId ? { ...c, ...update } : c
-            ),
-          };
-        }),
-      }))
-    );
-  }, []);
-
-  const processRevisionQueue = useCallback(async () => {
-    if (isProcessingRevisionRef.current) return;
-    isProcessingRevisionRef.current = true;
-
-    while (revisionQueueRef.current.length > 0) {
-      const job = revisionQueueRef.current[0];
-      const { iterationId, commentId, text } = job;
-
-      // Mark as working and update active comment if open
-      updateComment(iterationId, commentId, { status: "working" });
-      setActiveComment((prev) =>
-        prev?.id === commentId ? { ...prev, status: "working" } : prev
-      );
-
-      // Get latest iteration HTML and comment thread from ref (always current)
-      let currentHtml = "";
-      let currentPrompt = "";
-      let latestThread: CommentMessage[] = [];
-      for (const g of groups) {
-        for (const iter of g.iterations) {
-          if (iter.id === iterationId) {
-            currentHtml = iter.html;
-            currentPrompt = iter.prompt || "";
-            const comment = iter.comments.find((c) => c.id === commentId);
-            if (comment?.thread) latestThread = comment.thread;
-          }
-        }
-      }
-
-      try {
-        const controller = new AbortController();
-        const result = await runPipelineForFrame(
-          iterationId,
-          currentPrompt,
-          "revision",
-          0,
-          undefined,
-          controller.signal,
-          { revision: text, existingHtml: currentHtml },
-        );
-
-        // Update frame HTML (no isRegenerating fade)
-        setGroups((prev) =>
-          prev.map((g) => ({
-            ...g,
-            iterations: g.iterations.map((iter) => {
-              if (iter.id !== iterationId) return iter;
-              return {
-                ...iter,
-                html: result.html || iter.html,
-                width: result.width || iter.width,
-                height: result.height || iter.height,
-              };
-            }),
-          }))
-        );
-
-        const ottoResponse: CommentMessage = {
-          id: `msg-${Date.now()}`,
-          role: "otto",
-          text: result.comment || "Done! I've updated the design.",
-          createdAt: Date.now(),
-        };
-        const doneThread = [...latestThread, ottoResponse];
-        updateComment(iterationId, commentId, {
-          status: "done",
-          aiResponse: ottoResponse.text,
-          thread: doneThread,
-        });
-        setActiveComment((prev) =>
-          prev?.id === commentId
-            ? { ...prev, status: "done", aiResponse: ottoResponse.text, thread: doneThread }
-            : prev
-        );
-      } catch (err) {
-        console.error("Revision failed:", err);
-        const errorResponse: CommentMessage = {
-          id: `msg-${Date.now()}`,
-          role: "otto",
-          text: `Revision failed: ${err instanceof Error ? err.message : "Unknown error"}. Try again.`,
-          createdAt: Date.now(),
-        };
-        const errorThread = [...latestThread, errorResponse];
-        updateComment(iterationId, commentId, {
-          status: "done",
-          aiResponse: errorResponse.text,
-          thread: errorThread,
-        });
-        setActiveComment((prev) =>
-          prev?.id === commentId
-            ? { ...prev, status: "done", aiResponse: errorResponse.text, thread: errorThread }
-            : prev
-        );
-      }
-
-      // Remove processed job
-      revisionQueueRef.current.shift();
-    }
-
-    isProcessingRevisionRef.current = false;
-  }, [runPipelineForFrame, updateComment]);
-
-  const handleCommentSubmit = useCallback(
-    (text: string) => {
-      if (!commentDraft) return;
-      const nextCount = commentCount + 1;
-      setCommentCount(nextCount);
-
-      const commentId = `comment-${Date.now()}`;
-      const userMessage: CommentMessage = {
-        id: `msg-${Date.now()}`,
-        role: "user",
-        text,
-        createdAt: Date.now(),
-      };
-      const newComment: CommentType = {
-        id: commentId,
-        position: commentDraft.position,
-        text,
-        number: nextCount,
-        createdAt: Date.now(),
-        status: "waiting",
-        thread: [userMessage],
-      };
-
-      const iterId = commentDraft.iterationId;
-
-      // Add comment to iteration (no isRegenerating — user keeps working)
-      setGroups((prev) =>
-        prev.map((g) => ({
-          ...g,
-          iterations: g.iterations.map((iter) => {
-            if (iter.id === iterId) {
-              return {
-                ...iter,
-                comments: [...iter.comments, newComment],
-              };
-            }
-            return iter;
-          }),
-        }))
-      );
-
-      setCommentDraft(null);
-
-      // Queue the revision
-      revisionQueueRef.current.push({
-        iterationId: iterId,
-        commentId,
-        text,
-        thread: [userMessage],
-      });
-
-      // Kick off processing if not already running
-      processRevisionQueue();
-    },
-    [commentDraft, processRevisionQueue]
-  );
-
-  const handleClickComment = useCallback((comment: CommentType, iterationId: string) => {
-    setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
-    setActiveCommentIterationId((prev) => (comment ? iterationId : null));
-  }, []);
-
-  // Handle reply in a comment thread — queued like new comments
-  const handleCommentReply = useCallback(
-    (text: string) => {
-      if (!activeComment || !activeCommentIterationId) return;
-
-      const commentId = activeComment.id;
-      const iterId = activeCommentIterationId;
-      const currentThread = activeComment.thread || [
-        { id: "msg-0", role: "user" as const, text: activeComment.text, createdAt: activeComment.createdAt },
-      ];
-
-      const userMessage: CommentMessage = {
-        id: `msg-${Date.now()}`,
-        role: "user",
-        text,
-        createdAt: Date.now(),
-      };
-      const updatedThread = [...currentThread, userMessage];
-
-      // Update thread immediately in UI
-      updateComment(iterId, commentId, { thread: updatedThread, status: "waiting" });
-      setActiveComment((prev) => prev ? { ...prev, thread: updatedThread, status: "waiting" } : prev);
-
-      // Queue the revision
-      revisionQueueRef.current.push({
-        iterationId: iterId,
-        commentId,
-        text,
-        thread: updatedThread,
-      });
-
-      processRevisionQueue();
-    },
-    [activeComment, activeCommentIterationId, updateComment, processRevisionQueue]
-  );
-
-  // Frame drag handlers
-  const handleFrameDragStart = useCallback(
-    (iterationId: string, e: React.MouseEvent) => {
-      if (toolMode !== "select" || spaceHeld) return;
-      e.stopPropagation(); // prevent canvas pan
-
-      // Find the iteration's current position
-      for (const group of groups) {
-        const iter = group.iterations.find((it) => it.id === iterationId);
-        if (iter) {
-          dragRef.current = {
-            iterationId,
-            startMouse: { x: e.clientX, y: e.clientY },
-            startPos: { ...iter.position },
-          };
-          // Capture start positions for all selected frames (multi-drag)
-          dragStartPositions.current.clear();
-          const movingIds = selectedIds.has(iterationId) ? selectedIds : new Set([iterationId]);
-          for (const g of groups) {
-            for (const it of g.iterations) {
-              if (movingIds.has(it.id)) {
-                dragStartPositions.current.set(it.id, { ...it.position });
-              }
-            }
-          }
-          setDraggingId(iterationId);
-          break;
-        }
-      }
-    },
-    [toolMode, spaceHeld, groups, selectedIds]
-  );
-
-  // Store start positions for all selected frames during multi-drag
-  const dragStartPositions = useRef<Map<string, Point>>(new Map());
-
-  const handleFrameDragMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!dragRef.current) return;
-      const dx = (e.clientX - dragRef.current.startMouse.x) / canvas.scale;
-      const dy = (e.clientY - dragRef.current.startMouse.y) / canvas.scale;
-
-      const dragId = dragRef.current.iterationId;
-      const movingIds = selectedIds.has(dragId) ? selectedIds : new Set([dragId]);
-
-      setGroups((prev) =>
-        prev.map((g) => ({
-          ...g,
-          iterations: g.iterations.map((iter) => {
-            if (!movingIds.has(iter.id)) return iter;
-            const startPos = dragStartPositions.current.get(iter.id) || iter.position;
-            return { ...iter, position: { x: startPos.x + dx, y: startPos.y + dy } };
-          }),
-        }))
-      );
-    },
-    [canvas.scale, selectedIds]
-  );
-
-  const handleFrameDragEnd = useCallback(() => {
-    dragRef.current = null;
-    setDraggingId(null);
-  }, []);
-
-  const canPan = spaceHeld && !draggingId;
-  const isSelectMode = toolMode === "select" && !spaceHeld;
-
-  const allIterations = groups.flatMap((g) => g.iterations.map((iter) => ({ ...iter, groupId: g.id })));
+  }, [setGroups]);
 
   return (
     <div className="h-screen w-screen overflow-hidden relative select-none">
-      {/* Canvas layer — this is what pans/zooms */}
-      <div
-        ref={combinedCanvasRef}
-        className={`absolute inset-0 canvas-dots ${
-          canPan ? "cursor-grab active:cursor-grabbing" : ""
-        } ${toolMode === "comment" && !spaceHeld ? "cursor-crosshair" : "cursor-default"}`}
-        onMouseDown={(e) => {
-          if (canPan) {
-            canvas.onMouseDown(e);
-            return;
-          }
-          if (isSelectMode && !draggingId) {
-            // Start rubber band selection on empty canvas
-            if (!e.shiftKey) setSelectedIds(new Set());
-            setRubberBand({ startX: e.clientX, startY: e.clientY, currentX: e.clientX, currentY: e.clientY });
-          }
-        }}
-        onMouseMove={(e) => {
-          if (draggingImageId) {
-            handleImageDragMove(e);
-          } else if (draggingId) {
-            handleFrameDragMove(e);
-          } else if (rubberBand) {
-            setRubberBand((prev) => prev ? { ...prev, currentX: e.clientX, currentY: e.clientY } : null);
-          } else {
-            canvas.onMouseMove(e);
-          }
-        }}
-        onMouseUp={() => {
-          if (draggingImageId) {
-            handleImageDragEnd();
-          } else if (draggingId) {
-            handleFrameDragEnd();
-          } else if (rubberBand) {
-            // Calculate rubber band rect in canvas coordinates
-            const rb = rubberBand;
-            const minScreenX = Math.min(rb.startX, rb.currentX);
-            const maxScreenX = Math.max(rb.startX, rb.currentX);
-            const minScreenY = Math.min(rb.startY, rb.currentY);
-            const maxScreenY = Math.max(rb.startY, rb.currentY);
+      <CanvasArea
+        canvas={canvas}
+        onRemix={pipeline.handleRemix}
+      />
 
-            // Only select if dragged at least 5px (not just a click)
-            if (maxScreenX - minScreenX > 5 || maxScreenY - minScreenY > 5) {
-              // Convert screen rect to canvas coordinates
-              const toCanvasX = (sx: number) => (sx - canvas.offset.x) / canvas.scale;
-              const toCanvasY = (sy: number) => (sy - canvas.offset.y) / canvas.scale;
-              const canvasMinX = toCanvasX(minScreenX);
-              const canvasMaxX = toCanvasX(maxScreenX);
-              const canvasMinY = toCanvasY(minScreenY);
-              const canvasMaxY = toCanvasY(maxScreenY);
-
-              const newSelected = new Set(selectedIds);
-              // Hit test frames
-              for (const iter of allIterations) {
-                const ix = iter.position.x;
-                const iy = iter.position.y;
-                const iw = iter.width || FRAME_WIDTH;
-                const ih = iter.height || 300;
-                if (ix + iw > canvasMinX && ix < canvasMaxX && iy + ih > canvasMinY && iy < canvasMaxY) {
-                  newSelected.add(iter.id);
-                }
-              }
-              // Hit test canvas images
-              for (const img of canvasImages) {
-                const ix = img.position.x;
-                const iy = img.position.y;
-                if (ix + img.width > canvasMinX && ix < canvasMaxX && iy + img.height > canvasMinY && iy < canvasMaxY) {
-                  newSelected.add(img.id);
-                }
-              }
-              setSelectedIds(newSelected);
-            }
-            setRubberBand(null);
-          } else {
-            canvas.onMouseUp();
-          }
-        }}
-        onMouseLeave={() => {
-          if (draggingImageId) { handleImageDragEnd(); } else if (draggingId) { handleFrameDragEnd(); } else { setRubberBand(null); canvas.onMouseUp(); }
-        }}
-        onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; }}
-        onDrop={(e) => {
-          e.preventDefault();
-          const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
-          if (files.length > 0) processImageFiles(files, e.clientX, e.clientY);
-        }}
-      >
-        {/* Transform layer — only this moves/scales */}
-        <div
-          style={{
-            transform: `translate(${canvas.offset.x}px, ${canvas.offset.y}px) scale(${canvas.scale})`,
-            transformOrigin: "0 0",
-            willChange: "transform",
-          }}
-        >
-          {/* Dropped reference images */}
-          {canvasImages.map((img) => (
-            <div
-              key={img.id}
-              className={`absolute group rounded-lg overflow-hidden shadow-md transition-shadow ${
-                selectedIds.has(img.id)
-                  ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg"
-                  : "border border-white/40 hover:shadow-lg"
-              } ${toolMode === "select" && !spaceHeld
-                ? (draggingImageId === img.id ? "cursor-grabbing shadow-xl ring-2 ring-blue-400/30" : "cursor-grab")
-                : ""
-              }`}
-              style={{
-                left: img.position.x,
-                top: img.position.y,
-                width: img.width,
-                height: img.height,
-              }}
-              onMouseDown={(e) => handleImageDragStart(img.id, e)}
-              onClick={(e) => {
-                if (toolMode !== "select" || spaceHeld) return;
-                e.stopPropagation();
-                if (e.shiftKey) {
-                  setSelectedIds((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(img.id)) next.delete(img.id);
-                    else next.add(img.id);
-                    return next;
-                  });
-                } else {
-                  setSelectedIds(new Set([img.id]));
-                }
-              }}
-            >
-              <img
-                src={img.dataUrl}
-                alt={img.name}
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-              <span className="absolute bottom-1 left-1 right-1 text-[9px] text-white bg-black/50 rounded px-1 py-0.5 truncate opacity-0 group-hover:opacity-100 transition-opacity">
-                {img.name}
-              </span>
-            </div>
-          ))}
-
-          {allIterations.map((iteration) => (
-            <DesignCard
-              key={iteration.id}
-              iteration={iteration}
-              isCommentMode={toolMode === "comment" && !spaceHeld}
-              isSelectMode={toolMode === "select" && !spaceHeld}
-              isDragging={draggingId === iteration.id}
-              isSelected={selectedIds.has(iteration.id)}
-              onSelect={(e?: React.MouseEvent) => {
-                if (e?.shiftKey) {
-                  setSelectedIds((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(iteration.id)) next.delete(iteration.id);
-                    else next.add(iteration.id);
-                    return next;
-                  });
-                } else {
-                  setSelectedIds(new Set([iteration.id]));
-                }
-              }}
-              onAddComment={handleAddComment}
-              onClickComment={handleClickComment}
-              onDragStart={(e) => handleFrameDragStart(iteration.id, e)}
-              onRemix={handleRemix}
-              scale={canvas.scale}
-              apiKey={settings.apiKey || undefined}
-              model={settings.model}
-              providerType={settings.providerType || undefined}
-              baseURL={settings.baseURL || undefined}
-              pipelineStatus={pipelineStages[iteration.id]}
-            />
-          ))}
-
-          {/* Pipeline status overlays */}
-          {allIterations.map((iteration) => {
-            const status = pipelineStages[iteration.id];
-            if (!status || status.stage === "done") return null;
-            return (
-              <PipelineStatusOverlay
-                key={`pipeline-${iteration.id}`}
-                status={status}
-                x={iteration.position.x}
-                y={iteration.position.y}
-                width={iteration.width || FRAME_WIDTH}
-                frameHeight={iteration.isLoading ? 320 : (iteration.height || 320)}
-              />
-            );
-          })}
-        </div>
-
-        {/* Empty state */}
-        {groups.length === 0 && canvasImages.length === 0 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold text-gray-300 mb-2">
-                Otto Canvas
-              </h1>
-              <p className="text-gray-400/70 text-sm">
-                Type a prompt below to generate designs
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Rubber band selection overlay */}
-      {rubberBand && (
-        <div
-          className="fixed pointer-events-none z-[60] border border-blue-400/50 bg-blue-400/10 rounded-sm"
-          style={{
-            left: Math.min(rubberBand.startX, rubberBand.currentX),
-            top: Math.min(rubberBand.startY, rubberBand.currentY),
-            width: Math.abs(rubberBand.currentX - rubberBand.startX),
-            height: Math.abs(rubberBand.currentY - rubberBand.startY),
-          }}
-        />
-      )}
-
-      {/* Fixed UI — OUTSIDE canvas transform, never moves/scales */}
       <Toolbar
-        mode={toolMode}
+        mode={useAtomValue(toolModeAtom)}
         onModeChange={setToolMode}
         scale={canvas.scale}
         onZoomIn={canvas.zoomIn}
@@ -1456,47 +148,51 @@ export default function Home() {
         hasFrames={groups.length > 0}
       />
 
-      <PromptBar onSubmit={handleGenerate} isGenerating={isGenerating} genStatus={genStatus} onCancel={() => abortRef.current?.abort()} imageCount={canvasImages.length} />
+      <PromptBar
+        onSubmit={pipeline.handleGenerate}
+        isGenerating={pipeline.isGenerating}
+        genStatus={pipeline.genStatus}
+        onCancel={() => pipeline.abortRef.current?.abort()}
+        imageCount={canvasImages.length}
+      />
 
-      {/* Dev mode build badge */}
       {showGitHash && (
         <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">
           {process.env.NEXT_PUBLIC_GIT_HASH}
         </div>
       )}
 
-      {/* Comment input popover */}
-      {commentDraft && (
+      {commentHandlers.commentDraft && (
         <CommentInput
           position={{
-            screenX: commentDraft.screenX,
-            screenY: commentDraft.screenY,
+            screenX: commentHandlers.commentDraft.screenX,
+            screenY: commentHandlers.commentDraft.screenY,
           }}
-          onSubmit={handleCommentSubmit}
-          onCancel={() => setCommentDraft(null)}
+          onSubmit={commentHandlers.handleCommentSubmit}
+          onCancel={() => commentHandlers.setCommentDraft(null)}
         />
       )}
 
-      {/* Active comment detail panel */}
-      {activeComment && (
+      {commentHandlers.activeComment && (
         <CommentThread
-          comment={activeComment}
-          onClose={() => { setActiveComment(null); setActiveCommentIterationId(null); }}
-          onReply={handleCommentReply}
+          comment={commentHandlers.activeComment}
+          onClose={() => {
+            commentHandlers.setActiveComment(null);
+            commentHandlers.setActiveCommentIterationId(null);
+          }}
+          onReply={commentHandlers.handleCommentReply}
         />
       )}
 
-      {/* Prompt library slide-out */}
       <PromptLibrary
         open={showLibrary}
         onClose={() => setShowLibrary(false)}
         onUsePrompt={(prompt) => {
           setShowLibrary(false);
-          handleGenerate(prompt);
+          pipeline.handleGenerate(prompt);
         }}
       />
 
-      {/* Settings modal */}
       {showSettings && (
         <SettingsModal
           settings={settings}
@@ -1508,7 +204,6 @@ export default function Home() {
         />
       )}
 
-      {/* Reset confirm dialog */}
       {showResetConfirm && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowResetConfirm(false)} />
@@ -1537,7 +232,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Onboarding: Welcome modal */}
       {onboarding.showWelcome && (
         <OnboardingModal
           onComplete={(keys) => {
@@ -1554,7 +248,6 @@ export default function Home() {
         />
       )}
 
-      {/* Onboarding: Guided tour */}
       {onboarding.showTour && (
         <GuidedTour
           onComplete={() => onboarding.completeTour()}
@@ -1562,7 +255,6 @@ export default function Home() {
         />
       )}
 
-      {/* Onboarding: Key banner (no API key set and not showing welcome modal) */}
       {onboarding.loaded && !settings.apiKey && !onboarding.showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
           <button
