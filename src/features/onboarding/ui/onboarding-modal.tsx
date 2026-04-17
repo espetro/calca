@@ -20,7 +20,7 @@ export function OnboardingModal({ onComplete, onDismiss }: OnboardingModalProps)
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-md" onClick={onDismiss} />
       <div className="relative bg-white/70 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[440px] max-w-[92vw] max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-6">
