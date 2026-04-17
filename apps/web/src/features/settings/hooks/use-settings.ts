@@ -119,6 +119,18 @@ export function useSettings() {
           providers = [envProvider, ...providers];
         }
 
+        // Auto-migrate stale settings: if user has env config but settings
+        // are pointing to anthropic without an API key, switch to env provider
+        const hasEnvConfig = !!DEFAULT_BASE_URL;
+        const isStaleAnthropic = parsed.providerType === "anthropic" && !parsed.apiKey;
+        if (hasEnvConfig && isStaleAnthropic && envProvider) {
+          parsed.providerType = envProvider.apiType;
+          parsed.baseURL = envProvider.baseUrl;
+          parsed.apiKey = envProvider.apiKey;
+          parsed.model = DEFAULT_MODEL;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+
         setSettingsState({
           apiKey: parsed.apiKey ?? DEFAULT_API_KEY,
           geminiKey: parsed.geminiKey ?? "",

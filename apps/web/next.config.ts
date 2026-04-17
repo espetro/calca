@@ -18,6 +18,9 @@ if (gitHash === "dev") {
 const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_GIT_HASH: gitHash,
+    NEXT_PUBLIC_AI_BASE_URL: process.env.NEXT_PUBLIC_AI_BASE_URL || "",
+    NEXT_PUBLIC_AI_API_KEY: process.env.NEXT_PUBLIC_AI_API_KEY || "",
+    NEXT_PUBLIC_AI_MODEL: process.env.NEXT_PUBLIC_AI_MODEL || "",
   },
 };
 
