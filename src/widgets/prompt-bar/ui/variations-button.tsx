@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Layers } from "lucide-react";
+import { Dices } from "lucide-react";
 
 interface VariationsButtonProps {
   value: number;
@@ -23,10 +23,29 @@ export function VariationsButton({ value, onChange }: VariationsButtonProps) {
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Variations"
-        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm hover:bg-white/15 transition-colors"
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
+          value !== 1
+            ? ""
+            : "bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200/50"
+        }`}
+        style={
+          value !== 1
+            ? {
+                backgroundColor: value === 2 ? "rgba(255,16,106,0.20)" : 
+                               value === 3 ? "rgba(255,16,106,0.40)" :
+                               value === 4 ? "rgba(255,16,106,0.65)" :
+                               "#FF106A",
+                color: value === 4 || value === 5 ? "#fff" : "#FF106A",
+                border: value === 2 || value === 3 ? "1px solid rgba(255,16,106,0.4)" : undefined
+              }
+            : undefined
+        }
       >
-        <Layers className="w-4 h-4 text-gray-400" />
-        <span className="text-sm text-gray-700">{value}</span>
+        <Dices className="w-3.5 h-3.5" />
+        <span>Variations</span>
+        {value !== 1 && (
+          <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px]">{value}</span>
+        )}
       </button>
       
       {isOpen && (

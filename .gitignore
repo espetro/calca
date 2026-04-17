@@ -35,6 +35,8 @@ next-env.d.ts
 coverage/
 .nyc_output/
 .turbo/
+dogfood-output/
+tmp/
 
 # ai specific
 .opencode/
