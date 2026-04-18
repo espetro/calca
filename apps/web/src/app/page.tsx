@@ -12,6 +12,7 @@ import { OnboardingModal, GuidedTour } from "@/features/onboarding";
 import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
+import { SummaryList } from "@/features/design/ui/summary-list";
 import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
 import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
 import { settingsAtom, isOwnKeyAtom } from "@/features/settings/state/settings-atoms";
@@ -154,6 +155,8 @@ export default function Home() {
         genStatus={pipeline.genStatus}
         onCancel={() => pipeline.abortRef.current?.abort()}
       />
+
+      <SummaryList />
 
       {showGitHash && (
         <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">

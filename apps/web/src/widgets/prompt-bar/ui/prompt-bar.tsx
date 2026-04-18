@@ -33,23 +33,6 @@ const ArrowUpIcon = () => (
   </svg>
 );
 
-const isVisionCapable = (providerType?: string, model?: string): boolean => {
-  if (!model) return false;
-  const visionModels = [
-    "gpt-4o",
-    "gpt-4-turbo",
-    "claude-3",
-    "gemini",
-    "llava",
-    "vision",
-    "multimodal",
-    "4o",
-    "gpt-4o-mini",
-  ];
-  const lowerModel = model.toLowerCase();
-  return visionModels.some((vm) => lowerModel.includes(vm));
-};
-
 interface PromptBarProps {
   onSubmit: (prompt: string) => void;
   isGenerating: boolean;
@@ -59,9 +42,9 @@ interface PromptBarProps {
 
 export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: PromptBarProps) {
   const [value, setValue] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [showCritiqueMode, setShowCritiqueMode] = useState(false);
   const [showVariations, setShowVariations] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleToggleVariations = () => {
@@ -91,6 +74,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   }, [setSettings]);
 
   const addImage = useCallback((image: { id: string; src: string; name?: string }) => {
+    setError(null);
     setSettings((prev) => ({
       ...prev,
       selectedImages: [...(prev.selectedImages || []), image],
@@ -98,6 +82,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   }, [setSettings]);
 
   const removeImage = useCallback((id: string) => {
+    setError(null);
     setSettings((prev) => ({
       ...prev,
       selectedImages: prev.selectedImages?.filter((img) => img.id !== id) || [],
@@ -149,9 +134,8 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   }, [handleSubmit, isGenerating, onCancel, value, navigateHistory]);
 
   const handleImageSelect = useCallback(async (file: File) => {
-    setError(null);
     if (file.size > 5 * 1024 * 1024) {
-      setError(`"${file.name}" exceeds 5MB limit`);
+      setError("Image must be 5MB or smaller");
       return;
     }
 
@@ -159,13 +143,24 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
     reader.onload = () => {
       const dataUrl = reader.result as string;
       if (!dataUrl.startsWith("data:image/")) {
-        setError(`"${file.name}" is not an image file`);
+        setError("Invalid image file");
         return;
       }
       addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
     };
     reader.readAsDataURL(file);
   }, [addImage]);
+
+  const isVisionModel = (model: string): boolean => {
+    const visionKeywords = ["vision", "gpt-4o", "gpt-4-turbo", "claude-3", "gemini"];
+    const lowerModel = model.toLowerCase();
+    return visionKeywords.some((keyword) => lowerModel.includes(keyword));
+  };
+
+  const showVisionWarning =
+    settings.selectedImages?.length > 0 &&
+    settings.model &&
+    !isVisionModel(settings.model);
 
   return (
     <>
@@ -198,20 +193,28 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
             /* Full input bar */
             <>
               <PromptInputHeader>
-                {settings.selectedImages.length > 0 && (
+                {/* Image pills */}
+                {settings.selectedImages?.length > 0 && (
                   <div className="flex items-center gap-2 mb-2">
                     {settings.selectedImages.map((image) => (
                       <ImagePill key={image.id} image={image} onRemove={removeImage} />
                     ))}
                   </div>
                 )}
-                {settings.selectedImages.length > 0 && !isVisionCapable(settings.providerType, settings.model) && (
-                  <div className="text-xs text-amber-500/80 mb-2">
-                    ⚠️ This model may not support image input
+                {error && (
+                  <div className="text-xs text-red-400 mt-1 mb-1">
+                    {error}
                   </div>
                 )}
-                {error && (
-                  <div className="text-xs text-red-600 mb-2">{error}</div>
+                {showVisionWarning && (
+                  <div className="text-xs text-amber-400/90 mt-1 mb-1 flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                      <line x1="12" y1="9" x2="12" y2="13"/>
+                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    This model may not support image input
+                  </div>
                 )}
               </PromptInputHeader>
 

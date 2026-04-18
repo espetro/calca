@@ -18,3 +18,10 @@ export {
   validateCritique,
   type CritiqueOutput,
 } from "./schemas/critique";
+
+export {
+  SummarySchema,
+  SummaryParsedSchema,
+  validateSummary,
+  type SummaryOutput,
+} from "./schemas/summary";

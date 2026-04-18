@@ -9,37 +9,35 @@ interface AddMediaButtonProps {
 }
 
 export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButtonProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      onFileSelect(file);
-      event.target.value = "";
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      onFileSelect(e.target.files[0]);
     }
+    e.target.value = "";
   };
 
-  const triggerFilePicker = () => {
+  const handleClick = () => {
     if (!disabled) {
-      inputRef.current?.click();
+      fileInputRef.current?.click();
     }
   };
 
   return (
     <label
-      onClick={triggerFilePicker}
-      className={`flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm cursor-pointer transition-colors ${
-        disabled
-          ? "opacity-50 cursor-not-allowed"
-          : "hover:bg-white/15"
+      onClick={handleClick}
+      aria-label="Add media"
+      className={`flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm cursor-pointer hover:bg-white/15 transition-colors ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
       <ImageIcon className="w-4 h-4 text-gray-400" />
       <input
-        ref={inputRef}
+        ref={fileInputRef}
         type="file"
         accept="image/*"
-        onChange={handleChange}
+        onChange={handleFileSelect}
         disabled={disabled}
         className="hidden"
       />

@@ -2,4 +2,5 @@ export { buildNewPrompt, buildRevisionPrompt, buildRevisionUserContent } from ".
 export { buildPlanPrompt } from "./plan";
 export { buildReviewPrompt } from "./review";
 export { buildCritiquePrompt } from "./critique";
+export { buildSummaryPrompt } from "./summary";
 export { buildVariationPrompt, VARIATION_STYLES } from "./generate";

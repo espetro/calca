@@ -11,12 +11,18 @@ export interface DesignIteration {
   isRegenerating?: boolean;
 }
 
+export interface SummaryData {
+  title: string;
+  rationale: string;
+}
+
 export interface GenerationGroup {
   id: string;
   prompt: string;
   iterations: DesignIteration[];
   position: import("./canvas").Point;
   createdAt: number;
+  summary?: SummaryData;
 }
 
 export interface CanvasImage {
