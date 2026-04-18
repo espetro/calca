@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
-import { useSettings } from "@/features/settings/hooks";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import {
   PromptInputContainer,
@@ -43,6 +42,7 @@ interface PromptBarProps {
 
 export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: PromptBarProps) {
   const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [showCritiqueMode, setShowCritiqueMode] = useState(false);
   const [showVariations, setShowVariations] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -69,11 +69,23 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
 
   const [settings, setSettings] = useAtom(settingsAtom);
 
-  const {
-    setIsIdeating,
-    addImage,
-    removeImage,
-  } = useSettings();
+  const setIsIdeating = useCallback((value: boolean) => {
+    setSettings((prev) => ({ ...prev, isIdeating: value }));
+  }, [setSettings]);
+
+  const addImage = useCallback((image: { id: string; src: string; name?: string }) => {
+    setSettings((prev) => ({
+      ...prev,
+      selectedImages: [...(prev.selectedImages || []), image],
+    }));
+  }, [setSettings]);
+
+  const removeImage = useCallback((id: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      selectedImages: prev.selectedImages?.filter((img) => img.id !== id) || [],
+    }));
+  }, [setSettings]);
 
   const { addToHistory, navigateHistory, resetHistoryIndex } = usePromptHistory({
     onSave: (prompt) => {
@@ -120,11 +132,21 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   }, [handleSubmit, isGenerating, onCancel, value, navigateHistory]);
 
   const handleImageSelect = useCallback(async (files: File[]) => {
+    setError(null);
     for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError(`"${file.name}" exceeds 5MB limit`);
+        continue;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         const dataUrl = reader.result as string;
-        addImage({ id: crypto.randomUUID(), src: dataUrl });
+        if (!dataUrl.startsWith("data:image/")) {
+          setError(`"${file.name}" is not an image file`);
+          return;
+        }
+        addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
       };
       reader.readAsDataURL(file);
     }
@@ -161,13 +183,15 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
             /* Full input bar */
             <>
               <PromptInputHeader>
-                {/* Image pills */}
                 {settings.selectedImages.length > 0 && (
                   <div className="flex items-center gap-2 mb-2">
-                    {settings.selectedImages.map((image: { id: string; src: string }) => (
+                    {settings.selectedImages.map((image) => (
                       <ImagePill key={image.id} image={image} onRemove={removeImage} />
                     ))}
                   </div>
+                )}
+                {error && (
+                  <div className="text-xs text-red-600 mb-2">{error}</div>
                 )}
               </PromptInputHeader>
 
