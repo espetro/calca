@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { Image } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 
 interface AddMediaButtonProps {
   onFileSelect: (file: File) => void;
@@ -9,38 +9,37 @@ interface AddMediaButtonProps {
 }
 
 export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButtonProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       onFileSelect(file);
-      e.target.value = ""; // Reset so same file can be selected again
+      event.target.value = "";
     }
   };
 
-  const handleClick = () => {
+  const triggerFilePicker = () => {
     if (!disabled) {
-      fileInputRef.current?.click();
+      inputRef.current?.click();
     }
   };
 
   return (
     <label
-      onClick={handleClick}
-      aria-label="Add image"
-      className={`flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 backdrop-blur-3xl border border-white/30 shadow-sm cursor-pointer transition-colors ${
+      onClick={triggerFilePicker}
+      className={`flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm cursor-pointer transition-colors ${
         disabled
           ? "opacity-50 cursor-not-allowed"
-          : "hover:bg-white/25"
+          : "hover:bg-white/15"
       }`}
     >
-      <Image className="w-4 h-4 text-gray-400" />
+      <ImageIcon className="w-4 h-4 text-gray-400" />
       <input
-        ref={fileInputRef}
+        ref={inputRef}
         type="file"
         accept="image/*"
-        onChange={handleFileSelect}
+        onChange={handleChange}
         disabled={disabled}
         className="hidden"
       />

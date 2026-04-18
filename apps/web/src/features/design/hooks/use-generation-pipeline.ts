@@ -370,9 +370,13 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
 
   const handleGenerate = useCallback(
     async (prompt: string) => {
+      const promptBarImages = settings.selectedImages?.map((img) => img.src) || [];
+      const canvasImgDataUrls = canvasImages.length > 0
+        ? canvasImages.map((img) => img.dataUrl)
+        : [];
       const contextImages =
-        canvasImages.length > 0
-          ? canvasImages.map((img) => img.dataUrl)
+        promptBarImages.length > 0 || canvasImgDataUrls.length > 0
+          ? [...canvasImgDataUrls, ...promptBarImages]
           : undefined;
       setIsGenerating(true);
       setGenStatus("Planning concepts…");

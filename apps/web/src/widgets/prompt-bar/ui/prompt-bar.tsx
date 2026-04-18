@@ -33,6 +33,23 @@ const ArrowUpIcon = () => (
   </svg>
 );
 
+const isVisionCapable = (providerType?: string, model?: string): boolean => {
+  if (!model) return false;
+  const visionModels = [
+    "gpt-4o",
+    "gpt-4-turbo",
+    "claude-3",
+    "gemini",
+    "llava",
+    "vision",
+    "multimodal",
+    "4o",
+    "gpt-4o-mini",
+  ];
+  const lowerModel = model.toLowerCase();
+  return visionModels.some((vm) => lowerModel.includes(vm));
+};
+
 interface PromptBarProps {
   onSubmit: (prompt: string) => void;
   isGenerating: boolean;
@@ -186,6 +203,11 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     {settings.selectedImages.map((image) => (
                       <ImagePill key={image.id} image={image} onRemove={removeImage} />
                     ))}
+                  </div>
+                )}
+                {settings.selectedImages.length > 0 && !isVisionCapable(settings.providerType, settings.model) && (
+                  <div className="text-xs text-amber-500/80 mb-2">
+                    ⚠️ This model may not support image input
                   </div>
                 )}
                 {error && (
