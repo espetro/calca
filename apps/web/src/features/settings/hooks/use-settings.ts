@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
 import { FALLBACK_MODELS } from "../types";
-import { migrateSettings, MigratedSettings } from "../lib/migrate-settings";
+import { migrateSettings } from "../lib/migrate-settings";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 import { useProbeModels } from "./use-probe-models";
 

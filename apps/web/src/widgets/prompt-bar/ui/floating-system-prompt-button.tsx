@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import { MessageSquare } from "lucide-react";
 import { useAtom } from "jotai";
 import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";
+import { useClickOutside } from "@/shared/hooks/use-click-outside";
 
 export function FloatingSystemPromptButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,26 +13,8 @@ export function FloatingSystemPromptButton() {
   const [settings] = useAtom(settingsAtom);
   const [, updateSettings] = useAtom(updateSettingsAtom);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(e.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  const handleClose = useCallback(() => setIsOpen(false), []);
+  useClickOutside([panelRef, buttonRef], isOpen, handleClose);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateSettings({

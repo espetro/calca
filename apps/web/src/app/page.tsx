@@ -153,7 +153,6 @@ export default function Home() {
         isGenerating={pipeline.isGenerating}
         genStatus={pipeline.genStatus}
         onCancel={() => pipeline.abortRef.current?.abort()}
-        imageCount={canvasImages.length}
       />
 
       {showGitHash && (

@@ -39,10 +39,9 @@ interface PromptBarProps {
   isGenerating: boolean;
   genStatus?: string;
   onCancel?: () => void;
-  imageCount?: number;
 }
 
-export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCount = 0 }: PromptBarProps) {
+export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: PromptBarProps) {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -54,7 +53,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel, imageCo
     removeImage,
   } = useSettings();
 
-  const { history, addToHistory, navigateHistory, resetHistoryIndex, clearDraft } = usePromptHistory({
+  const { addToHistory, navigateHistory, resetHistoryIndex } = usePromptHistory({
     onSave: (prompt) => {
       setValue("");
       if (inputRef.current) inputRef.current.style.height = "auto";

@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import { Palette } from "lucide-react";
 import { useAtom } from "jotai";
 import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";
 import { SYSTEM_PROMPT_PRESETS } from "@/features/settings/lib/presets";
+import { useClickOutside } from "@/shared/hooks/use-click-outside";
 
 export function FloatingPresetButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,26 +14,8 @@ export function FloatingPresetButton() {
   const [settings] = useAtom(settingsAtom);
   const [, updateSettings] = useAtom(updateSettingsAtom);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(e.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  const handleClose = useCallback(() => setIsOpen(false), []);
+  useClickOutside([panelRef, buttonRef], isOpen, handleClose);
 
   const handlePresetClick = (presetId: string) => {
     const preset = SYSTEM_PROMPT_PRESETS.find((p) => p.id === presetId);
