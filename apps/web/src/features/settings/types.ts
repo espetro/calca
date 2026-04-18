@@ -20,6 +20,7 @@ export interface ProviderConfig {
 export interface SelectedImage {
   id: string;
   src: string;
+  name?: string;
 }
 
 export interface Settings {
