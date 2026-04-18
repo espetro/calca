@@ -12,7 +12,14 @@ const DEFAULT_MODEL = "claude-opus-4-6";
 
 export async function handleSummary(req: NextRequest) {
   try {
-    const { html, prompt, labels, model, apiKey, providerType, baseURL } = await req.json();
+    const body = await req.json();
+    if (!body.html || !body.prompt) {
+      return NextResponse.json(
+        { error: "Missing required fields: html, prompt" },
+        { status: 400 }
+      );
+    }
+    const { html, prompt, labels, model, apiKey, providerType, baseURL } = body;
     const useModel = model || DEFAULT_MODEL;
 
     const { stripped } = stripBase64Images(html);
