@@ -37,8 +37,8 @@ export async function handleSummary(req: NextRequest) {
       const validated = validateSummary(parsed);
       return NextResponse.json({ summary: validated });
     } catch (validationErr) {
-      console.warn("Summary validation failed, returning raw output:", validationErr);
-      return NextResponse.json({ summary: raw });
+      console.warn("Summary validation failed:", validationErr);
+      return NextResponse.json({ summary: undefined });
     }
   } catch (err) {
     console.error("Summary error:", err);

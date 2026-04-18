@@ -40,10 +40,7 @@ export function SummaryList() {
               {hasSummary ? (
                 <span className="text-emerald-500 text-sm font-bold">✓</span>
               ) : (
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-gray-400" />
-                </span>
+                <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
               )}
               <span
                 className={`text-[13px] truncate ${

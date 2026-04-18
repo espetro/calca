@@ -13,12 +13,6 @@ export function SummaryDialog({ groupId, onClose }: SummaryDialogProps) {
   const [groups] = useAtom(groupsAtom);
   const group = groups.find((g) => g.id === groupId);
 
-  if (!group || !group.summary) {
-    return null;
-  }
-
-  const { title, rationale } = group.summary;
-
   useEffect(function handleEscapeKey() {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -28,6 +22,12 @@ export function SummaryDialog({ groupId, onClose }: SummaryDialogProps) {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
+
+  if (!group || !group.summary) {
+    return null;
+  }
+
+  const { title, rationale } = group.summary;
 
   return (
     <div
