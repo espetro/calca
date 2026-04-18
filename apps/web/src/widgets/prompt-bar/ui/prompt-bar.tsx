@@ -43,6 +43,7 @@ interface PromptBarProps {
 
 export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: PromptBarProps) {
   const [value, setValue] = useState("");
+  const [showCritiqueMode, setShowCritiqueMode] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const [settings, setSettings] = useAtom(settingsAtom);
@@ -171,8 +172,10 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
 
                 <div className="flex items-center gap-2">
                   <CritiqueModeButton
-                    active={settings.quickMode}
-                    onClick={() => setSettings((prev) => ({ ...prev, quickMode: !prev.quickMode }))}
+                    quickMode={settings.quickMode}
+                    onQuickModeChange={(quickMode) => setSettings((prev) => ({ ...prev, quickMode }))}
+                    showCritiqueMode={showCritiqueMode}
+                    onToggle={() => setShowCritiqueMode(!showCritiqueMode)}
                   />
                   <button
                     onClick={() => setIsIdeating(!settings.isIdeating)}
