@@ -13,6 +13,7 @@ import {
 } from "@/features/design/state/generation-atoms";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import { DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
+import { fetchSummary } from "@/features/design/api/fetch-summary";
 import type {
   DesignIteration,
   GenerationGroup,
@@ -663,6 +664,39 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
           );
         }
       } finally {
+        if (!quickMode) {
+          const summaryController = new AbortController();
+          setGroups((prev) => {
+            const group = prev.find((g) => g.id === groupId);
+            const lastIteration = group?.iterations[group.iterations.length - 1];
+
+            if (group && lastIteration?.html) {
+              fetchSummary({
+                html: lastIteration.html,
+                prompt: group.prompt,
+                labels: group.iterations.map((it) => it.label).filter(Boolean),
+                signal: summaryController.signal,
+              })
+                .then((result) => {
+                  if (result.summary) {
+                    setGroups((prev2) =>
+                      prev2.map((g) =>
+                        g.id === groupId
+                          ? { ...g, summary: result.summary }
+                          : g
+                      )
+                    );
+                  }
+                })
+                .catch((err) => {
+                  console.warn("Summary generation failed:", err);
+                });
+            }
+
+            return prev;
+          });
+        }
+
         abortRef.current = null;
         setIsGenerating(false);
         setGenStatus("");
