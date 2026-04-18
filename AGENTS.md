@@ -59,19 +59,19 @@ git worktree add .worktrees/feature-name feat/feature-name
 git worktree add feature-name feat/feature-name
 ```
 
-### Worktree-Local Sisyphus State
+### Worktree-Local Agent State
 
-When running in a worktree, agents **must** use a worktree-local boulder path instead of the project-wide `.sisyphus/boulder.json`. This prevents parallel agents in different worktrees from overwriting each other's state.
+Some AI Agents cache the session state in a file, like `boulder.json`. When running in a worktree, agents **must** use a worktree-local boulder path instead of the project-wide one e.g. `.agents/boulder.json`. This prevents parallel agents in different worktrees from overwriting each other's state. Take for example:
 
 ```bash
 # ✅ Correct — worktree-local state
 .worktrees/feature-name/.sisyphus/boulder.json
 
 # ❌ Wrong — project-wide state (shared across all worktrees)
-.sisyphus/boulder.json
+.agents/boulder.json
 ```
 
-Agents running from the main worktree may use `.sisyphus/boulder.json` as normal.
+Agents running from the main worktree may use the project-wide session state cache e.g. `.agents/boulder.json` as normal.
 
 ### Cross-Package Import Rules
 

@@ -84,7 +84,14 @@ Try these to get started:
 
 ## License
 
-See [LICENSE](LICENSE) for details.
+This project uses a dual-license open-core model:
+
+- **Core** (`apps/*`, `packages/core`, `packages/shared`, etc.): [AGPL-3.0](LICENSE) — free, open-source software
+- **Enterprise/Pro** (`packages/pro/`): [Elastic License v2](packages/pro/LICENSE) — proprietary with usage restrictions
+
+See [LICENSE](LICENSE) and [packages/pro/LICENSE](packages/pro/LICENSE) for full terms.
+
+Gosto was originally forked from [DesignBuddy Canvas](https://github.com/stratuslabs/designbuddy-canvas) (MIT-licensed). See [NOTICE](NOTICE) for attribution.
 
 ## Built With
 

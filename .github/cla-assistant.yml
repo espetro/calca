@@ -2,6 +2,9 @@
 # See: https://github.com/cla-assistant/cla-assistant
 
 cla:
+  # Repository identifier
+  repo: espetro/gosto
+
   # Path to the CLA document in the repository
   path: CLA.md
 
