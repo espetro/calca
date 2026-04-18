@@ -257,7 +257,7 @@ export default function Home() {
         />
       )}
 
-      {onboarding.loaded && !settings.apiKey && !onboarding.showWelcome && (
+      {onboarding.loaded && !isOwnKey && !onboarding.showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
           <button
             onClick={() => setShowSettings(true)}

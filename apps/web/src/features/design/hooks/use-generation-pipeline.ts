@@ -12,6 +12,7 @@ import {
   genStatusAtom,
 } from "@/features/design/state/generation-atoms";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
+import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
 import { DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
 import { fetchSummary } from "@/features/design/api/fetch-summary";
 import type {
@@ -19,6 +20,7 @@ import type {
   GenerationGroup,
   Point,
 } from "@/shared/types";
+import { useMemo } from "react";
 
 const H_GAP = 60;
 const GROUP_GAP = 120;
@@ -74,6 +76,10 @@ interface CanvasLike {
 export const useGenerationPipeline = (canvas: CanvasLike) => {
   const [groups, setGroups] = useAtom(groupsAtom);
   const settings = useAtomValue(settingsAtom);
+  const derived = useMemo(
+    () => deriveProviderFields(settings.providers, settings.model),
+    [settings.providers, settings.model]
+  );
   const canvasImages = useAtomValue(canvasImagesAtom);
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const [pipelineStages, setPipelineStages] = useAtom(pipelineStagesAtom);
@@ -160,10 +166,10 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         body: {
           prompt,
           style,
-          model: settings.model,
-          apiKey: settings.apiKey || undefined,
-          providerType: settings.providerType || undefined,
-          baseURL: settings.baseURL || undefined,
+          model: derived.model,
+          apiKey: derived.apiKey || undefined,
+          providerType: derived.providerType || undefined,
+          baseURL: derived.baseURL || undefined,
           systemPrompt: settings.systemPrompt || undefined,
           critique,
           availableSources,
@@ -281,10 +287,10 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
               prompt,
               width,
               height,
-              model: settings.model,
-              apiKey: settings.apiKey || undefined,
-              providerType: settings.providerType || undefined,
-              baseURL: settings.baseURL || undefined,
+              model: derived.model,
+              apiKey: derived.apiKey || undefined,
+              providerType: derived.providerType || undefined,
+              baseURL: derived.baseURL || undefined,
             },
             signal,
           })) as { html?: string };
@@ -331,10 +337,10 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
             body: {
               html: htmlForCritique,
               prompt,
-              model: settings.model,
-              apiKey: settings.apiKey || undefined,
-              providerType: settings.providerType || undefined,
-              baseURL: settings.baseURL || undefined,
+              model: derived.model,
+              apiKey: derived.apiKey || undefined,
+              providerType: derived.providerType || undefined,
+              baseURL: derived.baseURL || undefined,
             },
             signal,
           })) as { critique?: string };
@@ -354,14 +360,14 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
       };
     },
     [
-      settings.apiKey,
-      settings.model,
+      derived.apiKey,
+      derived.model,
+      derived.providerType,
+      derived.baseURL,
       settings.systemPrompt,
       settings.geminiKey,
       settings.unsplashKey,
       settings.openaiKey,
-      settings.providerType,
-      settings.baseURL,
       quickMode,
       setPipelineStages,
       setGroups,
@@ -395,10 +401,10 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
           const plan = await planConceptsMutation.mutateAsync({
             prompt,
             count: iterationCount,
-            apiKey: settings.apiKey || undefined,
-            model: settings.model,
-            providerType: settings.providerType || undefined,
-            baseURL: settings.baseURL || undefined,
+            apiKey: derived.apiKey || undefined,
+            model: derived.model,
+            providerType: derived.providerType || undefined,
+            baseURL: derived.baseURL || undefined,
             signal: controller.signal,
           });
           concepts = plan.concepts;

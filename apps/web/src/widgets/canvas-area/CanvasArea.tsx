@@ -22,11 +22,13 @@ import {
   commentDraftAtom,
 } from "@/features/design/state/comment-atoms";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
+import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
 import type {
   DesignIteration,
   Point,
 } from "@/shared/types";
 import { RubberBandOverlay } from "@/widgets/rubber-band-selection";
+import { useMemo } from "react";
 
 type CanvasHandle = ReturnType<typeof useCanvas>;
 
@@ -47,6 +49,10 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
   const pipelineStages = useAtomValue(pipelineStagesAtom);
   const settings = useAtomValue(settingsAtom);
+  const derived = useMemo(
+    () => deriveProviderFields(settings.providers, settings.model),
+    [settings.providers, settings.model]
+  );
   const setActiveComment = useSetAtom(activeCommentAtom);
   const setActiveCommentIterationId = useSetAtom(activeCommentIterationIdAtom);
   const setCommentDraft = useSetAtom(commentDraftAtom);
@@ -495,10 +501,10 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
             onDragStart={(e) => handleFrameDragStart(iteration.id, e)}
             onRemix={onRemix}
             scale={canvas.scale}
-            apiKey={settings.apiKey || undefined}
-            model={settings.model}
-            providerType={settings.providerType || undefined}
-            baseURL={settings.baseURL || undefined}
+            apiKey={derived.apiKey || undefined}
+            model={derived.model}
+            providerType={derived.providerType || undefined}
+            baseURL={derived.baseURL || undefined}
             pipelineStatus={pipelineStages[iteration.id]}
           />
         ))}
