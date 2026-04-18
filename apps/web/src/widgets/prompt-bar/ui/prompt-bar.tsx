@@ -131,25 +131,23 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
     }
   }, [handleSubmit, isGenerating, onCancel, value, navigateHistory]);
 
-  const handleImageSelect = useCallback(async (files: File[]) => {
+  const handleImageSelect = useCallback(async (file: File) => {
     setError(null);
-    for (const file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError(`"${file.name}" exceeds 5MB limit`);
-        continue;
-      }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result as string;
-        if (!dataUrl.startsWith("data:image/")) {
-          setError(`"${file.name}" is not an image file`);
-          return;
-        }
-        addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
-      };
-      reader.readAsDataURL(file);
+    if (file.size > 5 * 1024 * 1024) {
+      setError(`"${file.name}" exceeds 5MB limit`);
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      if (!dataUrl.startsWith("data:image/")) {
+        setError(`"${file.name}" is not an image file`);
+        return;
+      }
+      addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
+    };
+    reader.readAsDataURL(file);
   }, [addImage]);
 
   return (
@@ -208,7 +206,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
 
               <PromptInputFooter>
                 <div className="flex items-center gap-2">
-                  <AddMediaButton onSelect={handleImageSelect} />
+                  <AddMediaButton onFileSelect={handleImageSelect} disabled={isGenerating} />
                   <VariationsButton
                     conceptCount={settings.conceptCount}
                     onConceptCountChange={(count) => setSettings((prev) => ({ ...prev, conceptCount: count }))}
