@@ -44,7 +44,28 @@ interface PromptBarProps {
 export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: PromptBarProps) {
   const [value, setValue] = useState("");
   const [showCritiqueMode, setShowCritiqueMode] = useState(false);
+  const [showVariations, setShowVariations] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleToggleVariations = () => {
+    setShowVariations((prev) => {
+      const next = !prev;
+      if (next) {
+        setShowCritiqueMode(false);
+      }
+      return next;
+    });
+  };
+
+  const handleToggleCritiqueMode = () => {
+    setShowCritiqueMode((prev) => {
+      const next = !prev;
+      if (next) {
+        setShowVariations(false);
+      }
+      return next;
+    });
+  };
 
   const [settings, setSettings] = useAtom(settingsAtom);
 
@@ -165,8 +186,10 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                 <div className="flex items-center gap-2">
                   <AddMediaButton onSelect={handleImageSelect} />
                   <VariationsButton
-                    value={settings.conceptCount}
-                    onChange={(value) => setSettings((prev) => ({ ...prev, conceptCount: value }))}
+                    conceptCount={settings.conceptCount}
+                    onConceptCountChange={(count) => setSettings((prev) => ({ ...prev, conceptCount: count }))}
+                    showVariations={showVariations}
+                    onToggle={handleToggleVariations}
                   />
                 </div>
 
@@ -175,7 +198,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     quickMode={settings.quickMode}
                     onQuickModeChange={(quickMode) => setSettings((prev) => ({ ...prev, quickMode }))}
                     showCritiqueMode={showCritiqueMode}
-                    onToggle={() => setShowCritiqueMode(!showCritiqueMode)}
+                    onToggle={handleToggleCritiqueMode}
                   />
                   <button
                     onClick={() => setIsIdeating(!settings.isIdeating)}
