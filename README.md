@@ -49,10 +49,10 @@ For the multi-model pipeline (image generation + visual QA), also add your Gemin
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | No | Fallback API key for demo mode. Users can enter their own key in the UI. |
-| `NEXT_PUBLIC_GA_ID` | No | Google Analytics measurement ID. Only loads if set. |
+| Variable            | Required | Description                                                              |
+| ------------------- | -------- | ------------------------------------------------------------------------ |
+| `ANTHROPIC_API_KEY` | No       | Fallback API key for demo mode. Users can enter their own key in the UI. |
+| `NEXT_PUBLIC_GA_ID` | No       | Google Analytics measurement ID. Only loads if set.                      |
 
 ## Tech Stack
 
@@ -84,7 +84,7 @@ Try these to get started:
 
 ## License
 
-AGPL-3.0 — see [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE) for details.
 
 ## Built With
 

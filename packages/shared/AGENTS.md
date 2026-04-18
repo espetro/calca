@@ -295,6 +295,12 @@ if (!result.success) {
 
 ---
 
+## Licensing Note
+
+This package is AGPL-3.0 licensed. See root [AGENTS.md](../../AGENTS.md) for dual-license rules. The shared base layer must NEVER import from `packages/pro/`.
+
+---
+
 ## Related Guides
 
 - [apps/web/AGENTS.md](../../apps/web/AGENTS.md) — Web frontend usage

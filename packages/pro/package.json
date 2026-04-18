@@ -1,9 +1,13 @@
 {
-  "name": "@app/server",
+  "name": "@app/pro",
   "version": "0.1.0",
   "private": true,
-  "license": "AGPL-3.0",
   "type": "module",
+  "license": "LicenseRef-ELv2",
+  "description": "Gosto Enterprise/Pro features — Elastic License v2",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "dev": "echo 'dev: not yet implemented'",
     "build": "echo 'build: not yet implemented'",
@@ -12,7 +16,8 @@
     "lint": "echo 'lint: not yet implemented'",
     "validate": "echo 'validate: not yet implemented'"
   },
-  "dependencies": {
-    "@openfeature/server-sdk": "^1.20.2"
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

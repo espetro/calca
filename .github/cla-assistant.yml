@@ -1,0 +1,21 @@
+# CLA Assistant Configuration
+# See: https://github.com/cla-assistant/cla-assistant
+
+cla:
+  # Path to the CLA document in the repository
+  path: CLA.md
+
+  # Require re-check on new commits
+  recheck: true
+
+  # Allow contributors to sign via pull request comment
+  # (Optional - configure based on your CLA Assistant setup)
+  # allowlist:
+  #   - dependabot
+  #   - renovate
+
+  # The label to apply when CLA is signed
+  signedLabel: "cla-signed"
+
+  # The label to apply when CLA is not yet signed
+  unsignedLabel: "cla-unsigned"

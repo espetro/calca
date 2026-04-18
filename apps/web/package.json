@@ -2,6 +2,7 @@
   "name": "@app/web",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0",
   "type": "module",
   "scripts": {
     "dev": "portless run next dev",
@@ -15,6 +16,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.68",
     "@ai-sdk/google": "^3.0.61",
+    "@openfeature/web-sdk": "^1.7.3",
     "@tanstack/react-query": "^5.99.0",
     "@tanstack/react-query-devtools": "^5.99.0",
     "ai": "^6.0.156",

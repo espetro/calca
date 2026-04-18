@@ -542,6 +542,12 @@ describe("LayoutPipeline", () => {
 
 ---
 
+## Licensing Note
+
+This package is AGPL-3.0 licensed. See root [AGENTS.md](../../AGENTS.md) for dual-license rules. Core packages must NEVER import from `packages/pro/`.
+
+---
+
 ## Related Guides
 
 - [packages/shared/AGENTS.md](../shared/AGENTS.md) — Type definitions

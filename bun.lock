@@ -26,6 +26,9 @@
     "apps/server": {
       "name": "@app/server",
       "version": "0.1.0",
+      "dependencies": {
+        "@openfeature/server-sdk": "^1.20.2",
+      },
     },
     "apps/web": {
       "name": "@app/web",
@@ -33,6 +36,7 @@
       "dependencies": {
         "@ai-sdk/anthropic": "^3.0.68",
         "@ai-sdk/google": "^3.0.61",
+        "@openfeature/web-sdk": "^1.7.3",
         "@tanstack/react-query": "^5.99.0",
         "@tanstack/react-query-devtools": "^5.99.0",
         "ai": "^6.0.156",
@@ -77,6 +81,13 @@
       "name": "@app/desktop",
       "version": "0.1.0",
     },
+    "packages/pro": {
+      "name": "@app/pro",
+      "version": "0.1.0",
+      "devDependencies": {
+        "typescript": "^5.9.3",
+      },
+    },
     "packages/shared": {
       "name": "@app/shared",
       "version": "0.1.0",
@@ -110,6 +121,8 @@
     "@app/desktop": ["@app/desktop@workspace:packages/desktop"],
 
     "@app/landing": ["@app/landing@workspace:apps/landing"],
+
+    "@app/pro": ["@app/pro@workspace:packages/pro"],
 
     "@app/server": ["@app/server@workspace:apps/server"],
 
@@ -350,6 +363,12 @@
     "@nodelib/fs.stat": ["@nodelib/fs.stat@2.0.5", "", {}, "sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A=="],
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
+
+    "@openfeature/core": ["@openfeature/core@1.9.2", "", {}, "sha512-0lX0xYTflLrjiYNlareYmdV98xEddR5+PhcuoGvH+BMIqpZ2icAC7us9Uv86KRVqofXvpAUwpP32wgqmtUFs8Q=="],
+
+    "@openfeature/server-sdk": ["@openfeature/server-sdk@1.20.2", "", { "peerDependencies": { "@openfeature/core": "^1.9.2" } }, "sha512-JaaYhsX4CA/QTIXdQfDpD9zcxew5EHuWxJjL+Ctp3L4FXC2gEAZ3s1DaCJU6aFOF285dJH3zAoeU64EJvxCaAw=="],
+
+    "@openfeature/web-sdk": ["@openfeature/web-sdk@1.7.3", "", { "peerDependencies": { "@openfeature/core": "^1.9.2" } }, "sha512-WrerPh3KwtpyNGHtWfWgbBnIv3iyOimnsljXJnx2UMcFzQNmj3xgsUZRvE/gAb+BTgz22+kvks1EXA/DJRmhpg=="],
 
     "@opentelemetry/api": ["@opentelemetry/api@1.9.0", "", {}, "sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg=="],
 

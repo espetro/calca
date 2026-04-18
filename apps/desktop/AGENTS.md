@@ -337,6 +337,12 @@ bun run package
 
 ---
 
+## Licensing Note
+
+This app is AGPL-3.0 licensed. See root [AGENTS.md](../../AGENTS.md) for dual-license rules. Never statically import from `packages/pro/`.
+
+---
+
 ## Related Guides
 
 - [apps/web/AGENTS.md](../web/AGENTS.md) — Web frontend

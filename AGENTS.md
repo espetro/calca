@@ -9,6 +9,7 @@
 **Gosto** is a desktop-first AI design tool that transforms natural language prompts into polished HTML/CSS design variations on an infinite canvas.
 
 **Monorepo Structure:**
+
 ```
 gosto/
 ├── apps/
@@ -29,16 +30,16 @@ gosto/
 >
 > The monorepo structure diagram above describes the **target** architecture. The **actual** codebase differs today:
 >
-> | Area | Status |
-> |------|--------|
-> | **Active app** | The Next.js application lives in `apps/web/`, organized with **Feature-Sliced Design (FSD)** |
-> | **FSD features** | `canvas`, `design`, `settings`, `comments`, `export`, `onboarding` |
-> | **`packages/core/`** | ✅ Implemented — AI SDK v6 provider abstraction |
-> | **`packages/shared/`** | ✅ Implemented — types & contracts |
-> | **`apps/web/`** | ✅ Active — contains the full Next.js app with FSD features |
-> | **`apps/server/`** | Scaffolding only |
-> | **`apps/desktop/`** | Scaffolding only |
-> | **`packages/database/`** | Scaffolding only |
+> | Area                     | Status                                                                                       |
+> | ------------------------ | -------------------------------------------------------------------------------------------- |
+> | **Active app**           | The Next.js application lives in `apps/web/`, organized with **Feature-Sliced Design (FSD)** |
+> | **FSD features**         | `canvas`, `design`, `settings`, `comments`, `export`, `onboarding`                           |
+> | **`packages/core/`**     | ✅ Implemented — AI SDK v6 provider abstraction                                              |
+> | **`packages/shared/`**   | ✅ Implemented — types & contracts                                                           |
+> | **`apps/web/`**          | ✅ Active — contains the full Next.js app with FSD features                                  |
+> | **`apps/server/`**       | Scaffolding only                                                                             |
+> | **`apps/desktop/`**      | Scaffolding only                                                                             |
+> | **`packages/database/`** | Scaffolding only                                                                             |
 >
 > **Additional packages not in the target diagram:** `packages/config/`, `packages/logger/`, `packages/types/`, `apps/cli/`, `apps/landing/`
 
@@ -75,6 +76,7 @@ Agents running from the main worktree may use `.sisyphus/boulder.json` as normal
 ### Cross-Package Import Rules
 
 **Imports flow inward only:**
+
 ```
 apps/*      → imports from packages/*
 packages/*  → imports from packages/shared (base layer)
@@ -82,19 +84,20 @@ packages/shared → no internal imports
 ```
 
 **Never circular:**
+
 - ❌ `packages/core` → `apps/web`
 - ❌ `packages/db` → `packages/core`
 - ❌ `packages/shared` → `packages/core`
 
 ### File Naming Conventions
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| Components | `PascalCase.tsx` | `DesignFrame.tsx` |
-| Hooks | `useCamelCase.ts` | `useCanvas.ts` |
-| API Routes | `route.ts` | `app/api/plan/route.ts` |
-| Stores | `store.ts` or `index.ts` | `stores/canvas.ts` |
-| Utils | `camelCase.ts` | `utils/format.ts` |
+| Type       | Pattern                  | Example                 |
+| ---------- | ------------------------ | ----------------------- |
+| Components | `PascalCase.tsx`         | `DesignFrame.tsx`       |
+| Hooks      | `useCamelCase.ts`        | `useCanvas.ts`          |
+| API Routes | `route.ts`               | `app/api/plan/route.ts` |
+| Stores     | `store.ts` or `index.ts` | `stores/canvas.ts`      |
+| Utils      | `camelCase.ts`           | `utils/format.ts`       |
 
 ### TypeScript Strict Mode
 
@@ -114,19 +117,62 @@ Always enabled. No exceptions.
 
 ---
 
+## Licensing & Open-Core Architecture
+
+This project uses a dual-license open-core model:
+
+- **Core code** (everything outside `packages/pro/`) is licensed under **AGPL-3.0**
+- **Pro/EE code** (inside `packages/pro/`) is licensed under **Elastic License v2 (ELv2)**
+
+### Boundary Rules (MUST follow)
+
+**Import direction**
+
+- AGPL core code must NEVER statically `import` from `packages/pro/`
+- Pro code MAY import from AGPL core
+- Never create a bridge between AGPL and Pro code unless explicitly asked
+
+**File placement**
+
+- New features go in AGPL core by default
+- Only place code in `packages/pro/` if explicitly asked to create a Pro/EE feature
+- Never move files from AGPL core into `packages/pro/` unless explicitly instructed
+- Never move files from `packages/pro/` into AGPL core
+
+**File headers**
+
+- Every new file in `packages/pro/` must have this header:
+  ```
+  // Copyright (c) 2026 Joaquin Terrasa. All rights reserved.
+  // Licensed under the Elastic License v2. See packages/pro/LICENSE for details.
+  ```
+
+**package.json**
+
+- AGPL packages use `"license": "AGPL-3.0"`
+- The Pro package uses `"license": "LicenseRef-ELv2"`
+- Never change these fields without being explicitly asked
+
+**CLA & contributions**
+
+- All new code you generate is authored by the project owner and does not require CLA
+- If suggesting copy-pasting code from external sources, flag the original license explicitly
+
+---
+
 ## Tech Stack Overview
 
-| Layer | Technology | Version |
-|-------|------------|---------|
-| Runtime | Bun | latest |
-| Monorepo | Bun Workspaces | latest |
-| Frontend | Next.js | 16.x |
-| UI | React | 19.x |
-| Styling | Tailwind CSS | 4.x |
-| Database | SQLite + Drizzle ORM | latest |
-| AI | AI SDK | latest |
-| Desktop | Electrobun | latest |
-| Testing | Vitest | latest |
+| Layer    | Technology           | Version |
+| -------- | -------------------- | ------- |
+| Runtime  | Bun                  | latest  |
+| Monorepo | Bun Workspaces       | latest  |
+| Frontend | Next.js              | 16.x    |
+| UI       | React                | 19.x    |
+| Styling  | Tailwind CSS         | 4.x     |
+| Database | SQLite + Drizzle ORM | latest  |
+| AI       | AI SDK               | latest  |
+| Desktop  | Electrobun           | latest  |
+| Testing  | Vitest               | latest  |
 
 ---
 
@@ -156,8 +202,8 @@ bun run typecheck
 
 Dev servers use [portless](https://github.com/vercel-labs/portless) for stable `.localhost` URLs instead of port numbers. First run auto-starts the HTTPS proxy on port 443 and generates a local CA (run `npx portless trust` if you see certificate warnings).
 
-| Script | URL |
-|--------|-----|
+| Script            | URL                       |
+| ----------------- | ------------------------- |
 | `bun run dev-web` | `https://gosto.localhost` |
 
 - **Git worktrees**: must live under `./.worktrees/` (see Universal Rules). Each gets a unique subdomain (e.g. `fix-ui.gosto.localhost`)
@@ -171,6 +217,7 @@ Dev servers use [portless](https://github.com/vercel-labs/portless) for stable `
 For development and testing without consuming paid API credits, the app defaults to a local LM Studio instance via the OpenAI-compatible provider.
 
 **Default environment values (already set in `.env` and `.env.local.example`):**
+
 ```bash
 NEXT_PUBLIC_AI_BASE_URL=http://localhost:1234/v1
 NEXT_PUBLIC_AI_API_KEY=""
@@ -178,6 +225,7 @@ NEXT_PUBLIC_AI_MODEL=lfm2.5-1.2b-instruct
 ```
 
 **Steps:**
+
 1. Install [LM Studio](https://lmstudio.ai/)
 2. Download and load the `lfm2.5-1.2b-instruct` model (or any other OpenAI-compatible model)
 3. Start the local server on port `1234`
@@ -190,6 +238,7 @@ These defaults are wired into `use-settings.ts` via `NEXT_PUBLIC_*` variables so
 ---
 
 ## E2E Testing
+
 Specs are written in Gauge Markdown and run via agent-browser.
 See [docs/testing/e2e-specs.md](docs/testing/e2e-specs.md) for conventions, built-in steps, and how to add new ones.
 
@@ -197,25 +246,28 @@ See [docs/testing/e2e-specs.md](docs/testing/e2e-specs.md) for conventions, buil
 
 Dive deeper into the area you're working on:
 
-| Package | Focus Area | Guide |
-|---------|------------|-------|
-| `apps/web` | Next.js frontend, canvas, components, API routes | [apps/web/AGENTS.md](./apps/web/AGENTS.md) |
-| `apps/server` | API endpoints, authentication, business logic | [apps/server/AGENTS.md](./apps/server/AGENTS.md) |
-| `apps/desktop` | Electrobun wrapper, native menus, system tray | [apps/desktop/AGENTS.md](./apps/desktop/AGENTS.md) |
-| `packages/shared` | Type definitions, API contracts, schemas | [packages/shared/AGENTS.md](./packages/shared/AGENTS.md) |
-| `packages/core` | AI providers, pipeline stages, prompts | [packages/core/AGENTS.md](./packages/core/AGENTS.md) |
+| Package           | Focus Area                                       | Guide                                                    |
+| ----------------- | ------------------------------------------------ | -------------------------------------------------------- |
+| `apps/web`        | Next.js frontend, canvas, components, API routes | [apps/web/AGENTS.md](./apps/web/AGENTS.md)               |
+| `apps/server`     | API endpoints, authentication, business logic    | [apps/server/AGENTS.md](./apps/server/AGENTS.md)         |
+| `apps/desktop`    | Electrobun wrapper, native menus, system tray    | [apps/desktop/AGENTS.md](./apps/desktop/AGENTS.md)       |
+| `packages/shared` | Type definitions, API contracts, schemas         | [packages/shared/AGENTS.md](./packages/shared/AGENTS.md) |
+| `packages/core`   | AI providers, pipeline stages, prompts           | [packages/core/AGENTS.md](./packages/core/AGENTS.md)     |
 
 ---
 
 ## Key Concepts
 
 ### VSA Anatomy
+
 Every AI design concept has three components:
+
 - **Vibe** — Overall mood ("warm and inviting", "bold and minimal")
 - **Style** — Design language ("glassmorphism", "flat design")
 - **Aesthetic** — Visual refinement ("elegant", "gritty")
 
 ### Pipeline Stages
+
 See [PRD v2 — Pipeline](docs/prd-v2.md) for full details.
 
 1. **Plan** — Determine concept count and visual directions
@@ -225,6 +277,7 @@ See [PRD v2 — Pipeline](docs/prd-v2.md) for full details.
 5. **Critique** — Generate improvement feedback
 
 ### Design Presets
+
 Three built-in presets: `ui-ux`, `marketing`, `brand` — see [PRD v2 — Presets](docs/prd-v2.md)
 
 ---

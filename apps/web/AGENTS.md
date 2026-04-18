@@ -126,6 +126,12 @@ bun test
 
 ---
 
+## Licensing Note
+
+This app is AGPL-3.0 licensed. See root [AGENTS.md](../../AGENTS.md) for dual-license rules. Never statically import from `packages/pro/`.
+
+---
+
 ## Related Guides
 
 - [packages/shared/AGENTS.md](../packages/shared/AGENTS.md) — Type definitions
