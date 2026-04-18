@@ -43,7 +43,7 @@ export function FloatingSystemPromptButton() {
       {isOpen && (
         <div
           ref={panelRef}
-          className="absolute right-full mr-3 top-0 z-[60] w-[320px] bg-white/20 backdrop-blur-3xl border border-white/30 rounded-2xl shadow-[0_12px_48px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] p-4"
+          className="absolute right-full mr-3 top-1/2 -translate-y-1/2 z-[60] w-[320px] max-h-[80vh] overflow-y-auto bg-white/20 backdrop-blur-3xl border border-white/30 rounded-2xl shadow-[0_12px_48px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <MessageSquare className="w-4 h-4 text-gray-600" />

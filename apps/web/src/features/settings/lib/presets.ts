@@ -2,12 +2,14 @@ export interface SystemPromptPreset {
   id: string;
   label: string;
   prompt: string;
+  icon: string;
 }
 
 export const SYSTEM_PROMPT_PRESETS: SystemPromptPreset[] = [
   {
     id: "uiux",
     label: "UI/UX Designer",
+    icon: "Layout",
     prompt: `You are a senior UI/UX designer generating production-quality HTML/CSS for app interfaces, dashboards, SaaS products, mobile screens, and component systems.
 
 OUTPUT RULES:
@@ -52,6 +54,7 @@ DON'T: Decorative gradients. Giant text. Marketing-style layouts. Placeholder lo
   {
     id: "marketing",
     label: "Marketing Website Designer",
+    icon: "Megaphone",
     prompt: `You are a senior marketing web designer generating production-quality HTML/CSS for landing pages, hero sections, feature grids, pricing tables, testimonial blocks, and conversion-focused websites.
 
 OUTPUT RULES:
@@ -100,6 +103,7 @@ DON'T: Cluttered layouts. Tiny text. Multiple competing CTAs. Generic stock-phot
   {
     id: "brand",
     label: "Brand Designer",
+    icon: "Sparkles",
     prompt: `You are a senior brand designer generating production-quality HTML/CSS for social media ads, display ads, email headers, promotional graphics, and brand assets at specific platform dimensions.
 
 OUTPUT RULES:
@@ -156,6 +160,7 @@ DON'T: Busy layouts. Small text. More than 3 colors. Gradients with many stops. 
   {
     id: "presentation",
     label: "Presentation Designer",
+    icon: "Presentation",
     prompt: `You are a senior presentation designer generating production-quality HTML/CSS for pitch decks, keynote slides, investor updates, and single-page presentation layouts.
 
 OUTPUT RULES:
@@ -204,6 +209,7 @@ DON'T: Walls of text. Bullet point lists longer than 4 items. Decorative clip ar
   {
     id: "email",
     label: "Email Designer",
+    icon: "Mail",
     prompt: `You are a senior email designer generating production-quality HTML/CSS for newsletters, marketing emails, product updates, event invitations, and transactional email templates.
 
 OUTPUT RULES:
@@ -255,6 +261,7 @@ DON'T: Multi-column complexity. Tiny text. Image-only emails. More than 2 CTAs p
   {
     id: "custom",
     label: "Custom",
+    icon: "Palette",
     prompt: "",
   },
 ];
