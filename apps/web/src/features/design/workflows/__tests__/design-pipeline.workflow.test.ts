@@ -47,6 +47,8 @@ vi.mock('../../lib/parse-html', () => ({
 import { streamAnthropic, generateWithFallback } from '@app/core/ai/client';
 import { generateImages } from '@app/core/pipeline/images';
 import { validateLayout, validateReview, validateSummary } from '@app/shared';
+import type { PlanOutput } from '../schemas/plan.schema';
+import type { SummaryOutput } from '../schemas/summary.schema';
 
 const mockWriter = () => ({
   write: vi.fn().mockResolvedValue(undefined),
@@ -242,9 +244,9 @@ describe('Design Pipeline Workflow (Integration)', () => {
       const abortSignal = mockAbortSignal();
 
       setupPlanMock(concepts);
-      const planResult = await planStep.execute({
+      const planResult = unwrap<PlanOutput>(await planStep.execute({
         inputData: { prompt: 'A pricing card with 3 tiers', mode: 'quick' },
-      } as any);
+      } as any));
 
       expect(planResult.count).toBe(2);
       expect(planResult.concepts).toHaveLength(2);
@@ -282,13 +284,13 @@ describe('Design Pipeline Workflow (Integration)', () => {
 
       setupSummaryMock({ title: 'Pricing Card', description: 'Clean and minimal' });
 
-      const summaryResult = await summaryStep.execute({
+      const summaryResult = unwrap<SummaryOutput>(await summaryStep.execute({
         inputData: {
           html: frames[frames.length - 1]!.html ?? '',
           prompt: 'A pricing card with 3 tiers',
           labels: frames.map((f) => f.label).filter(Boolean),
         },
-      } as any);
+      } as any));
 
       expect(summaryResult.summary).toBe(JSON.stringify({ title: 'Pricing Card', description: 'Clean and minimal' }));
     });
@@ -302,9 +304,9 @@ describe('Design Pipeline Workflow (Integration)', () => {
       const abortSignal = mockAbortSignal();
 
       setupPlanMock(concepts);
-      const planResult = await planStep.execute({
+      const planResult = unwrap<PlanOutput>(await planStep.execute({
         inputData: { prompt: 'A warm welcome card', mode: 'sequential' },
-      } as any);
+      } as any));
 
       expect(planResult.concepts[0]!.name).toBe('Warm');
 
@@ -340,13 +342,13 @@ describe('Design Pipeline Workflow (Integration)', () => {
 
       setupSummaryMock({ title: 'Warm Card', description: 'Soft tones' });
 
-      const summaryResult = await summaryStep.execute({
+      const summaryResult = unwrap<SummaryOutput>(await summaryStep.execute({
         inputData: {
           html: frames[frames.length - 1]!.html ?? '',
           prompt: 'A warm welcome card',
           labels: frames.map((f) => f.label).filter(Boolean),
         },
-      } as any);
+      } as any));
 
       expect(summaryResult.summary).toBe(JSON.stringify({ title: 'Warm Card', description: 'Soft tones' }));
     });

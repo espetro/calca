@@ -89,6 +89,8 @@ interface WorkflowStreamParams {
   openaiKey?: string;
   systemPrompt?: string;
   contextImages?: string[];
+  revision?: string;
+  existingHtml?: string;
 }
 
 export const useWorkflowStream = () => {
@@ -121,6 +123,8 @@ export const useWorkflowStream = () => {
         openaiKey,
         systemPrompt,
         contextImages,
+        revision,
+        existingHtml,
       } = params;
 
       abortRef.current?.abort();
@@ -187,6 +191,8 @@ export const useWorkflowStream = () => {
             openaiKey,
             systemPrompt,
             contextImages,
+            revision,
+            existingHtml,
           }),
           signal: controller.signal,
         });

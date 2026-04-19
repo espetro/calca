@@ -11,17 +11,13 @@ import {
 } from "@/features/design/state/generation-atoms";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import { DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
-import type { DesignIteration, GenerationGroup, Point } from "@/shared/types";
+import type { DesignIteration, Point } from "@/shared/types";
 import { useWorkflowStream } from "@/features/design/hooks/use-workflow-stream";
 
 const H_GAP = 60;
 const GROUP_GAP = 120;
 const ROW_HEIGHT = 700;
 const ITEM_WIDTH = 640;
-
-const ERROR_HTML = (msg: string) =>
-  `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ ${msg}</p></div>`;
 
 interface CanvasLike {
   offset: { x: number; y: number };
@@ -30,15 +26,15 @@ interface CanvasLike {
 }
 
 export const useGenerationPipeline = (canvas: CanvasLike) => {
-  const [groups, setGroups] = useAtom(groupsAtom);
+  const [groups] = useAtom(groupsAtom);
   const settings = useAtomValue(settingsAtom);
   const derived = useMemo(
     () => deriveProviderFields(settings.providers, settings.model),
     [settings.providers, settings.model],
   );
   const canvasImages = useAtomValue(canvasImagesAtom);
-  const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
-  const [pipelineStages, setPipelineStages] = useAtom(pipelineStagesAtom);
+  const [isGenerating] = useAtom(isGeneratingAtom);
+  const [pipelineStages] = useAtom(pipelineStagesAtom);
   const genStatus = useAtomValue(genStatusAtom);
   const abortRef = useRef<AbortController | null>(null);
   const { startStream } = useWorkflowStream();
@@ -114,82 +110,38 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
 
   const handleRemix = useCallback(
     async (sourceIteration: DesignIteration, remixPrompt: string) => {
-      setIsGenerating(true);
       const positions = getGridPositions(1);
-      const remixId = `remix-${Date.now()}`;
-      const groupId = `group-${remixId}`;
+      const groupId = `group-remix-${Date.now()}`;
 
-      const placeholder: DesignIteration = {
-        id: remixId,
-        html: "",
-        label: "Remixing...",
-        position: positions[0],
-        width: sourceIteration.width || FRAME_WIDTH,
-        height: sourceIteration.height || 300,
-        prompt: remixPrompt,
-        comments: [],
-        isLoading: true,
-      };
+      const promptBarImages = settings.selectedImages?.map((img) => img.src) || [];
+      const canvasImgDataUrls = canvasImages.length > 0 ? canvasImages.map((img) => img.dataUrl) : [];
+      const contextImages =
+        promptBarImages.length > 0 || canvasImgDataUrls.length > 0
+          ? [...canvasImgDataUrls, ...promptBarImages]
+          : undefined;
 
-      setGroups((prev) => [
-        ...prev,
-        { id: groupId, prompt: `Remix: ${remixPrompt}`, iterations: [placeholder], position: positions[0], createdAt: Date.now() },
-      ]);
-      setPipelineStages((prev) => ({ ...prev, [remixId]: { stage: "layout", progress: 0.2 } }));
+      await startStream({
+        prompt: sourceIteration.prompt || remixPrompt,
+        groupId,
+        positions,
+        conceptCount: 1,
+        mode: "quick",
+        model: derived.model,
+        apiKey: derived.apiKey || undefined,
+        baseURL: derived.baseURL || undefined,
+        providerType: derived.providerType || undefined,
+        geminiKey: settings.geminiKey || undefined,
+        unsplashKey: settings.unsplashKey || undefined,
+        openaiKey: settings.openaiKey || undefined,
+        systemPrompt: settings.systemPrompt || undefined,
+        contextImages,
+        revision: remixPrompt,
+        existingHtml: sourceIteration.html,
+      });
 
-      try {
-        const controller = new AbortController();
-        abortRef.current = controller;
-
-        const response = await fetch("/api/pipeline/layout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt: sourceIteration.prompt || "",
-            style: "remix",
-            model: derived.model,
-            apiKey: derived.apiKey || undefined,
-            providerType: derived.providerType || undefined,
-            baseURL: derived.baseURL || undefined,
-            systemPrompt: settings.systemPrompt || undefined,
-            revision: remixPrompt,
-            existingHtml: sourceIteration.html,
-          }),
-          signal: controller.signal,
-        });
-
-        if (!response.ok) throw new Error(`Layout request failed (${response.status})`);
-        const result = (await response.json()) as { html?: string; label?: string; width?: number; height?: number };
-
-        setPipelineStages((prev) => ({ ...prev, [remixId]: { stage: "done", progress: 1 } }));
-        setGroups((prev) =>
-          prev.map((g) =>
-            g.id !== groupId
-              ? g
-              : {
-                  ...g,
-                  iterations: [{ ...placeholder, html: result.html || "<p>Remix failed</p>", label: result.label || "Remix", width: result.width || placeholder.width, height: result.height || placeholder.height, isLoading: false }],
-                },
-          ),
-        );
-      } catch (err: unknown) {
-        if (err instanceof Error && err.name === "AbortError") {
-          setGroups((prev) =>
-            prev.map((g) => (g.id !== groupId ? g : { ...g, iterations: g.iterations.filter((iter) => !iter.isLoading) })).filter((g) => g.iterations.length > 0),
-          );
-        } else {
-          const msg = err instanceof Error ? err.message : "Remix failed";
-          setPipelineStages((prev) => ({ ...prev, [remixId]: { stage: "error", progress: 0 } }));
-          setGroups((prev) =>
-            prev.map((g) => (g.id !== groupId ? g : { ...g, iterations: [{ ...placeholder, html: ERROR_HTML(msg), isLoading: false }] })),
-          );
-        }
-      } finally {
-        abortRef.current = null;
-        setIsGenerating(false);
-      }
+      abortRef.current = null;
     },
-    [getGridPositions, setGroups, setPipelineStages, setIsGenerating, derived, settings],
+    [canvasImages, getGridPositions, settings, derived, startStream],
   );
 
   const handleRevision = useCallback(
@@ -204,12 +156,13 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
     ): Promise<{ html: string; label: string; width?: number; height?: number; critique?: string; comment?: string }> => {
       if (!revisionOpts) throw new Error("Revision requires revisionOpts");
 
-      const response = await fetch("/api/pipeline/layout", {
+      const response = await fetch("/api/workflow", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt,
-          style: "revision",
+          mode: "quick",
+          conceptCount: 1,
           model: derived.model,
           apiKey: derived.apiKey || undefined,
           providerType: derived.providerType || undefined,
@@ -221,10 +174,68 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         signal,
       });
 
-      if (!response.ok) throw new Error(`Layout request failed (${response.status})`);
-      const result = (await response.json()) as { html?: string; label?: string; width?: number; height?: number; comment?: string };
+      if (!response.ok) throw new Error(`Workflow request failed (${response.status})`);
 
-      return { html: result.html || "", label: result.label || "Revised", width: result.width, height: result.height, comment: result.comment };
+      const body = response.body;
+      if (!body) throw new Error("No response body");
+
+      const reader = body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let frameResult: { html: string; label: string; width?: number; height?: number; comment?: string; critique?: string } | null = null;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (signal.aborted) break;
+          if (!line || line.startsWith(":")) continue;
+
+          const colonIdx = line.indexOf(":");
+          if (colonIdx === -1) continue;
+
+          try {
+            const part = JSON.parse(line.slice(colonIdx + 1)) as { type: string; data?: Record<string, unknown> };
+            if (part.type === "data-workflow" && part.data) {
+              const steps = part.data.steps as Record<string, { name: string; status: string; output: unknown }> | undefined;
+              const collectStep = steps?.["collectResults"];
+              if (collectStep?.output && typeof collectStep.output === "object") {
+                const output = collectStep.output as { frames?: Array<{ html?: string; label?: string; width?: number; height?: number; comment?: string; critique?: string }> };
+                if (output.frames && output.frames.length > 0 && output.frames[0]) {
+                  const f = output.frames[0];
+                  frameResult = {
+                    html: f.html ?? "",
+                    label: f.label ?? "Revised",
+                    width: f.width,
+                    height: f.height,
+                    comment: f.comment,
+                    critique: f.critique,
+                  };
+                }
+              }
+            }
+          } catch {
+            // skip unparseable lines
+          }
+        }
+      }
+
+      if (!frameResult) {
+        throw new Error("No frame result received from workflow");
+      }
+
+      return {
+        html: frameResult.html || "",
+        label: frameResult.label || "Revised",
+        width: frameResult.width,
+        height: frameResult.height,
+        comment: frameResult.comment,
+        critique: frameResult.critique,
+      };
     },
     [derived, settings],
   );

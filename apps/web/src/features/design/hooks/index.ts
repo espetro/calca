@@ -1,2 +1,2 @@
-export { usePipelinePost } from "./use-pipeline-post";
-export { usePlanConcepts } from "./use-plan-concepts";
+export { useGenerationPipeline } from "./use-generation-pipeline";
+export { useWorkflowStream } from "./use-workflow-stream";

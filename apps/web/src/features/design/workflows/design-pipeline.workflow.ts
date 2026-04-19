@@ -28,6 +28,8 @@ const WorkflowInputSchema = z.object({
   openaiKey: z.string().optional(),
   systemPrompt: z.string().optional(),
   contextImages: z.array(z.string()).optional(),
+  revision: z.string().optional(),
+  existingHtml: z.string().optional(),
 });
 
 const FrameResultSchema = z.object({
@@ -90,6 +92,8 @@ const frameOrchestratorStep = createStep({
       openaiKey,
       systemPrompt,
       contextImages,
+      revision,
+      existingHtml,
     } = init;
 
     const isQuickMode = mode === 'quick';
@@ -125,6 +129,8 @@ const frameOrchestratorStep = createStep({
           baseURL,
           providerType,
           contextImages,
+          revision,
+          existingHtml,
         },
         writer,
         abortSignal,
