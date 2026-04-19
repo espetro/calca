@@ -1,10 +1,21 @@
 import { Mastra } from '@mastra/core'
+import { createWorkflow, createStep } from '@mastra/core/workflows'
+import { z } from 'zod'
 
-// Placeholder workflow - will be replaced with actual design pipeline
-const placeholderWorkflow = {
+const placeholderStep = createStep({
+  id: 'placeholder',
+  inputSchema: z.object({ prompt: z.string() }),
+  outputSchema: z.object({ status: z.string() }),
+  execute: async () => ({ status: 'placeholder' }),
+})
+
+const placeholderWorkflow = createWorkflow({
   id: 'design-pipeline',
-  execute: async () => ({ status: 'placeholder' as const }),
-}
+  inputSchema: z.object({ prompt: z.string() }),
+  outputSchema: z.object({ status: z.string() }),
+})
+  .then(placeholderStep)
+  .commit()
 
 export const mastra = new Mastra({
   workflows: {
