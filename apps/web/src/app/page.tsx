@@ -56,7 +56,7 @@ export default function Home() {
   }, [setSettings]);
 
   const pipeline = useGenerationPipeline(canvas);
-  const commentHandlers = useCommentHandlers(pipeline.runPipelineForFrame);
+  const commentHandlers = useCommentHandlers(pipeline.handleRevision);
 
   const handleExportOtto = useCallback(() => {
     const data = {
