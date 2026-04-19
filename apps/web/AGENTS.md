@@ -88,12 +88,12 @@ Key patterns:
 **Thin route handlers using shared packages:**
 
 ```typescript
-// app/api/pipeline/layout/route.ts
-import { generateLayout } from "@/features/design/api/layout";
+// app/api/workflow/route.ts
+import { runDesignWorkflow } from "@/features/design/lib/mastra-workflow";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const result = await generateLayout(body);
+  const result = await runDesignWorkflow(body);
   return Response.json(result);
 }
 ```
