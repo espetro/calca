@@ -342,4 +342,6 @@ export {
   WorkflowOutputSchema,
   FrameOrchestratorOutputSchema,
   FrameResultSchema,
+  frameOrchestratorStep,
+  collectResultsStep,
 };
