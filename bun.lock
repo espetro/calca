@@ -5,6 +5,7 @@
     "": {
       "name": "gosto",
       "dependencies": {
+        "@ai-sdk/provider-utils": "^4.0.23",
         "@mastra/ai-sdk": "^1.4.0",
         "@mastra/core": "^1.25.0",
         "type-fest": "^5.6.0",
