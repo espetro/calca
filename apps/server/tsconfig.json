@@ -2,10 +2,13 @@
   "extends": "../../packages/config/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../../",
+    "lib": ["ESNext", "DOM"],
+    "types": ["node"],
     "paths": {
       "@app/server/*": ["./src/*"],
       "@app/core/*": ["../../packages/core/src/*"],
+      "@app/shared": ["../../packages/shared/src/index.ts"],
       "@app/shared/*": ["../../packages/shared/src/*"]
     }
   },
