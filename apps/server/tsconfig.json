@@ -4,7 +4,9 @@
     "outDir": "dist",
     "rootDir": "src",
     "paths": {
-      "@app/server/*": ["./src/*"]
+      "@app/server/*": ["./src/*"],
+      "@app/core/*": ["../../packages/core/src/*"],
+      "@app/shared/*": ["../../packages/shared/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
