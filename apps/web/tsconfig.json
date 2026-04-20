@@ -7,6 +7,6 @@
       "@app/shared": ["../../packages/shared/src/index.ts"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/vite-env.d.ts", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

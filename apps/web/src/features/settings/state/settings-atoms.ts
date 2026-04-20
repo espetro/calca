@@ -5,22 +5,22 @@ import type { ProviderConfig, Settings } from "../types";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
 const STORAGE_KEY = "otto-settings";
-const DEFAULT_MODEL = process.env.NEXT_PUBLIC_AI_MODEL || "claude-opus-4-6";
-const DEFAULT_BASE_URL = process.env.NEXT_PUBLIC_AI_BASE_URL || "";
-const DEFAULT_API_KEY = process.env.NEXT_PUBLIC_AI_API_KEY || "";
+const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL || "claude-opus-4-6";
+const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
+const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";
 
 const ENV_PROVIDER_ID = "environment";
 
 const createEnvProvider = (): ProviderConfig | null => {
-  const baseUrl = process.env.NEXT_PUBLIC_AI_BASE_URL;
+  const baseUrl = import.meta.env.VITE_AI_BASE_URL;
   if (!baseUrl) return null;
 
-  const modelName = process.env.NEXT_PUBLIC_AI_MODEL;
+  const modelName = import.meta.env.VITE_AI_MODEL;
   return {
     id: ENV_PROVIDER_ID,
     apiType: "openai-compatible",
     baseUrl,
-    apiKey: process.env.NEXT_PUBLIC_AI_API_KEY || "",
+    apiKey: import.meta.env.VITE_AI_API_KEY || "",
     models: modelName
       ? [{ id: modelName, displayName: modelName, description: "" }]
       : [],

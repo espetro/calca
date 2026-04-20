@@ -1,9 +1,281 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useCallback, useEffect, useState } from "react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useCanvas } from "@/features/canvas";
+import { CanvasArea } from "@/widgets/canvas-area";
+import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
+import { Toolbar } from "@/widgets/toolbar";
+import { CommentInput, CommentThread } from "@/features/comments";
+import { SettingsModal } from "@/features/settings";
+import { OnboardingModal, GuidedTour } from "@/features/onboarding";
+import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
+import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
+import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
+import { SummaryList } from "@/features/design/ui/summary-list";
+import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
+import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
+import { settingsAtom, isOwnKeyAtom } from "@/features/settings/state/settings-atoms";
+import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
+import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
+import {
+  showResetConfirmAtom, toolModeAtom, showGitHashAtom, showLibraryAtom,
+} from "@/features/design/state/generation-atoms";
+import { useMountEffect } from "@/shared/utils/use-mount-effect";
 
-function IndexRoute() {
-  return <div>Hello</div>;
+export default function Home() {
+  const canvas = useCanvas();
+  const [settings, setSettings] = useAtom(settingsAtom);
+  const isOwnKey = useAtomValue(isOwnKeyAtom);
+  const probeModels = useProbeModels();
+  const onboarding = useOnboarding();
+
+  useKeyboardShortcuts();
+
+  const [groups, setGroups] = useAtom(groupsAtom);
+  const resetSession = useSetAtom(resetSessionAtom);
+  const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
+
+  useMountEffect(() => { hydrateGroups(setGroups); });
+  useMountEffect(() => { hydrateImages(setCanvasImages); });
+
+  const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
+  const setToolMode = useSetAtom(toolModeAtom);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
+  const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
+
+  useEffect(() => {
+    setShowGitHash(new URLSearchParams(window.location.search).has("devMode"));
+  }, [setShowGitHash]);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
+      setSettings((prev) => ({ ...prev, quickMode: true }));
+    }
+  }, [setSettings]);
+
+  useEffect(() => {
+    const handler = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("wheel", handler, { passive: false });
+    return () => document.removeEventListener("wheel", handler);
+  }, []);
+
+  const pipeline = useGenerationPipeline(canvas);
+  const commentHandlers = useCommentHandlers(pipeline.handleRevision);
+
+  const handleExportOtto = useCallback(() => {
+    const data = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      groups: groups.map((g) => ({
+        ...g,
+        iterations: g.iterations.map((iter) => ({
+          id: iter.id,
+          label: iter.label,
+          html: iter.html,
+          width: iter.width,
+          height: iter.height,
+          position: iter.position,
+        })),
+      })),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `canvas-${Date.now()}.otto`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [groups]);
+
+  const handleImportOtto = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".otto";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target?.result as string);
+          if (!data.groups || !Array.isArray(data.groups)) {
+            alert("Invalid .otto file");
+            return;
+          }
+          setGroups(data.groups.map((g: Record<string, unknown>) => ({
+            id: g.id || `group-${Date.now()}-${Math.random()}`,
+            prompt: g.prompt || "",
+            position: g.position || { x: 0, y: 0 },
+            createdAt: g.createdAt || Date.now(),
+            iterations: ((g.iterations as Record<string, unknown>[]) || []).map((iter: Record<string, unknown>) => ({
+              id: iter.id || `iter-${Date.now()}-${Math.random()}`,
+              html: iter.html || "",
+              label: iter.label || "Imported",
+              position: iter.position || { x: 0, y: 0 },
+              width: iter.width || 600,
+              height: iter.height || 400,
+              prompt: iter.prompt || g.prompt || "",
+              comments: iter.comments || [],
+              isLoading: false,
+              isRegenerating: false,
+            })),
+          })));
+        } catch {
+          alert("Failed to parse . otto file");
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }, [setGroups]);
+
+  return (
+    <div className="h-screen w-screen overflow-hidden relative select-none">
+      <CanvasArea
+        canvas={canvas}
+        onRemix={pipeline.handleRemix}
+      />
+
+      <Toolbar
+        mode={useAtomValue(toolModeAtom)}
+        onModeChange={setToolMode}
+        scale={canvas.scale}
+        onZoomIn={canvas.zoomIn}
+        onZoomOut={canvas.zoomOut}
+        onResetView={canvas.resetView}
+        onOpenSettings={() => setShowSettings(true)}
+        onNewSession={() => setShowResetConfirm(true)}
+        onExport={handleExportOtto}
+        onImport={handleImportOtto}
+        isOwnKey={isOwnKey}
+        model={settings.model}
+        providers={settings.providers}
+        hasFrames={groups.length > 0}
+      />
+
+      <PromptBar
+        onSubmit={pipeline.handleGenerate}
+        isGenerating={pipeline.isGenerating}
+        genStatus={pipeline.genStatus}
+        onCancel={() => pipeline.abortRef.current?.abort()}
+      />
+
+      <SummaryList />
+
+      {showGitHash && (
+        <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">
+          {import.meta.env.VITE_GIT_HASH}
+        </div>
+      )}
+
+      {commentHandlers.commentDraft && (
+        <CommentInput
+          position={{
+            screenX: commentHandlers.commentDraft.screenX,
+            screenY: commentHandlers.commentDraft.screenY,
+          }}
+          onSubmit={commentHandlers.handleCommentSubmit}
+          onCancel={() => commentHandlers.setCommentDraft(null)}
+        />
+      )}
+
+      {commentHandlers.activeComment && (
+        <CommentThread
+          comment={commentHandlers.activeComment}
+          onClose={() => {
+            commentHandlers.setActiveComment(null);
+            commentHandlers.setActiveCommentIterationId(null);
+          }}
+          onReply={commentHandlers.handleCommentReply}
+        />
+      )}
+
+      <PromptLibrary
+        open={showLibrary}
+        onClose={() => setShowLibrary(false)}
+        onUsePrompt={(prompt) => {
+          setShowLibrary(false);
+          pipeline.handleGenerate(prompt);
+        }}
+      />
+
+      {showSettings && (
+        <SettingsModal
+          settings={settings}
+          onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
+          onClose={() => setShowSettings(false)}
+          isOwnKey={isOwnKey}
+          providers={settings.providers}
+          testProvider={(config) => probeModels.mutateAsync({ apiKey: config.apiKey, providerType: config.apiType, baseURL: config.baseUrl })}
+        />
+      )}
+
+      {showResetConfirm && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowResetConfirm(false)} />
+          <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
+            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">Start new session?</h3>
+            <p className="text-[13px] text-gray-500 mb-6">This will clear your current canvas. Generated designs will be lost.</p>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setShowResetConfirm(false)}
+                className="text-[13px] font-medium text-gray-600 hover:text-gray-800 px-5 py-2.5 rounded-xl hover:bg-black/5 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  resetSession();
+                  canvas.resetView();
+                  setShowResetConfirm(false);
+                }}
+                className="text-[13px] font-medium text-white bg-red-500/90 hover:bg-red-500 px-5 py-2.5 rounded-xl transition-all"
+              >
+                Clear Canvas
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {onboarding.showWelcome && (
+        <OnboardingModal
+          onComplete={(keys) => {
+            setSettings((prev) => ({
+              ...prev,
+              apiKey: keys.anthropicKey,
+              geminiKey: keys.geminiKey,
+              unsplashKey: keys.unsplashKey,
+              openaiKey: keys.openaiKey,
+            }));
+            onboarding.completeKeys();
+          }}
+          onDismiss={() => onboarding.dismiss()}
+        />
+      )}
+
+      {onboarding.showTour && (
+        <GuidedTour
+          onComplete={() => onboarding.completeTour()}
+          hasFrames={groups.length > 0 && groups.some(g => g.iterations.some(i => !i.isLoading && i.html))}
+        />
+      )}
+
+      {onboarding.loaded && !isOwnKey && !onboarding.showWelcome && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
+          <button
+            onClick={() => setShowSettings(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-[12px] font-medium text-amber-700 hover:bg-amber-500/20 transition-all shadow-sm"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            Add your API key in Settings to start designing
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
-
-export const Route = createFileRoute("/")({
-  component: IndexRoute,
-});
