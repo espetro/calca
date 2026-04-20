@@ -15,3 +15,10 @@ app.route("/api/export", exportRoute);
 app.route("/api/probe-models", probeModelsRoute);
 
 export default app;
+
+Bun.serve({
+  port: 3001,
+  fetch: app.fetch,
+});
+
+console.log("Server running on http://localhost:3001");

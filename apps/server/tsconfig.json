@@ -4,7 +4,7 @@
     "outDir": "dist",
     "rootDir": "../../",
     "lib": ["ESNext", "DOM"],
-    "types": ["node"],
+    "types": ["node", "vitest", "bun"],
     "rewriteRelativeImportExtensions": true,
     "paths": {
       "@app/server/*": ["./src/*"],

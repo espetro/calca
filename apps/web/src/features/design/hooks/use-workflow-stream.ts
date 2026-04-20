@@ -11,6 +11,7 @@ import type {
   PipelineStage,
   Point,
 } from "@/shared/types";
+import { getApiUrl } from "@/lib/api-config";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per
@@ -175,7 +176,7 @@ export const useWorkflowStream = () => {
       );
 
       try {
-        const response = await fetch("/api/workflow", {
+        const response = await fetch(getApiUrl("/api/workflow"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

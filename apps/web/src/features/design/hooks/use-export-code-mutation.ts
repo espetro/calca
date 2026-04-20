@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { getApiUrl } from "@/lib/api-config";
 
 interface ExportCodeProps {
   html: string;
@@ -10,7 +11,7 @@ interface ExportCodeProps {
 }
 
 const exportCode = async (params: ExportCodeProps) => {
-  const res = await fetch("/api/export", {
+  const res = await fetch(getApiUrl("/api/export"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),

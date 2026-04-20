@@ -13,6 +13,7 @@ import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
 import type { DesignIteration, Point } from "@/shared/types";
 import { useWorkflowStream } from "@/features/design/hooks/use-workflow-stream";
+import { getApiUrl } from "@/lib/api-config";
 
 const H_GAP = 60;
 const GROUP_GAP = 120;
@@ -156,7 +157,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
     ): Promise<{ html: string; label: string; width?: number; height?: number; critique?: string; comment?: string }> => {
       if (!revisionOpts) throw new Error("Revision requires revisionOpts");
 
-      const response = await fetch("/api/workflow", {
+      const response = await fetch(getApiUrl("/api/workflow"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

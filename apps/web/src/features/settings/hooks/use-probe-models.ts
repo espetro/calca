@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { ModelInfo } from "../types";
 import { FALLBACK_MODELS } from "../types";
+import { getApiUrl } from "@/lib/api-config";
 
 interface ProbeModelsInput {
   apiKey?: string;
@@ -15,7 +16,7 @@ interface ProbeModelsOutput {
 
 const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> => {
   try {
-    const res = await fetch("/api/probe-models", {
+    const res = await fetch(getApiUrl("/api/probe-models"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
