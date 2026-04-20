@@ -5,6 +5,7 @@
     "rootDir": "../../",
     "lib": ["ESNext", "DOM"],
     "types": ["node"],
+    "rewriteRelativeImportExtensions": true,
     "paths": {
       "@app/server/*": ["./src/*"],
       "@app/core/*": ["../../packages/core/src/*"],
