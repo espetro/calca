@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev-web": "cd apps/web && portless run next dev",
+    "dev-web": "bun --cwd apps/web dev",
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
