@@ -42,6 +42,8 @@
       "dependencies": {
         "@ai-sdk/anthropic": "^3.0.68",
         "@ai-sdk/google": "^3.0.61",
+        "@app/core": "workspace:*",
+        "@app/shared": "workspace:*",
         "@openfeature/web-sdk": "^1.7.3",
         "@tanstack/react-query": "^5.99.0",
         "@tanstack/react-query-devtools": "^5.99.0",

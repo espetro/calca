@@ -10,7 +10,14 @@
     "./ai/providers": "./src/ai/providers.ts",
     "./ai/client": "./src/ai/client.ts",
     "./prompts": "./src/prompts/index.ts",
-    "./pipeline": "./src/pipeline/index.ts"
+    "./prompts/plan": "./src/prompts/plan.ts",
+    "./prompts/layout": "./src/prompts/layout.ts",
+    "./prompts/review": "./src/prompts/review.ts",
+    "./prompts/critique": "./src/prompts/critique.ts",
+    "./prompts/summary": "./src/prompts/summary.ts",
+    "./prompts/generate": "./src/prompts/generate.ts",
+    "./pipeline": "./src/pipeline/index.ts",
+    "./pipeline/images": "./src/pipeline/images.ts"
   },
   "scripts": {
     "build": "echo 'build: not yet implemented'",
