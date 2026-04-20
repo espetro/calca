@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCanvas } from "@/features/canvas";
 import { CanvasArea } from "@/widgets/canvas-area";
@@ -17,7 +18,10 @@ import { settingsAtom, isOwnKeyAtom } from "@/features/settings/state/settings-a
 import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
 import {
-  showResetConfirmAtom, toolModeAtom, showGitHashAtom, showLibraryAtom,
+  showResetConfirmAtom,
+  toolModeAtom,
+  showGitHashAtom,
+  showLibraryAtom,
 } from "@/features/design/state/generation-atoms";
 import { useMountEffect } from "@/shared/utils/use-mount-effect";
 
@@ -34,8 +38,12 @@ export default function Home() {
   const resetSession = useSetAtom(resetSessionAtom);
   const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
 
-  useMountEffect(() => { hydrateGroups(setGroups); });
-  useMountEffect(() => { hydrateImages(setCanvasImages); });
+  useMountEffect(() => {
+    hydrateGroups(setGroups);
+  });
+  useMountEffect(() => {
+    hydrateImages(setCanvasImages);
+  });
 
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
   const setToolMode = useSetAtom(toolModeAtom);
@@ -106,24 +114,28 @@ export default function Home() {
             alert("Invalid .otto file");
             return;
           }
-          setGroups(data.groups.map((g: Record<string, unknown>) => ({
-            id: g.id || `group-${Date.now()}-${Math.random()}`,
-            prompt: g.prompt || "",
-            position: g.position || { x: 0, y: 0 },
-            createdAt: g.createdAt || Date.now(),
-            iterations: ((g.iterations as Record<string, unknown>[]) || []).map((iter: Record<string, unknown>) => ({
-              id: iter.id || `iter-${Date.now()}-${Math.random()}`,
-              html: iter.html || "",
-              label: iter.label || "Imported",
-              position: iter.position || { x: 0, y: 0 },
-              width: iter.width || 600,
-              height: iter.height || 400,
-              prompt: iter.prompt || g.prompt || "",
-              comments: iter.comments || [],
-              isLoading: false,
-              isRegenerating: false,
+          setGroups(
+            data.groups.map((g: Record<string, unknown>) => ({
+              id: g.id || `group-${Date.now()}-${Math.random()}`,
+              prompt: g.prompt || "",
+              position: g.position || { x: 0, y: 0 },
+              createdAt: g.createdAt || Date.now(),
+              iterations: ((g.iterations as Record<string, unknown>[]) || []).map(
+                (iter: Record<string, unknown>) => ({
+                  id: iter.id || `iter-${Date.now()}-${Math.random()}`,
+                  html: iter.html || "",
+                  label: iter.label || "Imported",
+                  position: iter.position || { x: 0, y: 0 },
+                  width: iter.width || 600,
+                  height: iter.height || 400,
+                  prompt: iter.prompt || g.prompt || "",
+                  comments: iter.comments || [],
+                  isLoading: false,
+                  isRegenerating: false,
+                }),
+              ),
             })),
-          })));
+          );
         } catch {
           alert("Failed to parse . otto file");
         }
@@ -135,10 +147,7 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen overflow-hidden relative select-none">
-      <CanvasArea
-        canvas={canvas}
-        onRemix={pipeline.handleRemix}
-      />
+      <CanvasArea canvas={canvas} onRemix={pipeline.handleRemix} />
 
       <Toolbar
         mode={useAtomValue(toolModeAtom)}
@@ -210,16 +219,27 @@ export default function Home() {
           onClose={() => setShowSettings(false)}
           isOwnKey={isOwnKey}
           providers={settings.providers}
-          testProvider={(config) => probeModels.mutateAsync({ apiKey: config.apiKey, providerType: config.apiType, baseURL: config.baseUrl })}
+          testProvider={(config) =>
+            probeModels.mutateAsync({
+              apiKey: config.apiKey,
+              providerType: config.apiType,
+              baseURL: config.baseUrl,
+            })
+          }
         />
       )}
 
       {showResetConfirm && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowResetConfirm(false)} />
+          <div
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={() => setShowResetConfirm(false)}
+          />
           <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
             <h3 className="text-[15px] font-semibold text-gray-800 mb-2">Start new session?</h3>
-            <p className="text-[13px] text-gray-500 mb-6">This will clear your current canvas. Generated designs will be lost.</p>
+            <p className="text-[13px] text-gray-500 mb-6">
+              This will clear your current canvas. Generated designs will be lost.
+            </p>
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => setShowResetConfirm(false)}
@@ -261,7 +281,10 @@ export default function Home() {
       {onboarding.showTour && (
         <GuidedTour
           onComplete={() => onboarding.completeTour()}
-          hasFrames={groups.length > 0 && groups.some(g => g.iterations.some(i => !i.isLoading && i.html))}
+          hasFrames={
+            groups.length > 0 &&
+            groups.some((g) => g.iterations.some((i) => !i.isLoading && i.html))
+          }
         />
       )}
 
@@ -279,3 +302,7 @@ export default function Home() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/")({
+  component: Home,
+});
