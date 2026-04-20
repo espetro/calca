@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState, useCallback } from "react";
 import { MessageSquare } from "lucide-react";
 import { useAtom } from "jotai";

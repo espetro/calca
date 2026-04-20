@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useMemo, useRef } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { groupsAtom } from "@/features/design/state/groups-atoms";

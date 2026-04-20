@@ -5,41 +5,44 @@
   "license": "AGPL-3.0",
   "type": "module",
   "scripts": {
-    "dev": "portless run next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "portless run vite",
+    "build": "vite build",
+    "start": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "lint": "eslint src/ --ext .ts,.tsx",
-    "clean": "rm -rf .next dist"
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.68",
     "@ai-sdk/google": "^3.0.61",
     "@app/core": "workspace:*",
     "@app/shared": "workspace:*",
-    "@openfeature/web-sdk": "^1.7.3",
     "@tanstack/react-query": "^5.99.0",
     "@tanstack/react-query-devtools": "^5.99.0",
     "ai": "^6.0.156",
-    "dotenv": "^17.4.2",
     "html-to-image": "^1.11.13",
     "html2canvas-pro": "^1.6.7",
     "jotai": "^2.19.1",
     "lucide-react": "^1.8.0",
-    "next": "^16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "sonner": "^1.7.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
+    "@app/core": "workspace:*",
+    "@app/shared": "workspace:*",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-router": "^1.117.0",
+    "@tanstack/router-plugin": "^1.117.0",
     "@types/node": "^25.2.3",
     "@types/react": "^19.2.14",
+    "@vitejs/plugin-react": "^4.5.2",
     "portless": "^0.10.1",
-    "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
+    "vite": "^6.3.5",
     "vitest": "^4.1.4"
   }
 }

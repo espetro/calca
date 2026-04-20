@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { RefreshCw, Zap } from "lucide-react";

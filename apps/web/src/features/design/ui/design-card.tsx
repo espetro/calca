@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import type { DesignIteration, Comment as CommentType, Point, PipelineStatus } from "@/shared/types";
 import { STAGE_CONFIG } from "@/shared/types";

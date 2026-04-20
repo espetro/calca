@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useCallback, useEffect } from "react";
 import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
 import { FALLBACK_MODELS } from "../types";

@@ -1,5 +1,3 @@
-"use client";
-
 import { X } from "lucide-react";
 import type { SelectedImage } from "@/features/settings/types";
 

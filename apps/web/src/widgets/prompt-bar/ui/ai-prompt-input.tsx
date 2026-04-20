@@ -1,5 +1,3 @@
-"use client";
-
 import { forwardRef, useRef, useEffect } from "react";
 
 interface PromptInputContainerProps {

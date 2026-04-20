@@ -1,5 +1,3 @@
-"use client";
-
 import { ProviderConfig } from "@/features/settings/types";
 
 interface ProviderListProps {

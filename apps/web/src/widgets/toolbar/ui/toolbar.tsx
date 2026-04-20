@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import type { ToolMode } from "@/shared/types";
 import type { ProviderConfig } from "@/features/settings/types";

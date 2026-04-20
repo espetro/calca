@@ -1,5 +1,3 @@
-"use client";
-
 import { useMemo } from "react";
 import { deriveProviderFields, type DerivedProviderFields } from "../lib/derive-provider-fields";
 import type { ProviderConfig } from "../types";

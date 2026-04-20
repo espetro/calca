@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/gosto-icon.png" />
+    <title>Gosto</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("te-theme");
+          if (!t) t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.classList.toggle("dark", t === "dark");
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

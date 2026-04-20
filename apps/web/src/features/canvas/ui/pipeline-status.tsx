@@ -1,5 +1,3 @@
-"use client";
-
 import { type PipelineStatus, STAGE_CONFIG } from "@/shared/types";
 
 interface PipelineStatusBarProps {

@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useRef, type RefCallback } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";

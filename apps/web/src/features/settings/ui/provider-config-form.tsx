@@ -1,5 +1,3 @@
-"use client";
-
 import type { ProviderConfig, ProviderType, ModelInfo } from "../types";
 import { useState, useCallback } from "react";
 

@@ -1,5 +1,3 @@
-"use client";
-
 import type { ProviderConfig } from "../../settings/types";
 
 interface ModelComboSelectProps {

@@ -1,5 +1,3 @@
-"use client";
-
 import { useAtomValue } from "jotai";
 import { rubberBandAtom } from "@/features/design/state/generation-atoms";
 

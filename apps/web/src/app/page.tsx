@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCanvas } from "@/features/canvas";

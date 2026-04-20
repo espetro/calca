@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { MODELS, type Settings } from "@/features/settings/hooks/use-settings";
 import ProviderList from "./provider-list";

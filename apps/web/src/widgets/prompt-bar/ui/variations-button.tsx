@@ -1,5 +1,3 @@
-"use client";
-
 import { useViewportSize } from "../hooks/use-viewport-size";
 import { useWindowEvent } from "../hooks/use-window-event";
 import { Dices, Minus, Plus } from "lucide-react";

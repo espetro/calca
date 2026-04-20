@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect, useCallback } from "react";
 import useExportCodeMutation from "@/features/design/hooks/use-export-code-mutation";
 

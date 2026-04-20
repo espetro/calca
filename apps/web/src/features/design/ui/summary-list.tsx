@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useAtom } from "jotai";
 import { groupsAtom } from "../state/groups-atoms";
