@@ -23,6 +23,7 @@
     "ai": "^6.0.156",
     "html-to-image": "^1.11.13",
     "html2canvas-pro": "^1.6.7",
+    "hono": "^4.12.14",
     "jotai": "^2.19.1",
     "lucide-react": "^1.8.0",
     "react": "^19.2.4",

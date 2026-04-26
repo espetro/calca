@@ -6,12 +6,8 @@ import {
   pipelineStagesAtom,
   genStatusAtom,
 } from "@/features/design/state/generation-atoms";
-import type {
-  GenerationGroup,
-  PipelineStage,
-  Point,
-} from "@/shared/types";
-import { getApiUrl } from "@/lib/api-config";
+import type { GenerationGroup, PipelineStage, Point } from "@/shared/types";
+import { legacyApiClient } from "@/lib/services/api";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per
@@ -172,11 +168,11 @@ export const useWorkflowStream = () => {
               isLoading: true,
             })),
           };
-        })
+        }),
       );
 
       try {
-        const response = await fetch(getApiUrl("/api/workflow"), {
+        const response = await legacyApiClient("/api/workflow", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -201,7 +197,7 @@ export const useWorkflowStream = () => {
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(
-            `Workflow request failed (${response.status}): ${errorText.slice(0, 200)}`
+            `Workflow request failed (${response.status}): ${errorText.slice(0, 200)}`,
           );
         }
 
@@ -215,9 +211,7 @@ export const useWorkflowStream = () => {
         let workflowOutput: WorkflowOutput | null = null;
         const completedFrameIndices = new Set<number>();
 
-        const mapStepToStages = (
-          steps: Record<string, WorkflowStepResult>
-        ) => {
+        const mapStepToStages = (steps: Record<string, WorkflowStepResult>) => {
           for (const [, stepResult] of Object.entries(steps)) {
             const stepName = stepResult.name;
             const mapping = STEP_STAGE_MAP[stepName];
@@ -253,8 +247,7 @@ export const useWorkflowStream = () => {
 
             if (
               stepName === "frameOrchestrator" &&
-              (stepResult.status === "success" ||
-                stepResult.status === "finished") &&
+              (stepResult.status === "success" || stepResult.status === "finished") &&
               stepResult.output
             ) {
               const output = stepResult.output as {
@@ -286,9 +279,7 @@ export const useWorkflowStream = () => {
                           if (existing.id !== iterId) return existing;
                           return {
                             ...existing,
-                            html:
-                              frame.html ||
-                              "<p>Failed to generate</p>",
+                            html: frame.html || "<p>Failed to generate</p>",
                             label: frame.label || existing.label,
                             width: frame.width || existing.width,
                             height: frame.height || existing.height,
@@ -296,7 +287,7 @@ export const useWorkflowStream = () => {
                           };
                         }),
                       };
-                    })
+                    }),
                   );
                 }
               }
@@ -320,19 +311,14 @@ export const useWorkflowStream = () => {
               data.status === "failed"
             ) {
               const collectStep = data.steps["collectResults"];
-              if (
-                collectStep?.output &&
-                typeof collectStep.output === "object"
-              ) {
+              if (collectStep?.output && typeof collectStep.output === "object") {
                 workflowOutput = collectStep.output as WorkflowOutput;
               }
             }
           }
 
           if (part.type === "error") {
-            const errorText =
-              (part as { errorText?: string }).errorText ??
-              "Unknown stream error";
+            const errorText = (part as { errorText?: string }).errorText ?? "Unknown stream error";
             console.error("[workflow-stream] Stream error:", errorText);
             for (let i = 0; i < conceptCount; i++) {
               const iterId = iterIds[i];
@@ -359,7 +345,7 @@ export const useWorkflowStream = () => {
                       };
                     }),
                   };
-                })
+                }),
               );
             }
           }
@@ -382,7 +368,7 @@ export const useWorkflowStream = () => {
                   }
                   return { ...g, iterations: kept };
                 })
-                .filter((g) => g.iterations.length > 0)
+                .filter((g) => g.iterations.length > 0),
             );
           }
         };
@@ -436,7 +422,7 @@ export const useWorkflowStream = () => {
                     };
                   }),
                 };
-              })
+              }),
             );
           }
 
@@ -451,8 +437,8 @@ export const useWorkflowStream = () => {
                         rationale: finalOutput.summary ?? "",
                       },
                     }
-                  : g
-              )
+                  : g,
+              ),
             );
           }
         }
@@ -485,19 +471,14 @@ export const useWorkflowStream = () => {
                 };
               }),
             };
-          })
+          }),
         );
       } finally {
         setIsGenerating(false);
         abortRef.current = null;
       }
     },
-    [
-      setGroups,
-      setIsGenerating,
-      setPipelineStages,
-      setGenStatus,
-    ]
+    [setGroups, setIsGenerating, setPipelineStages, setGenStatus],
   );
 
   return { startStream, abort };

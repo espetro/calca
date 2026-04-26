@@ -1,16 +1,9 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
+import queryClient from "@/lib/services/api";
 import "../app/globals.css";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-    },
-  },
-});
 
 const GA_ID = import.meta.env.VITE_GA_ID;
 

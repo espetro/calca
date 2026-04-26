@@ -1,7 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import type { ModelInfo } from "../types";
 import { FALLBACK_MODELS } from "../types";
-import { getApiUrl } from "@/lib/api-config";
+import { legacyApiClient } from "@/lib/services/api";
+
+const MUTATION_KEY = ["/api/probe-models"] as const;
 
 interface ProbeModelsInput {
   apiKey?: string;
@@ -14,27 +16,24 @@ interface ProbeModelsOutput {
   error?: string;
 }
 
+interface ProbeModelsEndpointOutput {
+  available: Record<string, boolean> | undefined;
+}
+
 const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> => {
   try {
-    const res = await fetch(getApiUrl("/api/probe-models"), {
+    const { available } = await legacyApiClient<ProbeModelsEndpointOutput>("/api/probe-models", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
     });
-
-    if (!res.ok) {
-      const text = await res.text();
-      return { models: [], error: text || `HTTP ${res.status}` };
-    }
-
-    const data = await res.json();
-    const available = data.available as Record<string, boolean> | undefined;
 
     if (!available) {
       return { models: FALLBACK_MODELS };
     }
 
     const models: ModelInfo[] = Object.entries(available)
+      // TODO move this filter to the server
       .filter(([, isAvailable]) => isAvailable)
       .map(([id]) => ({ id, displayName: id, description: "" }));
 
@@ -53,5 +52,6 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
 
 export const useProbeModels = () =>
   useMutation({
+    mutationKey: MUTATION_KEY,
     mutationFn: probeModels,
   });
