@@ -1,0 +1,59 @@
+{
+  "onboarding": {
+    "welcomeTitle": "Welcome to Calca.",
+    "welcomeDescription": "Start sketching, or bring in a design you'd like to trace over. No setup needed.",
+    "apiKeyLabel": "Anthropic API Key",
+    "apiKeyRequired": "Powers design generation with Claude.",
+    "apiKeyPlaceholder": "sk-ant-...",
+    "show": "Show",
+    "hide": "Hide",
+    "getKey": "Get a key at console.anthropic.com →",
+    "imageSources": "Image Sources",
+    "imageSourcesOptional": "optional — enables real images in designs",
+    "imageSourcesDescription": "Add any of these keys to enable real images. Claude picks the best source for each image automatically.",
+    "geminiLabel": "Gemini — design assets & patterns",
+    "dalleLabel": "DALL·E — custom illustrations",
+    "unsplashLabel": "Unsplash — real photos",
+    "getKeyShort": "Get key →",
+    "skip": "Skip for now",
+    "getStarted": "Get Started →",
+    "privacyNote": "Keys are stored locally in your browser. They are never sent to our servers — API calls go directly to Anthropic and Google."
+  },
+  "tour": {
+    "step1Title": "Describe your design",
+    "step1Desc": "Type any design — a landing page, Instagram ad, app screen. Be specific about colors, style, and content.",
+    "step2Title": "Generate",
+    "step2Desc": "Hit Enter or click Generate. Calca creates multiple variations, each one learning from the last.",
+    "step3Title": "Your designs",
+    "step3Desc": "Each frame is a polished HTML/CSS design. Pan and zoom the canvas to explore.",
+    "step4Title": "Remix",
+    "step4Desc": "Want a different take? Remix any frame with a new direction.",
+    "step5Title": "Click-to-Comment",
+    "step5Desc": "Click anywhere on a design to leave feedback. Calca will revise just that part.",
+    "step6Title": "Export",
+    "step6Desc": "Export to Figma, Tailwind CSS, or React components.",
+    "waitingMessage": "Generate your first design to continue the tour",
+    "skipTour": "Skip tour",
+    "stepLabel": "Step",
+    "done": "Done",
+    "next": "Next →"
+  },
+  "canvas": {
+    "emptyTitle": "Calca",
+    "emptyDescription": "Nothing here yet. Start a new project, or import something to trace over."
+  },
+  "toolbar": {
+    "importDesign": "Import .design",
+    "exportDesign": "Export .design",
+    "clearCanvas": "Clear Canvas"
+  },
+  "dialog": {
+    "resetTitle": "Start new session?",
+    "resetDescription": "This will clear your current canvas. Generated designs will be lost.",
+    "keepDesigning": "Keep designing",
+    "clearCanvasConfirm": "Clear canvas"
+  },
+  "banner": {
+    "addApiKey": "Add your API key in Settings to start designing"
+  }
+}
