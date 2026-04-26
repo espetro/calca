@@ -30,18 +30,18 @@ describe("parseHtmlWithSize", () => {
     expect(result.html).toBe("<div>Hello</div>");
   });
 
-  it("extracts Otto comment when enabled", () => {
-    const input = "<!--otto:Design note--><div>Hello</div>";
+  it("extracts Calca comment when enabled", () => {
+    const input = "<!--calca:Design note--><div>Hello</div>";
     const result = parseHtmlWithSize(input, { extractComments: true });
     expect(result.comment).toBe("Design note");
     expect(result.html).toBe("<div>Hello</div>");
   });
 
-  it("does not extract Otto comment when disabled", () => {
-    const input = "<!--otto:Design note--><div>Hello</div>";
+  it("does not extract Calca comment when disabled", () => {
+    const input = "<!--calca:Design note--><div>Hello</div>";
     const result = parseHtmlWithSize(input, { extractComments: false });
     expect(result.comment).toBeUndefined();
-    expect(result.html).toContain("otto");
+    expect(result.html).toContain("calca");
   });
 
   it("finds HTML start tag when preceded by whitespace", () => {
