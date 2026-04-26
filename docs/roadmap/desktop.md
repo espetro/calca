@@ -8,7 +8,7 @@
 
 ## Description
 
-Launch Gosto as a native desktop application using Electrobun wrapper, providing native menus, keyboard shortcuts, system tray integration, and auto-update for a desktop-first user experience. This is MVP-critical per the PRD, despite POC learnings initially deferring desktop due to early-stage Electrobun maturity.
+Launch Calca as a native desktop application using Electrobun wrapper, providing native menus, keyboard shortcuts, system tray integration, and auto-update for a desktop-first user experience. This is MVP-critical per the PRD, despite POC learnings initially deferring desktop due to early-stage Electrobun maturity.
 
 ## Dependencies
 

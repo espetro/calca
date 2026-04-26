@@ -2,4 +2,4 @@
 
 ## Root page loads with visible content
 * Open "http://localhost:3000"
-* Page should contain "Gosto"
+* Page should contain "Calca"

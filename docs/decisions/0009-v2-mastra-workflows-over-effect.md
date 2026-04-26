@@ -1,4 +1,4 @@
-# MADR: Why Mastra Workflows Are Over-Effect for Gosto v2
+# MADR: Why Mastra Workflows Are Over-Effect for Calca v2
 
 **Document ID**: 0009-v2-mastra-workflows-over-effect
 **Status**: Accepted
@@ -9,7 +9,7 @@
 
 ## 1. Background
 
-The original Gosto codebase (Otto Canvas) uses a 4-stage AI pipeline:
+The original Calca codebase (Otto Canvas) uses a 4-stage AI pipeline:
 1. **Layout** — Claude generates HTML/CSS with size hints and image placeholders
 2. **Images** — Gemini/DALL-E/Unsplash fills placeholder divs with real images
 3. **Review** — Claude performs visual QA and auto-fixes issues
@@ -21,7 +21,7 @@ During the POC monorepo migration attempt, Mastra AI framework was considered as
 
 ## 2. Decision Statement
 
-**We will NOT use Mastra AI framework in Gosto v2.** Instead, we will:
+**We will NOT use Mastra AI framework in Calca v2.** Instead, we will:
 
 1. **Keep direct SDK calls** to Anthropic and Google for layout and image generation
 2. **Extract pipeline logic** to a shared package (`packages/core`) with composable functions
@@ -51,9 +51,9 @@ The monorepo migration POC attempted to use Mastra for two reasons:
 
 ### 3.3 Why It's Overkill
 
-After analyzing the current pipeline and POC learnings, we determined Mastra adds **no value** for Gosto v2:
+After analyzing the current pipeline and POC learnings, we determined Mastra adds **no value** for Calca v2:
 
-| Aspect | Mastra | Direct SDK Calls | Impact on Gosto |
+| Aspect | Mastra | Direct SDK Calls | Impact on Calca |
 |--------|--------|------------------|-----------------|
 | **Pipeline structure** | Agent workflow with tools | Sequential function calls | Pipeline is linear, no branching |
 | **State management** | Mastra internal state | Shared package functions | State lives in UI, not AI layer |
@@ -374,7 +374,7 @@ The decision is successful when:
 
 ## 12. Conclusion
 
-Mastra AI framework is **over-effect** for Gosto v2 because:
+Mastra AI framework is **over-effect** for Calca v2 because:
 
 1. **Pipeline is simple** — 4 sequential steps, no branching or complex decision making
 2. **Non-LLM steps** — Images and HTML parsing can't use Mastra

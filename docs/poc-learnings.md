@@ -1,6 +1,6 @@
 # POC Learnings
 
-> Analysis of the monorepo migration POC for Gosto v2. Each technology choice gets a verdict: **CARRY** (use in v2), **SKIP** (don't use), or **REDESIGN** (reconsider approach).
+> Analysis of the monorepo migration POC for Calca v2. Each technology choice gets a verdict: **CARRY** (use in v2), **SKIP** (don't use), or **REDESIGN** (reconsider approach).
 
 ---
 
@@ -56,7 +56,7 @@
 - **v2 Action**: Keep Next.js API routes. If desktop needs local server, use a thin Hono/Express adapter that wraps the same route handlers
 
 ### TanStack Router Migration → **SKIP**
-- **Why it didn't work**: Gosto is effectively a single-page app — one canvas page. No routing needed. TanStack Router adds complexity for file-based routing that Next.js App Router already provides
+- **Why it didn't work**: Calca is effectively a single-page app — one canvas page. No routing needed. TanStack Router adds complexity for file-based routing that Next.js App Router already provides
 - **Root cause**: Over-engineering. The app has one route (`/`) and 8 API routes. No navigation structure to benefit from client-side routing
 - **v2 Action**: Stay with Next.js App Router. If multi-page app becomes needed, Next.js handles it natively
 

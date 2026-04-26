@@ -9,7 +9,7 @@
 
 ## Context
 
-The original Gosto (Otto Canvas) is a single Next.js app with everything in `src/`. As features grew (multi-model pipeline, comments, export, canvas), the single 1,700-line page component and 8 API routes became difficult to maintain.
+The original Calca (Otto Canvas) is a single Next.js app with everything in `src/`. As features grew (multi-model pipeline, comments, export, canvas), the single 1,700-line page component and 8 API routes became difficult to maintain.
 
 The POC attempted to decompose into a Turborepo monorepo with:
 - `apps/server/` — Hono backend

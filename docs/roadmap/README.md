@@ -1,16 +1,16 @@
-# Gosto Roadmap
+# Calca Roadmap
 
-This directory contains feature roadmaps and implementation plans for Gosto v2, organized by phase and priority.
+This directory contains feature roadmaps and implementation plans for Calca v2, organized by phase and priority.
 
 ## Overview
 
-Gosto v2 is a documentation-first, incremental refactoring of the working Gosto 1.0 codebase. The MVP delivers a fully functional AI design tool with server-side persistence and desktop capabilities. Post-MVP features expand collaboration, storage, and export capabilities.
+Calca v2 is a documentation-first, incremental refactoring of the working Calca 1.0 codebase. The MVP delivers a fully functional AI design tool with server-side persistence and desktop capabilities. Post-MVP features expand collaboration, storage, and export capabilities.
 
 ## Roadmap Phases
 
 ```mermaid
 timeline
-    title Gosto v2 Roadmap
+    title Calca v2 Roadmap
     section MVP (P0)
         Canvas with CSS transforms : Pan/zoom, smooth performance
         AI Generation Pipeline : Multi-model (Claude + Gemini)

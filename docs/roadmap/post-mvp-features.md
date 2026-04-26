@@ -8,7 +8,7 @@
 
 ## Description
 
-Post-MVP features expand Gosto beyond single-user desktop use, adding collaboration, cloud sync, mobile optimization, and accessibility. These are designed for subsequent releases after the MVP is stable.
+Post-MVP features expand Calca beyond single-user desktop use, adding collaboration, cloud sync, mobile optimization, and accessibility. These are designed for subsequent releases after the MVP is stable.
 
 ## Feature Summary
 

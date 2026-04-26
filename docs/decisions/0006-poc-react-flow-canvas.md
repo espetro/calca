@@ -32,10 +32,10 @@ The POC attempted to replace this with **React Flow** — a graph/flowchart libr
 
 ## Rationale Against React Flow
 
-1. **Wrong abstraction** — React Flow is for **node graphs** (flowcharts, workflows). Gosto needs a **design canvas** (free-form placement, arbitrary sizing)
+1. **Wrong abstraction** — React Flow is for **node graphs** (flowcharts, workflows). Calca needs a **design canvas** (free-form placement, arbitrary sizing)
 2. **iframe incompatibility** — React Flow nodes have fixed sizes and constrained positioning. Design frames are iframes with dynamic heights measured via `postMessage`
 3. **Custom rendering** — Each "node" is a full HTML/CSS design rendered in an isolated iframe. React Flow's virtualization would interfere
-4. **Selection model mismatch** — React Flow selects nodes. Gosto needs rubber-band selection across arbitrary canvas positions
+4. **Selection model mismatch** — React Flow selects nodes. Calca needs rubber-band selection across arbitrary canvas positions
 5. **Current approach works** — The CSS transform canvas with `useCanvas()` is 171 lines, smooth, and battle-tested
 
 ## Current Canvas Capabilities (Working)

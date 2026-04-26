@@ -1,11 +1,11 @@
 # Quick Mode
 
 ## Activate Quick Mode via URL parameter
-* Open "https://gosto.localhost?quickMode=true"
+* Open "https://calca.localhost?quickMode=true"
 * Page should contain "Quick Mode"
 
 ## Generate design in Quick Mode
-* Open "https://gosto.localhost?quickMode=true"
+* Open "https://calca.localhost?quickMode=true"
 * Fill "Describe your design" in the prompt field
 * Click the "Generate" button
 * Wait for "Generating" to appear
@@ -14,11 +14,11 @@
 * Page should not contain "Review"
 
 ## Reload page without query parameter resets Quick Mode
-* Open "https://gosto.localhost"
+* Open "https://calca.localhost"
 * Page should contain "Quick Mode"
 
 ## Comment-based revision uses full pipeline
-* Open "https://gosto.localhost?quickMode=true"
+* Open "https://calca.localhost?quickMode=true"
 * Fill "Describe your design" in the prompt field
 * Click the "Generate" button
 * Wait for "Frame" to appear

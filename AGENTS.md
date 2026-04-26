@@ -1,4 +1,4 @@
-# AGENTS.md — Gosto Development Guidelines
+# AGENTS.md — Calca Development Guidelines
 
 > **Progressive Disclosure**: Start here for the big picture. Drill down into package-specific guides for implementation details.
 
@@ -6,12 +6,12 @@
 
 ## Quick Orientation
 
-**Gosto** is a desktop-first AI design tool that transforms natural language prompts into polished HTML/CSS design variations on an infinite canvas.
+**Calca** is a desktop-first AI design tool that transforms natural language prompts into polished HTML/CSS design variations on an infinite canvas.
 
 **Monorepo Structure:**
 
 ```
-gosto/
+calca/
 ├── apps/
 │   ├── web/          → Next.js frontend (SPA-like) — see [apps/web/AGENTS.md](./apps/web/AGENTS.md)
 │   ├── desktop/      → Electrobun wrapper — see [apps/desktop/AGENTS.md](./apps/desktop/AGENTS.md)
@@ -182,7 +182,7 @@ This project uses a dual-license open-core model:
 # Install dependencies
 bun install
 
-# Run development server (web app at https://gosto.localhost)
+# Run development server (web app at https://calca.localhost)
 bun run dev-web
 
 # Run all services via Turborepo
@@ -204,9 +204,9 @@ Dev servers use [portless](https://github.com/vercel-labs/portless) for stable `
 
 | Script            | URL                       |
 | ----------------- | ------------------------- |
-| `bun run dev-web` | `https://gosto.localhost` |
+| `bun run dev-web` | `https://calca.localhost` |
 
-- **Git worktrees**: must live under `./.worktrees/` (see Universal Rules). Each gets a unique subdomain (e.g. `fix-ui.gosto.localhost`)
+- **Git worktrees**: must live under `./.worktrees/` (see Universal Rules). Each gets a unique subdomain (e.g. `fix-ui.calca.localhost`)
 - **Bypass**: set `PORTLESS=0` to run without the proxy (e.g. `PORTLESS=0 bun run dev-web`)
 - **Install**: already included as a dev dependency (`npx portless` or via scripts)
 

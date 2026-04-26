@@ -1,4 +1,4 @@
-# Gosto
+# Calca
 
 An open-source AI design tool. Describe what you want, get multiple design variations on an infinite canvas, then click to refine.
 
@@ -33,8 +33,8 @@ An open-source AI design tool. Describe what you want, get multiple design varia
 
 ```bash
 # Clone the repo
-git clone https://github.com/joaquindev/gosto.git
-cd gosto
+git clone https://github.com/joaquindev/calca.git
+cd calca
 
 # Install dependencies
 npm install
@@ -91,7 +91,7 @@ This project uses a dual-license open-core model:
 
 See [LICENSE](LICENSE) and [packages/pro/LICENSE](packages/pro/LICENSE) for full terms.
 
-Gosto was originally forked from [DesignBuddy Canvas](https://github.com/stratuslabs/designbuddy-canvas) (MIT-licensed). See [NOTICE](NOTICE) for attribution.
+Calca was originally forked from [DesignBuddy Canvas](https://github.com/stratuslabs/designbuddy-canvas) (MIT-licensed). See [NOTICE](NOTICE) for attribution.
 
 ## Built With
 

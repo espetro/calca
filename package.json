@@ -1,5 +1,5 @@
 {
-  "name": "gosto",
+  "name": "calca",
   "private": true,
   "version": "0.2.0",
   "description": "AI design tool with infinite canvas — vibe coding for design",
@@ -40,6 +40,7 @@
   "packageManager": "bun@1.2.10",
   "dependencies": {
     "@ai-sdk/provider-utils": "^4.0.23",
+    "@inlang/paraglide-js-adapter-vite": "^1.2.40",
     "@mastra/ai-sdk": "^1.4.0",
     "@mastra/core": "^1.25.0",
     "type-fest": "^5.6.0"

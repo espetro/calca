@@ -1,5 +1,5 @@
 project:
-  name: Gosto
+  name: Calca
   description: AI-powered design tool with infinite canvas and multi-model AI generation
   version: 2.0.0
   language: typescript

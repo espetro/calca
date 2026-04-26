@@ -2,8 +2,8 @@
 
 ## Prompt caching efficiency (repeated layout generation)
 
-* Open "https://gosto.localhost"
-* Page should contain "Gosto"
+* Open "https://calca.localhost"
+* Page should contain "Calca"
 * Fill "A pricing card with a buy button" in the prompt field
 * Click the "Generate" button
 * Wait for "Frame 1" to appear
@@ -15,8 +15,8 @@
 
 ## Parallel image generation (batch processing)
 
-* Open "https://gosto.localhost"
-* Page should contain "Gosto"
+* Open "https://calca.localhost"
+* Page should contain "Calca"
 * Fill "A landing page with a hero section, pricing cards, and feature grid" in the prompt field
 * Click the "Generate" button
 * Wait for "Frame 1" to appear
@@ -28,8 +28,8 @@
 
 ## Tailwind-first visual generation
 
-* Open "https://gosto.localhost"
-* Page should contain "Gosto"
+* Open "https://calca.localhost"
+* Page should contain "Calca"
 * Fill "A clean blog post card with a title, excerpt, and read more button" in the prompt field
 * Click the "Generate" button
 * Wait for "Frame 1" to appear
@@ -39,8 +39,8 @@
 
 ## Zod validation with graceful error handling
 
-* Open "https://gosto.localhost"
-* Page should contain "Gosto"
+* Open "https://calca.localhost"
+* Page should contain "Calca"
 * Fill "a single unclosed tag or malformed CSS" in the prompt field
 * Click the "Generate" button
 * Page should not contain "500 Internal Server Error"

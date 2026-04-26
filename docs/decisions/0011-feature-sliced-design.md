@@ -8,7 +8,7 @@
 
 ## Context and Problem Statement
 
-The Gosto codebase is growing quickly. New capabilities—canvas interactions, AI design generation, settings, comments, export, and onboarding—are being added in rapid succession. Without an explicit structural contract, code tends to accumulate in flat or ad-hoc directories (`components/`, `hooks/`, `lib/`), making it hard to locate feature-specific logic, enforce boundaries, and onboard new contributors. We need a scalable architecture that keeps features isolated while still allowing shared infrastructure to evolve.
+The Calca codebase is growing quickly. New capabilities—canvas interactions, AI design generation, settings, comments, export, and onboarding—are being added in rapid succession. Without an explicit structural contract, code tends to accumulate in flat or ad-hoc directories (`components/`, `hooks/`, `lib/`), making it hard to locate feature-specific logic, enforce boundaries, and onboard new contributors. We need a scalable architecture that keeps features isolated while still allowing shared infrastructure to evolve.
 
 ## Decision Drivers
 

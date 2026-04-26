@@ -8,7 +8,7 @@
 
 ## Context
 
-The original Gosto uses 8 Next.js API routes under `src/app/api/`:
+The original Calca uses 8 Next.js API routes under `src/app/api/`:
 - `pipeline/layout` — Streaming HTML generation via Claude (350 lines)
 - `pipeline/images` — Multi-source image generation (Unsplash/DALL-E/Gemini)
 - `pipeline/review` — Visual QA with Claude

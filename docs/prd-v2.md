@@ -1,12 +1,12 @@
-# Product Requirements Document — Gosto v2
+# Product Requirements Document — Calca v2
 
-> Target PRD for the Gosto v2 rebuild. Describes the minimum viable product (8 MVP features) and post-MVP roadmap based on POC learnings and architectural decisions.
+> Target PRD for the Calca v2 rebuild. Describes the minimum viable product (8 MVP features) and post-MVP roadmap based on POC learnings and architectural decisions.
 
 ---
 
 ## 1. Vision
 
-**Gosto v2** is an AI-powered design tool that lets users describe what they want in natural language and receive multiple polished HTML/CSS design variations on an infinite canvas. Unlike the original Otto Canvas, v2 introduces:
+**Calca v2** is an AI-powered design tool that lets users describe what they want in natural language and receive multiple polished HTML/CSS design variations on an infinite canvas. Unlike the original Otto Canvas, v2 introduces:
 
 - **Server-side persistence** — SQLite database replaces fragile localStorage + IndexedDB
 - **Desktop shell** — Electrobun wrapper for a native-like experience
@@ -14,7 +14,7 @@
 - **Zustand state management** — Replace 20+ useState hooks with centralized stores
 - **Improved pipeline** — Extract to shared package with better error handling and testing
 
-The v2 rebuild is a **documentation-first, incremental refactoring** of the working Gosto 1.0 codebase. No new features, just structural improvements to enable future growth.
+The v2 rebuild is a **documentation-first, incremental refactoring** of the working Calca 1.0 codebase. No new features, just structural improvements to enable future growth.
 
 ---
 
@@ -185,7 +185,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Export single design as SVG, PNG, JPG
 - Export single design as Tailwind CSS
 - Export single design as React component
-- Export canvas as `.gosto` file (JSON export of entire state)
+- Export canvas as `.calca` file (JSON export of entire state)
 - Copy as image to clipboard
 
 **Technical Implementation**:
@@ -237,13 +237,13 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ### Feature 7: Desktop Shell (CARRY)
 **Status**: CARRY (core)
 
-**What it is**: Electrobun wrapper that launches the Gosto web app with a native desktop frame.
+**What it is**: Electrobun wrapper that launches the Calca web app with a native desktop frame.
 
 **User Story**:
-> As a user, I want Gosto to run as a desktop application, so I have a native-like experience with native menus and hotkeys.
+> As a user, I want Calca to run as a desktop application, so I have a native-like experience with native menus and hotkeys.
 
 **Functional Requirements**:
-- Launch Gosto web app with custom window frame
+- Launch Calca web app with custom window frame
 - Native menus (File, Edit, View, Help)
 - Native keyboard shortcuts (Ctrl+S for save, Ctrl+N for new project)
 - System tray icon for background mode
@@ -370,7 +370,7 @@ Features for subsequent releases after the MVP is stable.
 ### 6.1 Monorepo Structure
 
 ```
-gosto/
+calca/
 ├── apps/
 │   ├── web/           → Next.js frontend (SPA-like)
 │   │   ├── src/
@@ -736,7 +736,7 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
 
 ## 8. Out of Scope
 
-The following are explicitly **not** part of Gosto v2 MVP:
+The following are explicitly **not** part of Calca v2 MVP:
 
 - **User accounts or authentication** — No login, no user profiles, no team management
 - **Real-time collaboration** — Single-user tool, no multi-user editing (P1-1)

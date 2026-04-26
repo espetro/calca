@@ -55,70 +55,9 @@ Determine concept count and visual directions:
 
 ```typescript
 // pipeline/plan.ts
-import type { PlanRequest, PlanResponse } from "@gosto/shared/contracts";
-
-export class PlanPipeline {
-  constructor(private provider: LLMProvider) {}
-
-  async generate(request: PlanRequest): Promise<PlanResponse> {
-    const prompt = buildPlanPrompt(request);
-    const response = await this.provider.complete(prompt);
-    return parsePlanResponse(response);
-  }
-}
-
-function buildPlanPrompt(request: PlanRequest): string {
-  return `Generate ${request.conceptCount} visual concepts for: ${request.prompt}
-
-For each concept, provide:
-1. A brief description
-2. The visual style (e.g., "glassmorphism", "flat design")
-3. The vibe (e.g., "warm and inviting")
-4. The aesthetic (e.g., "elegant", "bold")
-
-Format as JSON array.`;
-}
-```
-
-### 2. Layout Stage
-
-Generate HTML/CSS with sizing hints:
-
-```typescript
-// pipeline/layout.ts
-import type { PipelineLayoutRequest, PipelineLayoutResponse } from "@gosto/shared/contracts";
-
-export class LayoutPipeline {
-  constructor(
-    private provider: LLMProvider,
-    private systemPrompt: string,
-  ) {}
-
-  async generate(request: PipelineLayoutRequest): Promise<PipelineLayoutResponse> {
-    const prompt = buildLayoutPrompt(request);
-    const response = await this.provider.complete(prompt);
-    return {
-      html: response,
-      sizeHints: extractSizeHints(response),
-    };
-  }
-
-  async *stream(request: PipelineLayoutRequest): AsyncGenerator<string> {
-    const prompt = buildLayoutPrompt(request);
-    for await (const chunk of this.provider.stream(prompt)) {
-      yield chunk;
-    }
-  }
-}
-```
-
-### 3. Images Stage
-
-Fill placeholders with real images:
-
-```typescript
-// pipeline/images.ts
-import type { PipelineImagesRequest, PipelineImagesResponse } from "@gosto/shared/contracts";
+import type { PlanRequest, PlanResponse } from "@calca/shared/contracts";
+import type { PipelineLayoutRequest, PipelineLayoutResponse } from "@calca/shared/contracts";
+import type { PipelineImagesRequest, PipelineImagesResponse } from "@calca/shared/contracts";
 
 export class ImagesPipeline {
   constructor(private imageProvider: ImageProvider) {}

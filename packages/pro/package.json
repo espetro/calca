@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "LicenseRef-ELv2",
-  "description": "Gosto Enterprise/Pro features — Elastic License v2",
+  "description": "Calca Enterprise/Pro features — Elastic License v2",
   "exports": {
     ".": "./src/index.ts"
   },

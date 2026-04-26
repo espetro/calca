@@ -1,11 +1,11 @@
-# Contributing to Gosto
+# Contributing to Calca
 
-Thank you for your interest in contributing to Gosto! This document outlines the
+Thank you for your interest in contributing to Calca! This document outlines the
 contribution process and licensing terms.
 
 ## Dual-License Model
 
-Gosto is distributed under a **dual-license model**:
+Calca is distributed under a **dual-license model**:
 
 - **Core (AGPL-3.0)**: All code in `apps/*`, `packages/core`, `packages/shared`,
   and other non-`pro` packages is licensed under the GNU Affero General Public
@@ -26,7 +26,7 @@ By submitting a pull request, you agree that:
    under the AGPL-3.0 or ELv2 licenses
 4. You retain copyright to your contributions
 
-**Please sign the CLA here:** https://cla-assistant.io/espetro/gosto
+**Please sign the CLA here:** https://cla-assistant.io/espetro/calca
 
 ## Why a CLA?
 
@@ -73,7 +73,7 @@ The CLA allows us to:
 
 ## Questions?
 
-If you have questions about licensing or the CLA, please open an issue at https://github.com/espetro/gosto/discussions.
+If you have questions about licensing or the CLA, please open an issue at https://github.com/espetro/calca/discussions.
 
 ## Code of Conduct
 

@@ -272,9 +272,9 @@ export const SettingsSchema = z.object({
 
 ```typescript
 // In apps/web or apps/server
-import type { DesignIteration, PlanRequest } from "@gosto/shared/types";
-import type { PlanResponse } from "@gosto/shared/contracts";
-import { PlanRequestSchema } from "@gosto/shared/schemas";
+import type { DesignIteration, PlanRequest } from "@calca/shared/types";
+import type { PlanResponse } from "@calca/shared/contracts";
+import { PlanRequestSchema } from "@calca/shared/schemas";
 
 // Validate request
 const result = PlanRequestSchema.safeParse(body);

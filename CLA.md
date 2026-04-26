@@ -2,7 +2,7 @@
 
 ## Individual Contributor License Agreement
 
-Thank you for your interest in contributing to Gosto ("the Project"). This
+Thank you for your interest in contributing to Calca ("the Project"). This
 Contributor License Agreement ("Agreement") sets out the terms governing any
 contributions you make to the Project.
 
@@ -82,7 +82,7 @@ Project, You agree to the terms of this Agreement.
 
 ---
 
-**Project:** Gosto
+**Project:** Calca
 **Project Maintainer:** Joaquin Terrasa
 **Date:** 2026
 

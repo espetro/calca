@@ -38,7 +38,7 @@ import { Window } from "electrobun";
 
 export function createMainWindow() {
   const mainWindow = new Window({
-    title: "Gosto",
+    title: "Calca",
     width: 1400,
     height: 900,
     minWidth: 800,
@@ -221,7 +221,7 @@ export function createTrayIcon() {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: "Open Gosto",
+      label: "Open Calca",
       click: () => showMainWindow(),
     },
     { type: "separator" },
@@ -248,7 +248,7 @@ export function createTrayIcon() {
     },
   ]);
 
-  tray.setToolTip("Gosto");
+  tray.setToolTip("Calca");
   tray.setContextMenu(contextMenu);
 
   tray.on("click", () => {
