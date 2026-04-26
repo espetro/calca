@@ -1,6 +1,6 @@
-# Gosto Pro / Enterprise Edition
+# Calca Pro / Enterprise Edition
 
-This package contains the **Enterprise/Pro features** of Gosto, licensed under
+This package contains the **Enterprise/Pro features** of Calca, licensed under
 the **Elastic License v2 (ELv2)**.
 
 ## License
