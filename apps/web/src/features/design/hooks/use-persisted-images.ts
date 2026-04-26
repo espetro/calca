@@ -6,6 +6,7 @@ const STORE_NAME = "ref-images";
 const DB_VERSION = 2; // bump from v1 used by groups hook
 const MAX_IMAGES = 20;
 
+/** @deprecated Use {@link useIndexedDB} */
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -23,6 +24,7 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
+/** @deprecated Use {@link useIndexedDB} */
 function dbGet<T>(db: IDBDatabase, key: string): Promise<T | undefined> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readonly");
@@ -32,6 +34,7 @@ function dbGet<T>(db: IDBDatabase, key: string): Promise<T | undefined> {
   });
 }
 
+/** @deprecated Use {@link useIndexedDB} */
 function dbPut(db: IDBDatabase, key: string, value: unknown): Promise<void> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
@@ -81,15 +84,17 @@ export function usePersistedImages() {
         const db = await openDB();
         const stored = await dbGet<StoredImage[]>(db, "canvas-images");
         if (stored && stored.length > 0) {
-          setImagesRaw(stored.map((s) => ({
-            id: s.id,
-            dataUrl: s.compressedDataUrl,
-            name: s.name,
-            width: s.width,
-            height: s.height,
-            position: s.position,
-            thumbnail: s.thumbnail,
-          })));
+          setImagesRaw(
+            stored.map((s) => ({
+              id: s.id,
+              dataUrl: s.compressedDataUrl,
+              name: s.name,
+              width: s.width,
+              height: s.height,
+              position: s.position,
+              thumbnail: s.thumbnail,
+            })),
+          );
         }
       } catch (err) {
         console.warn("[persist-images] Failed to load:", err);
@@ -114,7 +119,7 @@ export function usePersistedImages() {
             height: img.height,
             position: img.position,
             thumbnail: img.thumbnail,
-          }))
+          })),
         );
         await dbPut(db, "canvas-images", stored);
       } catch (err) {
@@ -131,7 +136,7 @@ export function usePersistedImages() {
         return next;
       });
     },
-    [persistImages]
+    [persistImages],
   );
 
   return { images, setImages, loaded };
