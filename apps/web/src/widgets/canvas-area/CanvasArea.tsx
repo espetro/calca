@@ -1,5 +1,6 @@
 import { useCallback, useRef, type RefCallback } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { m } from "@/lib/i18n";
 import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
 import { PipelineStatusOverlay } from "@/features/canvas";
 import { type useCanvas } from "@/features/canvas/hooks/use-canvas";
@@ -529,10 +530,10 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <div className="text-center">
             <h1 className="text-2xl font-semibold text-gray-300 mb-2">
-              Otto Canvas
+              {m.canvas.emptyTitle()}
             </h1>
             <p className="text-gray-400/70 text-sm">
-              Type a prompt below to generate designs
+              {m.canvas.emptyDescription()}
             </p>
           </div>
         </div>

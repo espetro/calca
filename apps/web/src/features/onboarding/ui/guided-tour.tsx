@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { m } from "@/lib/i18n";
 
 export interface TourStep {
   target: string; // data-tour attribute value
@@ -11,40 +12,40 @@ export interface TourStep {
 const TOUR_STEPS: TourStep[] = [
   {
     target: "prompt-bar",
-    title: "Describe your design",
-    description: "Type any design — a landing page, Instagram ad, app screen. Be specific about colors, style, and content.",
+    title: m.tour.step1Title(),
+    description: m.tour.step1Desc(),
     placement: "top",
   },
   {
     target: "prompt-bar",
-    title: "Generate",
-    description: "Hit Enter or click Generate. Otto creates multiple variations, each one learning from the last.",
+    title: m.tour.step2Title(),
+    description: m.tour.step2Desc(),
     placement: "top",
   },
   {
     target: "design-frame",
-    title: "Your designs",
-    description: "Each frame is a polished HTML/CSS design. Pan and zoom the canvas to explore.",
+    title: m.tour.step3Title(),
+    description: m.tour.step3Desc(),
     placement: "right",
     waitForGeneration: true,
   },
   {
     target: "remix-button",
-    title: "Remix",
-    description: "Want a different take? Remix any frame with a new direction.",
+    title: m.tour.step4Title(),
+    description: m.tour.step4Desc(),
     placement: "bottom",
     waitForGeneration: true,
   },
   {
     target: "comment-tool",
-    title: "Click-to-Comment",
-    description: "Click anywhere on a design to leave feedback. Otto will revise just that part.",
+    title: m.tour.step5Title(),
+    description: m.tour.step5Desc(),
     placement: "right",
   },
   {
     target: "export-menu",
-    title: "Export",
-    description: "Export to Figma, Tailwind CSS, or React components.",
+    title: m.tour.step6Title(),
+    description: m.tour.step6Desc(),
     placement: "bottom",
   },
 ];
@@ -115,12 +116,12 @@ export function GuidedTour({ onComplete, hasFrames }: GuidedTourProps) {
     return (
       <div className="fixed inset-0 z-[75] pointer-events-none flex items-end justify-center pb-36">
         <div className="pointer-events-auto bg-white/70 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)] px-5 py-3 text-center">
-          <p className="text-[13px] text-gray-600 font-medium">✨ Generate your first design to continue the tour</p>
+          <p className="text-[13px] text-gray-600 font-medium">{m.tour.waitingMessage()}</p>
           <button
             onClick={onComplete}
             className="mt-2 text-[11px] text-gray-400 hover:text-gray-600 transition-colors"
           >
-            Skip tour
+            {m.tour.skipTour()}
           </button>
         </div>
       </div>
@@ -197,7 +198,7 @@ export function GuidedTour({ onComplete, hasFrames }: GuidedTourProps) {
           <div className="bg-white/80 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-semibold text-violet-500 uppercase tracking-wider">
-                Step {step + 1} of {TOUR_STEPS.length}
+                {m.tour.stepLabel()} {step + 1} of {TOUR_STEPS.length}
               </span>
             </div>
             <h3 className="text-[14px] font-semibold text-gray-800 mb-1">{currentStep.title}</h3>
@@ -207,13 +208,13 @@ export function GuidedTour({ onComplete, hasFrames }: GuidedTourProps) {
                 onClick={onComplete}
                 className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors"
               >
-                Skip tour
+                {m.tour.skipTour()}
               </button>
               <button
                 onClick={next}
                 className="text-[12px] font-semibold text-white bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all"
               >
-                {step + 1 >= TOUR_STEPS.length ? "Done" : "Next →"}
+                {step + 1 >= TOUR_STEPS.length ? m.tour.done() : m.tour.next()}
               </button>
             </div>
           </div>

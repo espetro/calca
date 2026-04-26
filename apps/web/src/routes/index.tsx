@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { m } from "@/lib/i18n";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCanvas } from "@/features/canvas";
@@ -24,6 +25,7 @@ import {
   showLibraryAtom,
 } from "@/features/design/state/generation-atoms";
 import { useMountEffect } from "@/shared/utils/use-mount-effect";
+import { exportCanvas, openImportDialog } from "@/lib/export";
 
 export default function Home() {
   const canvas = useCanvas();
@@ -74,75 +76,14 @@ export default function Home() {
   const pipeline = useGenerationPipeline(canvas);
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
 
-  const handleExportOtto = useCallback(() => {
-    const data = {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      groups: groups.map((g) => ({
-        ...g,
-        iterations: g.iterations.map((iter) => ({
-          id: iter.id,
-          label: iter.label,
-          html: iter.html,
-          width: iter.width,
-          height: iter.height,
-          position: iter.position,
-        })),
-      })),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `canvas-${Date.now()}.otto`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleExportDesign = useCallback(() => {
+    exportCanvas(groups);
   }, [groups]);
 
-  const handleImportOtto = useCallback(() => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".otto";
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        try {
-          const data = JSON.parse(ev.target?.result as string);
-          if (!data.groups || !Array.isArray(data.groups)) {
-            alert("Invalid .otto file");
-            return;
-          }
-          setGroups(
-            data.groups.map((g: Record<string, unknown>) => ({
-              id: g.id || `group-${Date.now()}-${Math.random()}`,
-              prompt: g.prompt || "",
-              position: g.position || { x: 0, y: 0 },
-              createdAt: g.createdAt || Date.now(),
-              iterations: ((g.iterations as Record<string, unknown>[]) || []).map(
-                (iter: Record<string, unknown>) => ({
-                  id: iter.id || `iter-${Date.now()}-${Math.random()}`,
-                  html: iter.html || "",
-                  label: iter.label || "Imported",
-                  position: iter.position || { x: 0, y: 0 },
-                  width: iter.width || 600,
-                  height: iter.height || 400,
-                  prompt: iter.prompt || g.prompt || "",
-                  comments: iter.comments || [],
-                  isLoading: false,
-                  isRegenerating: false,
-                }),
-              ),
-            })),
-          );
-        } catch {
-          alert("Failed to parse . otto file");
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
+  const handleImportDesign = useCallback(() => {
+    openImportDialog((importedGroups) => {
+      setGroups(importedGroups);
+    });
   }, [setGroups]);
 
   return (
@@ -158,8 +99,8 @@ export default function Home() {
         onResetView={canvas.resetView}
         onOpenSettings={() => setShowSettings(true)}
         onNewSession={() => setShowResetConfirm(true)}
-        onExport={handleExportOtto}
-        onImport={handleImportOtto}
+        onExport={handleExportDesign}
+        onImport={handleImportDesign}
         isOwnKey={isOwnKey}
         model={settings.model}
         providers={settings.providers}
@@ -236,9 +177,9 @@ export default function Home() {
             onClick={() => setShowResetConfirm(false)}
           />
           <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
-            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">Start new session?</h3>
+            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">{m.dialog.resetTitle()}</h3>
             <p className="text-[13px] text-gray-500 mb-6">
-              This will clear your current canvas. Generated designs will be lost.
+              {m.dialog.resetDescription()}
             </p>
             <div className="flex items-center justify-center gap-3">
               <button
@@ -295,7 +236,7 @@ export default function Home() {
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-[12px] font-medium text-amber-700 hover:bg-amber-500/20 transition-all shadow-sm"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            Add your API key in Settings to start designing
+            {m.banner.addApiKey()}
           </button>
         </div>
       )}

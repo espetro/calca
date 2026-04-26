@@ -15,6 +15,7 @@ export default defineConfig({
     react(),
     tanstackRouter(),
     tailwindcss(),
+
   ],
   resolve: {
     alias: [
