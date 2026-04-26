@@ -22,6 +22,8 @@ export async function handleProbeModels(c: Context) {
   }
 }
 
-const route = new Hono().post("/", handleProbeModels);
+const route = new Hono()
+  //
+  .post("/", handleProbeModels);
 
 export default route;

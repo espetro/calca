@@ -4,17 +4,12 @@ import workflowRoute from "./routes/workflow";
 import exportRoute from "./routes/export";
 import probeModelsRoute from "./routes/probe-models";
 
-const app = new Hono();
-
-app.use("*", cors({ origin: "*" }));
-
-app.get("/health", (c) => c.json({ status: "ok" }));
-
-app.route("/api/workflow", workflowRoute);
-app.route("/api/export", exportRoute);
-app.route("/api/probe-models", probeModelsRoute);
-
-export default app;
+const app = new Hono()
+  .use("*", cors({ origin: "*" }))
+  .get("/health", (c) => c.json({ status: "ok" }))
+  .route("/api/workflow", workflowRoute)
+  .route("/api/export", exportRoute)
+  .route("/api/probe-models", probeModelsRoute);
 
 Bun.serve({
   port: 3001,
@@ -22,3 +17,6 @@ Bun.serve({
 });
 
 console.log("Server running on http://localhost:3001");
+
+export default app;
+export type AppRoutes = typeof app;

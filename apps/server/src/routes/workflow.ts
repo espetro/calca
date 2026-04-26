@@ -16,6 +16,8 @@ export async function handleWorkflow(c: Context) {
   return createUIMessageStreamResponse({ stream });
 }
 
-const route = new Hono().post("/", handleWorkflow);
+const route = new Hono()
+  //
+  .post("/", handleWorkflow);
 
 export default route;

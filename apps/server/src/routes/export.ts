@@ -87,6 +87,8 @@ export async function handleExport(c: Context) {
   }
 }
 
-const route = new Hono().post("/", handleExport);
+const route = new Hono()
+  //
+  .post("/", handleExport);
 
 export default route;

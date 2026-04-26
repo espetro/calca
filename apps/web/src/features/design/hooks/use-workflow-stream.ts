@@ -172,7 +172,7 @@ export const useWorkflowStream = () => {
       );
 
       try {
-        const response = await legacyApiClient("/api/workflow", {
+        const { body } = await legacyApiClient<{ body: ReadableStream }>("/api/workflow", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -194,14 +194,6 @@ export const useWorkflowStream = () => {
           signal: controller.signal,
         });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Workflow request failed (${response.status}): ${errorText.slice(0, 200)}`,
-          );
-        }
-
-        const body = response.body;
         if (!body) throw new Error("No response body");
 
         const reader = body.getReader();
