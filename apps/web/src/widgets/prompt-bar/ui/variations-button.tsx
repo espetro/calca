@@ -6,10 +6,10 @@ import { createPortal } from "react-dom";
 
 const VARIATION_COLORS: Record<number, { bg: string; color: string }> = {
   1: { bg: "transparent", color: "" },
-  2: { bg: "oklch(0.76 0.0952 76.06 / 0.20)", color: "oklch(0.76 0.0952 76.06)" },
-  3: { bg: "oklch(0.76 0.0952 76.06 / 0.40)", color: "oklch(0.76 0.0952 76.06)" },
-  4: { bg: "oklch(0.76 0.0952 76.06 / 0.80)", color: "#fff" },
-  5: { bg: "oklch(0.76 0.0952 76.06)", color: "#fff" },
+  2: { bg: "var(--mode-variations-bg-subtle)", color: "var(--mode-variations-fg)" },
+  3: { bg: "var(--mode-variations-bg-subtle)", color: "var(--mode-variations-fg)" },
+  4: { bg: "var(--mode-variations-bg)", color: "var(--mode-variations-fg)" },
+  5: { bg: "var(--mode-variations-bg)", color: "var(--mode-variations-fg)" },
 };
 
 interface VariationsButtonProps {
@@ -85,7 +85,7 @@ export function VariationsButton({
                 color: VARIATION_COLORS[conceptCount]?.color,
                 border:
                   conceptCount === 2 || conceptCount === 3
-                    ? "1px solid oklch(0.76 0.0952 76.06 / 0.4)"
+                    ? "1px solid var(--mode-variations-fg)"
                     : undefined,
               }
             : undefined

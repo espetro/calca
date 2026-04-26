@@ -47,11 +47,11 @@ const ActionButton = ({ isGenerating }: ActionButtonProps) => {
     <button
       onClick={() => setIsIdeating(!isIdeating)}
       disabled={isGenerating}
-       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
-        isIdeating
-          ? "bg-accent/20 text-accent-foreground hover:bg-accent/30 border border-accent/40"
-          : "bg-gray-900/10 text-gray-600 hover:bg-gray-900/15"
-      }`}
+       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
+      style={isIdeating
+        ? { background: "var(--mode-ideate-bg)", color: "var(--mode-ideate-fg)", border: "1px solid var(--mode-ideate-icon-bg)" }
+        : { background: "var(--mode-ideate-bg-subtle)", color: "var(--mode-ideate-fg)", opacity: 0.7 }
+      }
       title={isIdeating ? "Ideate mode" : "Build mode"}
     >
       {isIdeating ? "◈ Ideate" : "✦ Build"}

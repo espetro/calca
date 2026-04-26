@@ -107,6 +107,35 @@
   --glow-primary:   oklch(0.44 0.0472 158.31 / 0.4);
   --glow-accent:    oklch(0.77 0.0749 131.06 / 0.4);
   --glow-secondary: oklch(0.66 0.0552 153.35 / 0.4);
+
+  /* Toolbar tool active colors */
+  --tool-select-bg:      oklch(0.44 0.0472 158.31 / 25%);
+  --tool-select-icon:    oklch(0.77 0.0749 131.06);
+  --tool-frame-bg:       oklch(0.78 0.09 220.00 / 25%);
+  --tool-frame-icon:     oklch(0.72 0.10 220.00);
+  --tool-component-bg:   oklch(0.80 0.10 28.00 / 25%);
+  --tool-component-icon: oklch(0.74 0.12 28.00);
+
+  /* Generation mode card colors */
+  --mode-quick-bg:              oklch(0.94 0.10  85.00);
+  --mode-quick-bg-subtle:       oklch(0.96 0.06  85.00);
+  --mode-quick-fg:              oklch(0.35 0.08  85.00);
+  --mode-quick-icon-bg:         oklch(0.88 0.13  80.00);
+
+  --mode-critique-bg:           oklch(0.93 0.07  15.00);
+  --mode-critique-bg-subtle:    oklch(0.96 0.04  15.00);
+  --mode-critique-fg:           oklch(0.38 0.10  20.00);
+  --mode-critique-icon-bg:      oklch(0.87 0.11  18.00);
+
+  --mode-variations-bg:         oklch(0.93 0.07 350.00);
+  --mode-variations-bg-subtle:  oklch(0.96 0.04 350.00);
+  --mode-variations-fg:         oklch(0.38 0.10 345.00);
+  --mode-variations-icon-bg:    oklch(0.87 0.11 348.00);
+
+  --mode-ideate-bg:             oklch(0.92 0.07 285.00);
+  --mode-ideate-bg-subtle:      oklch(0.95 0.04 285.00);
+  --mode-ideate-fg:             oklch(0.35 0.10 285.00);
+  --mode-ideate-icon-bg:        oklch(0.86 0.11 283.00);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -171,6 +200,35 @@
   --shadow-lg:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 4px 6px -1px oklch(0 0 0 / 0.10);
   --shadow-xl:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 8px 10px -1px oklch(0 0 0 / 0.10);
   --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.25);
+
+  /* Toolbar tool active colors */
+  --tool-select-bg:      oklch(0.77 0.0749 131.06 / 20%);
+  --tool-select-icon:    oklch(0.86 0.0580 125.92);
+  --tool-frame-bg:       oklch(0.72 0.10 220.00 / 20%);
+  --tool-frame-icon:     oklch(0.80 0.09 220.00);
+  --tool-component-bg:   oklch(0.74 0.12 28.00 / 20%);
+  --tool-component-icon: oklch(0.82 0.11 28.00);
+
+  /* Generation mode card colors */
+  --mode-quick-bg:             oklch(0.30 0.09  82.00);
+  --mode-quick-bg-subtle:      oklch(0.26 0.06  82.00);
+  --mode-quick-fg:             oklch(0.88 0.13  80.00);
+  --mode-quick-icon-bg:        oklch(0.38 0.12  80.00);
+
+  --mode-critique-bg:          oklch(0.28 0.07  18.00);
+  --mode-critique-bg-subtle:   oklch(0.24 0.04  18.00);
+  --mode-critique-fg:          oklch(0.90 0.09  20.00);
+  --mode-critique-icon-bg:     oklch(0.36 0.11  18.00);
+
+  --mode-variations-bg:        oklch(0.28 0.07 350.00);
+  --mode-variations-bg-subtle: oklch(0.24 0.04 350.00);
+  --mode-variations-fg:        oklch(0.90 0.09 348.00);
+  --mode-variations-icon-bg:   oklch(0.36 0.11 348.00);
+
+  --mode-ideate-bg:            oklch(0.28 0.08 285.00);
+  --mode-ideate-bg-subtle:     oklch(0.24 0.05 285.00);
+  --mode-ideate-fg:            oklch(0.88 0.10 283.00);
+  --mode-ideate-icon-bg:       oklch(0.36 0.12 283.00);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

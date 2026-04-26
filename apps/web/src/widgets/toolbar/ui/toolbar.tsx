@@ -61,7 +61,7 @@ export function Toolbar({
           active={mode === "select"}
           onClick={() => onModeChange("select")}
           title="Select (V)"
-          color="blue"
+          color="select"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 3l14 9-7 1-4 7z" fill={mode === "select" ? "currentColor" : "none"} />
@@ -72,7 +72,7 @@ export function Toolbar({
           active={mode === "draw-area"}
           onClick={() => onModeChange("draw-area")}
           title="Draw Area"
-          color="orange"
+          color="frame"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
@@ -85,7 +85,7 @@ export function Toolbar({
           active={mode === "edit-component"}
           onClick={() => onModeChange("edit-component")}
           title="Edit Component"
-          color="yellow"
+          color="component"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12.5 1.5a2.121 2.121 0 0 1 3 3L12 8l-4.5 1.5-1.5-4.5 6.5-3.5z" />
@@ -213,12 +213,24 @@ function ModeButton({
   onClick: () => void;
   title: string;
   children: React.ReactNode;
-  color: "blue" | "orange" | "yellow";
+  color: "select" | "frame" | "component";
 }) {
-  const activeClasses = {
-    blue: "bg-primary/30 text-primary shadow-[0_0_12px_var(--glow-primary)]",
-    orange: "bg-accent/30 text-accent shadow-[0_0_12px_var(--glow-accent)]",
-    yellow: "bg-secondary/30 text-secondary shadow-[0_0_12px_var(--glow-secondary)]",
+  const activeStyles = {
+    select: {
+      background: "var(--tool-select-bg)",
+      color: "var(--tool-select-icon)",
+      boxShadow: "0 0 12px var(--glow-primary)",
+    },
+    frame: {
+      background: "var(--tool-frame-bg)",
+      color: "var(--tool-frame-icon)",
+      boxShadow: "0 0 12px oklch(0.78 0.09 220.00 / 0.3)",
+    },
+    component: {
+      background: "var(--tool-component-bg)",
+      color: "var(--tool-component-icon)",
+      boxShadow: "0 0 12px oklch(0.80 0.10 28.00 / 0.3)",
+    },
   };
 
   return (
@@ -227,9 +239,10 @@ function ModeButton({
       title={title}
       className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
         active
-          ? activeClasses[color]
+          ? ""
           : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
       }`}
+      style={active ? activeStyles[color] : undefined}
     >
       {children}
     </button>
