@@ -69,20 +69,20 @@ export function DesignCard({
   <style>
     html, body { margin: 0; padding: 0; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: hidden; }
     body { background: white; width: ${frameW}px; }
-    #otto-measure { width: ${frameW}px; overflow: hidden; }
+    #calca-measure { width: ${frameW}px; overflow: hidden; }
     img, video, svg { max-width: 100%; height: auto; display: block; object-fit: cover; }
     * { animation: none !important; transition: none !important; }
     /* Kill common viewport-height patterns that inflate measurement */
     [style*="100vh"], [style*="min-height: 100vh"], [style*="height: 100vh"] { height: auto !important; min-height: 0 !important; }
   </style>
-</head><body><div id="otto-measure" data-gen="${measurementGenRef.current}">${iteration.html}</div>
+</head><body><div id="calca-measure" data-gen="${measurementGenRef.current}">${iteration.html}</div>
 <script>
 var GEN = ${measurementGenRef.current};
 function reportHeight() {
-  var el = document.getElementById('otto-measure');
+  var el = document.getElementById('calca-measure');
   if (!el) return;
   var h = el.offsetHeight || el.scrollHeight || 100;
-  parent.postMessage({ type: 'otto-frame-height', id: '${iteration.id}', height: h, gen: GEN }, '*');
+  parent.postMessage({ type: 'calca-frame-height', id: '${iteration.id}', height: h, gen: GEN }, '*');
 }
 setTimeout(reportHeight, 300);
 setTimeout(reportHeight, 800);
@@ -103,7 +103,7 @@ setTimeout(reportHeight, 2000);
     }
 
     const onMessage = (e: MessageEvent) => {
-      if (e.data?.type === 'otto-frame-height' && e.data.id === iteration.id && e.data.gen === currentGen) {
+      if (e.data?.type === 'calca-frame-height' && e.data.id === iteration.id && e.data.gen === currentGen) {
         const h = Math.min(Math.max(e.data.height, 50), 12000);
         if (!iteration.height || iteration.height === 0 || Math.abs(h - iteration.height) > 30) {
           setContentHeight(h);

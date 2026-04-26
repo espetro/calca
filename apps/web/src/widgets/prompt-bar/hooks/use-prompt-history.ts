@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-const HISTORY_KEY = "otto-prompt-history";
+const HISTORY_KEY = "calca-prompt-history";
 const MAX_HISTORY = 50;
 
 const historyAtom = atomWithStorage<string[]>(HISTORY_KEY, []);

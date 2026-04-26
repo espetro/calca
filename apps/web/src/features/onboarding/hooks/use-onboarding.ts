@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const ONBOARDING_KEY = "otto-onboarding";
+const ONBOARDING_KEY = "calca-onboarding";
 
 interface OnboardingState {
   keysEntered: boolean;

@@ -4,7 +4,7 @@ import type { ProviderType } from "@app/core/ai/providers";
 import type { ProviderConfig, Settings } from "../types";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
-const STORAGE_KEY = "otto-settings";
+const STORAGE_KEY = "calca-settings";
 const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL || "claude-opus-4-6";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
 const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";

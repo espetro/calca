@@ -2,7 +2,7 @@ export type CommentStatus = "waiting" | "working" | "done";
 
 export interface CommentMessage {
   id: string;
-  role: "user" | "otto";
+  role: "user" | "calca";
   text: string;
   createdAt: number;
 }

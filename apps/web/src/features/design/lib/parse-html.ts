@@ -26,10 +26,10 @@ export function parseHtmlWithSize(
 
   let comment: string | undefined;
   if (extractComments) {
-    const commentMatch = cleaned.match(/<!--otto:(.*?)-->/);
+    const commentMatch = cleaned.match(/<!--calca:(.*?)-->/);
     if (commentMatch) {
       comment = commentMatch[1].trim();
-      cleaned = cleaned.replace(/<!--otto:.*?-->\n?/, "");
+      cleaned = cleaned.replace(/<!--calca:.*?-->\n?/, "");
       if (trimHtml) cleaned = cleaned.trim();
     }
   }

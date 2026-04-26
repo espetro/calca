@@ -55,7 +55,7 @@ export function Toolbar({
   }, [menuOpen]);
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-gray-900/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.08)] max-w-[calc(100vw-2rem)]">
+    <div className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-foreground/60 backdrop-blur-2xl border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]">
       <div className="flex items-center gap-1.5 overflow-x-auto">
         <ModeButton
           active={mode === "select"}
@@ -95,7 +95,7 @@ export function Toolbar({
           </svg>
         </ModeButton>
 
-        <div className="w-px h-5 bg-white/15 mx-1" />
+        <div className="w-px h-5 bg-foreground/15 mx-1" />
 
         <ToolButton onClick={onZoomOut} title="Zoom out">
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -105,7 +105,7 @@ export function Toolbar({
 
         <button
           onClick={onResetView}
-          className="text-[11px] font-medium text-gray-400 hover:text-white px-1.5 py-1 rounded-lg min-w-[42px] text-center transition-colors"
+          className="text-[11px] font-medium text-muted-foreground hover:text-foreground px-1.5 py-1 rounded-lg min-w-[42px] text-center transition-colors"
           title="Reset zoom"
         >
           {Math.round(scale * 100)}%
@@ -118,11 +118,11 @@ export function Toolbar({
           </svg>
         </ToolButton>
 
-        <div className="w-px h-5 bg-white/15 mx-1" />
+        <div className="w-px h-5 bg-foreground/15 mx-1" />
 
         <button
           onClick={onOpenSettings}
-          className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+          className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-all"
           title="Settings"
         >
           <span className={`w-1.5 h-1.5 rounded-full ${isOwnKey ? "bg-emerald-400" : "bg-amber-400"}`} />
@@ -133,7 +133,7 @@ export function Toolbar({
           </svg>
         </button>
 
-        <div className="w-px h-5 bg-white/15 mx-1" />
+        <div className="w-px h-5 bg-foreground/15 mx-1" />
 
       </div>
 
@@ -147,12 +147,12 @@ export function Toolbar({
         </ToolButton>
 
         {menuOpen && (
-          <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-gray-900/90 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] py-1 overflow-hidden">
-            <MenuItem icon="📥" label="Import .otto" onClick={() => { onImport(); setMenuOpen(false); }} />
+          <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-foreground/90 backdrop-blur-2xl border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.3)] py-1 overflow-hidden">
+            <MenuItem icon="📥" label="Import .design" onClick={() => { onImport(); setMenuOpen(false); }} />
             {hasFrames && (
               <>
-                <MenuItem icon="📤" label="Export .otto" onClick={() => { onExport(); setMenuOpen(false); }} />
-                <div className="h-px bg-white/10 my-1" />
+                <MenuItem icon="📤" label="Export .design" onClick={() => { onExport(); setMenuOpen(false); }} />
+                <div className="h-px bg-foreground/10 my-1" />
                 <MenuItem icon="🗑" label="Clear Canvas" onClick={() => { onNewSession(); setMenuOpen(false); }} danger />
               </>
             )}
@@ -169,8 +169,8 @@ function MenuItem({ icon, label, onClick, danger }: { icon: string; label: strin
       onClick={onClick}
       className={`w-full flex items-center gap-2.5 px-3 py-2 text-[12px] font-medium transition-colors ${
         danger
-          ? "text-red-400 hover:bg-red-500/10"
-          : "text-gray-300 hover:bg-white/10 hover:text-white"
+          ? "text-destructive hover:bg-destructive/10"
+          : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
       }`}
     >
       <span className="text-sm">{icon}</span>
@@ -195,7 +195,7 @@ function ToolButton({
       onClick={onClick}
       title={title}
       data-tour={dataTour}
-      className="w-8 h-8 flex items-center justify-center rounded-xl transition-all text-gray-400 hover:text-white hover:bg-white/10"
+      className="w-8 h-8 flex items-center justify-center rounded-xl transition-all text-muted-foreground hover:text-foreground hover:bg-foreground/10"
     >
       {children}
     </button>
@@ -216,9 +216,9 @@ function ModeButton({
   color: "blue" | "orange" | "yellow";
 }) {
   const activeClasses = {
-    blue: "bg-blue-500/20 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.4)]",
-    orange: "bg-orange-500/20 text-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.4)]",
-    yellow: "bg-yellow-500/20 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.4)]",
+    blue: "bg-primary/20 text-primary shadow-[0_0_12px_oklch(0.44_0.0472_158.31_/_0.4)]",
+    orange: "bg-accent/20 text-accent shadow-[0_0_12px_oklch(0.77_0.0749_131.06_/_0.4)]",
+    yellow: "bg-secondary/20 text-secondary shadow-[0_0_12px_oklch(0.66_0.0552_153.35_/_0.4)]",
   };
 
   return (
@@ -228,7 +228,7 @@ function ModeButton({
       className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
         active
           ? activeClasses[color]
-          : "text-gray-400 hover:text-white hover:bg-white/10"
+          : "text-muted-foreground hover:text-foreground hover:bg-foreground/10"
       }`}
     >
       {children}

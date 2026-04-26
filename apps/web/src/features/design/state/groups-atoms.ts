@@ -1,8 +1,8 @@
 import { atom } from "jotai";
 import type { GenerationGroup } from "@/shared/types";
 
-const STORAGE_KEY = "otto-canvas-session";
-const IMG_DB_NAME = "otto-canvas-images";
+const STORAGE_KEY = "calca-canvas-session";
+const IMG_DB_NAME = "calca-canvas-images";
 const IMG_STORE = "images";
 
 function openImgDB(): Promise<IDBDatabase> {

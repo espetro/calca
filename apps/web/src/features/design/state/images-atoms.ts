@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import type { CanvasImage } from "@/shared/types";
 
-const DB_NAME = "otto-canvas-images";
+const DB_NAME = "calca-canvas-images";
 const STORE_NAME = "ref-images";
 const DB_VERSION = 2;
 const MAX_IMAGES = 20;

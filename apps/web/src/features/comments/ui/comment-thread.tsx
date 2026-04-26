@@ -18,7 +18,7 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
     : [
         { id: "msg-0", role: "user" as const, text: comment.text, createdAt: comment.createdAt },
         ...(comment.aiResponse
-          ? [{ id: "msg-1", role: "otto" as const, text: comment.aiResponse, createdAt: comment.createdAt + 1 }]
+          ? [{ id: "msg-1", role: "calca" as const, text: comment.aiResponse, createdAt: comment.createdAt + 1 }]
           : []),
       ];
 
@@ -59,16 +59,16 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
       {/* Thread messages */}
       <div ref={threadRef} className="flex-1 overflow-y-auto px-4 pb-2 space-y-2.5 min-h-0">
         {thread.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.role === "otto" ? "justify-start" : "justify-end"}`}>
+          <div key={msg.id} className={`flex ${msg.role === "calca" ? "justify-start" : "justify-end"}`}>
             <div
               className={`rounded-xl px-3 py-2 max-w-[85%] ${
-                msg.role === "otto"
+                msg.role === "calca"
                   ? "bg-gray-100/80 text-gray-700"
                   : "bg-blue-500/90 text-white"
               }`}
             >
-              {msg.role === "otto" && (
-                <div className="text-[10px] font-semibold text-gray-400 mb-0.5">Otto</div>
+              {msg.role === "calca" && (
+                <div className="text-[10px] font-semibold text-gray-400 mb-0.5">Calca</div>
               )}
               <p className="text-[13px] leading-relaxed">{msg.text}</p>
             </div>
@@ -79,7 +79,7 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
         {isWorking && (
           <div className="flex justify-start">
             <div className="bg-gray-100/80 rounded-xl px-3 py-2">
-              <div className="text-[10px] font-semibold text-gray-400 mb-0.5">Otto</div>
+              <div className="text-[10px] font-semibold text-gray-400 mb-0.5">Calca</div>
               <div className="flex items-center gap-1.5">
                 <div className="flex gap-0.5">
                   <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />

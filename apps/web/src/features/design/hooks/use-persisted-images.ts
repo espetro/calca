@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { CanvasImage } from "@/shared/types";
 
-const DB_NAME = "otto-canvas-images";
+const DB_NAME = "calca-canvas-images";
 const STORE_NAME = "ref-images";
 const DB_VERSION = 2; // bump from v1 used by groups hook
 const MAX_IMAGES = 20;

@@ -126,16 +126,16 @@ export const useCommentHandlers = (
           }))
         );
 
-        const ottoResponse: CommentMessage = {
+        const calcaResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
-          role: "otto",
+          role: "calca",
           text: result.comment || "Done! I've updated the design.",
           createdAt: Date.now(),
         };
-        const doneThread = [...latestThread, ottoResponse];
+        const doneThread = [...latestThread, calcaResponse];
         updateComment(iterationId, commentId, {
           status: "done",
-          aiResponse: ottoResponse.text,
+          aiResponse: calcaResponse.text,
           thread: doneThread,
         });
         setActiveComment((prev) =>
@@ -143,7 +143,7 @@ export const useCommentHandlers = (
             ? {
                 ...prev,
                 status: "done",
-                aiResponse: ottoResponse.text,
+                aiResponse: calcaResponse.text,
                 thread: doneThread,
               }
             : prev
@@ -152,7 +152,7 @@ export const useCommentHandlers = (
         console.error("Revision failed:", err);
         const errorResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
-          role: "otto",
+          role: "calca",
           text: `Revision failed: ${err instanceof Error ? err.message : "Unknown error"}. Try again.`,
           createdAt: Date.now(),
         };
