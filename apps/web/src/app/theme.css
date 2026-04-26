@@ -1,0 +1,225 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import "tailwindcss";
+
+/*
+ * ┌─────────────────────────────────────────────────────────────────────────┐
+ * │  Calca — Tailwind CSS v4 Theme                                          │
+ * │  Class-based dark mode: add class="dark" to <html>                      │
+ * └─────────────────────────────────────────────────────────────────────────┘
+ *
+ * @custom-variant registers "dark:" as a Tailwind utility variant that
+ * activates whenever an ancestor element carries the .dark class.
+ * This replaces the v3 darkMode: 'class' option in tailwind.config.js.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Light Theme  (:root)
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --background:            oklch(0.95 0.0144  84.58);  /* warm parchment   #F2EDE3 */
+  --foreground:            oklch(0.25 0.0114 156.31);  /* charcoal         #1E2420 */
+
+  --card:                  oklch(0.93 0.0194  90.55);  /* linen cream      #EDE8DA */
+  --card-foreground:       oklch(0.25 0.0114 156.31);
+  --popover:               oklch(0.93 0.0194  90.55);
+  --popover-foreground:    oklch(0.25 0.0114 156.31);
+
+  /* Brand */
+  --primary:               oklch(0.44 0.0472 158.31);  /* forest sage      #3D5C4A */
+  --primary-foreground:    oklch(0.93 0.0194  90.55);  /* linen cream      #EDE8DA */
+
+  --secondary:             oklch(0.66 0.0552 153.35);  /* dusty sage       #7A9E84 */
+  --secondary-foreground:  oklch(0.25 0.0114 156.31);
+
+  /* Ghost / tracing-paper tone */
+  --muted:                 oklch(0.86 0.0580 125.92);  /* overlap tint     #C8D9B0 */
+  --muted-foreground:      oklch(0.57 0.0234 160.97);  /* warm slate       #6B7B72 */
+
+  --accent:                oklch(0.77 0.0749 131.06);  /* soft olive       #A3BE8C */
+  --accent-foreground:     oklch(0.25 0.0114 156.31);
+
+  /* Semantic */
+  --destructive:           oklch(0.58 0.24   28.48);
+
+  /* Chrome */
+  --border:                oklch(0.86 0.0580 125.92);  /* ghost tone       #C8D9B0 */
+  --input:                 oklch(0.93 0.0194  90.55);  /* linen cream      #EDE8DA */
+  --ring:                  oklch(0.66 0.0552 153.35);  /* dusty sage       #7A9E84 */
+
+  /* Charts — warm amber leads, then full green ramp */
+  --chart-1:               oklch(0.76 0.0952  76.06);  /* amber glow       #D4A96A */
+  --chart-2:               oklch(0.44 0.0472 158.31);  /* forest sage      #3D5C4A */
+  --chart-3:               oklch(0.66 0.0552 153.35);  /* dusty sage       #7A9E84 */
+  --chart-4:               oklch(0.77 0.0749 131.06);  /* soft olive       #A3BE8C */
+  --chart-5:               oklch(0.57 0.0234 160.97);  /* warm slate       #6B7B72 */
+
+  /* Sidebar */
+  --sidebar:               oklch(0.95 0.0144  84.58);
+  --sidebar-foreground:    oklch(0.25 0.0114 156.31);
+  --sidebar-primary:       oklch(0.44 0.0472 158.31);
+  --sidebar-primary-foreground: oklch(0.93 0.0194 90.55);
+  --sidebar-accent:        oklch(0.86 0.0580 125.92);
+  --sidebar-accent-foreground:  oklch(0.25 0.0114 156.31);
+  --sidebar-border:        oklch(0.86 0.0580 125.92);
+  --sidebar-ring:          oklch(0.66 0.0552 153.35);
+
+  /* Typography */
+  --font-sans:  'Geist', 'Geist Fallback', ui-sans-serif, system-ui, -apple-system,
+                BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+                'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+                'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-serif: "Geist", "Geist Fallback", ui-serif, Georgia, Cambria,
+                "Times New Roman", Times, serif;
+  --font-mono:  "Geist Mono", "Geist Mono Fallback", ui-monospace, SFMono-Regular,
+                Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Shape */
+  --radius: 0.625rem;
+
+  /* Shadows */
+  --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-xs:  0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-sm:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 1px 2px -1px oklch(0 0 0 / 0.10);
+  --shadow:     0 1px 3px 0px oklch(0 0 0 / 0.10), 0 1px 2px -1px oklch(0 0 0 / 0.10);
+  --shadow-md:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 2px 4px -1px oklch(0 0 0 / 0.10);
+  --shadow-lg:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 4px 6px -1px oklch(0 0 0 / 0.10);
+  --shadow-xl:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 8px 10px -1px oklch(0 0 0 / 0.10);
+  --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.25);
+
+  /* Canvas-specific tokens mapped to sage palette */
+  --canvas-bg:    var(--background);
+  --canvas-dot:   color-mix(in oklch, var(--border) 40%, transparent);
+  --toolbar-bg:   var(--foreground);
+  --toolbar-text: var(--background);
+  --pin-color:    var(--primary);
+  --pin-active:   var(--accent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Dark Theme  (.dark on <html>)
+   ───────────────────────────────────────────────────────────────────────── */
+.dark {
+  /* Surfaces */
+  --background:            oklch(0.23 0.0185 165.08);  /* ink green        #141F1A */
+  --foreground:            oklch(0.93 0.0194  90.55);  /* warm off-white   #EDE8DA */
+
+  --card:                  oklch(0.28 0.0271 159.43);  /* dark forest      #1E2E25 */
+  --card-foreground:       oklch(0.93 0.0194  90.55);
+  --popover:               oklch(0.28 0.0271 159.43);
+  --popover-foreground:    oklch(0.93 0.0194  90.55);
+
+  /* Brand */
+  --primary:               oklch(0.77 0.0749 131.06);  /* pale sage        #A3BE8C */
+  --primary-foreground:    oklch(0.25 0.0114 156.31);  /* charcoal         #1E2420 */
+
+  --secondary:             oklch(0.66 0.0552 153.35);  /* sage mid         #7A9E84 */
+  --secondary-foreground:  oklch(0.93 0.0194  90.55);
+
+  /* Ghost / tracing-paper tone */
+  --muted:                 oklch(0.38 0.0459 155.37);  /* dark ghost       #2E4A38 */
+  --muted-foreground:      oklch(0.71 0.0361 157.28);  /* sage gray        #8FA898 */
+
+  /* Mediterranean summer amber — only in dark mode */
+  --accent:                oklch(0.76 0.0952  76.06);  /* amber glow       #D4A96A */
+  --accent-foreground:     oklch(0.25 0.0114 156.31);
+
+  /* Semantic */
+  --destructive:           oklch(0.70 0.19   22.23);
+
+  /* Chrome */
+  --border:                oklch(1.00 0 0 / 10%);
+  --input:                 oklch(1.00 0 0 / 15%);
+  --ring:                  oklch(0.44 0.0472 158.31);  /* forest sage      #3D5C4A */
+
+  /* Charts — amber anchor, then sage sequence */
+  --chart-1:               oklch(0.76 0.0952  76.06);  /* amber glow       #D4A96A */
+  --chart-2:               oklch(0.77 0.0749 131.06);  /* pale sage        #A3BE8C */
+  --chart-3:               oklch(0.66 0.0552 153.35);  /* sage mid         #7A9E84 */
+  --chart-4:               oklch(0.86 0.0580 125.92);  /* ghost tone       #C8D9B0 */
+  --chart-5:               oklch(0.71 0.0361 157.28);  /* sage gray        #8FA898 */
+
+  /* Sidebar */
+  --sidebar:               oklch(0.28 0.0271 159.43);
+  --sidebar-foreground:    oklch(0.93 0.0194  90.55);
+  --sidebar-primary:       oklch(0.77 0.0749 131.06);
+  --sidebar-primary-foreground: oklch(0.25 0.0114 156.31);
+  --sidebar-accent:        oklch(0.38 0.0459 155.37);
+  --sidebar-accent-foreground:  oklch(0.93 0.0194  90.55);
+  --sidebar-border:        oklch(1.00 0 0 / 10%);
+  --sidebar-ring:          oklch(0.44 0.0472 158.31);
+
+  /* Shadows stay the same in dark */
+  --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-xs:  0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-sm:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 1px 2px -1px oklch(0 0 0 / 0.10);
+  --shadow:     0 1px 3px 0px oklch(0 0 0 / 0.10), 0 1px 2px -1px oklch(0 0 0 / 0.10);
+  --shadow-md:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 2px 4px -1px oklch(0 0 0 / 0.10);
+  --shadow-lg:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 4px 6px -1px oklch(0 0 0 / 0.10);
+  --shadow-xl:  0 1px 3px 0px oklch(0 0 0 / 0.10), 0 8px 10px -1px oklch(0 0 0 / 0.10);
+  --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.25);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   @theme inline — exposes CSS vars as Tailwind design tokens
+   bg-background, text-foreground, border-border, etc.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme inline {
+  --color-background:               var(--background);
+  --color-foreground:               var(--foreground);
+  --color-card:                     var(--card);
+  --color-card-foreground:          var(--card-foreground);
+  --color-popover:                  var(--popover);
+  --color-popover-foreground:       var(--popover-foreground);
+  --color-primary:                  var(--primary);
+  --color-primary-foreground:       var(--primary-foreground);
+  --color-secondary:                var(--secondary);
+  --color-secondary-foreground:     var(--secondary-foreground);
+  --color-muted:                    var(--muted);
+  --color-muted-foreground:         var(--muted-foreground);
+  --color-accent:                   var(--accent);
+  --color-accent-foreground:        var(--accent-foreground);
+  --color-destructive:              var(--destructive);
+  --color-border:                   var(--border);
+  --color-input:                    var(--input);
+  --color-ring:                     var(--ring);
+  --color-chart-1:                  var(--chart-1);
+  --color-chart-2:                  var(--chart-2);
+  --color-chart-3:                  var(--chart-3);
+  --color-chart-4:                  var(--chart-4);
+  --color-chart-5:                  var(--chart-5);
+  --color-sidebar:                  var(--sidebar);
+  --color-sidebar-foreground:       var(--sidebar-foreground);
+  --color-sidebar-primary:          var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent:           var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border:           var(--sidebar-border);
+  --color-sidebar-ring:             var(--sidebar-ring);
+
+  --font-sans:   var(--font-sans);
+  --font-mono:   var(--font-mono);
+  --font-serif:  var(--font-serif);
+
+  --radius-sm:   calc(var(--radius) - 4px);
+  --radius-md:   calc(var(--radius) - 2px);
+  --radius-lg:   var(--radius);
+  --radius-xl:   calc(var(--radius) + 4px);
+
+  --shadow-2xs:  var(--shadow-2xs);
+  --shadow-xs:   var(--shadow-xs);
+  --shadow-sm:   var(--shadow-sm);
+  --shadow:      var(--shadow);
+  --shadow-md:   var(--shadow-md);
+  --shadow-lg:   var(--shadow-lg);
+  --shadow-xl:   var(--shadow-xl);
+  --shadow-2xl:  var(--shadow-2xl);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Sage theme override
+   ───────────────────────────────────────────────────────────────────────── */
+[data-theme="sage"] {
+  /* Sage palette is the default; explicit override for future theming */
+}
