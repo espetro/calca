@@ -1,5 +1,32 @@
 # @app/core
 
+## 0.3.0
+
+### Added
+
+- **Mastra Integration** — Added Mastra + type-fest dependencies, created schemas, and MADR 0012
+- **Workflow Steps** — Mastra workflow steps for the AI design pipeline
+- **Pipeline Assembly** — Assembled design pipeline workflow with API route and step tests
+- **Stream Consumer** — Mastra stream consumer hook for real-time pipeline output
+
+### Changed
+
+- **Pipeline Refactor** — Slimmed `use-generation-pipeline` to UI-only; Mastra stream consumer handles server communication
+
+### Fixed
+
+- Removed old API routes and wired remix/revision through the Mastra workflow
+- Resolved AI SDK provider-utils version mismatch
+- Added missing workspace dependencies and package exports for Mastra pipeline
+
+### Tests
+
+- Added integration tests for Mastra design pipeline workflow
+
+### Docs
+
+- Updated pipeline route example to workflow pattern
+
 ## 0.2.0
 
 ### Minor Changes

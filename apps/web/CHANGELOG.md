@@ -1,5 +1,31 @@
 # @app/web
 
+## 0.3.0
+
+### Added
+
+- **Vite Migration** — Complete migration from Next.js to Vite with TanStack Router for SPA routing
+- **Theme System** — Swappable Tailwind v4 theme infrastructure with shadcn/ui utilities
+- **Internationalization** — New `lib/i18n` module with English translations and `lib/export` with `.design` format support
+- **IndexedDB Hook** — Custom IndexedDB hook for client-side data persistence
+- **API Module** — Moved API fetch logic to separate module under `lib/`
+- **Wheel Zoom Prevention** — Prevent wheel zoom on HUD components
+- **Brand Voice** — Applied Calca brand voice across all UI copy
+
+### Changed
+
+- **Pipeline UI** — Slimmed `use-generation-pipeline` to UI-only; Mastra stream consumer handles server communication
+- **Brand Rename** — Renamed Gosto→Calca in feature code and state
+
+### Fixed
+
+- Fixed index route availability with `createFileRoute`
+- Fixed request body passing as `inputData`
+
+### Tests
+
+- Added rebrand verification tests
+
 ## 0.2.0
 
 ### Minor Changes

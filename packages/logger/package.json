@@ -1,0 +1,23 @@
+{
+  "name": "@app/logger",
+  "version": "0.0.1",
+  "private": true,
+  "license": "AGPL-3.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@logtape/logtape": "^2.0.5",
+    "@logtape/pretty": "^2.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "vitest": "^4.1.1"
+  }
+}
