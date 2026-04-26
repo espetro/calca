@@ -2,6 +2,7 @@ import { generateText, streamText, type ModelMessage } from 'ai';
 import { getClaudeModel, getAIProvider, MODEL_FALLBACK_CHAIN } from './providers';
 import type { ProviderType } from './providers';
 import { createHash } from 'crypto';
+import { createTelemetryCallbacks } from './telemetry';
 
 const DEFAULT_MODEL = 'claude-opus-4-6';
 
@@ -130,6 +131,8 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
   let lastError: unknown;
 
+  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "generateWithFallback"]);
+
   for (const modelId of fallbacks) {
     try {
       const model = getModel(modelId, providerType, options.apiKey, options.baseURL);
@@ -139,12 +142,19 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
         maxOutputTokens: options.maxTokens,
         temperature: options.temperature,
         ...(providerType === 'anthropic' ? { headers: cacheHeaders } : {}),
+        experimental_onStart: ({ model: m }) =>
+          telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages }),
+        onStepFinish: (event) =>
+          telemetry.onFinish({ modelId, usage: event.usage, finishReason: event.finishReason, durationMs: Date.now() }),
+        onFinish: (event) =>
+          telemetry.onFinish({ modelId, usage: event.totalUsage, finishReason: event.finishReason ?? "unknown", durationMs: Date.now() }),
       });
       return { result, usedModel: modelId };
     } catch (err: unknown) {
       if (isModelNotFoundError(err)) {
         console.warn(`Model ${modelId} unavailable, trying fallback...`);
         lastError = err;
+        telemetry.onError({ modelId, error: err instanceof Error ? err : new Error(String(err)) });
         continue;
       }
       throw err;
@@ -189,11 +199,19 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
   const cacheHeaders = addCacheControlHeaders(headers, options.enableCaching);
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
 
+  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "streamAnthropic"]);
+
   return streamText({
     model,
     messages: cachedMessages,
     maxOutputTokens: options.maxTokens,
     temperature: options.temperature,
     ...(providerType === 'anthropic' ? { headers: cacheHeaders } : {}),
+    experimental_onStart: ({ model: m }) =>
+      telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages }),
+    onStepFinish: (event) =>
+      telemetry.onFinish({ modelId, usage: event.usage, finishReason: event.finishReason, durationMs: Date.now() }),
+    onFinish: (event) =>
+      telemetry.onFinish({ modelId, usage: event.totalUsage, finishReason: event.finishReason ?? "unknown", durationMs: Date.now() }),
   });
 }
