@@ -57,12 +57,12 @@ export function CritiqueModeButton({
     <div className="relative shrink-0 z-[60]" ref={containerRef}>
       <button
         type="button"
-        onClick={onToggle}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
-          quickMode
-            ? "text-gray-700"
-            : "text-gray-900"
-        }`}
+          onClick={onToggle}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
+            quickMode
+              ? "text-white"
+              : "text-white"
+          }`}
         style={quickMode
           ? { background: "oklch(0.57 0.0234 160.97 / 0.90)" }
           : { background: "oklch(0.76 0.0952 76.06 / 0.90)" }
@@ -135,10 +135,13 @@ export function CritiqueModeButton({
                 style={quickMode ? { borderColor: "oklch(0.57 0.0234 160.97 / 0.50)", background: "oklch(0.57 0.0234 160.97 / 0.30)" } : undefined}
               >
                 <div
-                  className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-gray-500`}
-                  style={quickMode
-                    ? { background: "oklch(0.57 0.0234 160.97)", color: "oklch(0.35 0.0234 160.97)" }
-                    : { background: "oklch(0.71 0.0361 157.28 / 0.80)" }
+                  className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
+                    !quickMode ? "text-white" : "text-white"
+                  }`}
+                  style={
+                    !quickMode
+                      ? { background: "oklch(0.76 0.0952 76.06)", color: "oklch(0.55 0.0472 158.31)" }
+                      : { background: "oklch(0.57 0.0234 160.97)", color: "oklch(0.35 0.0234 160.97)" }
                   }
                 >
                   <Zap className="w-4 h-4" />
@@ -146,8 +149,11 @@ export function CritiqueModeButton({
                 <div className="flex-1 min-w-0">
                   <div
                     className={`text-[12px] font-semibold ${
-                      quickMode ? "text-gray-600" : "text-gray-700"
+                      quickMode ? "text-white" : "text-white"
                     }`}
+                    style={
+                      !quickMode ? { color: "oklch(0.55 0.0472 158.31)" } : { color: "oklch(0.35 0.0234 160.97)" }
+                    }
                   >
                     Quick Mode
                   </div>

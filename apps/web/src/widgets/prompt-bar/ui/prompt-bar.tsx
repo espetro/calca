@@ -31,10 +31,37 @@ const ArrowUpIcon = () => (
   </svg>
 );
 
-interface PromptBarProps {
-  onSubmit: (prompt: string) => void;
+interface ActionButtonProps {
   isGenerating: boolean;
+}
+
+const ActionButton = ({ isGenerating }: ActionButtonProps) => {
+  const [{ isIdeating }, setSettings] = useAtom(settingsAtom);
+
+  const setIsIdeating = useCallback(
+    (_: boolean) => setSettings((prev) => ({ ...prev, isIdeating: _ })),
+    [setSettings],
+  );
+
+  return (
+    <button
+      onClick={() => setIsIdeating(!isIdeating)}
+      disabled={isGenerating}
+       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
+        isIdeating
+          ? "bg-accent/20 text-accent-foreground hover:bg-accent/30 border border-accent/40"
+          : "bg-gray-900/10 text-gray-600 hover:bg-gray-900/15"
+      }`}
+      title={isIdeating ? "Ideate mode" : "Build mode"}
+    >
+      {isIdeating ? "◈ Ideate" : "✦ Build"}
+    </button>
+  );
+};
+
+interface PromptBarProps extends ActionButtonProps {
   genStatus?: string;
+  onSubmit: (prompt: string) => void;
   onCancel?: () => void;
 }
 
@@ -67,25 +94,27 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
 
   const [settings, setSettings] = useAtom(settingsAtom);
 
-  const setIsIdeating = useCallback((value: boolean) => {
-    setSettings((prev) => ({ ...prev, isIdeating: value }));
-  }, [setSettings]);
+  const addImage = useCallback(
+    (image: { id: string; src: string; name?: string }) => {
+      setError(null);
+      setSettings((prev) => ({
+        ...prev,
+        selectedImages: [...(prev.selectedImages || []), image],
+      }));
+    },
+    [setSettings],
+  );
 
-  const addImage = useCallback((image: { id: string; src: string; name?: string }) => {
-    setError(null);
-    setSettings((prev) => ({
-      ...prev,
-      selectedImages: [...(prev.selectedImages || []), image],
-    }));
-  }, [setSettings]);
-
-  const removeImage = useCallback((id: string) => {
-    setError(null);
-    setSettings((prev) => ({
-      ...prev,
-      selectedImages: prev.selectedImages?.filter((img) => img.id !== id) || [],
-    }));
-  }, [setSettings]);
+  const removeImage = useCallback(
+    (id: string) => {
+      setError(null);
+      setSettings((prev) => ({
+        ...prev,
+        selectedImages: prev.selectedImages?.filter((img) => img.id !== id) || [],
+      }));
+    },
+    [setSettings],
+  );
 
   const { addToHistory, navigateHistory, resetHistoryIndex } = usePromptHistory({
     onSave: (prompt) => {
@@ -102,52 +131,57 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
     onSubmit(trimmed);
   }, [value, isGenerating, addToHistory, onSubmit]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-      return;
-    }
-
-    if (e.key === "Escape" && isGenerating) {
-      onCancel?.();
-      return;
-    }
-
-    const input = inputRef.current;
-    if (!input) return;
-
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-      const direction = e.key === "ArrowUp" ? "up" : "down";
-      const newValue = navigateHistory(
-        direction,
-        value,
-        { start: input.selectionStart, end: input.selectionEnd },
-      );
-      if (newValue !== value) {
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        setValue(newValue);
-      }
-    }
-  }, [handleSubmit, isGenerating, onCancel, value, navigateHistory]);
-
-  const handleImageSelect = useCallback(async (file: File) => {
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image must be 5MB or smaller");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-      if (!dataUrl.startsWith("data:image/")) {
-        setError("Invalid image file");
+        handleSubmit();
         return;
       }
-      addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
-    };
-    reader.readAsDataURL(file);
-  }, [addImage]);
+
+      if (e.key === "Escape" && isGenerating) {
+        onCancel?.();
+        return;
+      }
+
+      const input = inputRef.current;
+      if (!input) return;
+
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        const direction = e.key === "ArrowUp" ? "up" : "down";
+        const newValue = navigateHistory(direction, value, {
+          start: input.selectionStart,
+          end: input.selectionEnd,
+        });
+        if (newValue !== value) {
+          e.preventDefault();
+          setValue(newValue);
+        }
+      }
+    },
+    [handleSubmit, isGenerating, onCancel, value, navigateHistory],
+  );
+
+  const handleImageSelect = useCallback(
+    async (file: File) => {
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Image must be 5MB or smaller");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        if (!dataUrl.startsWith("data:image/")) {
+          setError("Invalid image file");
+          return;
+        }
+        addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
+      };
+      reader.readAsDataURL(file);
+    },
+    [addImage],
+  );
 
   const isVisionModel = (model: string): boolean => {
     const visionKeywords = ["vision", "gpt-4o", "gpt-4-turbo", "claude-3", "gemini"];
@@ -156,9 +190,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   };
 
   const showVisionWarning =
-    settings.selectedImages?.length > 0 &&
-    settings.model &&
-    !isVisionModel(settings.model);
+    settings.selectedImages?.length > 0 && settings.model && !isVisionModel(settings.model);
 
   return (
     <>
@@ -168,9 +200,25 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
             /* Compact status bar */
             <div className="flex items-center justify-between gap-3 w-full">
               <div className="flex items-center gap-2 min-w-0">
-                <svg className="w-4 h-4 animate-spin shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" opacity="0.2" />
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                <svg
+                  className="w-4 h-4 animate-spin shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    opacity="0.2"
+                  />
+                  <path
+                    d="M12 2a10 10 0 0 1 10 10"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
                 <span className="text-[13px] text-gray-500 font-medium truncate">
                   {genStatus || "Generating..."}
@@ -181,7 +229,14 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                 className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/80 backdrop-blur-sm text-white hover:bg-red-600 transition-all shrink-0"
                 title="Cancel (Esc)"
               >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <svg
+                  className="w-3.5 h-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -199,17 +254,20 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     ))}
                   </div>
                 )}
-                {error && (
-                  <div className="text-xs text-red-400 mt-1 mb-1">
-                    {error}
-                  </div>
-                )}
+                {error && <div className="text-xs text-red-400 mt-1 mb-1">{error}</div>}
                 {showVisionWarning && (
                   <div className="text-xs text-amber-400/90 mt-1 mb-1 flex items-center gap-1.5">
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                      <line x1="12" y1="9" x2="12" y2="13"/>
-                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    <svg
+                      className="w-3.5 h-3.5 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
                     </svg>
                     This model may not support image input
                   </div>
@@ -220,7 +278,10 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                 <PromptInputTextarea
                   ref={inputRef}
                   value={value}
-                  onChange={(e) => { setValue(e.target.value); resetHistoryIndex(); }}
+                  onChange={(e) => {
+                    setValue(e.target.value);
+                    resetHistoryIndex();
+                  }}
                   onKeyDown={handleKeyDown}
                   placeholder="Describe a design..."
                   disabled={isGenerating}
@@ -232,7 +293,9 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                   <AddMediaButton onFileSelect={handleImageSelect} disabled={isGenerating} />
                   <VariationsButton
                     conceptCount={settings.conceptCount}
-                    onConceptCountChange={(count) => setSettings((prev) => ({ ...prev, conceptCount: count }))}
+                    onConceptCountChange={(count) =>
+                      setSettings((prev) => ({ ...prev, conceptCount: count }))
+                    }
                     showVariations={showVariations}
                     onToggle={handleToggleVariations}
                   />
@@ -241,22 +304,13 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                 <div className="flex items-center gap-2">
                   <CritiqueModeButton
                     quickMode={settings.quickMode}
-                    onQuickModeChange={(quickMode) => setSettings((prev) => ({ ...prev, quickMode }))}
+                    onQuickModeChange={(quickMode) =>
+                      setSettings((prev) => ({ ...prev, quickMode }))
+                    }
                     showCritiqueMode={showCritiqueMode}
                     onToggle={handleToggleCritiqueMode}
                   />
-                  <button
-                    onClick={() => setIsIdeating(!settings.isIdeating)}
-                    disabled={isGenerating}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
-                      settings.isIdeating
-                        ? "bg-secondary/10 text-secondary-foreground hover:bg-secondary/15 border border-secondary/30"
-                        : "bg-gray-900/10 text-gray-600 hover:bg-gray-900/15"
-                    }`}
-                    title={settings.isIdeating ? "Ideate mode" : "Build mode"}
-                  >
-                    {settings.isIdeating ? "◈ Ideate" : "✦ Build"}
-                  </button>
+                  <ActionButton isGenerating={isGenerating} />
                   <button
                     onClick={handleSubmit}
                     disabled={!value.trim() || isGenerating}

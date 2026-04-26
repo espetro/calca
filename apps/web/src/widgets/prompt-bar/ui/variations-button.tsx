@@ -8,7 +8,7 @@ const VARIATION_COLORS: Record<number, { bg: string; color: string }> = {
   1: { bg: "transparent", color: "" },
   2: { bg: "oklch(0.76 0.0952 76.06 / 0.20)", color: "oklch(0.76 0.0952 76.06)" },
   3: { bg: "oklch(0.76 0.0952 76.06 / 0.40)", color: "oklch(0.76 0.0952 76.06)" },
-  4: { bg: "oklch(0.76 0.0952 76.06 / 0.65)", color: "#fff" },
+  4: { bg: "oklch(0.76 0.0952 76.06 / 0.80)", color: "#fff" },
   5: { bg: "oklch(0.76 0.0952 76.06)", color: "#fff" },
 };
 

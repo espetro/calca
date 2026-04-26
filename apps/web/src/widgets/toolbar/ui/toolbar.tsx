@@ -170,7 +170,7 @@ function MenuItem({ icon, label, onClick, danger }: { icon: string; label: strin
       className={`w-full flex items-center gap-2.5 px-3 py-2 text-[12px] font-medium transition-colors ${
         danger
           ? "text-destructive hover:bg-destructive/10"
-          : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
+          : "text-white/70 hover:bg-white/10 hover:text-white"
       }`}
     >
       <span className="text-sm">{icon}</span>
@@ -216,9 +216,9 @@ function ModeButton({
   color: "blue" | "orange" | "yellow";
 }) {
   const activeClasses = {
-    blue: "bg-primary/20 text-primary shadow-[0_0_12px_var(--glow-primary)]",
-    orange: "bg-accent/20 text-accent shadow-[0_0_12px_var(--glow-accent)]",
-    yellow: "bg-secondary/20 text-secondary shadow-[0_0_12px_var(--glow-secondary)]",
+    blue: "bg-primary/30 text-primary shadow-[0_0_12px_var(--glow-primary)]",
+    orange: "bg-accent/30 text-accent shadow-[0_0_12px_var(--glow-accent)]",
+    yellow: "bg-secondary/30 text-secondary shadow-[0_0_12px_var(--glow-secondary)]",
   };
 
   return (
