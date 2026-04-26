@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import { useSetAtom } from "jotai";
+import { getLogger } from "@app/logger";
 import { groupsAtom } from "@/features/design/state/groups-atoms";
 import {
   isGeneratingAtom,
@@ -311,7 +312,7 @@ export const useWorkflowStream = () => {
 
           if (part.type === "error") {
             const errorText = (part as { errorText?: string }).errorText ?? "Unknown stream error";
-            console.error("[workflow-stream] Stream error:", errorText);
+            getLogger(["calca", "web", "design", "stream"]).error("Stream error", { error: errorText });
             for (let i = 0; i < conceptCount; i++) {
               const iterId = iterIds[i];
               if (!iterId || completedFrameIndices.has(i)) continue;
@@ -440,7 +441,7 @@ export const useWorkflowStream = () => {
         if (err instanceof Error && err.name === "AbortError") return;
 
         const msg = err instanceof Error ? err.message : "Workflow failed";
-        console.error("[workflow-stream] Fatal error:", msg);
+        getLogger(["calca", "web", "design", "stream"]).error("Fatal error", { error: msg });
 
         setGroups((prev) =>
           prev.map((g) => {

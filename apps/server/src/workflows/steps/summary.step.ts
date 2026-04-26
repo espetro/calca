@@ -6,6 +6,7 @@ import { buildSummaryPrompt } from "@app/core/prompts/summary";
 import { validateSummary } from "@app/shared";
 import { stripBase64Images } from "../../lib/strip-base64";
 import { SummaryInputSchema, SummaryOutputSchema } from "../schemas/summary.schema";
+import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-opus-4-6";
 
@@ -38,7 +39,7 @@ export const summaryStep = createStep({
       const validated = validateSummary(parsed);
       return { summary: JSON.stringify(validated) };
     } catch (validationErr) {
-      console.warn("Summary validation failed:", validationErr);
+      getLogger(["calca", "server", "workflow", "summary"]).warn("Summary validation failed:", validationErr);
       return { summary: raw };
     }
   },

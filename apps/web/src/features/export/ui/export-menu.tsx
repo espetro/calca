@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { getLogger } from "@app/logger";
 import useExportCodeMutation from "@/features/design/hooks/use-export-code-mutation";
 
 type ExportFormat = "svg" | "tailwind" | "react" | "png" | "jpg" | "copy-image";
@@ -150,7 +151,7 @@ export function ExportMenu({
             try {
               await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
             } catch (clipErr) {
-              console.error("Clipboard write failed, falling back to download:", clipErr);
+              getLogger(["calca", "web", "export"]).error("Clipboard write failed, falling back to download", { error: clipErr instanceof Error ? clipErr.message : String(clipErr) });
               // Fallback: download instead
               const url = URL.createObjectURL(blob);
               const a = document.createElement("a");
@@ -184,10 +185,10 @@ export function ExportMenu({
         });
         setPreview({ format, code: data.result });
       } catch (err) {
-        console.error("Export failed:", err);
+        getLogger(["calca", "web", "export"]).error("Export failed", { error: err instanceof Error ? err.message : String(err) });
         if (format === "png" || format === "jpg" || format === "copy-image") {
           // Can't show preview for image failures
-          console.error("Image export failed");
+          getLogger(["calca", "web", "export"]).error("Image export failed");
         } else {
           setPreview({ format, code: "// Export failed. Check API key and try again." });
         }

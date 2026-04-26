@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { m } from "@/lib/i18n";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { ErrorBoundary } from "@/widgets/error-boundary";
 import { useCanvas } from "@/features/canvas";
 import { CanvasArea } from "@/widgets/canvas-area";
 import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
@@ -88,7 +89,9 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen overflow-hidden relative select-none">
-      <CanvasArea canvas={canvas} onRemix={pipeline.handleRemix} />
+      <ErrorBoundary category={["calca", "web", "features", "canvas"]}>
+        <CanvasArea canvas={canvas} onRemix={pipeline.handleRemix} />
+      </ErrorBoundary>
 
       <Toolbar
         mode={useAtomValue(toolModeAtom)}
@@ -114,7 +117,9 @@ export default function Home() {
         onCancel={() => pipeline.abortRef.current?.abort()}
       />
 
-      <SummaryList />
+      <ErrorBoundary category={["calca", "web", "features", "design"]}>
+        <SummaryList />
+      </ErrorBoundary>
 
       {showGitHash && (
         <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">
@@ -122,27 +127,29 @@ export default function Home() {
         </div>
       )}
 
-      {commentHandlers.commentDraft && (
-        <CommentInput
-          position={{
-            screenX: commentHandlers.commentDraft.screenX,
-            screenY: commentHandlers.commentDraft.screenY,
-          }}
-          onSubmit={commentHandlers.handleCommentSubmit}
-          onCancel={() => commentHandlers.setCommentDraft(null)}
-        />
-      )}
+      <ErrorBoundary category={["calca", "web", "features", "comments"]}>
+        {commentHandlers.commentDraft && (
+          <CommentInput
+            position={{
+              screenX: commentHandlers.commentDraft.screenX,
+              screenY: commentHandlers.commentDraft.screenY,
+            }}
+            onSubmit={commentHandlers.handleCommentSubmit}
+            onCancel={() => commentHandlers.setCommentDraft(null)}
+          />
+        )}
 
-      {commentHandlers.activeComment && (
-        <CommentThread
-          comment={commentHandlers.activeComment}
-          onClose={() => {
-            commentHandlers.setActiveComment(null);
-            commentHandlers.setActiveCommentIterationId(null);
-          }}
-          onReply={commentHandlers.handleCommentReply}
-        />
-      )}
+        {commentHandlers.activeComment && (
+          <CommentThread
+            comment={commentHandlers.activeComment}
+            onClose={() => {
+              commentHandlers.setActiveComment(null);
+              commentHandlers.setActiveCommentIterationId(null);
+            }}
+            onReply={commentHandlers.handleCommentReply}
+          />
+        )}
+      </ErrorBoundary>
 
       <PromptLibrary
         open={showLibrary}
@@ -154,20 +161,22 @@ export default function Home() {
       />
 
       {showSettings && (
-        <SettingsModal
-          settings={settings}
-          onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
-          onClose={() => setShowSettings(false)}
-          isOwnKey={isOwnKey}
-          providers={settings.providers}
-          testProvider={(config) =>
-            probeModels.mutateAsync({
-              apiKey: config.apiKey,
-              providerType: config.apiType,
-              baseURL: config.baseUrl,
-            })
-          }
-        />
+        <ErrorBoundary category={["calca", "web", "features", "settings"]}>
+          <SettingsModal
+            settings={settings}
+            onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
+            onClose={() => setShowSettings(false)}
+            isOwnKey={isOwnKey}
+            providers={settings.providers}
+            testProvider={(config) =>
+              probeModels.mutateAsync({
+                apiKey: config.apiKey,
+                providerType: config.apiType,
+                baseURL: config.baseUrl,
+              })
+            }
+          />
+        </ErrorBoundary>
       )}
 
       {showResetConfirm && (
@@ -203,31 +212,33 @@ export default function Home() {
         </div>
       )}
 
-      {onboarding.showWelcome && (
-        <OnboardingModal
-          onComplete={(keys) => {
-            setSettings((prev) => ({
-              ...prev,
-              apiKey: keys.anthropicKey,
-              geminiKey: keys.geminiKey,
-              unsplashKey: keys.unsplashKey,
-              openaiKey: keys.openaiKey,
-            }));
-            onboarding.completeKeys();
-          }}
-          onDismiss={() => onboarding.dismiss()}
-        />
-      )}
+      <ErrorBoundary category={["calca", "web", "features", "onboarding"]}>
+        {onboarding.showWelcome && (
+          <OnboardingModal
+            onComplete={(keys) => {
+              setSettings((prev) => ({
+                ...prev,
+                apiKey: keys.anthropicKey,
+                geminiKey: keys.geminiKey,
+                unsplashKey: keys.unsplashKey,
+                openaiKey: keys.openaiKey,
+              }));
+              onboarding.completeKeys();
+            }}
+            onDismiss={() => onboarding.dismiss()}
+          />
+        )}
 
-      {onboarding.showTour && (
-        <GuidedTour
-          onComplete={() => onboarding.completeTour()}
-          hasFrames={
-            groups.length > 0 &&
-            groups.some((g) => g.iterations.some((i) => !i.isLoading && i.html))
-          }
-        />
-      )}
+        {onboarding.showTour && (
+          <GuidedTour
+            onComplete={() => onboarding.completeTour()}
+            hasFrames={
+              groups.length > 0 &&
+              groups.some((g) => g.iterations.some((i) => !i.isLoading && i.html))
+            }
+          />
+        )}
+      </ErrorBoundary>
 
       {onboarding.loaded && !isOwnKey && !onboarding.showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">

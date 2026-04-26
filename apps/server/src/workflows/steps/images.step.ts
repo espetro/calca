@@ -1,6 +1,7 @@
 import { createStep } from "@mastra/core/workflows";
 
 import { generateImages } from "@app/core/pipeline/images";
+import { getLogger } from "@app/logger";
 
 import { ImagesInputSchema, ImagesOutputSchema } from "../schemas/images.schema";
 
@@ -55,7 +56,7 @@ export const imagesStep = createStep({
 
       return { html: result.html };
     } catch (error) {
-      console.error("[Images Step] Generation failed:", error instanceof Error ? error.message : error);
+      getLogger(["calca", "server", "workflow", "images"]).error("[Images Step] Generation failed:", error instanceof Error ? error.message : error);
       
       writer.write({
         type: "progress",

@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { getLogger } from "@app/logger";
 import type { GenerationGroup } from "@/shared/types";
 
 const STORAGE_KEY = "calca-canvas-session";
@@ -144,11 +145,11 @@ export function usePersistedGroups() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
         if (Object.keys(images).length > 0) {
           saveImages(images).catch((err) =>
-            console.warn("[persist] Failed to save images to IndexedDB:", err),
+            getLogger(["calca", "web", "design", "persist"]).debug("Failed to save images to IndexedDB", { error: err instanceof Error ? err.message : String(err) }),
           );
         }
       } catch (err) {
-        console.warn("[persist] Failed to save canvas session:", err);
+        getLogger(["calca", "web", "design", "persist"]).debug("Failed to save canvas session", { error: err instanceof Error ? err.message : String(err) });
       }
     }, 500);
   }, []);

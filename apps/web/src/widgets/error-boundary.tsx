@@ -6,6 +6,7 @@ import { getLogger } from "@app/logger";
 interface ErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
+  category?: string[];
 }
 
 interface ErrorBoundaryState {
@@ -24,7 +25,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    getLogger(["calca", "web", "error-boundary"]).error("React error caught", {
+    const logCategory = this.props.category ?? ["calca", "web", "error-boundary"];
+    getLogger(logCategory).error("React error caught", {
       error: error.message,
       componentStack: errorInfo.componentStack,
     });

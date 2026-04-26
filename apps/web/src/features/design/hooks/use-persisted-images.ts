@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { getLogger } from "@app/logger";
 import type { CanvasImage } from "@/shared/types";
 
 const DB_NAME = "calca-canvas-images";
@@ -97,7 +98,7 @@ export function usePersistedImages() {
           );
         }
       } catch (err) {
-        console.warn("[persist-images] Failed to load:", err);
+        getLogger(["calca", "web", "design", "persist"]).debug("Failed to load canvas images", { error: err instanceof Error ? err.message : String(err) });
       }
       setLoaded(true);
     })();
@@ -123,7 +124,7 @@ export function usePersistedImages() {
         );
         await dbPut(db, "canvas-images", stored);
       } catch (err) {
-        console.warn("[persist-images] Failed to save:", err);
+        getLogger(["calca", "web", "design", "persist"]).debug("Failed to save canvas images", { error: err instanceof Error ? err.message : String(err) });
       }
     }, 500);
   }, []);

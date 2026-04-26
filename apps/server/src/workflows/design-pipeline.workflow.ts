@@ -1,5 +1,6 @@
 import { createWorkflow, createStep } from '@mastra/core/workflows';
 import { z } from 'zod';
+import { getLogger } from '@app/logger';
 
 import { planStep } from './steps/plan.step';
 import { layoutStep } from './steps/layout.step';
@@ -252,7 +253,7 @@ const frameOrchestratorStep = createStep({
 
       frames = results.map((r, i) => {
         if (r.status === 'fulfilled') return r.value;
-        console.warn(`Frame ${i + 1} failed:`, r.reason);
+        getLogger(["calca", "server", "workflow"]).warn(`Frame ${i + 1} failed:`, r.reason);
         return {
           html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ Frame ${i + 1} failed</p></div>`,
           label: `Variation ${i + 1}`,
@@ -284,7 +285,7 @@ const frameOrchestratorStep = createStep({
           previousCritique = result.critique;
         } catch (err) {
           if (err instanceof Error && err.name === 'AbortError') throw err;
-          console.warn(`Frame ${i + 1} failed:`, err);
+          getLogger(["calca", "server", "workflow"]).warn(`Frame ${i + 1} failed:`, err);
           frames.push({
             html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ Frame ${i + 1} failed</p></div>`,
             label: `Variation ${i + 1}`,

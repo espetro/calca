@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { getLogger } from "@app/logger";
 import workflowRoute from "./routes/workflow";
 import exportRoute from "./routes/export";
 import probeModelsRoute from "./routes/probe-models";
@@ -16,7 +17,7 @@ Bun.serve({
   fetch: app.fetch,
 });
 
-console.log("Server running on http://localhost:3001");
+getLogger(["calca", "server"]).info("Server running on http://localhost:3001");
 
 export default app;
 export type AppRoutes = typeof app;

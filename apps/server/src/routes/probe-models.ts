@@ -1,6 +1,7 @@
 import { Hono, type Context } from "hono";
 import { probeModels } from "@app/core/ai/probe";
 import type { ProviderType } from "@app/core/ai/providers";
+import { getLogger } from "@app/logger";
 
 export async function handleProbeModels(c: Context) {
   try {
@@ -17,7 +18,7 @@ export async function handleProbeModels(c: Context) {
     const available = await probeModels(apiKey ?? "", baseURL, providerType);
     return c.json({ available });
   } catch (err) {
-    console.error("Probe error:", err);
+    getLogger(["calca", "server", "routes", "probe"]).error("Probe error:", err);
     return c.json({ error: "Probe failed" }, 500);
   }
 }

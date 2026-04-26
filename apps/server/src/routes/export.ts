@@ -3,6 +3,7 @@ import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import { htmlToSvg } from "../lib/html-to-svg";
 import { TAILWIND_PROMPT, REACT_PROMPT } from "../lib/export-prompts";
+import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
@@ -80,7 +81,7 @@ export async function handleExport(c: Context) {
         return c.json({ error: "Invalid format" }, 400);
     }
   } catch (err: unknown) {
-    console.error("Export error:", err);
+    getLogger(["calca", "server", "routes", "export"]).error("Export error:", err);
     const message = err instanceof Error ? err.message : "Export failed";
     const status = message.includes("auth") || message.includes("API key") ? 401 : 500;
     return c.json({ error: message }, status);

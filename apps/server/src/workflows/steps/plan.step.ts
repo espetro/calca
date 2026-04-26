@@ -4,6 +4,7 @@ import type { ProviderType } from "@app/core/ai/providers";
 import type { ModelMessage } from "ai";
 import { buildPlanPrompt } from "@app/core/prompts/plan";
 import { PlanInputSchema, PlanOutputSchema } from "../schemas/plan.schema";
+import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-opus-4-6";
 
@@ -75,7 +76,7 @@ export const planStep = createStep({
         concepts,
       };
     } catch (error) {
-      console.warn("Plan generation failed, using fallback:", error);
+      getLogger(["calca", "server", "workflow", "plan"]).warn("Plan generation failed, using fallback:", error);
       return {
         count: VARIATION_STYLES.length,
         concepts: VARIATION_STYLES,

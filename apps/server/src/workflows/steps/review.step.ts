@@ -7,6 +7,7 @@ import { validateReview } from "@app/shared";
 import { parseHtmlWithSize } from "../../lib/parse-html";
 import { stripBase64Images } from "../../lib/strip-base64";
 import { ReviewInputSchema, ReviewOutputSchema } from "../schemas/review.schema";
+import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-opus-4-6";
 
@@ -44,7 +45,7 @@ export const reviewStep = createStep({
         height: validated.height || height,
       };
     } catch (validationErr) {
-      console.warn("Review validation failed, returning parsed output:", validationErr);
+      getLogger(["calca", "server", "workflow", "review"]).warn("Review validation failed, returning parsed output:", validationErr);
       const parsed = parseHtmlWithSize(raw);
       return {
         html: restore(parsed.html),

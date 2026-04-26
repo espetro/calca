@@ -5,6 +5,7 @@
  * Import format: both `.otto` (legacy) and `.design` for backward compatibility.
  */
 
+import { getLogger } from "@app/logger";
 import type { GenerationGroup } from "@/shared/types";
 
 // ---------------------------------------------------------------------------
@@ -216,7 +217,7 @@ export function openImportDialog(
     readCanvasFile(file)
       .then(({ groups, isLegacyOtto }) => {
         if (isLegacyOtto) {
-          console.info("[export] Imported legacy .otto file");
+          getLogger(["calca", "web", "export"]).info("Imported legacy .otto file");
         }
         onFile(groups);
       })
