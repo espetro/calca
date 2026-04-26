@@ -8,6 +8,8 @@ import { stripBase64Images } from "../../lib/strip-base64";
 import { SummaryInputSchema, SummaryOutputSchema } from "../schemas/summary.schema";
 import { getLogger } from "@app/logger";
 
+const logger = getLogger(["calca", "server", "workflow", "summary"]);
+
 const DEFAULT_MODEL = "claude-opus-4-6";
 
 export const summaryStep = createStep({
@@ -39,7 +41,7 @@ export const summaryStep = createStep({
       const validated = validateSummary(parsed);
       return { summary: JSON.stringify(validated) };
     } catch (validationErr) {
-      getLogger(["calca", "server", "workflow", "summary"]).warn("Summary validation failed:", validationErr);
+      logger.warn("Summary validation failed:", validationErr);
       return { summary: raw };
     }
   },

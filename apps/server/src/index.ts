@@ -5,6 +5,8 @@ import workflowRoute from "./routes/workflow";
 import exportRoute from "./routes/export";
 import probeModelsRoute from "./routes/probe-models";
 
+const logger = getLogger(["calca", "server"]);
+
 const app = new Hono()
   .use("*", cors({ origin: "*" }))
   .get("/health", (c) => c.json({ status: "ok" }))
@@ -17,7 +19,7 @@ Bun.serve({
   fetch: app.fetch,
 });
 
-getLogger(["calca", "server"]).info("Server running on http://localhost:3001");
+logger.info("Server running on http://localhost:3001");
 
 export default app;
 export type AppRoutes = typeof app;

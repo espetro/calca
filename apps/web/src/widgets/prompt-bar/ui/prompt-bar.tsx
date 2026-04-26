@@ -250,7 +250,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     disabled={isGenerating}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
                       settings.isIdeating
-                        ? "bg-violet-500/10 text-violet-700 hover:bg-violet-500/15 border border-violet-300/30"
+                        ? "bg-secondary/10 text-secondary-foreground hover:bg-secondary/15 border border-secondary/30"
                         : "bg-gray-900/10 text-gray-600 hover:bg-gray-900/15"
                     }`}
                     title={settings.isIdeating ? "Ideate mode" : "Build mode"}

@@ -8,6 +8,8 @@ import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-opus-4-6";
 
+const logger = getLogger(["calca", "server", "workflow", "plan"]);
+
 const VARIATION_STYLES = [
   { name: "Minimal", direction: "Clean lines, generous whitespace, restrained color palette" },
   { name: "Bold", direction: "High contrast, striking typography, confident composition" },
@@ -76,7 +78,7 @@ export const planStep = createStep({
         concepts,
       };
     } catch (error) {
-      getLogger(["calca", "server", "workflow", "plan"]).warn("Plan generation failed, using fallback:", error);
+      logger.warn("Plan generation failed, using fallback:", { error });
       return {
         count: VARIATION_STYLES.length,
         concepts: VARIATION_STYLES,

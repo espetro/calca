@@ -6,6 +6,9 @@
  */
 
 import { getLogger } from "@app/logger";
+
+const logger = getLogger(["calca", "web", "export"]);
+
 import type { GenerationGroup } from "@/shared/types";
 
 // ---------------------------------------------------------------------------
@@ -217,7 +220,7 @@ export function openImportDialog(
     readCanvasFile(file)
       .then(({ groups, isLegacyOtto }) => {
         if (isLegacyOtto) {
-          getLogger(["calca", "web", "export"]).info("Imported legacy .otto file");
+          logger.info("Imported legacy .otto file");
         }
         onFile(groups);
       })

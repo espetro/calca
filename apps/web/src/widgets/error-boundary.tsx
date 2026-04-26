@@ -15,6 +15,13 @@ interface ErrorBoundaryState {
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  private logger: ReturnType<typeof getLogger>;
+
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.logger = getLogger(props.category ?? ["calca", "web", "error-boundary"]);
+  }
+
   state: ErrorBoundaryState = {
     hasError: false,
     error: null,
@@ -25,8 +32,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    const logCategory = this.props.category ?? ["calca", "web", "error-boundary"];
-    getLogger(logCategory).error("React error caught", {
+    this.logger.error("React error caught", {
       error: error.message,
       componentStack: errorInfo.componentStack,
     });

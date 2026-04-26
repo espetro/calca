@@ -5,6 +5,8 @@ import { getLogger } from "@app/logger";
 
 import { ImagesInputSchema, ImagesOutputSchema } from "../schemas/images.schema";
 
+const logger = getLogger(["calca", "server", "workflow", "images"]);
+
 export const imagesStep = createStep({
   id: "images",
   inputSchema: ImagesInputSchema,
@@ -56,14 +58,18 @@ export const imagesStep = createStep({
 
       return { html: result.html };
     } catch (error) {
-      getLogger(["calca", "server", "workflow", "images"]).error("[Images Step] Generation failed:", error instanceof Error ? error.message : error);
-      
+      if (error instanceof Error) {
+        logger.error(`[Images Step] Generation failed:\n${error.message}`);
+      } else {
+        logger.error(`[Images Step] Generation failed:`, { error });
+      }
+
       writer.write({
         type: "progress",
         stage: "images",
         message: "Image generation failed - returning HTML unchanged",
       });
-      
+
       return { html };
     }
   },

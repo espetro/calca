@@ -1,5 +1,8 @@
 import { atom } from "jotai";
 import { getLogger } from "@app/logger";
+
+const logger = getLogger(["calca", "web", "design", "persist"]);
+
 import type { CanvasImage } from "@/shared/types";
 
 const DB_NAME = "calca-canvas-images";
@@ -103,7 +106,7 @@ function debouncedPersistImages(images: CanvasImage[]): void {
       );
       await dbPut(db, "canvas-images", stored);
     } catch (err) {
-      getLogger(["calca", "web", "design", "persist"]).debug("Failed to save canvas images", { error: err instanceof Error ? err.message : String(err) });
+      logger.debug("Failed to save canvas images", { error: err instanceof Error ? err.message : String(err) });
     }
   }, 500);
 }
@@ -124,6 +127,6 @@ export async function hydrateImages(setImages: (imgs: CanvasImage[]) => void): P
       })));
     }
   } catch (err) {
-    getLogger(["calca", "web", "design", "persist"]).debug("Failed to load canvas images", { error: err instanceof Error ? err.message : String(err) });
+    logger.debug("Failed to load canvas images", { error: err instanceof Error ? err.message : String(err) });
   }
 }

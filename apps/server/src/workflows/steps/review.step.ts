@@ -11,6 +11,8 @@ import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-opus-4-6";
 
+const logger = getLogger(["calca", "server", "workflow", "review"]);
+
 export const reviewStep = createStep({
   id: "review",
   inputSchema: ReviewInputSchema,
@@ -21,10 +23,12 @@ export const reviewStep = createStep({
 
     const { stripped, restore } = stripBase64Images(html);
 
-    const messages: ModelMessage[] = [{
-      role: "user",
-      content: buildReviewPrompt(prompt || "", width, height, stripped),
-    }];
+    const messages: ModelMessage[] = [
+      {
+        role: "user",
+        content: buildReviewPrompt(prompt || "", width, height, stripped),
+      },
+    ];
 
     const { result } = await generateWithFallback({
       apiKey,
@@ -44,8 +48,8 @@ export const reviewStep = createStep({
         width: validated.width || width,
         height: validated.height || height,
       };
-    } catch (validationErr) {
-      getLogger(["calca", "server", "workflow", "review"]).warn("Review validation failed, returning parsed output:", validationErr);
+    } catch (error) {
+      logger.warn("Review validation failed, returning parsed output:", { error });
       const parsed = parseHtmlWithSize(raw);
       return {
         html: restore(parsed.html),

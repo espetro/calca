@@ -7,6 +7,8 @@ import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
+const logger = getLogger(["calca", "server", "routes", "export"]);
+
 async function convertWithAI(
   apiKey: string | undefined,
   model: string,
@@ -80,9 +82,10 @@ export async function handleExport(c: Context) {
       default:
         return c.json({ error: "Invalid format" }, 400);
     }
-  } catch (err: unknown) {
-    getLogger(["calca", "server", "routes", "export"]).error("Export error:", err);
-    const message = err instanceof Error ? err.message : "Export failed";
+  } catch (error) {
+    logger.error("Export error:", { error });
+
+    const message = error instanceof Error ? error.message : "Export failed";
     const status = message.includes("auth") || message.includes("API key") ? 401 : 500;
     return c.json({ error: message }, status);
   }

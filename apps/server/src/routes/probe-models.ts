@@ -3,6 +3,8 @@ import { probeModels } from "@app/core/ai/probe";
 import type { ProviderType } from "@app/core/ai/providers";
 import { getLogger } from "@app/logger";
 
+const logger = getLogger(["calca", "server", "routes", "probe"]);
+
 export async function handleProbeModels(c: Context) {
   try {
     const { apiKey, providerType, baseURL } = (await c.req.json()) as {
@@ -17,8 +19,8 @@ export async function handleProbeModels(c: Context) {
 
     const available = await probeModels(apiKey ?? "", baseURL, providerType);
     return c.json({ available });
-  } catch (err) {
-    getLogger(["calca", "server", "routes", "probe"]).error("Probe error:", err);
+  } catch (error) {
+    logger.error("Probe error:", { error });
     return c.json({ error: "Probe failed" }, 500);
   }
 }

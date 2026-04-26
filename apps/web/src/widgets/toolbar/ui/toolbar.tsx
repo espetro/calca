@@ -55,7 +55,7 @@ export function Toolbar({
   }, [menuOpen]);
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-foreground/60 backdrop-blur-2xl border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]">
+    <div className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-toolbar-bg-transparent border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]">
       <div className="flex items-center gap-1.5 overflow-x-auto">
         <ModeButton
           active={mode === "select"}
@@ -105,7 +105,7 @@ export function Toolbar({
 
         <button
           onClick={onResetView}
-          className="text-[11px] font-medium text-muted-foreground hover:text-foreground px-1.5 py-1 rounded-lg min-w-[42px] text-center transition-colors"
+          className="text-[11px] font-medium text-toolbar-text px-1.5 py-1 rounded-lg min-w-[42px] text-center transition-colors"
           title="Reset zoom"
         >
           {Math.round(scale * 100)}%
@@ -122,7 +122,7 @@ export function Toolbar({
 
         <button
           onClick={onOpenSettings}
-          className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-all"
+          className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10 transition-all"
           title="Settings"
         >
           <span className={`w-1.5 h-1.5 rounded-full ${isOwnKey ? "bg-emerald-400" : "bg-amber-400"}`} />
@@ -195,7 +195,7 @@ function ToolButton({
       onClick={onClick}
       title={title}
       data-tour={dataTour}
-      className="w-8 h-8 flex items-center justify-center rounded-xl transition-all text-muted-foreground hover:text-foreground hover:bg-foreground/10"
+      className="w-8 h-8 flex items-center justify-center rounded-xl transition-all text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
     >
       {children}
     </button>
@@ -216,9 +216,9 @@ function ModeButton({
   color: "blue" | "orange" | "yellow";
 }) {
   const activeClasses = {
-    blue: "bg-primary/20 text-primary shadow-[0_0_12px_oklch(0.44_0.0472_158.31_/_0.4)]",
-    orange: "bg-accent/20 text-accent shadow-[0_0_12px_oklch(0.77_0.0749_131.06_/_0.4)]",
-    yellow: "bg-secondary/20 text-secondary shadow-[0_0_12px_oklch(0.66_0.0552_153.35_/_0.4)]",
+    blue: "bg-primary/20 text-primary shadow-[0_0_12px_var(--glow-primary)]",
+    orange: "bg-accent/20 text-accent shadow-[0_0_12px_var(--glow-accent)]",
+    yellow: "bg-secondary/20 text-secondary shadow-[0_0_12px_var(--glow-secondary)]",
   };
 
   return (
@@ -228,7 +228,7 @@ function ModeButton({
       className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
         active
           ? activeClasses[color]
-          : "text-muted-foreground hover:text-foreground hover:bg-foreground/10"
+          : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
       }`}
     >
       {children}

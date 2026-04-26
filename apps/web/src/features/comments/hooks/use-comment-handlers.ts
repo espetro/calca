@@ -1,6 +1,9 @@
 import { useCallback, useRef } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { getLogger } from "@app/logger";
+
+const logger = getLogger(["calca", "web", "comments"]);
+
 import { groupsAtom } from "@/features/design/state/groups-atoms";
 import {
   commentDraftAtom,
@@ -150,7 +153,7 @@ export const useCommentHandlers = (
             : prev
         );
       } catch (err) {
-        getLogger(["calca", "web", "comments"]).error("Revision failed", { error: err instanceof Error ? err.message : String(err) });
+        logger.error("Revision failed", { error: err instanceof Error ? err.message : String(err) });
         const errorResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
           role: "calca",

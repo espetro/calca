@@ -60,9 +60,13 @@ export function CritiqueModeButton({
         onClick={onToggle}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
           quickMode
-            ? "bg-[#CCCCCC]/90 text-gray-700 hover:bg-[#CCCCCC]"
-            : "bg-[#FFCA00]/90 text-gray-900 hover:bg-[#FFCA00]"
+            ? "text-gray-700"
+            : "text-gray-900"
         }`}
+        style={quickMode
+          ? { background: "oklch(0.57 0.0234 160.97 / 0.90)" }
+          : { background: "oklch(0.76 0.0952 76.06 / 0.90)" }
+        }
         title="Generation mode"
       >
         {quickMode ? <Zap className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
@@ -90,24 +94,26 @@ export function CritiqueModeButton({
                   onQuickModeChange(false);
                   onToggle();
                 }}
-                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all ${
-                  !quickMode
-                    ? "bg-[#FFCA00]/20 border border-[#FFCA00]/40"
-                    : "bg-white/30 hover:bg-white/40"
+                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all bg-white/30 hover:bg-white/40 ${
+                  !quickMode ? "border" : ""
                 }`}
+                style={!quickMode ? { borderColor: "oklch(0.76 0.0952 76.06 / 0.40)", background: "oklch(0.76 0.0952 76.06 / 0.20)" } : undefined}
               >
                 <div
                   className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
-                    !quickMode ? "bg-[#FFCA00] text-gray-900" : "bg-yellow-100/80 text-yellow-600"
+                    !quickMode ? "text-gray-900" : "text-gray-500"
                   }`}
+                  style={!quickMode
+                    ? { background: "oklch(0.76 0.0952 76.06)", color: "oklch(0.55 0.0472 158.31)" }
+                    : { background: "oklch(0.71 0.0361 157.28 / 0.80)" }
+                  }
                 >
                   <RefreshCw className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div
-                    className={`text-[12px] font-semibold ${
-                      !quickMode ? "text-yellow-700" : "text-gray-700"
-                    }`}
+                    className="text-[12px] font-semibold text-gray-700"
+                    style={!quickMode ? { color: "oklch(0.55 0.0472 158.31)" } : undefined}
                   >
                     Critique Loop
                   </div>
@@ -123,16 +129,17 @@ export function CritiqueModeButton({
                   onQuickModeChange(true);
                   onToggle();
                 }}
-                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all ${
-                  quickMode
-                    ? "bg-[#CCCCCC]/30 border border-[#CCCCCC]/50"
-                    : "bg-white/30 hover:bg-white/40"
+                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all bg-white/30 hover:bg-white/40 ${
+                  quickMode ? "border" : ""
                 }`}
+                style={quickMode ? { borderColor: "oklch(0.57 0.0234 160.97 / 0.50)", background: "oklch(0.57 0.0234 160.97 / 0.30)" } : undefined}
               >
                 <div
-                  className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
-                    quickMode ? "bg-[#CCCCCC] text-gray-700" : "bg-gray-100/80 text-gray-500"
-                  }`}
+                  className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-gray-500`}
+                  style={quickMode
+                    ? { background: "oklch(0.57 0.0234 160.97)", color: "oklch(0.35 0.0234 160.97)" }
+                    : { background: "oklch(0.71 0.0361 157.28 / 0.80)" }
+                  }
                 >
                   <Zap className="w-4 h-4" />
                 </div>
