@@ -1,0 +1,15 @@
+{
+  "extends": "../../packages/config/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@app/server": ["../../packages/server/src/index.ts"],
+      "@app/shared": ["../../packages/shared/src/index.ts"],
+      "electrobun/bun": ["./src/electrobun.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/node_modules/**", "**/electrobun/*", "dist", "**/dist/*", "**/.bun/**"]
+}

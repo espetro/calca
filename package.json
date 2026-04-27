@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "dev-web": "bun --cwd apps/web dev",
+    "dev-desktop": "cd platforms/desktop && bun run dev",
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
@@ -19,6 +20,7 @@
     "typecheck": "turbo typecheck",
     "lint": "turbo lint",
     "validate": "bun scripts/validate.ts",
+    "package:desktop": "cd platforms/desktop && bun run package",
     "clean": "turbo clean"
   },
   "devDependencies": {
