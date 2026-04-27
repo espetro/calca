@@ -48,6 +48,7 @@ export interface Settings {
   selectedImages: SelectedImage[];
   theme: Theme;
   onboardingCompleted: boolean;
+  analyticsEnabled: boolean;
 }
 
 export const FALLBACK_MODELS: ModelInfo[] = [

@@ -52,6 +52,7 @@ const createDefaultSettings = (): Settings => {
     selectedImages: [],
     theme: "system",
     onboardingCompleted: false,
+    analyticsEnabled: true,
   };
 };
 
