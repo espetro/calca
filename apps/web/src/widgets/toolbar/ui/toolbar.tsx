@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { ToolMode } from "@/shared/types";
 import type { ProviderConfig } from "@/features/settings/types";
-import { MODELS } from "@/features/settings/hooks/use-settings";
+import { MODELS } from "@/features/settings/types";
 
 interface ToolbarProps {
   mode: ToolMode;

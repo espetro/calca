@@ -5,7 +5,7 @@ import type { ProviderConfig, Settings } from "../types";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
 const STORAGE_KEY = "calca-settings";
-const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL || "claude-opus-4-6";
+const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL ?? "qwen3.5-4b";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
 const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";
 
@@ -21,9 +21,7 @@ const createEnvProvider = (): ProviderConfig | null => {
     apiType: "openai-compatible",
     baseUrl,
     apiKey: import.meta.env.VITE_AI_API_KEY || "",
-    models: modelName
-      ? [{ id: modelName, displayName: modelName, description: "" }]
-      : [],
+    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
     lastTested: null,
     isEnv: true,
   };
@@ -39,7 +37,7 @@ const createDefaultSettings = (): Settings => {
     openaiKey: "",
     providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
     baseURL: DEFAULT_BASE_URL,
-    model: DEFAULT_MODEL,
+    model: envProvider ? `${ENV_PROVIDER_ID}/${DEFAULT_MODEL}` : DEFAULT_MODEL,
     systemPrompt: "",
     systemPromptPreset: "custom",
     conceptCount: 4,
@@ -54,18 +52,69 @@ const createDefaultSettings = (): Settings => {
   };
 };
 
+const migrateModelFormat = (parsed: Partial<Settings>): Partial<Settings> => {
+  const updates: Partial<Settings> = {};
+  const providers = parsed.providers ?? [];
+  const envProvider = providers.find((p) => p.isEnv);
+  const firstProvider = providers[0];
+  const targetProvider = envProvider ?? firstProvider;
+
+  if (!targetProvider) return updates;
+
+  if (parsed.model && !parsed.model.includes("/")) {
+    updates.model = `${targetProvider.id}/${parsed.model}`;
+  }
+
+  if (parsed.ideateModel && !parsed.ideateModel.includes("/")) {
+    updates.ideateModel = `${targetProvider.id}/${parsed.ideateModel}`;
+  }
+
+  return updates;
+};
+
+const createStorage = () => {
+  const defaults = createDefaultSettings();
+  const storage = {
+    getItem: (key: string): Settings => {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return defaults;
+        const parsed = JSON.parse(raw) as Partial<Settings>;
+        const migrated = migrateModelFormat(parsed);
+        const merged = { ...defaults, ...parsed, ...migrated };
+        const envProvider = createEnvProvider();
+        if (envProvider && !merged.providers.some((p) => p.isEnv)) {
+          merged.providers = [envProvider, ...merged.providers];
+        }
+        return merged;
+      } catch {
+        return defaults;
+      }
+    },
+    setItem: (key: string, value: Settings) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {}
+    },
+    removeItem: (key: string) => {
+      try {
+        localStorage.removeItem(key);
+      } catch {}
+    },
+  };
+  return storage;
+};
+
 export const settingsAtom = atomWithStorage<Settings>(
   STORAGE_KEY,
-  createDefaultSettings()
+  createDefaultSettings(),
+  createStorage(),
 );
 
 export const isOwnKeyAtom = atom((get) => {
   const settings = get(settingsAtom);
   const derived = deriveProviderFields(settings.providers, settings.model);
-  return (
-    !!derived.apiKey ||
-    (derived.providerType === "openai-compatible" && !!derived.baseURL)
-  );
+  return !!derived.apiKey || (derived.providerType === "openai-compatible" && !!derived.baseURL);
 });
 
 export const hasGeminiKeyAtom = atom((get) => {
@@ -75,9 +124,6 @@ export const hasGeminiKeyAtom = atom((get) => {
 
 export const loadedAtom = atom(true);
 
-export const updateSettingsAtom = atom(
-  null,
-  (_get, set, update: Partial<Settings>) => {
-    set(settingsAtom, (prev) => ({ ...prev, ...update }));
-  }
-);
+export const updateSettingsAtom = atom(null, (_get, set, update: Partial<Settings>) => {
+  set(settingsAtom, (prev) => ({ ...prev, ...update }));
+});

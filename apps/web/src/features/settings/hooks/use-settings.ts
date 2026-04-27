@@ -33,14 +33,6 @@ const createEnvProvider = (): ProviderConfig | null => {
   };
 };
 
-export const MODELS = [
-  { id: "claude-opus-4-6", label: "Opus 4.6", desc: "Best quality, slowest" },
-  { id: "claude-opus-4-5-20250918", label: "Opus 4.5", desc: "Creative + powerful" },
-  { id: "claude-sonnet-4-5", label: "Sonnet 4.5", desc: "Fast + great" },
-  { id: "claude-opus-4", label: "Opus 4", desc: "High quality, slower" },
-  { id: "claude-sonnet-4", label: "Sonnet 4", desc: "Fast, reliable" },
-] as const;
-
 export function useSettings() {
   const [settings, setSettingsState] = useState<Settings>({
     apiKey: DEFAULT_API_KEY,

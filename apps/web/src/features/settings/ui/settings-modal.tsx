@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MODELS, type Settings } from "@/features/settings/hooks/use-settings";
+import { MODELS, type Settings } from "@/features/settings/types";
 import ProviderList from "./provider-list";
 import ProviderConfigForm from "./provider-config-form";
 import ModelComboSelect from "./model-combo-select";
