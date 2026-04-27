@@ -141,6 +141,11 @@ export const hasGeminiKeyAtom = atom((get) => {
   return !!settings.geminiKey;
 });
 
+export const hasModelAtom = atom((get) => {
+  const settings = get(settingsAtom);
+  return settings.model.length > 0;
+});
+
 export const loadedAtom = atom(true);
 
 export const updateSettingsAtom = atom(null, (_get, set, update: Partial<Settings>) => {

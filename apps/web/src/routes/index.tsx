@@ -15,7 +15,7 @@ import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pi
 import { SummaryList } from "@/features/design/ui/summary-list";
 import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
 import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
-import { settingsAtom, isOwnKeyAtom } from "@/features/settings/state/settings-atoms";
+import { settingsAtom, isOwnKeyAtom, hasModelAtom } from "@/features/settings/state/settings-atoms";
 import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
 import {
@@ -31,6 +31,7 @@ export default function Home() {
   const canvas = useCanvas();
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
+  const hasModel = useAtomValue(hasModelAtom);
   const probeModels = useProbeModels();
 
 
@@ -232,6 +233,10 @@ export default function Home() {
               setShowTutorial(true);
             }}
             onSkip={() => {
+              if (!settings.model) {
+                setShowSettings(true);
+                return;
+              }
               setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
               setShowWelcome(false);
             }}
@@ -252,7 +257,7 @@ export default function Home() {
         )}
       </ErrorBoundary>
 
-      {!isOwnKey && !showWelcome && (
+      {(!isOwnKey || !settings.model) && !showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
           <button
             onClick={() => setShowSettings(true)}
