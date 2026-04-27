@@ -4,7 +4,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@app/core/*": ["../../packages/core/src/*"],
-      "@app/shared": ["../../packages/shared/src/index.ts"]
+      "@app/shared": ["../../packages/shared/src/index.ts"],
+      "@app/server": ["../../apps/server/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/vite-env.d.ts", "vite.config.ts"],

@@ -11,7 +11,7 @@ import {
   genStatusAtom,
 } from "@/features/design/state/generation-atoms";
 import type { GenerationGroup, PipelineStage, Point } from "@/shared/types";
-import { legacyApiClient } from "@/lib/services/api";
+import { apiClient } from "@/lib/api-client";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per
@@ -176,10 +176,8 @@ export const useWorkflowStream = () => {
       );
 
       try {
-        const { body } = await legacyApiClient<{ body: ReadableStream }>("/api/workflow", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const response = await apiClient.api.workflow.$post({
+          json: {
             prompt,
             mode,
             conceptCount,
@@ -194,9 +192,10 @@ export const useWorkflowStream = () => {
             contextImages,
             revision,
             existingHtml,
-          }),
+          },
           signal: controller.signal,
         });
+        const body = response.body;
 
         if (!body) throw new Error("No response body");
 

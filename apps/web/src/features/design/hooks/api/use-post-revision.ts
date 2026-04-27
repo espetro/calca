@@ -1,5 +1,5 @@
 import { DerivedProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import { legacyApiClient } from "@/lib/services/api";
+import { apiClient } from "@/lib/api-client";
 import { useMutation } from "@tanstack/react-query";
 
 const MUTATION_KEY = ["/api/workflow", "revision"] as const;
@@ -97,10 +97,8 @@ const getFrames = async (body: ReadableStream, signal: AbortSignal) => {
 const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: RevisionInput) => {
   if (!options) throw new Error("Revision requires options");
 
-  const { body } = await legacyApiClient<RevisionEndpointOutput>("/api/workflow", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  const response = await apiClient.api.workflow.$post({
+    json: {
       systemPrompt,
       prompt,
       mode: "quick",
@@ -111,9 +109,10 @@ const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: 
       baseURL: derived.baseURL || undefined,
       revision: options.revision,
       existingHtml: options.existingHtml,
-    }),
+    },
     signal,
   });
+  const body = response.body;
 
   if (!body) throw new Error("No response body");
 

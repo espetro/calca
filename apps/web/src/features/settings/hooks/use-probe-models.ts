@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { ModelInfo } from "../types";
 import { FALLBACK_MODELS } from "../types";
-import { legacyApiClient } from "@/lib/services/api";
+import { apiClient } from "@/lib/api-client";
 
 const MUTATION_KEY = ["/api/probe-models"] as const;
 
@@ -22,11 +22,14 @@ interface ProbeModelsEndpointOutput {
 
 const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> => {
   try {
-    const { available } = await legacyApiClient<ProbeModelsEndpointOutput>("/api/probe-models", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+    const response = await apiClient.api["probe-models"].$post({
+      json: input,
     });
+    const data = await response.json();
+    if ("error" in data) {
+      return { models: [], error: data.error };
+    }
+    const { available } = data;
 
     if (!available) {
       return { models: FALLBACK_MODELS };

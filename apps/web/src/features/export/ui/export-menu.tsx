@@ -187,6 +187,9 @@ export function ExportMenu({
           providerType: providerType || undefined,
           baseURL: baseURL || undefined,
         });
+        if ("error" in data) {
+          throw new Error(data.error);
+        }
         setPreview({ format, code: data.result });
       } catch (err) {
         logger.error("Export failed", { error: err instanceof Error ? err.message : String(err) });
