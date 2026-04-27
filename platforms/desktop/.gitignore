@@ -7,3 +7,7 @@
 dist-macos-*/
 .cache/
 build/
+artifacts/
+node_modules/
+Resources/web/
+.turbo/
