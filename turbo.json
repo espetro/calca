@@ -11,6 +11,15 @@
       "cache": false,
       "persistent": true
     },
+    "dev-desktop": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "build:desktop": {
+      "dependsOn": ["^build"],
+      "outputs": ["build/**", "artifacts/**"]
+    },
     "typecheck": {
       "dependsOn": ["^build"],
       "outputs": []
