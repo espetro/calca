@@ -66,12 +66,13 @@ export function getGeminiModel(modelId: string) {
   return geminiModels[modelId as GeminiModelId] ?? geminiModels['gemini-2.0-flash'];
 }
 
-export const MODEL_FALLBACK_CHAIN: string[] = [
-  'claude-opus-4-6',
-  'claude-sonnet-4-5',
-  'claude-opus-4',
-  'claude-sonnet-4',
-];
+export function buildModelFallbackChain(preferredModel: string, fallbackModel?: string): string[] {
+  const chain: string[] = [preferredModel];
+  if (fallbackModel && fallbackModel !== preferredModel) {
+    chain.push(fallbackModel);
+  }
+  return chain;
+}
 
 const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
 

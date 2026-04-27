@@ -1,6 +1,6 @@
 import { generateText, streamText, type ModelMessage } from 'ai';
 import type { LanguageModelUsage, FinishReason } from 'ai';
-import { getClaudeModel, getAIProvider } from './providers';
+import { getClaudeModel, getAIProvider, buildModelFallbackChain } from './providers';
 import type { ProviderType } from './providers';
 import { createHash } from 'crypto';
 import { createTelemetryCallbacks } from './telemetry';
@@ -8,14 +8,6 @@ import { getLogger } from '@app/logger';
 
 const CACHE_MAX_ENTRIES = 100;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-
-// Local fallback chain (MODEL_FALLBACK_CHAIN removed in Task 6)
-const FALLBACK_CHAIN: string[] = [
-  'claude-opus-4-6',
-  'claude-sonnet-4-5',
-  'claude-opus-4',
-  'claude-sonnet-4',
-];
 
 // In-memory cache for AI responses
 interface CacheEntry {
@@ -61,6 +53,7 @@ function generateCacheKey(
 
 export interface GenerateOptions {
   model?: string;
+  fallbackModel?: string;
   apiKey?: string;
   providerType?: ProviderType;
   baseURL?: string;
@@ -157,8 +150,7 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
 
   const providerType = options.providerType ?? (options.baseURL ? 'openai-compatible' : 'anthropic');
   const preferredModel = options.model;
-  const idx = FALLBACK_CHAIN.indexOf(preferredModel);
-  const fallbacks = idx >= 0 ? FALLBACK_CHAIN.slice(idx) : [preferredModel, ...FALLBACK_CHAIN];
+  const fallbacks = buildModelFallbackChain(preferredModel, options.fallbackModel);
 
   const cacheLogger = getLogger(['calca', 'core', 'ai', 'cache']);
 

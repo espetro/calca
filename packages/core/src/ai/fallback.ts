@@ -1,1 +1,1 @@
-export { MODEL_FALLBACK_CHAIN, getClaudeModel } from './providers';
+export { buildModelFallbackChain, getClaudeModel } from './providers';
