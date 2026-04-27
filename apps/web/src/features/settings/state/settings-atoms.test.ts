@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { atom } from "jotai";
 import { settingsSchema } from "../lib/settings-schema";
 
-const DEFAULT_MODEL = "qwen3.5-4b";
+const ENV_PROVIDER_ID = "environment";
 const DEFAULT_BASE_URL = "";
 const DEFAULT_API_KEY = "";
 
@@ -15,7 +15,7 @@ const createDefaultSettings = () => ({
   openaiKey: "",
   providerType: createEnvProvider() ? ("openai-compatible" as const) : undefined,
   baseURL: DEFAULT_BASE_URL,
-  model: createEnvProvider() ? `environment/${DEFAULT_MODEL}` : DEFAULT_MODEL,
+  model: createEnvProvider() ? `${ENV_PROVIDER_ID}/` : "",
   systemPrompt: "",
   systemPromptPreset: "custom",
   conceptCount: 4,
@@ -52,8 +52,8 @@ describe("settings-atoms defaults", () => {
     expect(createDefaultSettings().providers).toEqual([]);
   });
 
-  it("createDefaultSettings returns model without prefix when no env provider", () => {
-    expect(createDefaultSettings().model).toBe("qwen3.5-4b");
+  it("createDefaultSettings returns empty model when no env provider", () => {
+    expect(createDefaultSettings().model).toBe("");
   });
 });
 
