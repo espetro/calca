@@ -1,0 +1,23 @@
+{
+  "name": "@app/analytics",
+  "version": "0.3.0",
+  "private": true,
+  "license": "AGPL-3.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo 'build: not yet implemented'",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "echo 'clean: not yet implemented'"
+  },
+  "dependencies": {
+    "posthog-js": "^1.371.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0"
+  }
+}
