@@ -10,6 +10,7 @@ import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
 import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom } from "@/features/onboarding";
+import { FeedbackModal, showFeedbackAtom } from "@/features/feedback";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import { SummaryList } from "@/features/design/ui/summary-list";
@@ -50,6 +51,7 @@ export default function Home() {
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
   const setToolMode = useSetAtom(toolModeAtom);
   const [showSettings, setShowSettings] = useState(false);
+  const [showFeedback, setShowFeedback] = useAtom(showFeedbackAtom);
   const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
   const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
   const hasCheckedOnboarding = useRef(false);
@@ -189,6 +191,8 @@ export default function Home() {
           />
         </ErrorBoundary>
       )}
+
+      <FeedbackModal open={showFeedback} onClose={() => setShowFeedback(false)} />
 
       {showResetConfirm && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center">
