@@ -1,15 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
-import type { ModelInfo, ProviderConfig, ProviderType, SelectedImage, Settings } from "../types";
-import { FALLBACK_MODELS } from "../types";
+import { useState, useCallback, useEffect } from "react";
+import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
 import { migrateSettings } from "../lib/migrate-settings";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 import { useProbeModels } from "./use-probe-models";
 
 export type { ProviderType, Settings, SelectedImage };
-export { FALLBACK_MODELS };
 
 const STORAGE_KEY = "calca-settings";
-const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL || "claude-opus-4-6";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
 const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";
 
@@ -17,42 +14,45 @@ const ENV_PROVIDER_ID = "environment";
 
 const createEnvProvider = (): ProviderConfig | null => {
   const baseUrl = import.meta.env.VITE_AI_BASE_URL;
-  if (!baseUrl) {return null;}
+  if (!baseUrl) return null;
 
   const modelName = import.meta.env.VITE_AI_MODEL;
   return {
-    apiKey: import.meta.env.VITE_AI_API_KEY || "",
+    id: ENV_PROVIDER_ID,
     apiType: "openai-compatible",
     baseUrl,
-    id: ENV_PROVIDER_ID,
-    isEnv: true,
+    apiKey: import.meta.env.VITE_AI_API_KEY || "",
+    models: modelName
+      ? [{ id: modelName, displayName: modelName, description: "" }]
+      : [],
     lastTested: null,
-    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
+    isEnv: true,
   };
 };
 
 export function useSettings() {
   const [settings, setSettingsState] = useState<Settings>({
     apiKey: DEFAULT_API_KEY,
-    baseURL: DEFAULT_BASE_URL,
-    conceptCount: 4,
-    critiqueMode: false,
     geminiKey: "",
-    ideateModel: undefined,
-    isIdeating: false,
-    model: DEFAULT_MODEL,
-    onboardingCompleted: false,
+    unsplashKey: "",
     openaiKey: "",
     providerType: createEnvProvider() ? "openai-compatible" : undefined,
-    providers: [],
-    quickMode: false,
-    selectedImages: [],
-    showZoomControls: false,
+    baseURL: DEFAULT_BASE_URL,
+    model: "",
+    fallbackModel: undefined,
     systemPrompt: "",
     systemPromptPreset: "custom",
-    theme: "system",
-    unsplashKey: "",
+    conceptCount: 4,
+    quickMode: false,
+    showZoomControls: false,
+    providers: [],
+    ideateModel: undefined,
+    isIdeating: false,
     variations: 1,
+    critiqueMode: false,
+    selectedImages: [],
+    theme: "system",
+    onboardingCompleted: false,
   });
   const [loaded, setLoaded] = useState(false);
   const probeModels = useProbeModels();
@@ -79,38 +79,39 @@ export function useSettings() {
         }
 
         // Auto-migrate stale settings: if user has env config but settings
-        // Are pointing to anthropic without an API key, switch to env provider
-        const hasEnvConfig = Boolean(DEFAULT_BASE_URL);
+        // are pointing to anthropic without an API key, switch to env provider
+        const hasEnvConfig = !!DEFAULT_BASE_URL;
         const isStaleAnthropic = parsed.providerType === "anthropic" && !parsed.apiKey;
         if (hasEnvConfig && isStaleAnthropic && envProvider) {
           parsed.providerType = envProvider.apiType;
           parsed.baseURL = envProvider.baseUrl;
           parsed.apiKey = envProvider.apiKey;
-          parsed.model = DEFAULT_MODEL;
+          parsed.model = parsed.model || "";
           localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
         }
 
         setSettingsState({
           apiKey: parsed.apiKey ?? DEFAULT_API_KEY,
-          baseURL: parsed.baseURL ?? DEFAULT_BASE_URL,
-          conceptCount: parsed.conceptCount ?? 4,
-          critiqueMode: parsed.critiqueMode ?? false,
           geminiKey: parsed.geminiKey ?? "",
-          ideateModel: parsed.ideateModel,
-          isIdeating: parsed.isIdeating ?? false,
-          model: parsed.model ?? DEFAULT_MODEL,
-          onboardingCompleted: false,
+          unsplashKey: parsed.unsplashKey ?? "",
           openaiKey: parsed.openaiKey ?? "",
           providerType: parsed.providerType,
-          providers,
-          quickMode: parsed.quickMode ?? false,
-          selectedImages: parsed.selectedImages ?? [],
-          showZoomControls: parsed.showZoomControls ?? false,
+          baseURL: parsed.baseURL ?? DEFAULT_BASE_URL,
+          model: parsed.model || "",
+          fallbackModel: parsed.fallbackModel,
           systemPrompt: parsed.systemPrompt ?? "",
           systemPromptPreset: parsed.systemPromptPreset ?? "custom",
-          theme: (parsed.theme as Settings["theme"]) ?? "system",
-          unsplashKey: parsed.unsplashKey ?? "",
+          conceptCount: parsed.conceptCount ?? 4,
+          quickMode: parsed.quickMode ?? false,
+          showZoomControls: parsed.showZoomControls ?? false,
+          providers,
+          ideateModel: parsed.ideateModel,
+          isIdeating: parsed.isIdeating ?? false,
           variations: parsed.variations ?? 1,
+          critiqueMode: parsed.critiqueMode ?? false,
+          selectedImages: parsed.selectedImages ?? [],
+          theme: (parsed.theme as Settings["theme"]) ?? "system",
+          onboardingCompleted: false,
         });
       } else {
         // No localStorage yet — seed env provider if env vars are set
@@ -133,23 +134,19 @@ export function useSettings() {
     });
   }, []);
 
-  const testProvider = useCallback(
-    async (
-      config: Omit<ProviderConfig, "models" | "lastTested">,
-    ): Promise<{ models: ModelInfo[]; error?: string }> => probeModels.mutateAsync({
-        apiKey: config.apiKey,
-        providerType: config.apiType,
-        baseURL: config.baseUrl,
-      }),
-    [probeModels.mutateAsync],
-  );
+  const testProvider = useCallback(async (
+    config: Omit<ProviderConfig, "models" | "lastTested">
+  ): Promise<{ models: ModelInfo[]; error?: string }> => {
+    return probeModels.mutateAsync({
+      apiKey: config.apiKey,
+      providerType: config.apiType,
+      baseURL: config.baseUrl,
+    });
+  }, [probeModels.mutateAsync]);
 
-  const setIsIdeating = useCallback(
-    (value: boolean) => {
-      setSettings({ isIdeating: value });
-    },
-    [setSettings],
-  );
+  const setIsIdeating = useCallback((value: boolean) => {
+    setSettings({ isIdeating: value });
+  }, [setSettings]);
 
   const addImage = useCallback((image: SelectedImage) => {
     setSettingsState((prev) => {
@@ -179,23 +176,24 @@ export function useSettings() {
 
   // For anthropic we need an API key; for openai-compatible a baseURL is enough
   const isOwnKey =
-    Boolean(derived.apiKey) || (derived.providerType === "openai-compatible" && Boolean(derived.baseURL));
-  const hasGeminiKey = Boolean(settings.geminiKey);
+    !!derived.apiKey ||
+    (derived.providerType === "openai-compatible" && !!derived.baseURL);
+  const hasGeminiKey = !!settings.geminiKey;
 
   return {
-    addImage,
-    clearImages,
-    hasGeminiKey,
-    isOwnKey,
-    loaded,
-    providers: settings.providers,
-    removeImage,
-    setIsIdeating,
-    setSettings,
     settings: {
       ...settings,
       ...derived,
     },
+    setSettings,
+    setIsIdeating,
+    addImage,
+    removeImage,
+    clearImages,
+    isOwnKey,
+    hasGeminiKey,
+    loaded,
+    providers: settings.providers,
     testProvider,
   };
 }

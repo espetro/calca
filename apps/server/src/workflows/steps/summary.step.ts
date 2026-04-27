@@ -10,41 +10,38 @@ import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "server", "workflow", "summary"]);
 
-const DEFAULT_MODEL = "claude-opus-4-6";
-
 export const summaryStep = createStep({
+  id: "summary",
+  inputSchema: SummaryInputSchema,
+  outputSchema: SummaryOutputSchema,
   execute: async ({ inputData }) => {
     const { html, prompt, labels, model, apiKey, baseURL, providerType } = inputData;
-
+    
     const { stripped } = stripBase64Images(html);
-
-    const messages: ModelMessage[] = [
-      {
-        content: buildSummaryPrompt(prompt, stripped, labels ?? []),
-        role: "user",
-      },
-    ];
-
+    
+    const messages: ModelMessage[] = [{
+      role: "user",
+      content: buildSummaryPrompt(prompt, stripped, labels ?? []),
+    }];
+    
     const { result } = await generateWithFallback({
       apiKey,
-      baseURL,
-      maxTokens: 512,
+      model: model,
       messages,
-      model: model ?? DEFAULT_MODEL,
+      maxTokens: 512,
       providerType: providerType as ProviderType | undefined,
+      baseURL,
+      functionId: "summary",
     });
-
+    
     const raw = result.text;
     try {
       const parsed = JSON.parse(raw);
       const validated = validateSummary(parsed);
       return { summary: JSON.stringify(validated) };
-    } catch (error) {
-      logger.warn("Summary validation failed:", { error });
+    } catch (validationErr) {
+      logger.warn("Summary validation failed:", validationErr);
       return { summary: raw };
     }
   },
-  id: "summary",
-  inputSchema: SummaryInputSchema,
-  outputSchema: SummaryOutputSchema,
 });

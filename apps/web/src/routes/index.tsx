@@ -9,25 +9,20 @@ import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
 import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
-import {
-  TutorialTour,
-  WelcomeModal,
-  showTutorialAtom,
-  showWelcomeAtom,
-} from "@/features/onboarding";
+import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom } from "@/features/onboarding";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import { SummaryList } from "@/features/design/ui/summary-list";
 import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
 import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
-import { isOwnKeyAtom, settingsAtom } from "@/features/settings/state/settings-atoms";
-import { groupsAtom, hydrateGroups, resetSessionAtom } from "@/features/design/state/groups-atoms";
+import { settingsAtom, isOwnKeyAtom, hasModelAtom } from "@/features/settings/state/settings-atoms";
+import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
 import {
-  showGitHashAtom,
-  showLibraryAtom,
   showResetConfirmAtom,
   toolModeAtom,
+  showGitHashAtom,
+  showLibraryAtom,
 } from "@/features/design/state/generation-atoms";
 import { useMountEffect } from "@/shared/utils/use-mount-effect";
 import { exportCanvas, openImportDialog } from "@/lib/export";
@@ -36,7 +31,9 @@ export default function Home() {
   const canvas = useCanvas();
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
+  const hasModel = useAtomValue(hasModelAtom);
   const probeModels = useProbeModels();
+
 
   useKeyboardShortcuts();
 
@@ -81,7 +78,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (hasCheckedOnboarding.current) {return;}
+    if (hasCheckedOnboarding.current) return;
     hasCheckedOnboarding.current = true;
 
     if (!settings.onboardingCompleted) {
@@ -186,8 +183,8 @@ export default function Home() {
             testProvider={(config) =>
               probeModels.mutateAsync({
                 apiKey: config.apiKey,
-                baseURL: config.baseUrl,
                 providerType: config.apiType,
+                baseURL: config.baseUrl,
               })
             }
           />
@@ -201,10 +198,10 @@ export default function Home() {
             onClick={() => setShowResetConfirm(false)}
           />
           <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
-            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">
-              {m.dialog.resetTitle()}
-            </h3>
-            <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
+            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">{m.dialog.resetTitle()}</h3>
+            <p className="text-[13px] text-gray-500 mb-6">
+              {m.dialog.resetDescription()}
+            </p>
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => setShowResetConfirm(false)}
@@ -236,6 +233,10 @@ export default function Home() {
               setShowTutorial(true);
             }}
             onSkip={() => {
+              if (!settings.model) {
+                setShowSettings(true);
+                return;
+              }
               setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
               setShowWelcome(false);
             }}
@@ -256,7 +257,7 @@ export default function Home() {
         )}
       </ErrorBoundary>
 
-      {!isOwnKey && !showWelcome && (
+      {(!isOwnKey || !settings.model) && !showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
           <button
             onClick={() => setShowSettings(true)}

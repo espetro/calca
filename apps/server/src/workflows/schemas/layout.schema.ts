@@ -1,24 +1,25 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const LayoutInputSchema = z.object({
-  apiKey: z.string().optional(),
-  baseURL: z.string().optional(),
+  prompt: z.string(),
   concept: z.string().optional(),
   contextImages: z.array(z.string()).optional(),
   critique: z.string().optional(),
-  existingHtml: z.string().optional(),
-  model: z.string().optional(),
-  prompt: z.string(),
-  providerType: z.string().optional(),
   revision: z.boolean().optional(),
+  existingHtml: z.string().optional(),
   systemPrompt: z.string().optional(),
+  model: z.string().optional(),
+  apiKey: z.string().optional(),
+  baseURL: z.string().optional(),
+  providerType: z.string().optional(),
+  frameIndex: z.number().optional(),
 });
 
 export const LayoutOutputSchema = z.object({
-  comment: z.string().optional(),
-  height: z.number().optional(),
   html: z.string(),
   width: z.number().optional(),
+  height: z.number().optional(),
+  comment: z.string().optional(),
 });
 
 export type LayoutInput = z.infer<typeof LayoutInputSchema>;

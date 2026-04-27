@@ -7,33 +7,36 @@ import { CritiqueInputSchema, CritiqueOutputSchema } from "../schemas/critique.s
 import { stripBase64Images } from "../../lib/strip-base64";
 
 export const critiqueStep = createStep({
+  id: "critique",
+  inputSchema: CritiqueInputSchema,
+  outputSchema: CritiqueOutputSchema,
   execute: async ({ inputData }) => {
-    const { html, prompt, model, apiKey, baseURL, providerType } = inputData;
+    const { html, prompt, model, apiKey, baseURL, providerType, frameIndex } = inputData;
+    const frameIdx = frameIndex ?? 0;
 
     // Strip base64 images to reduce token usage
     const { stripped } = stripBase64Images(html);
 
     const messages: ModelMessage[] = [
       {
-        content: buildCritiquePrompt(prompt || "", stripped),
         role: "user",
+        content: buildCritiquePrompt(prompt || "", stripped),
       },
     ];
 
     const { result } = await generateWithFallback({
       apiKey,
-      baseURL,
-      maxTokens: 1024,
+      model: model,
       messages,
-      model: model || "claude-opus-4-6",
+      maxTokens: 1024,
       providerType: providerType as ProviderType | undefined,
+      baseURL,
+      functionId: `critique:${frameIdx + 1}`,
+      frameIndex: frameIdx,
     });
 
     return {
       critique: result.text,
     };
   },
-  id: "critique",
-  inputSchema: CritiqueInputSchema,
-  outputSchema: CritiqueOutputSchema,
 });

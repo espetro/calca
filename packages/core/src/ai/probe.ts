@@ -3,18 +3,7 @@ import { getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
 import { getLogger } from "@app/logger";
 
-const MODELS = ["claude-opus-4-6", "claude-sonnet-4-5", "claude-opus-4", "claude-sonnet-4"];
-
 const logger = getLogger(["calca", "core", "ai", "probe"]);
-
-function isNotFoundError(msg: string): boolean {
-  return (
-    msg.includes("not_found") ||
-    msg.includes("404") ||
-    msg.includes("Could not resolve") ||
-    msg.includes("does not exist")
-  );
-}
 
 export interface ModelInfo {
   id: string;
@@ -25,21 +14,30 @@ export async function probeModels(
   apiKey: string,
   baseURL?: string,
   providerType?: ProviderType,
+  preferredModel?: string,
+  fallbackModel?: string,
 ): Promise<Record<string, boolean>> {
-  // For OpenAI-compatible providers, fetch models from the /models endpoint
   if (providerType === "openai-compatible") {
     return probeOpenAICompatibleModels(apiKey, baseURL);
   }
-
-  // Default: Anthropic-style probing (also used when providerType is undefined for backward compat)
-  return probeAnthropicModels(apiKey);
+  return probeAnthropicModels(apiKey, preferredModel, fallbackModel);
 }
 
-async function probeAnthropicModels(apiKey: string): Promise<Record<string, boolean>> {
+async function probeAnthropicModels(
+  apiKey: string,
+  preferredModel?: string,
+  fallbackModel?: string,
+): Promise<Record<string, boolean>> {
   const headers: Record<string, string> = { "x-anthropic-key": apiKey };
   const available: Record<string, boolean> = {};
 
-  for (const model of MODELS) {
+  const modelsToProbe = [preferredModel, fallbackModel].filter(Boolean) as string[];
+
+  if (modelsToProbe.length === 0) {
+    return {};
+  }
+
+  for (const model of modelsToProbe) {
     try {
       await generateText({
         headers,
@@ -51,14 +49,7 @@ async function probeAnthropicModels(apiKey: string): Promise<Record<string, bool
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
       logger.debug(`Probe ${model}: ${msg}`);
-
-      // Only mark unavailable for definitive "not found" errors
-      if (isNotFoundError(msg)) {
-        available[model] = false;
-      } else {
-        // Rate limit, overloaded, timeout, or any other error — assume available
-        available[model] = true;
-      }
+      available[model] = true;
     }
   }
 

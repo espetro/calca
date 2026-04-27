@@ -9,31 +9,35 @@ import { stripBase64Images } from "../../lib/strip-base64";
 import { ReviewInputSchema, ReviewOutputSchema } from "../schemas/review.schema";
 import { getLogger } from "@app/logger";
 
-const DEFAULT_MODEL = "claude-opus-4-6";
-
 const logger = getLogger(["calca", "server", "workflow", "review"]);
 
 export const reviewStep = createStep({
+  id: "review",
+  inputSchema: ReviewInputSchema,
+  outputSchema: ReviewOutputSchema,
   execute: async ({ inputData }) => {
-    const { html, prompt, width, height, model, apiKey, baseURL, providerType } = inputData;
-    const useModel = model || DEFAULT_MODEL;
+    const { html, prompt, width, height, model, apiKey, baseURL, providerType, frameIndex } = inputData;
+    const useModel = model;
+    const frameIdx = frameIndex ?? 0;
 
     const { stripped, restore } = stripBase64Images(html);
 
     const messages: ModelMessage[] = [
       {
-        content: buildReviewPrompt(prompt || "", width, height, stripped),
         role: "user",
+        content: buildReviewPrompt(prompt || "", width, height, stripped),
       },
     ];
 
     const { result } = await generateWithFallback({
       apiKey,
-      baseURL,
-      maxTokens: 16384,
-      messages,
       model: useModel,
+      messages,
+      maxTokens: 16384,
       providerType: providerType as ProviderType | undefined,
+      baseURL,
+      functionId: `review:${frameIdx + 1}`,
+      frameIndex: frameIdx,
     });
 
     const raw = result.text;
@@ -41,21 +45,18 @@ export const reviewStep = createStep({
     try {
       const validated = validateReview(raw);
       return {
-        height: validated.height || height,
         html: restore(validated.html),
         width: validated.width || width,
+        height: validated.height || height,
       };
     } catch (error) {
       logger.warn("Review validation failed, returning parsed output:", { error });
       const parsed = parseHtmlWithSize(raw);
       return {
-        height: parsed.height || height,
         html: restore(parsed.html),
         width: parsed.width || width,
+        height: parsed.height || height,
       };
     }
   },
-  id: "review",
-  inputSchema: ReviewInputSchema,
-  outputSchema: ReviewOutputSchema,
 });

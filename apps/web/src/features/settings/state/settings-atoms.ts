@@ -6,7 +6,6 @@ import { settingsSchema } from "../lib/settings-schema";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
 const STORAGE_KEY = "calca-settings";
-const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL ?? "qwen3.5-4b";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
 const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";
 
@@ -14,17 +13,17 @@ const ENV_PROVIDER_ID = "environment";
 
 const createEnvProvider = (): ProviderConfig | null => {
   const baseUrl = import.meta.env.VITE_AI_BASE_URL;
-  if (!baseUrl) {return null;}
+  if (!baseUrl) return null;
 
   const modelName = import.meta.env.VITE_AI_MODEL;
   return {
-    apiKey: import.meta.env.VITE_AI_API_KEY || "",
+    id: ENV_PROVIDER_ID,
     apiType: "openai-compatible",
     baseUrl,
-    id: ENV_PROVIDER_ID,
-    isEnv: true,
-    lastTested: null,
+    apiKey: import.meta.env.VITE_AI_API_KEY || "",
     models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
+    lastTested: null,
+    isEnv: true,
   };
 };
 
@@ -33,25 +32,25 @@ const createDefaultSettings = (): Settings => {
 
   return {
     apiKey: DEFAULT_API_KEY,
-    baseURL: DEFAULT_BASE_URL,
-    conceptCount: 4,
-    critiqueMode: false,
     geminiKey: "",
-    ideateModel: undefined,
-    isIdeating: false,
-    model: envProvider ? `${ENV_PROVIDER_ID}/${DEFAULT_MODEL}` : DEFAULT_MODEL,
-    onboardingCompleted: false,
+    unsplashKey: "",
     openaiKey: "",
     providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
-    providers: envProvider ? [envProvider] : [],
-    quickMode: false,
-    selectedImages: [],
-    showZoomControls: false,
+    baseURL: DEFAULT_BASE_URL,
+    model: envProvider ? `${ENV_PROVIDER_ID}/` : "",
     systemPrompt: "",
     systemPromptPreset: "custom",
-    theme: "system",
-    unsplashKey: "",
+    conceptCount: 4,
+    quickMode: false,
+    showZoomControls: false,
+    providers: envProvider ? [envProvider] : [],
+    ideateModel: undefined,
+    isIdeating: false,
     variations: 1,
+    critiqueMode: false,
+    selectedImages: [],
+    theme: "system",
+    onboardingCompleted: false,
   };
 };
 
@@ -62,7 +61,7 @@ const migrateModelFormat = (parsed: Partial<Settings>): Partial<Settings> => {
   const firstProvider = providers[0];
   const targetProvider = envProvider ?? firstProvider;
 
-  if (!targetProvider) {return updates;}
+  if (!targetProvider) return updates;
 
   if (parsed.model && !parsed.model.includes("/")) {
     updates.model = `${targetProvider.id}/${parsed.model}`;
@@ -92,10 +91,7 @@ const createStorage = () => {
         const parsed = JSON.parse(raw);
         const result = settingsSchema.safeParse(parsed);
         if (!result.success) {
-          console.warn(
-            "[settings] Schema validation failed, using defaults:",
-            result.error.flatten(),
-          );
+          console.warn("[settings] Schema validation failed, using defaults:", result.error.flatten());
           cachedSettings = defaults;
           return cachedSettings;
         }
@@ -112,16 +108,16 @@ const createStorage = () => {
         return cachedSettings;
       }
     },
-    removeItem: (key: string) => {
-      try {
-        localStorage.removeItem(key);
-        cachedSettings = null;
-      } catch {}
-    },
     setItem: (key: string, value: Settings) => {
       try {
         localStorage.setItem(key, JSON.stringify(value));
         cachedSettings = value;
+      } catch {}
+    },
+    removeItem: (key: string) => {
+      try {
+        localStorage.removeItem(key);
+        cachedSettings = null;
       } catch {}
     },
   };
@@ -137,12 +133,17 @@ export const settingsAtom = atomWithStorage<Settings>(
 export const isOwnKeyAtom = atom((get) => {
   const settings = get(settingsAtom);
   const derived = deriveProviderFields(settings.providers, settings.model);
-  return Boolean(derived.apiKey) || (derived.providerType === "openai-compatible" && Boolean(derived.baseURL));
+  return !!derived.apiKey || (derived.providerType === "openai-compatible" && !!derived.baseURL);
 });
 
 export const hasGeminiKeyAtom = atom((get) => {
   const settings = get(settingsAtom);
-  return Boolean(settings.geminiKey);
+  return !!settings.geminiKey;
+});
+
+export const hasModelAtom = atom((get) => {
+  const settings = get(settingsAtom);
+  return settings.model.length > 0;
 });
 
 export const loadedAtom = atom(true);

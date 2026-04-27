@@ -7,6 +7,7 @@ export const CritiqueInputSchema = z.object({
   model: z.string().optional(),
   prompt: z.string(),
   providerType: z.string().optional(),
+  frameIndex: z.number().optional(),
 });
 
 export const CritiqueOutputSchema = z.object({

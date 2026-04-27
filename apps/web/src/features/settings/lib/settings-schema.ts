@@ -4,50 +4,51 @@ import type { ProviderType } from "@app/core/ai/providers";
 const providerTypeSchema = z.enum(["anthropic", "openai-compatible"] satisfies ProviderType[]);
 
 const modelInfoSchema = z.object({
-  description: z.string(),
-  displayName: z.string(),
   id: z.string(),
+  displayName: z.string(),
+  description: z.string(),
 });
 
 export const providerConfigSchema = z.object({
-  apiKey: z.string(),
+  id: z.string(),
   apiType: providerTypeSchema,
   baseUrl: z.string(),
-  id: z.string(),
-  isEnv: z.boolean().optional(),
-  lastTested: z.union([z.number(), z.null()]),
+  apiKey: z.string(),
   models: z.array(modelInfoSchema),
+  lastTested: z.union([z.number(), z.null()]),
+  isEnv: z.boolean().optional(),
 });
 
 export const selectedImageSchema = z.object({
   id: z.string(),
-  name: z.string().optional(),
   src: z.string(),
+  name: z.string().optional(),
 });
 
 const themeSchema = z.enum(["light", "dark", "system"]);
 
 export const settingsSchema = z.object({
   apiKey: z.string(),
-  baseURL: z.string(),
-  conceptCount: z.number(),
-  critiqueMode: z.boolean(),
   geminiKey: z.string(),
-  ideateModel: z.string().optional(),
-  isIdeating: z.boolean(),
-  model: z.string(),
-  onboardingCompleted: z.boolean(),
+  unsplashKey: z.string(),
   openaiKey: z.string(),
   providerType: providerTypeSchema.optional(),
-  providers: z.array(providerConfigSchema),
-  quickMode: z.boolean(),
-  selectedImages: z.array(selectedImageSchema),
-  showZoomControls: z.boolean(),
+  baseURL: z.string(),
+  model: z.string(),
+  fallbackModel: z.string().optional(),
   systemPrompt: z.string(),
   systemPromptPreset: z.string(),
-  theme: themeSchema,
-  unsplashKey: z.string(),
+  conceptCount: z.number(),
+  quickMode: z.boolean(),
+  showZoomControls: z.boolean(),
+  providers: z.array(providerConfigSchema),
+  ideateModel: z.string().optional(),
+  isIdeating: z.boolean(),
   variations: z.number(),
+  critiqueMode: z.boolean(),
+  selectedImages: z.array(selectedImageSchema),
+  theme: themeSchema,
+  onboardingCompleted: z.boolean(),
 });
 
 export type SettingsInput = z.input<typeof settingsSchema>;
@@ -57,7 +58,9 @@ export type SettingsOutput = z.output<typeof settingsSchema>;
 // ---------------------------------------------------------------------------
 
 /** Validates an API key has minimum length of 10 characters. */
-export const apiKeyValidationSchema = z.string().min(10, "API key must be at least 10 characters");
+export const apiKeyValidationSchema = z
+  .string()
+  .min(10, "API key must be at least 10 characters");
 
 /** Validates model is non-empty string. */
 export const modelValidationSchema = z.string().min(1, "Model is required");

@@ -1,71 +1,67 @@
 import { getLogger } from "@app/logger";
 import type { ModelMessage } from "ai";
-import type { FinishReason, LanguageModelUsage } from "ai";
+import type { LanguageModelUsage, FinishReason } from "ai";
 
 export interface TelemetryCallbacks {
-  onStart(params: {
-    modelId: string;
-    prompt: ModelMessage[];
-    settings?: Record<string, unknown>;
-  }): void;
-  onFinish(params: {
-    modelId: string;
-    usage: LanguageModelUsage;
-    finishReason: FinishReason;
-    durationMs: number;
-  }): void;
+  onStart(params: { modelId: string; prompt: ModelMessage[]; settings?: Record<string, unknown> }): void;
+  onFinish(params: { modelId: string; usage: LanguageModelUsage; finishReason: FinishReason; durationMs: number }): void;
   onError(params: { modelId: string; error: Error }): void;
 }
 
 export interface TelemetryCallbacksOptions {
-  functionId?: string;
+  functionId: string;
+  frameIndex?: number;
   isEnabled?: boolean;
 }
 
 export function createTelemetryCallbacks(
   category: string[] = ["calca", "core", "ai", "telemetry"],
-  options?: TelemetryCallbacksOptions,
+  options: TelemetryCallbacksOptions,
 ): TelemetryCallbacks {
   const logger = getLogger(category);
-  const functionId = options?.functionId;
-  const isEnabled = options?.isEnabled ?? true;
+  const functionId = options.functionId;
+  const frameIndex = options.frameIndex;
+  const isEnabled = options.isEnabled ?? true;
 
   const startTimes = new Map<string, number>();
 
   return {
-    onError({ modelId, error }) {
-      if (!isEnabled) {return;}
-      const key = functionId ?? modelId;
-      startTimes.delete(key);
-      logger.error("AI call failed", {
-        error: error.message,
+    onStart({ modelId, prompt, settings }) {
+      if (!isEnabled) return;
+      const key = functionId;
+      startTimes.set(key, Date.now());
+      logger.debug("AI call started", {
         functionId,
+        frameIndex,
         modelId,
+        promptLength: prompt.length,
+        settings,
       });
     },
 
     onFinish({ modelId, usage, finishReason, durationMs }) {
-      if (!isEnabled) {return;}
-      const key = functionId ?? modelId;
+      if (!isEnabled) return;
+      const key = functionId;
       startTimes.delete(key);
       logger.info("AI call completed", {
-        durationMs,
-        finishReason,
         functionId,
+        frameIndex,
         modelId,
         usage,
+        finishReason,
+        durationMs,
       });
     },
 
-    onStart({ modelId, prompt, settings }) {
-      if (!isEnabled) {return;}
-      const key = functionId ?? modelId;
-      startTimes.set(key, Date.now());
-      logger.debug("AI call started", {
+    onError({ modelId, error }) {
+      if (!isEnabled) return;
+      const key = functionId;
+      startTimes.delete(key);
+      logger.error("AI call failed", {
         functionId,
+        frameIndex,
         modelId,
-        promptLength: prompt.length,
-        settings,
+        error: error.message,
       });
     },
   };

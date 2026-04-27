@@ -1,13 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
-  MODEL_FALLBACK_CHAIN,
+  getAIProvider,
   type ProviderType,
+  getClaudeModel,
+  getGeminiModel,
+  getGeminiImageModel,
+  buildModelFallbackChain,
   claudeModels,
   geminiModels,
-  getAIProvider,
-  getClaudeModel,
-  getGeminiImageModel,
-  getGeminiModel,
   openaiModels,
 } from "./providers";
 
@@ -110,18 +110,24 @@ describe("getGeminiImageModel", () => {
   });
 });
 
-describe("MODEL_FALLBACK_CHAIN", () => {
-  it("contains expected fallback models in order", () => {
-    expect(MODEL_FALLBACK_CHAIN).toEqual([
+describe("buildModelFallbackChain", () => {
+  it("returns [preferredModel] when no fallbackModel", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6")).toEqual(["claude-opus-4-6"]);
+  });
+
+  it("returns [preferredModel] when fallbackModel is undefined", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6", undefined)).toEqual(["claude-opus-4-6"]);
+  });
+
+  it("returns [preferredModel, fallbackModel] when fallbackModel is different", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6", "claude-sonnet-4-5")).toEqual([
       "claude-opus-4-6",
       "claude-sonnet-4-5",
-      "claude-opus-4",
-      "claude-sonnet-4",
     ]);
   });
 
-  it("has at least one fallback model", () => {
-    expect(MODEL_FALLBACK_CHAIN.length).toBeGreaterThan(0);
+  it("does NOT duplicate preferredModel when fallbackModel equals preferredModel", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6", "claude-opus-4-6")).toEqual(["claude-opus-4-6"]);
   });
 });
 

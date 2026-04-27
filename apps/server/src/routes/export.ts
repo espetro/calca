@@ -1,11 +1,9 @@
-import { type Context, Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import htmlToSvg from "../lib/html-to-svg";
-import { REACT_PROMPT, TAILWIND_PROMPT } from "../lib/export-prompts";
+import { htmlToSvg } from "../lib/html-to-svg";
+import { TAILWIND_PROMPT, REACT_PROMPT } from "../lib/export-prompts";
 import { getLogger } from "@app/logger";
-
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
 const logger = getLogger(["calca", "server", "routes", "export"]);
 
@@ -17,16 +15,17 @@ async function convertWithAI(
   providerType?: ProviderType,
   baseURL?: string,
 ): Promise<string> {
-  const { result } = await generateWithFallback({
-    apiKey,
-    baseURL,
-    maxTokens: 4096,
-    messages: [
-      { content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}`, role: "user" },
-    ],
-    model,
-    providerType: providerType as ProviderType | undefined,
-  });
+    const { result } = await generateWithFallback({
+      apiKey,
+      model,
+      messages: [
+        { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
+      ],
+      maxTokens: 4096,
+      providerType: providerType as ProviderType | undefined,
+      baseURL,
+      functionId: "export",
+    });
 
   let resultText = result.text.trim();
   if (resultText.startsWith("```")) {
@@ -49,14 +48,13 @@ export async function handleExport(c: Context) {
     // Strip base64 images to reduce payload size for AI conversion
     const html = rawHtml.replace(/src="data:image\/[^"]+"/g, 'src="[image]"');
 
-    const useModel = model || DEFAULT_MODEL;
+    const useModel = model;
 
     switch (format) {
-      case "svg": {
+      case "svg":
         return c.json({ result: htmlToSvg(html) });
-      }
 
-      case "tailwind": {
+      case "tailwind":
         return c.json({
           result: await convertWithAI(
             apiKey,
@@ -67,9 +65,8 @@ export async function handleExport(c: Context) {
             baseURL,
           ),
         });
-      }
 
-      case "react": {
+      case "react":
         return c.json({
           result: await convertWithAI(
             apiKey,
@@ -80,11 +77,9 @@ export async function handleExport(c: Context) {
             baseURL,
           ),
         });
-      }
 
-      default: {
+      default:
         return c.json({ error: "Invalid format" }, 400);
-      }
     }
   } catch (error) {
     logger.error("Export error:", { error });

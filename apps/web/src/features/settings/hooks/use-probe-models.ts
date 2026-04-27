@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import type { ModelInfo } from "../types";
-import { FALLBACK_MODELS } from "../types";
 import { apiClient } from "@/lib/api-client";
 
 const MUTATION_KEY = ["/api/probe-models"] as const;
@@ -32,17 +31,13 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
     const { available } = data;
 
     if (!available) {
-      return { models: FALLBACK_MODELS };
+      return { models: [] };
     }
 
     const models: ModelInfo[] = Object.entries(available)
       // TODO move this filter to the server
       .filter(([, isAvailable]) => isAvailable)
       .map(([id]) => ({ description: "", displayName: id, id }));
-
-    if (models.length === 0) {
-      return { models: FALLBACK_MODELS };
-    }
 
     return { models };
   } catch (error) {
