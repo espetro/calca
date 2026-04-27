@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "echo 'build: not yet implemented'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run",

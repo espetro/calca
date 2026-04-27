@@ -8,7 +8,7 @@
     "dev": "portless run vite",
     "build": "vite build",
     "start": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "test": "vitest",
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",

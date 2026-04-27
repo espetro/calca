@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "echo 'dev: not yet implemented'",
     "build": "echo 'build: not yet implemented'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "oxlint --fix .",

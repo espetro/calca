@@ -8,7 +8,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run",
