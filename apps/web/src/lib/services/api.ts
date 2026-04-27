@@ -4,7 +4,7 @@ import { QueryClient } from "@tanstack/react-query";
 
 const FIVE_HOURS_IN_MS = 1000 * 60 * 5;
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const queryClient = new QueryClient({
   defaultOptions: {
