@@ -23,6 +23,8 @@ export interface SelectedImage {
   name?: string;
 }
 
+export type Theme = "light" | "dark" | "system";
+
 export interface Settings {
   apiKey: string;
   geminiKey: string;
@@ -44,6 +46,8 @@ export interface Settings {
   /** @deprecated Use quickMode instead */
   critiqueMode: boolean;
   selectedImages: SelectedImage[];
+  theme: Theme;
+  onboardingCompleted: boolean;
 }
 
 export const FALLBACK_MODELS: ModelInfo[] = [

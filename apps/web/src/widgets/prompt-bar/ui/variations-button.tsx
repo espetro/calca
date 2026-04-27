@@ -18,6 +18,7 @@ interface VariationsButtonProps {
   showVariations: boolean;
   onToggle: () => void;
   disabled?: boolean;
+  dataTour?: string;
 }
 
 export function VariationsButton({
@@ -26,6 +27,7 @@ export function VariationsButton({
   showVariations,
   onToggle,
   disabled = false,
+  dataTour,
 }: VariationsButtonProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -71,6 +73,7 @@ export function VariationsButton({
         type="button"
         onClick={onToggle}
         disabled={disabled}
+        data-tour={dataTour}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
           disabled
             ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"

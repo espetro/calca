@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import type { ProviderType } from "@app/core/ai/providers";
 import type { ProviderConfig, Settings } from "../types";
+import { settingsSchema } from "../lib/settings-schema";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
 const STORAGE_KEY = "calca-settings";
@@ -49,6 +50,8 @@ const createDefaultSettings = (): Settings => {
     variations: 1,
     critiqueMode: false,
     selectedImages: [],
+    theme: "system",
+    onboardingCompleted: false,
   };
 };
 
@@ -74,31 +77,48 @@ const migrateModelFormat = (parsed: Partial<Settings>): Partial<Settings> => {
 
 const createStorage = () => {
   const defaults = createDefaultSettings();
+  let cachedSettings: Settings | null = null;
+
   const storage = {
     getItem: (key: string): Settings => {
+      if (cachedSettings) return cachedSettings;
+
       try {
         const raw = localStorage.getItem(key);
-        if (!raw) return defaults;
-        const parsed = JSON.parse(raw) as Partial<Settings>;
-        const migrated = migrateModelFormat(parsed);
-        const merged = { ...defaults, ...parsed, ...migrated };
+        if (!raw) {
+          cachedSettings = defaults;
+          return cachedSettings;
+        }
+        const parsed = JSON.parse(raw);
+        const result = settingsSchema.safeParse(parsed);
+        if (!result.success) {
+          console.warn("[settings] Schema validation failed, using defaults:", result.error.flatten());
+          cachedSettings = defaults;
+          return cachedSettings;
+        }
+        const migrated = migrateModelFormat(result.data);
+        const merged = { ...defaults, ...result.data, ...migrated };
         const envProvider = createEnvProvider();
         if (envProvider && !merged.providers.some((p) => p.isEnv)) {
           merged.providers = [envProvider, ...merged.providers];
         }
-        return merged;
+        cachedSettings = merged;
+        return cachedSettings;
       } catch {
-        return defaults;
+        cachedSettings = defaults;
+        return cachedSettings;
       }
     },
     setItem: (key: string, value: Settings) => {
       try {
         localStorage.setItem(key, JSON.stringify(value));
+        cachedSettings = value;
       } catch {}
     },
     removeItem: (key: string) => {
       try {
         localStorage.removeItem(key);
+        cachedSettings = null;
       } catch {}
     },
   };

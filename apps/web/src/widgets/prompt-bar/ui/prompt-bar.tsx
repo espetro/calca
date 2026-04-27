@@ -35,7 +35,7 @@ interface ActionButtonProps {
   isGenerating: boolean;
 }
 
-const ActionButton = ({ isGenerating }: ActionButtonProps) => {
+const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour?: string }) => {
   const [{ isIdeating }, setSettings] = useAtom(settingsAtom);
 
   const setIsIdeating = useCallback(
@@ -47,6 +47,7 @@ const ActionButton = ({ isGenerating }: ActionButtonProps) => {
     <button
       onClick={() => setIsIdeating(!isIdeating)}
       disabled={isGenerating}
+      data-tour={dataTour}
        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
       style={isIdeating
         ? { background: "var(--mode-ideate-bg)", color: "var(--mode-ideate-fg)", border: "1px solid var(--mode-ideate-icon-bg)" }
@@ -298,6 +299,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     }
                     showVariations={showVariations}
                     onToggle={handleToggleVariations}
+                    dataTour="prompt-variations"
                   />
                 </div>
 
@@ -309,8 +311,9 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     }
                     showCritiqueMode={showCritiqueMode}
                     onToggle={handleToggleCritiqueMode}
+                    dataTour="prompt-generation-mode"
                   />
-                  <ActionButton isGenerating={isGenerating} />
+                  <ActionButton isGenerating={isGenerating} dataTour="prompt-action-mode" />
                   <button
                     onClick={handleSubmit}
                     disabled={!value.trim() || isGenerating}

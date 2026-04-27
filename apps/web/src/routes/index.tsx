@@ -9,8 +9,7 @@ import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
 import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
-import { OnboardingModal, GuidedTour } from "@/features/onboarding";
-import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
+import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom, onboardingCompletedAtom } from "@/features/onboarding";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import { SummaryList } from "@/features/design/ui/summary-list";
@@ -33,7 +32,7 @@ export default function Home() {
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
   const probeModels = useProbeModels();
-  const onboarding = useOnboarding();
+
 
   useKeyboardShortcuts();
 
@@ -51,6 +50,9 @@ export default function Home() {
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
   const setToolMode = useSetAtom(toolModeAtom);
   const [showSettings, setShowSettings] = useState(false);
+  const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
+  const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
+  const [onboardingCompleted, setOnboardingCompleted] = useAtom(onboardingCompletedAtom);
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
 
@@ -73,6 +75,13 @@ export default function Home() {
     document.addEventListener("wheel", handler, { passive: false });
     return () => document.removeEventListener("wheel", handler);
   }, []);
+
+  // Auto-show welcome modal for first-time users
+  useEffect(() => {
+    if (!onboardingCompleted) {
+      setShowWelcome(true);
+    }
+  }, [onboardingCompleted, setShowWelcome]);
 
   const pipeline = useGenerationPipeline(canvas);
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
@@ -100,7 +109,6 @@ export default function Home() {
         onZoomIn={canvas.zoomIn}
         onZoomOut={canvas.zoomOut}
         onResetView={canvas.resetView}
-        onOpenSettings={() => setShowSettings(true)}
         onNewSession={() => setShowResetConfirm(true)}
         onExport={handleExportDesign}
         onImport={handleImportDesign}
@@ -213,25 +221,26 @@ export default function Home() {
       )}
 
       <ErrorBoundary category={["calca", "web", "features", "onboarding"]}>
-        {onboarding.showWelcome && (
-          <OnboardingModal
-            onComplete={(keys) => {
-              setSettings((prev) => ({
-                ...prev,
-                apiKey: keys.anthropicKey,
-                geminiKey: keys.geminiKey,
-                unsplashKey: keys.unsplashKey,
-                openaiKey: keys.openaiKey,
-              }));
-              onboarding.completeKeys();
+        {showWelcome && (
+          <WelcomeModal
+            open={showWelcome}
+            onTakeTour={() => {
+              setShowWelcome(false);
+              setShowTutorial(true);
             }}
-            onDismiss={() => onboarding.dismiss()}
+            onSkip={() => {
+              setOnboardingCompleted(true);
+              setShowWelcome(false);
+            }}
           />
         )}
 
-        {onboarding.showTour && (
-          <GuidedTour
-            onComplete={() => onboarding.completeTour()}
+        {showTutorial && (
+          <TutorialTour
+            onComplete={() => {
+              setOnboardingCompleted(true);
+              setShowTutorial(false);
+            }}
             hasFrames={
               groups.length > 0 &&
               groups.some((g) => g.iterations.some((i) => !i.isLoading && i.html))
@@ -240,7 +249,7 @@ export default function Home() {
         )}
       </ErrorBoundary>
 
-      {onboarding.loaded && !isOwnKey && !onboarding.showWelcome && (
+      {!isOwnKey && !showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
           <button
             onClick={() => setShowSettings(true)}

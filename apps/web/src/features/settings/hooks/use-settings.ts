@@ -53,6 +53,8 @@ export function useSettings() {
     variations: 1,
     critiqueMode: false,
     selectedImages: [],
+    theme: "system",
+    onboardingCompleted: false,
   });
   const [loaded, setLoaded] = useState(false);
   const probeModels = useProbeModels();
@@ -109,6 +111,8 @@ export function useSettings() {
           variations: parsed.variations ?? 1,
           critiqueMode: parsed.critiqueMode ?? false,
           selectedImages: parsed.selectedImages ?? [],
+          theme: (parsed.theme as Settings["theme"]) ?? "system",
+          onboardingCompleted: false,
         });
       } else {
         // No localStorage yet — seed env provider if env vars are set

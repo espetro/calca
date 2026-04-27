@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import type { ToolMode } from "@/shared/types";
 import type { ProviderConfig } from "@/features/settings/types";
 import { MODELS } from "@/features/settings/types";
+import { SettingsDialog } from "@/features/settings/ui/settings-dialog";
 
 interface ToolbarProps {
   mode: ToolMode;
@@ -10,7 +11,6 @@ interface ToolbarProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onResetView: () => void;
-  onOpenSettings: () => void;
   onNewSession: () => void;
   onExport: () => void;
   onImport: () => void;
@@ -27,7 +27,6 @@ export function Toolbar({
   onZoomIn,
   onZoomOut,
   onResetView,
-  onOpenSettings,
   onNewSession,
   onExport,
   onImport,
@@ -41,6 +40,7 @@ export function Toolbar({
   const displayModel = provider?.models.find((m) => m.id === modelId)?.displayName || modelId;
   const modelLabel = MODELS.find((m) => m.id === modelId)?.label || displayModel || model || "Sonnet 4.5";
   const [menuOpen, setMenuOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function Toolbar({
   }, [menuOpen]);
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-toolbar-bg-transparent border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]">
+    <div data-tour="toolbar" className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-toolbar-bg-transparent border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]">
       <div className="flex items-center gap-1.5 overflow-x-auto">
         <ModeButton
           active={mode === "select"}
@@ -121,7 +121,8 @@ export function Toolbar({
         <div className="w-px h-5 bg-foreground/15 mx-1" />
 
         <button
-          onClick={onOpenSettings}
+          onClick={() => setSettingsOpen(true)}
+          data-tour="toolbar-settings"
           className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10 transition-all"
           title="Settings"
         >
@@ -159,6 +160,8 @@ export function Toolbar({
           </div>
         )}
       </div>
+
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </div>
   );
 }

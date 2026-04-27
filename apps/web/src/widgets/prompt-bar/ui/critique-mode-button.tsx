@@ -9,6 +9,7 @@ interface CritiqueModeButtonProps {
   onQuickModeChange: (quickMode: boolean) => void;
   showCritiqueMode: boolean;
   onToggle: () => void;
+  dataTour?: string;
 }
 
 export function CritiqueModeButton({
@@ -16,6 +17,7 @@ export function CritiqueModeButton({
   onQuickModeChange,
   showCritiqueMode,
   onToggle,
+  dataTour,
 }: CritiqueModeButtonProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -58,6 +60,7 @@ export function CritiqueModeButton({
       <button
         type="button"
           onClick={onToggle}
+          data-tour={dataTour}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
           style={quickMode
             ? { background: "var(--mode-quick-bg)", color: "var(--mode-quick-fg)" }
