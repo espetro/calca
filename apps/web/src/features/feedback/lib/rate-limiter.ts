@@ -23,7 +23,7 @@ const STORAGE_KEYS = {
 } as const;
 
 function getDateKey(): string {
-  return new Date().toISOString().split("T")[0]!];
+  return new Date().toISOString().split("T")[0]!;
 }
 
 function getNow(): number {
@@ -117,16 +117,10 @@ function getSpamState(): SpamState {
   }
 }
 
-/**
- * Persist spam state.
- */
 function setSpamState(state: SpamState): void {
   setItem(STORAGE_KEYS.spamTimestamps, JSON.stringify(state));
 }
 
-/**
- * Check if user is in spam cooldown period.
- */
 function isInSpamCooldown(): boolean {
   const raw = getItem(STORAGE_KEYS.spamCooldown);
   if (!raw) return false;
@@ -138,9 +132,6 @@ function isInSpamCooldown(): boolean {
   }
 }
 
-/**
- * Get spam cooldown remaining time in ms.
- */
 function getSpamCooldownRemaining(): number {
   const raw = getItem(STORAGE_KEYS.spamCooldown);
   if (!raw) return 0;
@@ -153,16 +144,10 @@ function getSpamCooldownRemaining(): number {
   }
 }
 
-/**
- * Set spam cooldown.
- */
 function setSpamCooldown(until: number): void {
   setItem(STORAGE_KEYS.spamCooldown, JSON.stringify(until));
 }
 
-/**
- * Get the timestamp of the last submission for debounce purposes.
- */
 function getLastSubmissionTime(): number {
   const raw = getItem("feedback_last_submission");
   if (!raw) return 0;
@@ -173,34 +158,22 @@ function getLastSubmissionTime(): number {
   }
 }
 
-/**
- * Set the last submission timestamp.
- */
 function setLastSubmissionTime(time: number): void {
   setItem("feedback_last_submission", JSON.stringify(time));
 }
 
-/**
- * Check if feedback submission is allowed based on all 4 rate limit layers.
- *
- * @returns RateLimitResult with allowed=true if submission can proceed,
- *          or allowed=false with reason and optional retryAfterMs
- */
 export function canSubmitFeedback(): RateLimitResult {
   const now = getNow();
 
-  // Layer 1: Debounce - 2 second cooldown between submissions
   const lastSubmission = getLastSubmissionTime();
   if (lastSubmission > 0 && now - lastSubmission < DEBOUNCE_MS) {
-    const retryAfterMs = DEBOUNCE_MS - (now - lastSubmission);
     return {
       allowed: false,
       reason: "Please wait before submitting again",
-      retryAfterMs,
+      retryAfterMs: DEBOUNCE_MS - (now - lastSubmission),
     };
   }
 
-  // Layer 2: Per-session - Max 5 submissions per browser tab
   const sessionCount = getSessionCount();
   if (sessionCount >= SESSION_MAX) {
     return {
@@ -209,7 +182,6 @@ export function canSubmitFeedback(): RateLimitResult {
     };
   }
 
-  // Layer 3: Daily quota - Max 10 submissions per day
   const dailyCount = getDailyCount();
   if (dailyCount >= DAILY_MAX) {
     return {
@@ -218,7 +190,6 @@ export function canSubmitFeedback(): RateLimitResult {
     };
   }
 
-  // Layer 4: Spam detection - 3+ submissions in 5 minutes triggers 30-min cooldown
   if (isInSpamCooldown()) {
     return {
       allowed: false,
@@ -230,41 +201,25 @@ export function canSubmitFeedback(): RateLimitResult {
   return { allowed: true };
 }
 
-/**
- * Record a successful feedback submission.
- * Must be called after each successful submission.
- */
 export function recordSubmission(): void {
   const now = getNow();
 
-  // Record for debounce
   setLastSubmissionTime(now);
-
-  // Increment session count
   incrementSessionCount();
-
-  // Increment daily count
   incrementDailyCount();
 
-  // Update spam detection
   const spamState = getSpamState();
   const recentTimestamps = spamState.timestamps.filter((ts) => now - ts < SPAM_WINDOW_MS);
   recentTimestamps.push(now);
 
-  // Check if we crossed the spam threshold
   if (recentTimestamps.length >= SPAM_THRESHOLD) {
-    const cooldownUntil = now + SPAM_COOLDOWN_MS;
-    setSpamCooldown(cooldownUntil);
-    // Clear timestamps after setting cooldown
+    setSpamCooldown(now + SPAM_COOLDOWN_MS);
     setSpamState({ timestamps: [] });
   } else {
     setSpamState({ timestamps: recentTimestamps });
   }
 }
 
-/**
- * Reset all rate limit state. Useful for testing.
- */
 export function resetRateLimitState(): void {
   removeItem("feedback_last_submission");
   try {
@@ -272,7 +227,6 @@ export function resetRateLimitState(): void {
   } catch {
     // Ignore
   }
-  // Only clear today's daily count, not other days
   removeItem(STORAGE_KEYS.daily(getDateKey()));
   removeItem(STORAGE_KEYS.spamTimestamps);
   removeItem(STORAGE_KEYS.spamCooldown);

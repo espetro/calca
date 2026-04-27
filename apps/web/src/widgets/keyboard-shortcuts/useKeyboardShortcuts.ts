@@ -8,9 +8,10 @@ import {
 import { commentDraftAtom } from "@/features/design/state/comment-atoms";
 import { groupsAtom } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom } from "@/features/design/state/images-atoms";
+import { feedbackModalOpenAtom } from "@/features/feedback/store";
 
 /**
- * Registers global keyboard shortcuts (V, C, Space, Escape, Delete/Backspace).
+ * Registers global keyboard shortcuts (V, C, Space, Escape, Delete/Backspace, Cmd+Shift+B).
  *
  * Uses a ref for `selectedIds` so the window listeners are registered only once
  * on mount, eliminating the listener-churn bug from the original page.tsx where
@@ -23,6 +24,7 @@ export const useKeyboardShortcuts = () => {
   const setCommentDraft = useSetAtom(commentDraftAtom);
   const setGroups = useSetAtom(groupsAtom);
   const setCanvasImages = useSetAtom(canvasImagesAtom);
+  const setFeedbackOpen = useSetAtom(feedbackModalOpenAtom);
 
   // Ref keeps the latest selectedIds without triggering effect re-runs
   const selectedIdsRef = useRef<Set<string>>(new Set());
@@ -42,6 +44,14 @@ export const useKeyboardShortcuts = () => {
       if (e.key === " ") {
         e.preventDefault();
         setSpaceHeld(true);
+      }
+      if (e.key === "b" || e.key === "B") {
+        if (e.metaKey || e.ctrlKey) {
+          e.preventDefault();
+          if (e.shiftKey) {
+            setFeedbackOpen(true);
+          }
+        }
       }
       if (e.key === "Escape") {
         setCommentDraft(null);
@@ -87,5 +97,5 @@ export const useKeyboardShortcuts = () => {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, [setToolMode, setSpaceHeld, setCommentDraft, setSelectedIds, setGroups, setCanvasImages]);
+  }, [setToolMode, setSpaceHeld, setCommentDraft, setSelectedIds, setGroups, setCanvasImages, setFeedbackOpen]);
 };
