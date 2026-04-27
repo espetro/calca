@@ -66,7 +66,6 @@ export interface DeserializedCanvas {
  */
 export function serializeCanvasForExport(groups: GenerationGroup[]): SerializedCanvas {
   return {
-    version: 1,
     exportedAt: new Date().toISOString(),
     groups: groups.map((g) => ({
       id: g.id,
@@ -82,6 +81,7 @@ export function serializeCanvasForExport(groups: GenerationGroup[]): SerializedC
         position: iter.position,
       })),
     })),
+    version: 1,
   };
 }
 
@@ -129,10 +129,8 @@ export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
       const groupId = (g.id as string) || `imported-group-${now}-${groupIndex}`;
 
       return {
-        id: groupId,
-        prompt: (g.prompt as string) || "",
-        position: (g.position as { x: number; y: number }) || { x: 0, y: 0 },
         createdAt: (g.createdAt as number) || now,
+        id: groupId,
         iterations: ((g.iterations as Record<string, unknown>[]) || []).map(
           (iter: Record<string, unknown>, iterIndex: number) => ({
             id: (iter.id as string) || `imported-iter-${now}-${groupIndex}-${iterIndex}`,
@@ -147,6 +145,8 @@ export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
             isRegenerating: false,
           }),
         ),
+        position: (g.position as { x: number; y: number }) || { x: 0, y: 0 },
+        prompt: (g.prompt as string) || "",
       };
     },
   );
@@ -169,12 +169,12 @@ export async function readCanvasFile(file: File): Promise<DeserializedCanvas> {
   try {
     const result = deserializeCanvasFile(parsed);
     return result;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     throw new Error(
       isOttoFile
         ? `Failed to parse .otto file: ${message}`
-        : `Failed to parse .design file: ${message}`,
+        : `Failed to parse .design file: ${message}`, { cause: error },
     );
   }
 }
@@ -215,7 +215,7 @@ export function openImportDialog(onFile: (groups: GenerationGroup[]) => void): v
   input.accept = IMPORT_EXTENSIONS.join(",");
   input.onchange = (e) => {
     const file = (e.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+    if (!file) {return;}
 
     readCanvasFile(file)
       .then(({ groups, isLegacyOtto }) => {
@@ -224,8 +224,8 @@ export function openImportDialog(onFile: (groups: GenerationGroup[]) => void): v
         }
         onFile(groups);
       })
-      .catch((err) => {
-        alert(err instanceof Error ? err.message : "Failed to import file");
+      .catch((error) => {
+        alert(error instanceof Error ? error.message : "Failed to import file");
       });
   };
   input.click();
