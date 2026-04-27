@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { m } from "@/lib/i18n";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -9,7 +9,7 @@ import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
 import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
-import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom, onboardingCompletedAtom } from "@/features/onboarding";
+import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom } from "@/features/onboarding";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import { SummaryList } from "@/features/design/ui/summary-list";
@@ -52,7 +52,7 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false);
   const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
   const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
-  const [onboardingCompleted, setOnboardingCompleted] = useAtom(onboardingCompletedAtom);
+  const hasCheckedOnboarding = useRef(false);
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
 
@@ -76,12 +76,14 @@ export default function Home() {
     return () => document.removeEventListener("wheel", handler);
   }, []);
 
-  // Auto-show welcome modal for first-time users
   useEffect(() => {
-    if (!onboardingCompleted) {
+    if (hasCheckedOnboarding.current) return;
+    hasCheckedOnboarding.current = true;
+
+    if (!settings.onboardingCompleted) {
       setShowWelcome(true);
     }
-  }, [onboardingCompleted, setShowWelcome]);
+  }, [settings.onboardingCompleted, setShowWelcome]);
 
   const pipeline = useGenerationPipeline(canvas);
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
@@ -106,6 +108,7 @@ export default function Home() {
         mode={useAtomValue(toolModeAtom)}
         onModeChange={setToolMode}
         scale={canvas.scale}
+        offset={canvas.offset}
         onZoomIn={canvas.zoomIn}
         onZoomOut={canvas.zoomOut}
         onResetView={canvas.resetView}
@@ -229,7 +232,7 @@ export default function Home() {
               setShowTutorial(true);
             }}
             onSkip={() => {
-              setOnboardingCompleted(true);
+              setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
               setShowWelcome(false);
             }}
           />
@@ -238,7 +241,7 @@ export default function Home() {
         {showTutorial && (
           <TutorialTour
             onComplete={() => {
-              setOnboardingCompleted(true);
+              setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
               setShowTutorial(false);
             }}
             hasFrames={

@@ -12,17 +12,18 @@ import {
 } from "@tour-kit/react";
 import { showTutorialAtom } from "../state/onboarding-atoms";
 
-export function TutorialTour(_props: {
+export function TutorialTour(props: {
   onComplete?: () => void;
   hasFrames?: boolean;
 }) {
+  const { onComplete } = props;
   const setShowTutorial = useSetAtom(showTutorialAtom);
   const centerRef = useRef<HTMLElement>(null);
 
   const handleComplete = useCallback(() => {
     setShowTutorial(false);
-    _props.onComplete?.();
-  }, [setShowTutorial, _props]);
+    onComplete?.();
+  }, [setShowTutorial, onComplete]);
 
   const handleSkip = useCallback(() => {
     setShowTutorial(false);
