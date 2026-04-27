@@ -6,7 +6,6 @@ import { settingsSchema } from "../lib/settings-schema";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 
 const STORAGE_KEY = "calca-settings";
-const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL ?? "qwen3.5-4b";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
 const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";
 
@@ -38,7 +37,7 @@ const createDefaultSettings = (): Settings => {
     openaiKey: "",
     providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
     baseURL: DEFAULT_BASE_URL,
-    model: envProvider ? `${ENV_PROVIDER_ID}/${DEFAULT_MODEL}` : DEFAULT_MODEL,
+    model: envProvider ? `${ENV_PROVIDER_ID}/` : "",
     systemPrompt: "",
     systemPromptPreset: "custom",
     conceptCount: 4,

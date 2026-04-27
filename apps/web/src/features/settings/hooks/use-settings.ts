@@ -7,7 +7,6 @@ import { useProbeModels } from "./use-probe-models";
 export type { ProviderType, Settings, SelectedImage };
 
 const STORAGE_KEY = "calca-settings";
-const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL || "claude-opus-4-6";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
 const DEFAULT_API_KEY = import.meta.env.VITE_AI_API_KEY || "";
 
@@ -39,8 +38,8 @@ export function useSettings() {
     openaiKey: "",
     providerType: createEnvProvider() ? "openai-compatible" : undefined,
     baseURL: DEFAULT_BASE_URL,
-    model: DEFAULT_MODEL,
-    fallbackModel: undefined,
+    model: "",
+    fallbackModel: "",
     systemPrompt: "",
     systemPromptPreset: "custom",
     conceptCount: 4,
@@ -87,7 +86,7 @@ export function useSettings() {
           parsed.providerType = envProvider.apiType;
           parsed.baseURL = envProvider.baseUrl;
           parsed.apiKey = envProvider.apiKey;
-          parsed.model = DEFAULT_MODEL;
+          parsed.model = parsed.model || "";
           localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
         }
 
@@ -98,7 +97,7 @@ export function useSettings() {
           openaiKey: parsed.openaiKey ?? "",
           providerType: parsed.providerType,
           baseURL: parsed.baseURL ?? DEFAULT_BASE_URL,
-          model: parsed.model ?? DEFAULT_MODEL,
+          model: parsed.model || "",
           fallbackModel: parsed.fallbackModel,
           systemPrompt: parsed.systemPrompt ?? "",
           systemPromptPreset: parsed.systemPromptPreset ?? "custom",
