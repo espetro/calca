@@ -77,13 +77,13 @@ export function CritiqueModeButton({
         createPortal(
           <div
             ref={popoverRef}
-            className="fixed z-[55] w-[260px] bg-white/20 backdrop-blur-3xl rounded-[20px] border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(255,255,255,0.15)] p-3"
+            className="fixed z-[55] w-[260px] bg-background/80 backdrop-blur-3xl rounded-[20px] border border-border/50 shadow-lg p-3"
             style={{
               bottom: `${popoverPos.bottom}px`,
               right: `${popoverPos.right}px`,
             }}
           >
-            <div className="text-[10px] font-medium text-gray-500/80 uppercase tracking-wider mb-2">
+            <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">
               Generation mode
             </div>
             <div className="space-y-2">
@@ -93,8 +93,8 @@ export function CritiqueModeButton({
                   onQuickModeChange(false);
                   onToggle();
                 }}
-                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-white/40 ${
-                  !quickMode ? "border" : "bg-white/30"
+                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
+                  !quickMode ? "border" : "bg-background/40"
                 }`}
                 style={!quickMode ? { borderColor: "var(--mode-critique-fg)", background: "var(--mode-critique-bg)" } : { background: "var(--mode-critique-bg-subtle)" }}
               >
@@ -126,8 +126,8 @@ export function CritiqueModeButton({
                   onQuickModeChange(true);
                   onToggle();
                 }}
-                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-white/40 ${
-                  quickMode ? "border" : "bg-white/30"
+                className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
+                  quickMode ? "border" : "bg-background/40"
                 }`}
                 style={quickMode ? { borderColor: "var(--mode-quick-fg)", background: "var(--mode-quick-bg)" } : { background: "var(--mode-quick-bg-subtle)" }}
               >

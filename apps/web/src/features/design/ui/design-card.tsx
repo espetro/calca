@@ -65,6 +65,13 @@ export function DesignCard({
 <html style="height:auto;overflow:hidden;"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+  const _origWarn = console.warn;
+  console.warn = function(...args) {
+    if (typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+    _origWarn.apply(console, args);
+  };
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html, body { margin: 0; padding: 0; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: hidden; }
