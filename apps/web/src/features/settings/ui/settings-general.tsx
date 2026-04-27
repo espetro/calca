@@ -460,30 +460,31 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
             {settings.providers.map((provider) => (
               <div
                 key={provider.id}
-                className="flex items-center justify-between rounded-lg border px-3 py-2"
+                className="rounded-lg border px-3 py-2"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">{provider.id}</span>
-                  <Badge variant="outline" className="text-[10px]">
-                    {provider.apiType === "anthropic" ? "anthropic" : "openai-compatible"}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    {provider.baseUrl}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    ({provider.models.length} models)
-                  </span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{provider.id}</span>
+                    <Badge variant="outline" className="text-[10px]">
+                      {provider.apiType === "anthropic" ? "anthropic" : "openai-compatible"}
+                    </Badge>
+                  </div>
+                  {!provider.isEnv && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProvider(provider.id)}
+                      className="text-muted-foreground hover:text-red-500 transition-colors"
+                      aria-label={`Remove ${provider.id}`}
+                    >
+                      <X className="size-4" />
+                    </button>
+                  )}
                 </div>
-                {!provider.isEnv && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveProvider(provider.id)}
-                    className="text-muted-foreground hover:text-red-500 transition-colors"
-                    aria-label={`Remove ${provider.id}`}
-                  >
-                    <X className="size-4" />
-                  </button>
-                )}
+                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                  <span className="truncate max-w-[200px]">{provider.baseUrl}</span>
+                  <span>·</span>
+                  <span>{provider.models.length} models</span>
+                </div>
               </div>
             ))}
           </div>
