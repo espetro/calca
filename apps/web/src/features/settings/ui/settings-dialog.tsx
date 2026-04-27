@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAtom, useSetAtom } from "jotai";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,7 @@ import { SettingsSidebar, type SettingsSection } from "./settings-sidebar";
 import { SettingsGeneral } from "./settings-general";
 import { SettingsPersonalization } from "./settings-personalization";
 import { SettingsAbout } from "./settings-about";
-import { useSettings } from "../hooks/use-settings";
+import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -27,7 +28,8 @@ function PlaceholderContent({ title }: { title: string }) {
 
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [activeSection, setActiveSection] = useState<SettingsSection>("general");
-  const { settings, setSettings } = useSettings();
+  const [settings] = useAtom(settingsAtom);
+  const updateSettings = useSetAtom(updateSettingsAtom);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -55,14 +57,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             {activeSection === "general" && (
               <SettingsGeneral
                 settings={settings}
-                onUpdate={setSettings}
+                onUpdate={updateSettings}
                 onOpenChange={onOpenChange}
               />
             )}
             {activeSection === "personalization" && (
               <SettingsPersonalization
                 settings={settings}
-                onUpdate={setSettings}
+                onUpdate={updateSettings}
               />
             )}
             {activeSection === "skills" && <PlaceholderContent title="Skills" />}
