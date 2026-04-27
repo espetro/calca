@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import type { Settings } from "@/features/settings/types";
 import ProviderList from "./provider-list";
 import ProviderConfigForm from "./provider-config-form";
-import ModelComboSelect from "./model-combo-select";
 import { ProviderConfig, ModelInfo, ProviderType } from "../types";
 interface SettingsModalProps {
   settings: Settings;
@@ -105,19 +104,19 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
                 Models being used
               </label>
             </div>
-            <div className="space-y-4">
-              <ModelComboSelect
-                label="Build Model"
-                value={settings.model}
-                providers={settings.providers}
-                onChange={(value) => onUpdate({ model: value })}
-              />
-              <ModelComboSelect
-                label="Ideate Model"
-                value={settings.ideateModel || ""}
-                providers={settings.providers}
-                onChange={(value) => onUpdate({ ideateModel: value || undefined })}
-              />
+            <div className="space-y-2">
+              <div className="bg-white/40 rounded-xl px-5 py-3.5 border border-white/50">
+                <div className="text-[11px] text-gray-500 mb-1">Model</div>
+                <div className="text-[13px] font-medium text-gray-800 truncate">
+                  {settings.model || <span className="text-gray-400 italic">Not configured</span>}
+                </div>
+              </div>
+              <div className="bg-white/40 rounded-xl px-5 py-3.5 border border-white/50">
+                <div className="text-[11px] text-gray-500 mb-1">Fallback</div>
+                <div className="text-[13px] font-medium text-gray-800 truncate">
+                  {settings.fallbackModel || <span className="text-gray-400 italic">Not configured</span>}
+                </div>
+              </div>
             </div>
           </div>
 
