@@ -39,7 +39,7 @@ export function useSettings() {
     providerType: createEnvProvider() ? "openai-compatible" : undefined,
     baseURL: DEFAULT_BASE_URL,
     model: "",
-    fallbackModel: "",
+    fallbackModel: undefined,
     systemPrompt: "",
     systemPromptPreset: "custom",
     conceptCount: 4,
