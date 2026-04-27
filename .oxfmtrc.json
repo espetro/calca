@@ -7,5 +7,25 @@
   "semicolons": "always",
   "bracketSpacing": true,
   "arrowParentheses": "always",
-  "quoteProperties": "preserve"
+  "quoteProperties": "preserve",
+  "ignorePatterns": [
+    "**/*.gen.ts",
+    "**/*.gen.tsx",
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "coverage"
+  ],
+  "experimentalSortImports": {
+    "internalPattern": ["@/", "."],
+    "groups": [
+      "builtin",
+      "external",
+      ["internal", "subpath"],
+      ["parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ]
+  }
 }
