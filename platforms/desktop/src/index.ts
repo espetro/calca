@@ -36,10 +36,8 @@ function readVersion(): VersionInfo {
     const versionPath = isDev
       ? "../../apps/Resources/version.json"
       : "Resources/version.json";
-    const file = Bun.file(versionPath);
-    if (file.exists()) {
-      return JSON.parse(await file.text());
-    }
+    const text = require("fs").readFileSync(versionPath, "utf-8");
+    return JSON.parse(text);
   } catch {
     // Fallback
   }
@@ -123,7 +121,7 @@ async function waitForServer(url: string, timeoutMs = 30000): Promise<void> {
 // Fetch Handler
 // ============================================================================
 
-import serverApp from "@gosto/server";
+import serverApp from "@app/server";
 
 async function handleFetch(request: Request): Promise<Response> {
   const url = new URL(request.url);
