@@ -39,10 +39,10 @@ coverage/
 dogfood-output/
 tmp/
 
-# ai specific
-.opencode/
-.sisyphus/
-.worktrees/
+# ! For AI-specific ignores (e.g. claude, opencode, etc.) use a global gitignore
+# ? > code ~/.gitignore-global
+# ? > git config --global core.excludesfile ~/.gitignore-global
+# ? > git config --global core.excludesfile
 
 # project specific
 *.db*
