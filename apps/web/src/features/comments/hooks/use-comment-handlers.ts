@@ -11,10 +11,7 @@ import {
   activeCommentIterationIdAtom,
   commentCountAtom,
 } from "@/features/design/state/comment-atoms";
-import type {
-  Comment as CommentType,
-  CommentMessage,
-} from "@/shared/types";
+import type { Comment as CommentType, CommentMessage } from "@/shared/types";
 
 interface RevisionJob {
   iterationId: string;
@@ -31,7 +28,7 @@ interface RunPipelineForFrameFn {
     index: number,
     critique: string | undefined,
     signal: AbortSignal,
-    revisionOpts?: { revision: string; existingHtml: string }
+    revisionOpts?: { revision: string; existingHtml: string },
   ): Promise<{
     html: string;
     label: string;
@@ -42,14 +39,12 @@ interface RunPipelineForFrameFn {
   }>;
 }
 
-export const useCommentHandlers = (
-  runPipelineForFrame: RunPipelineForFrameFn
-) => {
+export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) => {
   const [groups, setGroups] = useAtom(groupsAtom);
   const [commentDraft, setCommentDraft] = useAtom(commentDraftAtom);
   const [activeComment, setActiveComment] = useAtom(activeCommentAtom);
   const [activeCommentIterationId, setActiveCommentIterationId] = useAtom(
-    activeCommentIterationIdAtom
+    activeCommentIterationIdAtom,
   );
   const [commentCount, setCommentCount] = useAtom(commentCountAtom);
 
@@ -65,15 +60,13 @@ export const useCommentHandlers = (
             if (iter.id !== iterId) return iter;
             return {
               ...iter,
-              comments: iter.comments.map((c) =>
-                c.id === cId ? { ...c, ...update } : c
-              ),
+              comments: iter.comments.map((c) => (c.id === cId ? { ...c, ...update } : c)),
             };
           }),
-        }))
+        })),
       );
     },
-    [setGroups]
+    [setGroups],
   );
 
   const processRevisionQueue = useCallback(async () => {
@@ -85,9 +78,7 @@ export const useCommentHandlers = (
       const { iterationId, commentId, text } = job;
 
       updateComment(iterationId, commentId, { status: "working" });
-      setActiveComment((prev) =>
-        prev?.id === commentId ? { ...prev, status: "working" } : prev
-      );
+      setActiveComment((prev) => (prev?.id === commentId ? { ...prev, status: "working" } : prev));
 
       let currentHtml = "";
       let currentPrompt = "";
@@ -112,7 +103,7 @@ export const useCommentHandlers = (
           0,
           undefined,
           controller.signal,
-          { revision: text, existingHtml: currentHtml }
+          { revision: text, existingHtml: currentHtml },
         );
 
         setGroups((prev) =>
@@ -127,7 +118,7 @@ export const useCommentHandlers = (
                 height: result.height || iter.height,
               };
             }),
-          }))
+          })),
         );
 
         const calcaResponse: CommentMessage = {
@@ -150,10 +141,12 @@ export const useCommentHandlers = (
                 aiResponse: calcaResponse.text,
                 thread: doneThread,
               }
-            : prev
+            : prev,
         );
       } catch (err) {
-        logger.error("Revision failed", { error: err instanceof Error ? err.message : String(err) });
+        logger.error("Revision failed", {
+          error: err instanceof Error ? err.message : String(err),
+        });
         const errorResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
           role: "calca",
@@ -174,7 +167,7 @@ export const useCommentHandlers = (
                 aiResponse: errorResponse.text,
                 thread: errorThread,
               }
-            : prev
+            : prev,
         );
       }
 
@@ -221,7 +214,7 @@ export const useCommentHandlers = (
             }
             return iter;
           }),
-        }))
+        })),
       );
 
       setCommentDraft(null);
@@ -235,14 +228,7 @@ export const useCommentHandlers = (
 
       processRevisionQueue();
     },
-    [
-      commentDraft,
-      commentCount,
-      processRevisionQueue,
-      setCommentCount,
-      setCommentDraft,
-      setGroups,
-    ]
+    [commentDraft, commentCount, processRevisionQueue, setCommentCount, setCommentDraft, setGroups],
   );
 
   const handleCommentReply = useCallback(
@@ -273,9 +259,7 @@ export const useCommentHandlers = (
         status: "waiting",
       });
       setActiveComment((prev) =>
-        prev
-          ? { ...prev, thread: updatedThread, status: "waiting" }
-          : prev
+        prev ? { ...prev, thread: updatedThread, status: "waiting" } : prev,
       );
 
       revisionQueueRef.current.push({
@@ -287,7 +271,13 @@ export const useCommentHandlers = (
 
       processRevisionQueue();
     },
-    [activeComment, activeCommentIterationId, updateComment, processRevisionQueue, setActiveComment]
+    [
+      activeComment,
+      activeCommentIterationId,
+      updateComment,
+      processRevisionQueue,
+      setActiveComment,
+    ],
   );
 
   return {

@@ -35,11 +35,18 @@ export function usePromptHistory(options: UsePromptHistoryOptions = {}) {
   );
 
   const navigateHistory = useCallback(
-    (direction: "up" | "down", currentValue: string, cursorPosition: { start: number; end: number }) => {
+    (
+      direction: "up" | "down",
+      currentValue: string,
+      cursorPosition: { start: number; end: number },
+    ) => {
       if (direction === "up" && (cursorPosition.start !== 0 || cursorPosition.end !== 0)) {
         return currentValue;
       }
-      if (direction === "down" && (cursorPosition.start !== currentValue.length || cursorPosition.end !== currentValue.length)) {
+      if (
+        direction === "down" &&
+        (cursorPosition.start !== currentValue.length || cursorPosition.end !== currentValue.length)
+      ) {
         return currentValue;
       }
 

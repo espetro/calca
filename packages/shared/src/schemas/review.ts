@@ -27,9 +27,7 @@ export const ReviewSchema = z.string().transform((raw) => {
   if (htmlStart && htmlStart.index !== undefined && htmlStart.index > 0) {
     cleaned = cleaned.substring(htmlStart.index);
   }
-  const lastTagMatch = cleaned.match(
-    /([\s\S]*<\/(?:html|div|section|main|body)>)/i,
-  );
+  const lastTagMatch = cleaned.match(/([\s\S]*<\/(?:html|div|section|main|body)>)/i);
   if (lastTagMatch) cleaned = lastTagMatch[1];
 
   return { html: cleaned.trim(), width, height };

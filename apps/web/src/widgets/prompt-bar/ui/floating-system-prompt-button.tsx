@@ -21,7 +21,8 @@ export function FloatingSystemPromptButton() {
     });
   };
 
-  const hasCustomPrompt = settings.systemPromptPreset === "custom" && settings.systemPrompt.length > 0;
+  const hasCustomPrompt =
+    settings.systemPromptPreset === "custom" && settings.systemPrompt.length > 0;
 
   return (
     <div className="relative">
@@ -51,11 +52,12 @@ export function FloatingSystemPromptButton() {
           <textarea
             value={settings.systemPrompt}
             onChange={handleChange}
-            placeholder="Add custom instructions for the AI designer...&#10;&#10;e.g. &quot;You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy...&quot;"
+            placeholder='Add custom instructions for the AI designer...&#10;&#10;e.g. "You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy..."'
             className="w-full h-32 px-4 py-3 rounded-xl bg-white/70 border border-gray-200/50 text-[13px] text-gray-700 placeholder-gray-400 outline-none focus:border-blue-300/50 focus:ring-1 focus:ring-blue-200/30 resize-y font-mono"
           />
           <p className="mt-2 text-[10px] text-gray-500">
-            Prepended to every generation. Use for brand guidelines, design skills, or style overrides.
+            Prepended to every generation. Use for brand guidelines, design skills, or style
+            overrides.
           </p>
         </div>
       )}

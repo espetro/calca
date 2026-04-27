@@ -41,9 +41,9 @@ describe("handleExport", () => {
       await handleExport(ctx);
 
       expect(htmlToSvg).toHaveBeenCalledOnce();
-      expect(ctx.json).toHaveBeenCalledWith(
-        { result: '<svg><div width="100px">hello</div></svg>' },
-      );
+      expect(ctx.json).toHaveBeenCalledWith({
+        result: '<svg><div width="100px">hello</div></svg>',
+      });
     });
   });
 
@@ -62,16 +62,14 @@ describe("handleExport", () => {
       await handleExport(ctx);
 
       expect(generateWithFallback).toHaveBeenCalledOnce();
-      expect(ctx.json).toHaveBeenCalledWith(
-        { result: expect.stringContaining("bg-blue-500") },
-      );
+      expect(ctx.json).toHaveBeenCalledWith({ result: expect.stringContaining("bg-blue-500") });
     });
   });
 
   describe("react format", () => {
     it("uses AI to convert html to react component", async () => {
       (generateWithFallback as ReturnType<typeof vi.fn>).mockResolvedValue({
-        result: { text: 'export default function Design() { return <div /> }' },
+        result: { text: "export default function Design() { return <div /> }" },
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
@@ -88,9 +86,7 @@ describe("handleExport", () => {
           model: "claude-sonnet-4-20250514",
         }),
       );
-      expect(ctx.json).toHaveBeenCalledWith(
-        { result: expect.stringContaining("Design") },
-      );
+      expect(ctx.json).toHaveBeenCalledWith({ result: expect.stringContaining("Design") });
     });
   });
 
@@ -122,7 +118,9 @@ describe("handleExport", () => {
 
   describe("error handling", () => {
     it("returns 500 on general error", async () => {
-      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("something broke"));
+      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(
+        new Error("something broke"),
+      );
 
       const ctx = createMockContext({
         html: "<div>hello</div>",
@@ -136,7 +134,9 @@ describe("handleExport", () => {
     });
 
     it("returns 401 on auth error", async () => {
-      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Invalid API key provided"));
+      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(
+        new Error("Invalid API key provided"),
+      );
 
       const ctx = createMockContext({
         html: "<div>hello</div>",

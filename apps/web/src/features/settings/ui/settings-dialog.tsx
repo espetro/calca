@@ -33,13 +33,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="sm:max-w-2xl p-0 overflow-hidden gap-0"
-        showCloseButton={true}
-      >
+      <DialogContent className="sm:max-w-2xl p-0 overflow-hidden gap-0" showCloseButton={true}>
         <DialogTitle className="sr-only">Settings</DialogTitle>
         <DialogDescription className="sr-only">
-          Configure your Calca preferences including AI provider, theme, and personalization options.
+          Configure your Calca preferences including AI provider, theme, and personalization
+          options.
         </DialogDescription>
         <div className="flex h-[500px]">
           <div className="flex flex-col shrink-0 border-r border-border bg-muted/30">
@@ -47,10 +45,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               <h2 className="text-sm font-semibold text-foreground">Settings</h2>
             </div>
             <Separator />
-            <SettingsSidebar
-              activeSection={activeSection}
-              onSectionChange={setActiveSection}
-            />
+            <SettingsSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
           </div>
 
           <div className="flex-1 p-6 overflow-y-auto">
@@ -62,10 +57,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               />
             )}
             {activeSection === "personalization" && (
-              <SettingsPersonalization
-                settings={settings}
-                onUpdate={updateSettings}
-              />
+              <SettingsPersonalization settings={settings} onUpdate={updateSettings} />
             )}
             {activeSection === "skills" && <PlaceholderContent title="Skills" />}
             {activeSection === "about" && <SettingsAbout />}

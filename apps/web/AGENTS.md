@@ -73,6 +73,7 @@ const scale = viewport.scale;
 See `features/canvas/hooks/use-canvas.ts` for the full implementation.
 
 Key patterns:
+
 - Pan with drag (mouse down + move)
 - Zoom with wheel (toward cursor position)
 - State stored in Jotai atoms (`viewportAtom`)
@@ -148,4 +149,3 @@ This app is AGPL-3.0 licensed. See root [AGENTS.md](../../AGENTS.md) for dual-li
 
 - [packages/shared/AGENTS.md](../packages/shared/AGENTS.md) — Type definitions
 - [packages/core/AGENTS.md](../packages/core/AGENTS.md) — AI pipeline patterns
-

@@ -40,7 +40,7 @@ export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSide
               isDisabled && "opacity-50 cursor-not-allowed",
               !isDisabled && "hover:bg-accent/50",
               isActive && !isDisabled && "bg-accent text-accent-foreground",
-              !isActive && !isDisabled && "text-foreground"
+              !isActive && !isDisabled && "text-foreground",
             )}
             aria-current={isActive ? "page" : undefined}
           >

@@ -17,15 +17,11 @@ describe("logger", () => {
     });
 
     it("uses LOG_LEVEL env var when level is not provided", async () => {
-      await expect(
-        createLogger(undefined, { LOG_LEVEL: "debug" }),
-      ).resolves.toBeUndefined();
+      await expect(createLogger(undefined, { LOG_LEVEL: "debug" })).resolves.toBeUndefined();
     });
 
     it("falls back to DEFAULT_LOG_LEVEL for unknown LOG_LEVEL values", async () => {
-      await expect(
-        createLogger(undefined, { LOG_LEVEL: "not-a-level" }),
-      ).resolves.toBeUndefined();
+      await expect(createLogger(undefined, { LOG_LEVEL: "not-a-level" })).resolves.toBeUndefined();
     });
   });
 

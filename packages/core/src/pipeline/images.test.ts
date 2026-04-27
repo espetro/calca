@@ -38,7 +38,7 @@ describe("generateImages", () => {
   });
 
   it("returns skipped result when no placeholders found in HTML", async () => {
-    const html = '<div>No placeholders here</div>';
+    const html = "<div>No placeholders here</div>";
     const result = await generateImages({ html, geminiKey: "test" });
 
     expect(result.skipped).toBe(true);
@@ -68,14 +68,16 @@ describe("generateImages", () => {
   });
 
   it("preserves HTML when placeholder has explicit source", async () => {
-    const html = '<div data-placeholder="test" data-ph-w="100" data-ph-h="100" data-img-source="unsplash"></div>';
+    const html =
+      '<div data-placeholder="test" data-ph-w="100" data-ph-h="100" data-img-source="unsplash"></div>';
     const result = await generateImages({ html, unsplashKey: "test-key" });
 
     expect(result).toBeDefined();
   });
 
   it("handles placeholder with custom query", async () => {
-    const html = '<div data-placeholder="coffee" data-ph-w="100" data-ph-h="100" data-img-query="espresso"></div>';
+    const html =
+      '<div data-placeholder="coffee" data-ph-w="100" data-ph-h="100" data-img-query="espresso"></div>';
     const result = await generateImages({ html, unsplashKey: "test-key" });
 
     expect(result).toBeDefined();

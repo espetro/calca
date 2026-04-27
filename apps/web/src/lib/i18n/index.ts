@@ -1,4 +1,4 @@
-import messages from './messages/en.json'
+import messages from "./messages/en.json";
 
 export const m = {
   onboarding: {
@@ -58,4 +58,4 @@ export const m = {
   banner: {
     addApiKey: () => messages.banner.addApiKey,
   },
-}
+};

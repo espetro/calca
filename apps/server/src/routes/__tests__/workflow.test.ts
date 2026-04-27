@@ -54,7 +54,9 @@ describe("handleWorkflow", () => {
   });
 
   it("propagates errors from handleWorkflowStream", async () => {
-    (handleWorkflowStream as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("workflow exploded"));
+    (handleWorkflowStream as ReturnType<typeof vi.fn>).mockRejectedValue(
+      new Error("workflow exploded"),
+    );
 
     const ctx = createMockContext({ prompt: "fail" });
 

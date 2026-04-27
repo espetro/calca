@@ -22,10 +22,7 @@ import {
 } from "@/features/design/state/comment-atoms";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import type {
-  DesignIteration,
-  Point,
-} from "@/shared/types";
+import type { DesignIteration, Point } from "@/shared/types";
 import { RubberBandOverlay } from "@/widgets/rubber-band-selection";
 import { useMemo } from "react";
 
@@ -50,7 +47,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   const settings = useAtomValue(settingsAtom);
   const derived = useMemo(
     () => deriveProviderFields(settings.providers, settings.model),
-    [settings.providers, settings.model]
+    [settings.providers, settings.model],
   );
   const setActiveComment = useSetAtom(activeCommentAtom);
   const setActiveCommentIterationId = useSetAtom(activeCommentIterationIdAtom);
@@ -62,7 +59,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       canvasElRef.current = el;
       canvas.setCanvasRef(el);
     },
-    [canvas.setCanvasRef]
+    [canvas.setCanvasRef],
   );
 
   const dragRef = useRef<{
@@ -80,7 +77,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   const imgDragStartPositions = useRef<Map<string, Point>>(new Map());
 
   const allIterations = groups.flatMap((g) =>
-    g.iterations.map((iter) => ({ ...iter, groupId: g.id }))
+    g.iterations.map((iter) => ({ ...iter, groupId: g.id })),
   );
 
   const canPan = spaceHeld && !draggingId;
@@ -100,33 +97,29 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       imgDragStartPositions.current.clear();
       const movingIds = selectedIds.has(id) ? selectedIds : new Set([id]);
       for (const ci of canvasImages) {
-        if (movingIds.has(ci.id))
-          imgDragStartPositions.current.set(ci.id, { ...ci.position });
+        if (movingIds.has(ci.id)) imgDragStartPositions.current.set(ci.id, { ...ci.position });
       }
       setDraggingImageId(id);
     },
-    [toolMode, spaceHeld, canvasImages, selectedIds, setDraggingImageId]
+    [toolMode, spaceHeld, canvasImages, selectedIds, setDraggingImageId],
   );
 
   const handleImageDragMove = useCallback(
     (e: React.MouseEvent) => {
       if (!imgDragRef.current) return;
-      const dx =
-        (e.clientX - imgDragRef.current.startMouse.x) / canvas.scale;
-      const dy =
-        (e.clientY - imgDragRef.current.startMouse.y) / canvas.scale;
+      const dx = (e.clientX - imgDragRef.current.startMouse.x) / canvas.scale;
+      const dy = (e.clientY - imgDragRef.current.startMouse.y) / canvas.scale;
       const dragId = imgDragRef.current.id;
       const movingIds = selectedIds.has(dragId) ? selectedIds : new Set([dragId]);
       setCanvasImages((prev) =>
         prev.map((img) => {
           if (!movingIds.has(img.id)) return img;
-          const startPos =
-            imgDragStartPositions.current.get(img.id) || img.position;
+          const startPos = imgDragStartPositions.current.get(img.id) || img.position;
           return { ...img, position: { x: startPos.x + dx, y: startPos.y + dy } };
-        })
+        }),
       );
     },
-    [canvas.scale, selectedIds, setCanvasImages]
+    [canvas.scale, selectedIds, setCanvasImages],
   );
 
   const handleImageDragEnd = useCallback(() => {
@@ -147,9 +140,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
             startPos: { ...iter.position },
           };
           dragStartPositions.current.clear();
-          const movingIds = selectedIds.has(iterationId)
-            ? selectedIds
-            : new Set([iterationId]);
+          const movingIds = selectedIds.has(iterationId) ? selectedIds : new Set([iterationId]);
           for (const g of groups) {
             for (const it of g.iterations) {
               if (movingIds.has(it.id)) {
@@ -162,16 +153,14 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         }
       }
     },
-    [toolMode, spaceHeld, groups, selectedIds, setDraggingId]
+    [toolMode, spaceHeld, groups, selectedIds, setDraggingId],
   );
 
   const handleFrameDragMove = useCallback(
     (e: React.MouseEvent) => {
       if (!dragRef.current) return;
-      const dx =
-        (e.clientX - dragRef.current.startMouse.x) / canvas.scale;
-      const dy =
-        (e.clientY - dragRef.current.startMouse.y) / canvas.scale;
+      const dx = (e.clientX - dragRef.current.startMouse.x) / canvas.scale;
+      const dy = (e.clientY - dragRef.current.startMouse.y) / canvas.scale;
       const dragId = dragRef.current.iterationId;
       const movingIds = selectedIds.has(dragId) ? selectedIds : new Set([dragId]);
       setGroups((prev) =>
@@ -179,17 +168,16 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
           ...g,
           iterations: g.iterations.map((iter) => {
             if (!movingIds.has(iter.id)) return iter;
-            const startPos =
-              dragStartPositions.current.get(iter.id) || iter.position;
+            const startPos = dragStartPositions.current.get(iter.id) || iter.position;
             return {
               ...iter,
               position: { x: startPos.x + dx, y: startPos.y + dy },
             };
           }),
-        }))
+        })),
       );
     },
-    [canvas.scale, selectedIds, setGroups]
+    [canvas.scale, selectedIds, setGroups],
   );
 
   const handleFrameDragEnd = useCallback(() => {
@@ -207,10 +195,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
           const img = new Image();
           img.onload = () => {
             const maxDim = 1024;
-            const apiScale = Math.min(
-              maxDim / Math.max(img.width, img.height),
-              1
-            );
+            const apiScale = Math.min(maxDim / Math.max(img.width, img.height), 1);
             const apiCanvas = document.createElement("canvas");
             apiCanvas.width = img.width * apiScale;
             apiCanvas.height = img.height * apiScale;
@@ -218,11 +203,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
             apiCtx.drawImage(img, 0, 0, apiCanvas.width, apiCanvas.height);
             const compressedDataUrl = apiCanvas.toDataURL("image/jpeg", 0.7);
 
-            const thumbScale = Math.min(
-              128 / img.width,
-              128 / img.height,
-              1
-            );
+            const thumbScale = Math.min(128 / img.width, 128 / img.height, 1);
             const thumbCanvas = document.createElement("canvas");
             thumbCanvas.width = img.width * thumbScale;
             thumbCanvas.height = img.height * thumbScale;
@@ -231,13 +212,8 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
             const thumbnail = thumbCanvas.toDataURL("image/jpeg", 0.7);
 
             const cx =
-              dropX !== undefined
-                ? (dropX - canvas.offset.x) / canvas.scale
-                : 100 + idx * 220;
-            const cy =
-              dropY !== undefined
-                ? (dropY - canvas.offset.y) / canvas.scale
-                : 100;
+              dropX !== undefined ? (dropX - canvas.offset.x) / canvas.scale : 100 + idx * 220;
+            const cy = dropY !== undefined ? (dropY - canvas.offset.y) / canvas.scale : 100;
 
             const displayScale = Math.min(200 / img.width, 1);
 
@@ -259,19 +235,15 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         reader.readAsDataURL(file);
       });
     },
-    [canvas.offset.x, canvas.offset.y, canvas.scale, setCanvasImages]
+    [canvas.offset.x, canvas.offset.y, canvas.scale, setCanvasImages],
   );
 
   const handleClickComment = useCallback(
     (comment: import("@/shared/types").Comment, iterationId: string) => {
-      setActiveComment((prev) =>
-        prev?.id === comment.id ? null : comment
-      );
-      setActiveCommentIterationId((prev) =>
-        comment ? iterationId : null
-      );
+      setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
+      setActiveCommentIterationId((prev) => (comment ? iterationId : null));
     },
-    [setActiveComment, setActiveCommentIterationId]
+    [setActiveComment, setActiveCommentIterationId],
   );
 
   const handleAddComment = useCallback(
@@ -282,13 +254,9 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         const iter = group.iterations.find((it) => it.id === iterationId);
         if (iter) {
           const absScreenX =
-            (iter.position.x + position.x) * canvas.scale +
-            canvas.offset.x +
-            rect.left;
+            (iter.position.x + position.x) * canvas.scale + canvas.offset.x + rect.left;
           const absScreenY =
-            (iter.position.y + position.y) * canvas.scale +
-            canvas.offset.y +
-            rect.top;
+            (iter.position.y + position.y) * canvas.scale + canvas.offset.y + rect.top;
           setCommentDraft({
             iterationId,
             position,
@@ -299,7 +267,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         }
       }
     },
-    [canvas.offset, canvas.scale, groups, setCommentDraft]
+    [canvas.offset, canvas.scale, groups, setCommentDraft],
   );
 
   return (
@@ -307,11 +275,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       ref={combinedCanvasRef}
       className={`absolute inset-0 canvas-dots ${
         canPan ? "cursor-grab active:cursor-grabbing" : ""
-      } ${
-        toolMode === "comment" && !spaceHeld
-          ? "cursor-crosshair"
-          : "cursor-default"
-      }`}
+      } ${toolMode === "comment" && !spaceHeld ? "cursor-crosshair" : "cursor-default"}`}
       onMouseDown={(e) => {
         if (canPan) {
           canvas.onMouseDown(e);
@@ -334,9 +298,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
           handleFrameDragMove(e);
         } else if (rubberBand) {
           setRubberBand((prev) =>
-            prev
-              ? { ...prev, currentX: e.clientX, currentY: e.clientY }
-              : null
+            prev ? { ...prev, currentX: e.clientX, currentY: e.clientY } : null,
           );
         } else {
           canvas.onMouseMove(e);
@@ -355,10 +317,8 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
           const maxScreenY = Math.max(rb.startY, rb.currentY);
 
           if (maxScreenX - minScreenX > 5 || maxScreenY - minScreenY > 5) {
-            const toCanvasX = (sx: number) =>
-              (sx - canvas.offset.x) / canvas.scale;
-            const toCanvasY = (sy: number) =>
-              (sy - canvas.offset.y) / canvas.scale;
+            const toCanvasX = (sx: number) => (sx - canvas.offset.x) / canvas.scale;
+            const toCanvasY = (sy: number) => (sy - canvas.offset.y) / canvas.scale;
             const canvasMinX = toCanvasX(minScreenX);
             const canvasMaxX = toCanvasX(maxScreenX);
             const canvasMinY = toCanvasY(minScreenY);
@@ -414,9 +374,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       }}
       onDrop={(e) => {
         e.preventDefault();
-        const files = Array.from(e.dataTransfer.files).filter((f) =>
-          f.type.startsWith("image/")
-        );
+        const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
         if (files.length > 0) processImageFiles(files, e.clientX, e.clientY);
       }}
     >
@@ -518,9 +476,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
               x={iteration.position.x}
               y={iteration.position.y}
               width={iteration.width || FRAME_WIDTH}
-              frameHeight={
-                iteration.isLoading ? 320 : iteration.height || 320
-              }
+              frameHeight={iteration.isLoading ? 320 : iteration.height || 320}
             />
           );
         })}
@@ -529,12 +485,8 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       {groups.length === 0 && canvasImages.length === 0 && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold text-gray-300 mb-2">
-              {m.canvas.emptyTitle()}
-            </h1>
-            <p className="text-gray-400/70 text-sm">
-              {m.canvas.emptyDescription()}
-            </p>
+            <h1 className="text-2xl font-semibold text-gray-300 mb-2">{m.canvas.emptyTitle()}</h1>
+            <p className="text-gray-400/70 text-sm">{m.canvas.emptyDescription()}</p>
           </div>
         </div>
       )}

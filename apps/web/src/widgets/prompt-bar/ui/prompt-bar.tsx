@@ -48,10 +48,19 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour
       onClick={() => setIsIdeating(!isIdeating)}
       disabled={isGenerating}
       data-tour={dataTour}
-       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
-      style={isIdeating
-        ? { background: "var(--mode-ideate-bg)", color: "var(--mode-ideate-fg)", border: "1px solid var(--mode-ideate-icon-bg)" }
-        : { background: "var(--mode-ideate-bg-subtle)", color: "var(--mode-ideate-fg)", opacity: 0.7 }
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
+      style={
+        isIdeating
+          ? {
+              background: "var(--mode-ideate-bg)",
+              color: "var(--mode-ideate-fg)",
+              border: "1px solid var(--mode-ideate-icon-bg)",
+            }
+          : {
+              background: "var(--mode-ideate-bg-subtle)",
+              color: "var(--mode-ideate-fg)",
+              opacity: 0.7,
+            }
       }
       title={isIdeating ? "Ideate mode" : "Build mode"}
     >

@@ -4,15 +4,9 @@ export function useWindowEvent<K extends keyof GlobalEventHandlersEventMap>(
   eventName: K,
   handler: (event: GlobalEventHandlersEventMap[K]) => void,
 ): void;
-export function useWindowEvent(
-  eventName: string,
-  handler: (event: Event) => void,
-): void;
+export function useWindowEvent(eventName: string, handler: (event: Event) => void): void;
 
-export function useWindowEvent(
-  eventName: string,
-  handler: (event: Event) => void,
-): void {
+export function useWindowEvent(eventName: string, handler: (event: Event) => void): void {
   useEffect(() => {
     if (typeof window === "undefined") return;
 

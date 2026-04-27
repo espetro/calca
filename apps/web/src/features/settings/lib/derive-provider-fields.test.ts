@@ -70,9 +70,7 @@ describe("deriveProviderFields", () => {
   });
 
   it("returns anthropic defaults when no matching provider and no prefix", () => {
-    const providers: ProviderConfig[] = [
-      createProvider({ id: "empty" }),
-    ];
+    const providers: ProviderConfig[] = [createProvider({ id: "empty" })];
 
     const result = deriveProviderFields(providers, "unknown-model");
 
@@ -159,9 +157,7 @@ describe("deriveProviderFields", () => {
   });
 
   it("returns empty strings for missing credentials", () => {
-    const providers: ProviderConfig[] = [
-      createProvider({ id: "empty", apiKey: "", baseUrl: "" }),
-    ];
+    const providers: ProviderConfig[] = [createProvider({ id: "empty", apiKey: "", baseUrl: "" })];
 
     const result = deriveProviderFields(providers, "empty/model");
 

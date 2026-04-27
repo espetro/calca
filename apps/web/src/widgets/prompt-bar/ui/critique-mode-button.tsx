@@ -59,13 +59,14 @@ export function CritiqueModeButton({
     <div className="relative shrink-0 z-[60]" ref={containerRef}>
       <button
         type="button"
-          onClick={onToggle}
-          data-tour={dataTour}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
-          style={quickMode
+        onClick={onToggle}
+        data-tour={dataTour}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
+        style={
+          quickMode
             ? { background: "var(--mode-quick-bg)", color: "var(--mode-quick-fg)" }
             : { background: "var(--mode-critique-bg)", color: "var(--mode-critique-fg)" }
-          }
+        }
         title="Generation mode"
       >
         {quickMode ? <Zap className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
@@ -96,13 +97,27 @@ export function CritiqueModeButton({
                 className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
                   !quickMode ? "border" : "bg-background/40"
                 }`}
-                style={!quickMode ? { borderColor: "var(--mode-critique-fg)", background: "var(--mode-critique-bg)" } : { background: "var(--mode-critique-bg-subtle)" }}
+                style={
+                  !quickMode
+                    ? {
+                        borderColor: "var(--mode-critique-fg)",
+                        background: "var(--mode-critique-bg)",
+                      }
+                    : { background: "var(--mode-critique-bg-subtle)" }
+                }
               >
                 <div
                   className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center`}
-                  style={!quickMode
-                    ? { background: "var(--mode-critique-icon-bg)", color: "var(--mode-critique-fg)" }
-                    : { background: "var(--mode-critique-bg-subtle)", color: "var(--mode-critique-fg)" }
+                  style={
+                    !quickMode
+                      ? {
+                          background: "var(--mode-critique-icon-bg)",
+                          color: "var(--mode-critique-fg)",
+                        }
+                      : {
+                          background: "var(--mode-critique-bg-subtle)",
+                          color: "var(--mode-critique-fg)",
+                        }
                   }
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -114,7 +129,10 @@ export function CritiqueModeButton({
                   >
                     Critique Loop
                   </div>
-                  <div className="text-[10px] leading-relaxed mt-0.5" style={{ color: "var(--mode-critique-fg)", opacity: 0.7 }}>
+                  <div
+                    className="text-[10px] leading-relaxed mt-0.5"
+                    style={{ color: "var(--mode-critique-fg)", opacity: 0.7 }}
+                  >
                     Sequential generation with AI feedback between each frame. Each design learns
                     from the previous one.
                   </div>
@@ -129,7 +147,11 @@ export function CritiqueModeButton({
                 className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
                   quickMode ? "border" : "bg-background/40"
                 }`}
-                style={quickMode ? { borderColor: "var(--mode-quick-fg)", background: "var(--mode-quick-bg)" } : { background: "var(--mode-quick-bg-subtle)" }}
+                style={
+                  quickMode
+                    ? { borderColor: "var(--mode-quick-fg)", background: "var(--mode-quick-bg)" }
+                    : { background: "var(--mode-quick-bg-subtle)" }
+                }
               >
                 <div
                   className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center`}
@@ -148,7 +170,10 @@ export function CritiqueModeButton({
                   >
                     Quick Mode
                   </div>
-                  <div className="text-[10px] leading-relaxed mt-0.5" style={{ color: "var(--mode-quick-fg)", opacity: 0.7 }}>
+                  <div
+                    className="text-[10px] leading-relaxed mt-0.5"
+                    style={{ color: "var(--mode-quick-fg)", opacity: 0.7 }}
+                  >
                     Generate all designs in parallel without critique. Faster but less refined.
                   </div>
                 </div>

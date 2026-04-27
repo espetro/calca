@@ -101,7 +101,9 @@ export function usePersistedImages() {
           );
         }
       } catch (err) {
-        logger.debug("Failed to load canvas images", { error: err instanceof Error ? err.message : String(err) });
+        logger.debug("Failed to load canvas images", {
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
       setLoaded(true);
     })();
@@ -127,7 +129,9 @@ export function usePersistedImages() {
         );
         await dbPut(db, "canvas-images", stored);
       } catch (err) {
-        logger.debug("Failed to save canvas images", { error: err instanceof Error ? err.message : String(err) });
+        logger.debug("Failed to save canvas images", {
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
     }, 500);
   }, []);

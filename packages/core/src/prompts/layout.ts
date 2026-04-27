@@ -1,5 +1,8 @@
 /** Strip base64 data URIs from HTML — local helper for prompt builders */
-function stripBase64Images(html: string): { stripped: string; restore: (output: string) => string } {
+function stripBase64Images(html: string): {
+  stripped: string;
+  restore: (output: string) => string;
+} {
   const images: string[] = [];
   const stripped = html.replace(/src="(data:image\/[^"]+)"/g, (_match, dataUri) => {
     const idx = images.length;
@@ -20,12 +23,16 @@ export function buildRevisionPrompt(
   systemPrompt: string | undefined,
   existingHtml: string,
   prompt: string,
-  revision: string
+  revision: string,
 ): string {
-  const customBlock = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
+  const customBlock = systemPrompt
+    ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n`
+    : "";
   const { stripped, restore } = stripBase64Images(existingHtml);
 
-  return JSON.stringify({ stripped, restoreNeeded: true }) + "\n---PROMPT---\n" +
+  return (
+    JSON.stringify({ stripped, restoreNeeded: true }) +
+    "\n---PROMPT---\n" +
     `You are a world-class visual designer. You are EDITING an existing design — not creating a new one.${customBlock}
 
 Here is the EXISTING HTML design:
@@ -62,7 +69,8 @@ TAILWIND CSS — USE UTILITY CLASSES:
 - Use arbitrary value syntax for custom values: bg-[#hex], w-[Npx], text-[Npx], etc.
 - Small inline styles are acceptable ONLY for truly dynamic values that cannot be expressed in Tailwind
 
-OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL styling via Tailwind utility classes — NO <style> tags.`;
+OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL styling via Tailwind utility classes — NO <style> tags.`
+  );
 }
 
 export function buildNewPrompt(
@@ -70,10 +78,14 @@ export function buildNewPrompt(
   critique: string | undefined,
   prompt: string,
   style: string,
-  availableSources: string[]
+  availableSources: string[],
 ): string {
-  const critiqueBlock = critique ? `\n\nIMPROVEMENT FEEDBACK from previous variation (apply these learnings):\n${critique}\n` : "";
-  const customBlock = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
+  const critiqueBlock = critique
+    ? `\n\nIMPROVEMENT FEEDBACK from previous variation (apply these learnings):\n${critique}\n`
+    : "";
+  const customBlock = systemPrompt
+    ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n`
+    : "";
 
   return `You are a world-class visual designer. Generate a stunning HTML design using Tailwind CSS utility classes.${customBlock}${critiqueBlock}
 
@@ -95,11 +107,13 @@ REQUIRED ATTRIBUTES on every placeholder:
 - data-img-source = which image API to use: "unsplash", "dalle", or "gemini"
 - data-img-query = SHORT search keywords for Unsplash (3-5 words max)
 
-${availableSources && availableSources.length > 0
+${
+  availableSources && availableSources.length > 0
     ? `AVAILABLE IMAGE SOURCES (choose the best one for each placeholder):
 ${availableSources.includes("unsplash") ? '- "unsplash" — BEST for real photographs\n' : ""}${availableSources.includes("dalle") ? '- "dalle" — BEST for custom illustrations, abstract art\n' : ""}${availableSources.includes("gemini") ? '- "gemini" — BEST for design assets, UI elements\n' : ""}
 Choose the source that best matches what each placeholder needs.`
-    : 'Set data-img-source="gemini" for all placeholders (only source available).'}
+    : 'Set data-img-source="gemini" for all placeholders (only source available).'
+}
 
 Rules:
 - Include 1-6 placeholders per design
@@ -141,9 +155,11 @@ export function buildRevisionUserContent(
   systemPrompt: string | undefined,
   strippedHtml: string,
   prompt: string,
-  revision: string
+  revision: string,
 ): string {
-  const customBlock = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
+  const customBlock = systemPrompt
+    ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n`
+    : "";
   return `You are a world-class visual designer. You are EDITING an existing design — not creating a new one.${customBlock}
 
 Here is the EXISTING HTML design:

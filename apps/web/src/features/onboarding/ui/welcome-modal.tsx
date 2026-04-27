@@ -81,8 +81,8 @@ export function WelcomeModal({
             Welcome to Calca!
           </DialogTitle>
           <DialogDescription className="text-base leading-relaxed">
-            Your AI-powered design companion. Describe what you want, and watch
-            as beautiful concepts come to life on your canvas.
+            Your AI-powered design companion. Describe what you want, and watch as beautiful
+            concepts come to life on your canvas.
           </DialogDescription>
         </DialogHeader>
 
@@ -92,9 +92,7 @@ export function WelcomeModal({
               <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
                 <feature.icon className="size-4 text-primary" />
               </div>
-              <p className="text-sm leading-relaxed text-foreground">
-                {feature.text}
-              </p>
+              <p className="text-sm leading-relaxed text-foreground">{feature.text}</p>
             </div>
           ))}
         </div>

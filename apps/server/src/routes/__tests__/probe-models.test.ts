@@ -64,13 +64,20 @@ describe("handleProbeModels", () => {
     });
     await handleProbeModels(ctx);
 
-    expect(probeModels).toHaveBeenCalledWith("sk-test", "http://localhost:1234/v1", "openai-compatible");
+    expect(probeModels).toHaveBeenCalledWith(
+      "sk-test",
+      "http://localhost:1234/v1",
+      "openai-compatible",
+    );
   });
 
   it("allows missing apiKey for non-anthropic providers", async () => {
     (probeModels as ReturnType<typeof vi.fn>).mockResolvedValue({ "local-model": true });
 
-    const ctx = createMockContext({ providerType: "openai-compatible", baseURL: "http://localhost:1234/v1" });
+    const ctx = createMockContext({
+      providerType: "openai-compatible",
+      baseURL: "http://localhost:1234/v1",
+    });
     await handleProbeModels(ctx);
 
     expect(probeModels).toHaveBeenCalledWith("", "http://localhost:1234/v1", "openai-compatible");

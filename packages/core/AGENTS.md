@@ -7,6 +7,7 @@
 ## Package Purpose
 
 The `core` package contains **AI-agnostic business logic** that can be used by any app:
+
 - Pipeline stage implementations
 - LLM provider wrappers
 - Prompt templates

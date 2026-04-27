@@ -2,7 +2,8 @@
 import { JSDOM } from "jsdom";
 const jsdom = new JSDOM("<!DOCTYPE html><html><body></body></html>", { url: "http://localhost" });
 (global as unknown as { document: typeof document }).document = jsdom.window.document;
-(global as unknown as { window: typeof window }).window = jsdom.window as unknown as Window & typeof globalThis;
+(global as unknown as { window: typeof window }).window = jsdom.window as unknown as Window &
+  typeof globalThis;
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { act } from "react";
@@ -57,7 +58,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <div data-testid="child">Child content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     const child = document.querySelector('[data-testid="child"]');
     expect(child).not.toBeNull();
@@ -72,7 +73,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(document.body.textContent).toContain("Something went wrong");
@@ -89,7 +90,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary fallback={customFallback}>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(document.querySelector('[data-testid="custom-fallback"]')).not.toBeNull();
@@ -104,7 +105,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(document.body.textContent).toContain("Something went wrong");
@@ -131,7 +132,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(mockLogger.error).toHaveBeenCalledWith(
@@ -139,7 +140,7 @@ describe("ErrorBoundary", () => {
       expect.objectContaining({
         error: "Logging test error",
         componentStack: expect.any(String),
-      })
+      }),
     );
   });
 });

@@ -25,9 +25,7 @@ const createEnvProvider = (): ProviderConfig | null => {
     apiType: "openai-compatible",
     baseUrl,
     apiKey: import.meta.env.VITE_AI_API_KEY || "",
-    models: modelName
-      ? [{ id: modelName, displayName: modelName, description: "" }]
-      : [],
+    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
     lastTested: null,
     isEnv: true,
   };
@@ -135,19 +133,25 @@ export function useSettings() {
     });
   }, []);
 
-  const testProvider = useCallback(async (
-    config: Omit<ProviderConfig, "models" | "lastTested">
-  ): Promise<{ models: ModelInfo[]; error?: string }> => {
-    return probeModels.mutateAsync({
-      apiKey: config.apiKey,
-      providerType: config.apiType,
-      baseURL: config.baseUrl,
-    });
-  }, [probeModels.mutateAsync]);
+  const testProvider = useCallback(
+    async (
+      config: Omit<ProviderConfig, "models" | "lastTested">,
+    ): Promise<{ models: ModelInfo[]; error?: string }> => {
+      return probeModels.mutateAsync({
+        apiKey: config.apiKey,
+        providerType: config.apiType,
+        baseURL: config.baseUrl,
+      });
+    },
+    [probeModels.mutateAsync],
+  );
 
-  const setIsIdeating = useCallback((value: boolean) => {
-    setSettings({ isIdeating: value });
-  }, [setSettings]);
+  const setIsIdeating = useCallback(
+    (value: boolean) => {
+      setSettings({ isIdeating: value });
+    },
+    [setSettings],
+  );
 
   const addImage = useCallback((image: SelectedImage) => {
     setSettingsState((prev) => {
@@ -177,8 +181,7 @@ export function useSettings() {
 
   // For anthropic we need an API key; for openai-compatible a baseURL is enough
   const isOwnKey =
-    !!derived.apiKey ||
-    (derived.providerType === "openai-compatible" && !!derived.baseURL);
+    !!derived.apiKey || (derived.providerType === "openai-compatible" && !!derived.baseURL);
   const hasGeminiKey = !!settings.geminiKey;
 
   return {

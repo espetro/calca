@@ -57,9 +57,7 @@ export type SettingsOutput = z.output<typeof settingsSchema>;
 // ---------------------------------------------------------------------------
 
 /** Validates an API key has minimum length of 10 characters. */
-export const apiKeyValidationSchema = z
-  .string()
-  .min(10, "API key must be at least 10 characters");
+export const apiKeyValidationSchema = z.string().min(10, "API key must be at least 10 characters");
 
 /** Validates model is non-empty string. */
 export const modelValidationSchema = z.string().min(1, "Model is required");

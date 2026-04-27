@@ -2,7 +2,7 @@ export function buildReviewPrompt(
   prompt: string,
   width: number | undefined,
   height: number | undefined,
-  strippedHtml: string
+  strippedHtml: string,
 ): string {
   return `You are a design quality reviewer. Review this HTML/CSS design and fix any issues.
 

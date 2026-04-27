@@ -92,7 +92,10 @@ const createStorage = () => {
         const parsed = JSON.parse(raw);
         const result = settingsSchema.safeParse(parsed);
         if (!result.success) {
-          console.warn("[settings] Schema validation failed, using defaults:", result.error.flatten());
+          console.warn(
+            "[settings] Schema validation failed, using defaults:",
+            result.error.flatten(),
+          );
           cachedSettings = defaults;
           return cachedSettings;
         }

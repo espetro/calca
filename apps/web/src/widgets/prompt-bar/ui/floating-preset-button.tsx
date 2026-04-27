@@ -38,7 +38,7 @@ export function FloatingPresetButton() {
 
   const selectedPreset = useMemo(
     () => SYSTEM_PROMPT_PRESETS.find((p) => p.id === settings.systemPromptPreset),
-    [settings.systemPromptPreset]
+    [settings.systemPromptPreset],
   );
 
   const CurrentIcon = getPresetIcon(selectedPreset?.icon || "Palette");

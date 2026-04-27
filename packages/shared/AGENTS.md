@@ -7,6 +7,7 @@
 ## Package Purpose
 
 The `shared` package is the **base layer** of the monorepo. It contains:
+
 - TypeScript type definitions
 - API request/response contracts
 - Zod schemas for validation
@@ -240,12 +241,14 @@ export const PlanRequestSchema = z.object({
 export const PipelineLayoutRequestSchema = z.object({
   prompt: z.string().min(1),
   conceptId: z.string(),
-  sizeHints: z.record(
-    z.object({
-      width: z.number().positive(),
-      height: z.number().positive(),
-    })
-  ).optional(),
+  sizeHints: z
+    .record(
+      z.object({
+        width: z.number().positive(),
+        height: z.number().positive(),
+      }),
+    )
+    .optional(),
   vibe: z.string().optional(),
   style: z.string().optional(),
   aesthetic: z.string().optional(),

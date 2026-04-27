@@ -1,4 +1,7 @@
-export function stripBase64Images(html: string): { stripped: string; restore: (output: string) => string } {
+export function stripBase64Images(html: string): {
+  stripped: string;
+  restore: (output: string) => string;
+} {
   const images: string[] = [];
   const stripped = html.replace(/src="(data:image\/[^"]+)"/g, (_match, dataUri) => {
     const idx = images.length;

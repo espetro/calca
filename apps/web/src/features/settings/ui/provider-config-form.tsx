@@ -5,10 +5,20 @@ interface ProviderConfigFormProps {
   onSave: (provider: ProviderConfig) => void;
   onCancel: () => void;
   existingIds: string[];
-  testProvider: (id: string, apiType: ProviderType, baseUrl: string, apiKey: string) => Promise<{ models: ModelInfo[] }>;
+  testProvider: (
+    id: string,
+    apiType: ProviderType,
+    baseUrl: string,
+    apiKey: string,
+  ) => Promise<{ models: ModelInfo[] }>;
 }
 
-export default function ProviderConfigForm({ onSave, onCancel, existingIds, testProvider }: ProviderConfigFormProps) {
+export default function ProviderConfigForm({
+  onSave,
+  onCancel,
+  existingIds,
+  testProvider,
+}: ProviderConfigFormProps) {
   const [id, setId] = useState("");
   const [apiType, setApiType] = useState<ProviderType>("anthropic");
   const [baseUrl, setBaseUrl] = useState("");
@@ -19,25 +29,28 @@ export default function ProviderConfigForm({ onSave, onCancel, existingIds, test
   const [testError, setTestError] = useState<string | null>(null);
 
   // Validation
-  const isValidId = useCallback((value: string) => {
-    if (!value) return false;
-    if (!/^[a-z0-9-]+$/.test(value)) return false;
-    if (existingIds.includes(value)) return false;
-    return true;
-  }, [existingIds]);
+  const isValidId = useCallback(
+    (value: string) => {
+      if (!value) return false;
+      if (!/^[a-z0-9-]+$/.test(value)) return false;
+      if (existingIds.includes(value)) return false;
+      return true;
+    },
+    [existingIds],
+  );
 
   const isDuplicate = id && existingIds.includes(id);
   const hasInvalidFormat = id && !/^[a-z0-9-]+$/.test(id);
-  
+
   const duplicateError = isDuplicate ? "Provider ID already in use" : null;
   const formatError = hasInvalidFormat ? "Only lowercase letters, numbers, and hyphens" : null;
 
   const handleTest = async () => {
     if (!isValidId(id)) return;
-    
+
     setIsTesting(true);
     setTestError(null);
-    
+
     try {
       const result = await testProvider(id, apiType, baseUrl, apiKey);
       setTestResult(result);
@@ -52,14 +65,14 @@ export default function ProviderConfigForm({ onSave, onCancel, existingIds, test
 
   const handleSave = () => {
     if (!testResult || testError) return;
-    
+
     onSave({
       id,
       apiType,
       baseUrl,
       apiKey,
       models: testResult.models,
-      lastTested: Date.now()
+      lastTested: Date.now(),
     });
   };
 
@@ -81,9 +94,7 @@ export default function ProviderConfigForm({ onSave, onCancel, existingIds, test
           placeholder="e.g., my-provider"
           className="text-[13px] text-gray-800 placeholder-gray-400/50 bg-white/70 backdrop-blur-sm rounded-xl px-5 py-3.5 outline-none border border-white/50 focus:border-blue-300/60 focus:bg-white/90 transition-all w-full"
         />
-        {duplicateError && (
-          <p className="mt-1.5 text-[11px] text-red-500">{duplicateError}</p>
-        )}
+        {duplicateError && <p className="mt-1.5 text-[11px] text-red-500">{duplicateError}</p>}
         {formatError && !duplicateError && (
           <p className="mt-1.5 text-[11px] text-red-500">{formatError}</p>
         )}
@@ -100,14 +111,14 @@ export default function ProviderConfigForm({ onSave, onCancel, existingIds, test
               id: "anthropic" as const,
               label: "Anthropic",
               description: "Claude Opus 4.6, Sonnet 4.5, Opus 4, or Sonnet 4",
-              icon: "🤖"
+              icon: "🤖",
             },
             {
               id: "openai-compatible" as const,
               label: "OpenAI-Compatible",
               description: "GPT-4, GPT-4o, GPT-3.5 Turbo, or custom endpoints",
-              icon: "🚀"
-            }
+              icon: "🚀",
+            },
           ].map((provider) => (
             <button
               key={provider.id}
@@ -120,12 +131,22 @@ export default function ProviderConfigForm({ onSave, onCancel, existingIds, test
             >
               <div className="flex items-center gap-2">
                 <div>
-                  <span className="text-[13px] font-medium">{provider.icon} {provider.label}</span>
+                  <span className="text-[13px] font-medium">
+                    {provider.icon} {provider.label}
+                  </span>
                   <span className="text-[11px] text-gray-500 ml-2">{provider.description}</span>
                 </div>
               </div>
               {apiType === provider.id && (
-                <svg className="w-4 h-4 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  className="w-4 h-4 text-blue-500 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               )}

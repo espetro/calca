@@ -6,10 +6,10 @@ interface PromptInputContainerProps {
   className?: string;
 }
 
-export const PromptInputContainer = ({ 
-  children, 
+export const PromptInputContainer = ({
+  children,
   isGenerating = false,
-  className = ""
+  className = "",
 }: PromptInputContainerProps) => {
   return (
     <div
@@ -29,15 +29,8 @@ interface PromptInputHeaderProps {
   className?: string;
 }
 
-export const PromptInputHeader = ({ 
-  children, 
-  className = ""
-}: PromptInputHeaderProps) => {
-  return (
-    <div className={`flex items-center gap-2 mb-2 ${className}`}>
-      {children}
-    </div>
-  );
+export const PromptInputHeader = ({ children, className = "" }: PromptInputHeaderProps) => {
+  return <div className={`flex items-center gap-2 mb-2 ${className}`}>{children}</div>;
 };
 
 interface PromptInputBodyProps {
@@ -45,15 +38,8 @@ interface PromptInputBodyProps {
   className?: string;
 }
 
-export const PromptInputBody = ({ 
-  children, 
-  className = ""
-}: PromptInputBodyProps) => {
-  return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      {children}
-    </div>
-  );
+export const PromptInputBody = ({ children, className = "" }: PromptInputBodyProps) => {
+  return <div className={`flex items-center gap-2 ${className}`}>{children}</div>;
 };
 
 interface PromptInputFooterProps {
@@ -61,15 +47,8 @@ interface PromptInputFooterProps {
   className?: string;
 }
 
-export const PromptInputFooter = ({ 
-  children, 
-  className = ""
-}: PromptInputFooterProps) => {
-  return (
-    <div className={`flex items-center justify-between gap-2 ${className}`}>
-      {children}
-    </div>
-  );
+export const PromptInputFooter = ({ children, className = "" }: PromptInputFooterProps) => {
+  return <div className={`flex items-center justify-between gap-2 ${className}`}>{children}</div>;
 };
 
 interface PromptInputTextareaProps {
@@ -113,7 +92,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
         style={{ maxHeight: 22 * 6 }}
       />
     );
-  }
+  },
 );
 
 PromptInputTextarea.displayName = "PromptInputTextarea";

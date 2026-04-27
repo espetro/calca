@@ -3,4 +3,9 @@
 
 export { WelcomeModal } from "./ui/welcome-modal";
 export { TutorialTour } from "./ui/tutorial-tour";
-export { showWelcomeAtom, showTutorialAtom, tutorialStepAtom, onboardingCompletedAtom } from "./state/onboarding-atoms";
+export {
+  showWelcomeAtom,
+  showTutorialAtom,
+  tutorialStepAtom,
+  onboardingCompletedAtom,
+} from "./state/onboarding-atoms";

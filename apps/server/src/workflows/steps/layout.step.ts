@@ -1,19 +1,19 @@
-import { type ImagePart, type ModelMessage, type TextPart } from 'ai';
-import { createStep } from '@mastra/core/workflows';
-import { streamAnthropic } from '@app/core/ai/client';
-import type { ProviderType } from '@app/core/ai/providers';
-import { buildNewPrompt, buildRevisionUserContent } from '@app/core/prompts/layout';
-import { validateLayout } from '@app/shared';
-import { stripBase64Images } from '../../lib/strip-base64';
-import { parseHtmlWithSize } from '../../lib/parse-html';
-import { LayoutInputSchema, LayoutOutputSchema } from '../schemas/layout.schema';
+import { type ImagePart, type ModelMessage, type TextPart } from "ai";
+import { createStep } from "@mastra/core/workflows";
+import { streamAnthropic } from "@app/core/ai/client";
+import type { ProviderType } from "@app/core/ai/providers";
+import { buildNewPrompt, buildRevisionUserContent } from "@app/core/prompts/layout";
+import { validateLayout } from "@app/shared";
+import { stripBase64Images } from "../../lib/strip-base64";
+import { parseHtmlWithSize } from "../../lib/parse-html";
+import { LayoutInputSchema, LayoutOutputSchema } from "../schemas/layout.schema";
 
-const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
+const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 const HEARTBEAT_INTERVAL_MS = 5_000;
 
 export const layoutStep = createStep({
-  id: 'layout',
-  description: 'Generate HTML/CSS layout from a design prompt using AI streaming',
+  id: "layout",
+  description: "Generate HTML/CSS layout from a design prompt using AI streaming",
   inputSchema: LayoutInputSchema,
   outputSchema: LayoutOutputSchema,
   execute: async ({ inputData, abortSignal, writer }) => {
@@ -42,7 +42,7 @@ export const layoutStep = createStep({
       restoreFn = restore;
       userContent = buildRevisionUserContent(systemPrompt, stripped, prompt, String(revision));
     } else {
-      userContent = buildNewPrompt(systemPrompt, critique, prompt, '', []);
+      userContent = buildNewPrompt(systemPrompt, critique, prompt, "", []);
     }
 
     // ── Build message parts (text + optional context images) ────────
@@ -50,7 +50,7 @@ export const layoutStep = createStep({
     const imageTokenMap: Record<string, string> = {};
 
     if (contextImages.length > 0) {
-      const validTypes = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+      const validTypes = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
       const imageRefs: string[] = [];
 
       for (let i = 0; i < contextImages.length; i++) {
@@ -60,18 +60,18 @@ export const layoutStep = createStep({
           const token = `[USER_IMAGE_${i + 1}]`;
           imageTokenMap[token] = dataUrl;
 
-          userParts.push({ type: 'image', image: dataUrl });
+          userParts.push({ type: "image", image: dataUrl });
           imageRefs.push(`- Image ${i + 1}: Use src="${token}" to place this image`);
         }
       }
 
       if (imageRefs.length > 0) {
         userParts.push({
-          type: 'text',
+          type: "text",
           text: `USER-PROVIDED IMAGES — USE THESE IN THE DESIGN:
-The ${imageRefs.length} image${imageRefs.length > 1 ? 's' : 'is'} provided by the user to include IN the design.
+The ${imageRefs.length} image${imageRefs.length > 1 ? "s" : "is"} provided by the user to include IN the design.
 
-${imageRefs.join('\n')}
+${imageRefs.join("\n")}
 
 RULES FOR USER IMAGES:
 - Place them as <img> tags using the token as the src attribute (e.g., <img src="[USER_IMAGE_1]" />)
@@ -86,16 +86,14 @@ RULES FOR USER IMAGES:
       }
     }
 
-    userParts.push({ type: 'text', text: userContent });
+    userParts.push({ type: "text", text: userContent });
 
     // ── Build messages array ────────────────────────────────────────
     const messages: ModelMessage[] = [
       {
-        role: 'user',
+        role: "user",
         content:
-          userParts.length === 1 && userParts[0]!.type === 'text'
-            ? userParts[0]!.text
-            : userParts,
+          userParts.length === 1 && userParts[0]!.type === "text" ? userParts[0]!.text : userParts,
       },
     ];
 
@@ -108,15 +106,17 @@ RULES FOR USER IMAGES:
       messages,
       maxTokens: 16384,
       enableCaching: true,
-      systemPrompt: systemPrompt || '',
+      systemPrompt: systemPrompt || "",
     });
 
     const heartbeatInterval = setInterval(() => {
-      writer.write({
-        type: 'heartbeat',
-        stage: 'layout',
-        timestamp: Date.now(),
-      }).catch(() => {});
+      writer
+        .write({
+          type: "heartbeat",
+          stage: "layout",
+          timestamp: Date.now(),
+        })
+        .catch(() => {});
     }, HEARTBEAT_INTERVAL_MS);
 
     try {
@@ -124,12 +124,16 @@ RULES FOR USER IMAGES:
         stream.text,
         new Promise<never>((_, reject) => {
           if (abortSignal.aborted) {
-            reject(new DOMException('Aborted', 'AbortError'));
+            reject(new DOMException("Aborted", "AbortError"));
             return;
           }
-          abortSignal.addEventListener('abort', () => {
-            reject(new DOMException('Aborted', 'AbortError'));
-          }, { once: true });
+          abortSignal.addEventListener(
+            "abort",
+            () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            },
+            { once: true },
+          );
         }),
       ]);
 

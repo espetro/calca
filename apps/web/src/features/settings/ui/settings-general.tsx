@@ -17,10 +17,7 @@ import { showTutorialAtom } from "@/features/onboarding/state/onboarding-atoms";
 import { useProbeModels } from "../hooks/use-probe-models";
 import type { ProviderConfig, Settings } from "../types";
 import type { ProviderType } from "@app/core/ai/providers";
-import {
-  apiKeyValidationSchema,
-  validateModelInProvider,
-} from "../lib/settings-schema";
+import { apiKeyValidationSchema, validateModelInProvider } from "../lib/settings-schema";
 
 interface SettingsGeneralProps {
   settings: Settings;
@@ -65,9 +62,7 @@ function ApiKeyInput({
           {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
         </button>
       </div>
-      {error && (
-        <p className="text-[11px] text-red-500">{error}</p>
-      )}
+      {error && <p className="text-[11px] text-red-500">{error}</p>}
     </div>
   );
 }
@@ -94,11 +89,7 @@ function AddProviderForm({
   const handleApiTypeChange = (value: string) => {
     const type = value as ProviderType;
     setApiType(type);
-    setBaseUrl(
-      type === "anthropic"
-        ? "https://api.anthropic.com/v1"
-        : "https://api.openai.com/v1"
-    );
+    setBaseUrl(type === "anthropic" ? "https://api.anthropic.com/v1" : "https://api.openai.com/v1");
     setTestResult(null);
   };
 
@@ -196,9 +187,7 @@ function AddProviderForm({
             setTestResult(null);
           }}
           placeholder={
-            apiType === "anthropic"
-              ? "https://api.anthropic.com/v1"
-              : "https://api.openai.com/v1"
+            apiType === "anthropic" ? "https://api.anthropic.com/v1" : "https://api.openai.com/v1"
           }
         />
       </div>
@@ -231,23 +220,14 @@ function AddProviderForm({
           {probeModels.isPending ? "Testing..." : "Test Connection"}
         </Button>
         {testResult && (
-          <span
-            className={`text-xs ${
-              testResult.success ? "text-green-600" : "text-red-500"
-            }`}
-          >
+          <span className={`text-xs ${testResult.success ? "text-green-600" : "text-red-500"}`}>
             {testResult.message}
           </span>
         )}
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          size="sm"
-          type="button"
-          onClick={handleSave}
-          disabled={!canSave}
-        >
+        <Button size="sm" type="button" onClick={handleSave} disabled={!canSave}>
           Save
         </Button>
         <button
@@ -335,31 +315,31 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
   const handleProviderKeyChange = (value: string) => {
     if (!selectedProvider) return;
     const result = apiKeyValidationSchema.safeParse(value);
-    const error = result.success ? null : result.error.issues[0]?.message ?? null;
+    const error = result.success ? null : (result.error.issues[0]?.message ?? null);
     setApiKeyErrors((prev) => ({ ...prev, [selectedProvider.id]: error }));
     const updatedProviders = settings.providers.map((p) =>
-      p.id === selectedProvider.id ? { ...p, apiKey: value } : p
+      p.id === selectedProvider.id ? { ...p, apiKey: value } : p,
     );
     onUpdate({ providers: updatedProviders });
   };
 
   const handleGeminiKeyChange = (value: string) => {
     const result = apiKeyValidationSchema.safeParse(value);
-    const error = result.success ? null : result.error.issues[0]?.message ?? null;
+    const error = result.success ? null : (result.error.issues[0]?.message ?? null);
     setApiKeyErrors((prev) => ({ ...prev, gemini: error }));
     onUpdate({ geminiKey: value });
   };
 
   const handleUnsplashKeyChange = (value: string) => {
     const result = apiKeyValidationSchema.safeParse(value);
-    const error = result.success ? null : result.error.issues[0]?.message ?? null;
+    const error = result.success ? null : (result.error.issues[0]?.message ?? null);
     setApiKeyErrors((prev) => ({ ...prev, unsplash: error }));
     onUpdate({ unsplashKey: value });
   };
 
   const handleOpenaiKeyChange = (value: string) => {
     const result = apiKeyValidationSchema.safeParse(value);
-    const error = result.success ? null : result.error.issues[0]?.message ?? null;
+    const error = result.success ? null : (result.error.issues[0]?.message ?? null);
     setApiKeyErrors((prev) => ({ ...prev, openai: error }));
     onUpdate({ openaiKey: value });
   };
@@ -397,9 +377,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           <SelectTrigger className="w-full">
             <SelectValue
               placeholder={
-                settings.providers.length === 0
-                  ? "No providers configured"
-                  : "Select a provider"
+                settings.providers.length === 0 ? "No providers configured" : "Select a provider"
               }
             />
           </SelectTrigger>
@@ -446,9 +424,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
             ))}
           </SelectContent>
         </Select>
-        {modelError && (
-          <p className="text-[11px] text-red-500">{modelError}</p>
-        )}
+        {modelError && <p className="text-[11px] text-red-500">{modelError}</p>}
       </div>
 
       {settings.providers.length > 0 && (
@@ -458,10 +434,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           </Label>
           <div className="space-y-2">
             {settings.providers.map((provider) => (
-              <div
-                key={provider.id}
-                className="rounded-lg border px-3 py-2"
-              >
+              <div key={provider.id} className="rounded-lg border px-3 py-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{provider.id}</span>
@@ -492,10 +465,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
       )}
 
       {showAddProvider ? (
-        <AddProviderForm
-          onSave={handleAddProvider}
-          onCancel={() => setShowAddProvider(false)}
-        />
+        <AddProviderForm onSave={handleAddProvider} onCancel={() => setShowAddProvider(false)} />
       ) : (
         <Button
           variant="outline"

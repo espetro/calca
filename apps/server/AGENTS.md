@@ -91,10 +91,7 @@ await db.insert(projects).values({
 });
 
 // Query designs
-const projectDesigns = await db
-  .select()
-  .from(designs)
-  .where(eq(designs.projectId, projectId));
+const projectDesigns = await db.select().from(designs).where(eq(designs.projectId, projectId));
 ```
 
 ---
@@ -131,12 +128,12 @@ describe("POST /api/pipeline/layout", () => {
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes | Claude API key for layout/QA |
-| `GEMINI_API_KEY` | Yes | Gemini API key for images |
-| `ENCRYPTION_KEY` | Yes | AES-256 key for API key encryption |
-| `DATABASE_URL` | Yes | SQLite database path |
+| Variable            | Required | Description                        |
+| ------------------- | -------- | ---------------------------------- |
+| `ANTHROPIC_API_KEY` | Yes      | Claude API key for layout/QA       |
+| `GEMINI_API_KEY`    | Yes      | Gemini API key for images          |
+| `ENCRYPTION_KEY`    | Yes      | AES-256 key for API key encryption |
+| `DATABASE_URL`      | Yes      | SQLite database path               |
 
 ---
 

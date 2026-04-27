@@ -148,11 +148,15 @@ export function usePersistedGroups() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
         if (Object.keys(images).length > 0) {
           saveImages(images).catch((err) =>
-            logger.debug("Failed to save images to IndexedDB", { error: err instanceof Error ? err.message : String(err) }),
+            logger.debug("Failed to save images to IndexedDB", {
+              error: err instanceof Error ? err.message : String(err),
+            }),
           );
         }
       } catch (err) {
-        logger.debug("Failed to save canvas session", { error: err instanceof Error ? err.message : String(err) });
+        logger.debug("Failed to save canvas session", {
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
     }, 500);
   }, []);

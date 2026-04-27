@@ -8,9 +8,7 @@ export function SummaryList() {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   const visibleGroups = groups.filter((group) => {
-    const hasCompletedIteration = group.iterations.some(
-      (it) => !it.isLoading && it.html
-    );
+    const hasCompletedIteration = group.iterations.some((it) => !it.isLoading && it.html);
     const hasSummary = !!group.summary;
     return hasCompletedIteration || hasSummary;
   });
@@ -53,10 +51,7 @@ export function SummaryList() {
       </div>
 
       {selectedGroupId && (
-        <SummaryDialog
-          groupId={selectedGroupId}
-          onClose={() => setSelectedGroupId(null)}
-        />
+        <SummaryDialog groupId={selectedGroupId} onClose={() => setSelectedGroupId(null)} />
       )}
     </>
   );

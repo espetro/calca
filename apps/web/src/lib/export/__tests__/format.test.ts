@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  DESIGN_EXTENSION,
-  IMPORT_EXTENSIONS,
-} from "../index";
+import { DESIGN_EXTENSION, IMPORT_EXTENSIONS } from "../index";
 
 describe("export format constants", () => {
   it("DESIGN_EXTENSION must equal .design", () => {

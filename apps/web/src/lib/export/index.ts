@@ -105,9 +105,7 @@ export function generateExportFilename(): string {
  * Accepts both legacy `.otto` and new `.design` formats.
  * Returns the groups array or throws on invalid data.
  */
-export function deserializeCanvasFile(
-  data: unknown,
-): DeserializedCanvas {
+export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
   if (!data || typeof data !== "object") {
     throw new Error("Invalid file: not an object");
   }
@@ -119,7 +117,9 @@ export function deserializeCanvasFile(
 
   if (!obj.groups || !Array.isArray(obj.groups)) {
     throw new Error(
-      isLegacyOtto ? "Invalid .otto file: missing groups array" : "Invalid .design file: missing groups array",
+      isLegacyOtto
+        ? "Invalid .otto file: missing groups array"
+        : "Invalid .design file: missing groups array",
     );
   }
 
@@ -172,7 +172,9 @@ export async function readCanvasFile(file: File): Promise<DeserializedCanvas> {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     throw new Error(
-      isOttoFile ? `Failed to parse .otto file: ${message}` : `Failed to parse .design file: ${message}`,
+      isOttoFile
+        ? `Failed to parse .otto file: ${message}`
+        : `Failed to parse .design file: ${message}`,
     );
   }
 }
@@ -207,9 +209,7 @@ export function exportCanvas(groups: GenerationGroup[]): void {
  * Calls `onFile` with the deserialized groups on successful read.
  * Shows an alert on error.
  */
-export function openImportDialog(
-  onFile: (groups: GenerationGroup[]) => void,
-): void {
+export function openImportDialog(onFile: (groups: GenerationGroup[]) => void): void {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = IMPORT_EXTENSIONS.join(",");

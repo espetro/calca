@@ -38,9 +38,10 @@ export const migrateSettings = (settings: unknown): MigratedSettings | null => {
 
     const apiKey = typeof s.apiKey === "string" ? s.apiKey : "";
     const baseURL = typeof s.baseURL === "string" ? s.baseURL : "";
-    const providerType = s.providerType === "anthropic" || s.providerType === "openai-compatible"
-      ? s.providerType
-      : "anthropic";
+    const providerType =
+      s.providerType === "anthropic" || s.providerType === "openai-compatible"
+        ? s.providerType
+        : "anthropic";
     const model = typeof s.model === "string" ? s.model : "";
     const ideateModel = typeof s.ideateModel === "string" ? s.ideateModel : undefined;
 
@@ -59,8 +60,7 @@ export const migrateSettings = (settings: unknown): MigratedSettings | null => {
       lastTested: null,
     };
 
-    const prefixModel = (m: string): string =>
-      m.includes("/") ? m : `default/${m}`;
+    const prefixModel = (m: string): string => (m.includes("/") ? m : `default/${m}`);
 
     const result: MigratedSettings = {
       providers: [defaultProvider],

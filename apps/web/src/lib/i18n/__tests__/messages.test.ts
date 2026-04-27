@@ -13,7 +13,8 @@ describe("i18n messages", () => {
   it("onboarding.welcomeTitle must exist and be non-empty", () => {
     const raw = readFileSync(enJsonPath, "utf-8");
     const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val = messages.onboarding && (messages.onboarding as Record<string, unknown>).welcomeTitle;
+    const val =
+      messages.onboarding && (messages.onboarding as Record<string, unknown>).welcomeTitle;
     expect(val).toBeDefined();
     expect(typeof val).toBe("string");
     expect((val as string).trim().length).toBeGreaterThan(0);
@@ -22,7 +23,8 @@ describe("i18n messages", () => {
   it("onboarding.welcomeDescription must exist and be non-empty", () => {
     const raw = readFileSync(enJsonPath, "utf-8");
     const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val = messages.onboarding && (messages.onboarding as Record<string, unknown>).welcomeDescription;
+    const val =
+      messages.onboarding && (messages.onboarding as Record<string, unknown>).welcomeDescription;
     expect(val).toBeDefined();
     expect(typeof val).toBe("string");
     expect((val as string).trim().length).toBeGreaterThan(0);

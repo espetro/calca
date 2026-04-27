@@ -3,19 +3,10 @@
 
 import { useRef, useCallback } from "react";
 import { useSetAtom } from "jotai";
-import {
-  TourProvider,
-  Tour,
-  TourStep,
-  TourOverlay,
-  TourCard,
-} from "@tour-kit/react";
+import { TourProvider, Tour, TourStep, TourOverlay, TourCard } from "@tour-kit/react";
 import { showTutorialAtom } from "../state/onboarding-atoms";
 
-export function TutorialTour(props: {
-  onComplete?: () => void;
-  hasFrames?: boolean;
-}) {
+export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boolean }) {
   const { onComplete } = props;
   const setShowTutorial = useSetAtom(showTutorialAtom);
   const centerRef = useRef<HTMLElement>(null);
@@ -31,12 +22,7 @@ export function TutorialTour(props: {
 
   return (
     <TourProvider>
-      <Tour
-        id="tutorial"
-        autoStart
-        onComplete={handleComplete}
-        onSkip={handleSkip}
-      >
+      <Tour id="tutorial" autoStart onComplete={handleComplete} onSkip={handleSkip}>
         <TourStep
           id="prompt-bar"
           target='[data-tour="prompt-action-mode"]'

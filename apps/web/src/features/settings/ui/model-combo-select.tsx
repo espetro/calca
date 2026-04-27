@@ -13,18 +13,19 @@ export default function ModelComboSelect({
   providers,
   onChange,
 }: ModelComboSelectProps) {
-  const hasModels = providers.some(p => p.models.length > 0);
+  const hasModels = providers.some((p) => p.models.length > 0);
 
   const normalizedValue = value.includes("/")
     ? value
-    : (providers.find(p => p.models.some(m => m.id === value))?.id ?? "") + (value ? `/${value}` : "");
+    : (providers.find((p) => p.models.some((m) => m.id === value))?.id ?? "") +
+      (value ? `/${value}` : "");
 
   const selectedProviderAndModel = normalizedValue.split("/");
   const selectedProviderId = selectedProviderAndModel[0];
   const selectedModelId = selectedProviderAndModel[1];
 
-  const isValidSelection = providers.some(p =>
-    p.models.some(m => `${p.id}/${m.id}` === normalizedValue || m.id === value)
+  const isValidSelection = providers.some((p) =>
+    p.models.some((m) => `${p.id}/${m.id}` === normalizedValue || m.id === value),
   );
 
   return (
@@ -32,7 +33,7 @@ export default function ModelComboSelect({
       <label className="text-[12px] font-medium text-gray-500 uppercase tracking-wider mb-2 block">
         {label}
       </label>
-      
+
       <select
         value={normalizedValue}
         onChange={(e) => onChange(e.target.value)}
@@ -45,14 +46,11 @@ export default function ModelComboSelect({
           </option>
         ) : (
           providers
-            .filter(p => p.models.length > 0)
-            .map(provider => (
+            .filter((p) => p.models.length > 0)
+            .map((provider) => (
               <optgroup key={provider.id} label={provider.id}>
-                {provider.models.map(model => (
-                  <option
-                    key={`${provider.id}/${model.id}`}
-                    value={`${provider.id}/${model.id}`}
-                  >
+                {provider.models.map((model) => (
+                  <option key={`${provider.id}/${model.id}`} value={`${provider.id}/${model.id}`}>
                     {`${provider.id}/${model.displayName || model.id}`}
                   </option>
                 ))}
@@ -60,7 +58,7 @@ export default function ModelComboSelect({
             ))
         )}
       </select>
-      
+
       {!isValidSelection && normalizedValue && (
         <p className="text-[11px] text-amber-500 mt-1.5">
           Current selection ({normalizedValue}) not found in any provider.

@@ -18,14 +18,16 @@ export const summaryStep = createStep({
   outputSchema: SummaryOutputSchema,
   execute: async ({ inputData }) => {
     const { html, prompt, labels, model, apiKey, baseURL, providerType } = inputData;
-    
+
     const { stripped } = stripBase64Images(html);
-    
-    const messages: ModelMessage[] = [{
-      role: "user",
-      content: buildSummaryPrompt(prompt, stripped, labels ?? []),
-    }];
-    
+
+    const messages: ModelMessage[] = [
+      {
+        role: "user",
+        content: buildSummaryPrompt(prompt, stripped, labels ?? []),
+      },
+    ];
+
     const { result } = await generateWithFallback({
       apiKey,
       model: model ?? DEFAULT_MODEL,
@@ -34,7 +36,7 @@ export const summaryStep = createStep({
       providerType: providerType as ProviderType | undefined,
       baseURL,
     });
-    
+
     const raw = result.text;
     try {
       const parsed = JSON.parse(raw);

@@ -88,7 +88,7 @@ export function useCanvas() {
         el.addEventListener("wheel", wheelHandler, { passive: false });
       }
     },
-    [wheelHandler]
+    [wheelHandler],
   );
 
   // Cleanup on unmount
@@ -107,7 +107,7 @@ export function useCanvas() {
         y: (screenY - rect.top - state.offset.y) / state.scale,
       };
     },
-    [state.offset, state.scale]
+    [state.offset, state.scale],
   );
 
   const resetView = useCallback(() => {
@@ -128,29 +128,32 @@ export function useCanvas() {
     }));
   }, []);
 
-  const zoomToFit = useCallback((bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
-    const padding = 80;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const contentW = bounds.maxX - bounds.minX;
-    const contentH = bounds.maxY - bounds.minY;
-    if (contentW <= 0 || contentH <= 0) return;
+  const zoomToFit = useCallback(
+    (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
+      const padding = 80;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const contentW = bounds.maxX - bounds.minX;
+      const contentH = bounds.maxY - bounds.minY;
+      if (contentW <= 0 || contentH <= 0) return;
 
-    const scaleX = (vw - padding * 2) / contentW;
-    const scaleY = (vh - padding * 2) / contentH;
-    const newScale = Math.min(scaleX, scaleY, 1);
+      const scaleX = (vw - padding * 2) / contentW;
+      const scaleY = (vh - padding * 2) / contentH;
+      const newScale = Math.min(scaleX, scaleY, 1);
 
-    const centerX = (bounds.minX + bounds.maxX) / 2;
-    const centerY = (bounds.minY + bounds.maxY) / 2;
+      const centerX = (bounds.minX + bounds.maxX) / 2;
+      const centerY = (bounds.minY + bounds.maxY) / 2;
 
-    setState({
-      scale: newScale,
-      offset: {
-        x: vw / 2 - centerX * newScale,
-        y: vh / 2 - centerY * newScale,
-      },
-    });
-  }, []);
+      setState({
+        scale: newScale,
+        offset: {
+          x: vw / 2 - centerX * newScale,
+          y: vh / 2 - centerY * newScale,
+        },
+      });
+    },
+    [],
+  );
 
   return {
     offset: state.offset,

@@ -1,11 +1,11 @@
 export function parseHtmlWithSize(
   raw: string,
-  options?: { extractComments?: boolean; trimHtml?: boolean }
+  options?: { extractComments?: boolean; trimHtml?: boolean },
 ): { html: string; width?: number; height?: number; comment?: string } {
   const { extractComments = false, trimHtml = true } = options ?? {};
-  
+
   let cleaned = trimHtml ? raw.trim() : raw;
-  
+
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
   }
@@ -34,11 +34,13 @@ export function parseHtmlWithSize(
     }
   }
 
-  const htmlStart = cleaned.match(/^[\s\S]*?(<(?:!DOCTYPE|html|head|style|div|section|main|body|meta|link)[>\s])/i);
+  const htmlStart = cleaned.match(
+    /^[\s\S]*?(<(?:!DOCTYPE|html|head|style|div|section|main|body|meta|link)[>\s])/i,
+  );
   if (htmlStart && htmlStart.index !== undefined && htmlStart.index > 0) {
     cleaned = cleaned.substring(htmlStart.index);
   }
-  
+
   const lastTagMatch = cleaned.match(/([\s\S]*<\/(?:html|div|section|main|body)>)/i);
   if (lastTagMatch) cleaned = lastTagMatch[1];
 
