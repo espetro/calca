@@ -5,8 +5,6 @@ import { htmlToSvg } from "../lib/html-to-svg";
 import { TAILWIND_PROMPT, REACT_PROMPT } from "../lib/export-prompts";
 import { getLogger } from "@app/logger";
 
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-
 const logger = getLogger(["calca", "server", "routes", "export"]);
 
 async function convertWithAI(
@@ -50,7 +48,7 @@ export async function handleExport(c: Context) {
     // Strip base64 images to reduce payload size for AI conversion
     const html = rawHtml.replace(/src="data:image\/[^"]+"/g, 'src="[image]"');
 
-    const useModel = model || DEFAULT_MODEL;
+    const useModel = model;
 
     switch (format) {
       case "svg":

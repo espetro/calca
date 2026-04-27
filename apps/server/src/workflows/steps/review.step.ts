@@ -9,8 +9,6 @@ import { stripBase64Images } from "../../lib/strip-base64";
 import { ReviewInputSchema, ReviewOutputSchema } from "../schemas/review.schema";
 import { getLogger } from "@app/logger";
 
-const DEFAULT_MODEL = "claude-opus-4-6";
-
 const logger = getLogger(["calca", "server", "workflow", "review"]);
 
 export const reviewStep = createStep({
@@ -19,7 +17,7 @@ export const reviewStep = createStep({
   outputSchema: ReviewOutputSchema,
   execute: async ({ inputData }) => {
     const { html, prompt, width, height, model, apiKey, baseURL, providerType, frameIndex } = inputData;
-    const useModel = model || DEFAULT_MODEL;
+    const useModel = model;
     const frameIdx = frameIndex ?? 0;
 
     const { stripped, restore } = stripBase64Images(html);

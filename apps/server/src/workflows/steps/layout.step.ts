@@ -8,7 +8,6 @@ import { stripBase64Images } from '../../lib/strip-base64';
 import { parseHtmlWithSize } from '../../lib/parse-html';
 import { LayoutInputSchema, LayoutOutputSchema } from '../schemas/layout.schema';
 
-const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
 const HEARTBEAT_INTERVAL_MS = 5_000;
 
 export const layoutStep = createStep({
@@ -31,7 +30,7 @@ export const layoutStep = createStep({
       frameIndex,
     } = inputData;
 
-    const useModel = model || DEFAULT_MODEL;
+    const useModel = model;
     const isRevision = !!(revision && existingHtml);
     const frameIdx = frameIndex ?? 0;
     const functionId = `layout:${frameIdx + 1}`;

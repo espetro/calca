@@ -10,8 +10,6 @@ import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "server", "workflow", "summary"]);
 
-const DEFAULT_MODEL = "claude-opus-4-6";
-
 export const summaryStep = createStep({
   id: "summary",
   inputSchema: SummaryInputSchema,
@@ -28,7 +26,7 @@ export const summaryStep = createStep({
     
     const { result } = await generateWithFallback({
       apiKey,
-      model: model ?? DEFAULT_MODEL,
+      model: model,
       messages,
       maxTokens: 512,
       providerType: providerType as ProviderType | undefined,

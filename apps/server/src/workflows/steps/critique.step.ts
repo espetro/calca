@@ -26,7 +26,7 @@ export const critiqueStep = createStep({
 
     const { result } = await generateWithFallback({
       apiKey,
-      model: model || "claude-opus-4-6",
+      model: model,
       messages,
       maxTokens: 1024,
       providerType: providerType as ProviderType | undefined,

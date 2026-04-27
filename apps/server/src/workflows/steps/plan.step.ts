@@ -6,8 +6,6 @@ import { buildPlanPrompt } from "@app/core/prompts/plan";
 import { PlanInputSchema, PlanOutputSchema } from "../schemas/plan.schema";
 import { getLogger } from "@app/logger";
 
-const DEFAULT_MODEL = "claude-opus-4-6";
-
 const logger = getLogger(["calca", "server", "workflow", "plan"]);
 
 const VARIATION_STYLES = [
@@ -22,7 +20,7 @@ export const planStep = createStep({
   outputSchema: PlanOutputSchema,
   execute: async ({ inputData }) => {
     const { prompt, model, apiKey, baseURL, providerType } = inputData;
-    const useModel = model || DEFAULT_MODEL;
+    const useModel = model;
 
     const messages: ModelMessage[] = [
       {
