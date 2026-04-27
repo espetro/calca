@@ -1,12 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
-import { FALLBACK_MODELS } from "../types";
 import { migrateSettings } from "../lib/migrate-settings";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
 import { useProbeModels } from "./use-probe-models";
 
 export type { ProviderType, Settings, SelectedImage };
-export { FALLBACK_MODELS };
 
 const STORAGE_KEY = "calca-settings";
 const DEFAULT_MODEL = import.meta.env.VITE_AI_MODEL || "claude-opus-4-6";
@@ -42,6 +40,7 @@ export function useSettings() {
     providerType: createEnvProvider() ? "openai-compatible" : undefined,
     baseURL: DEFAULT_BASE_URL,
     model: DEFAULT_MODEL,
+    fallbackModel: undefined,
     systemPrompt: "",
     systemPromptPreset: "custom",
     conceptCount: 4,
@@ -100,6 +99,7 @@ export function useSettings() {
           providerType: parsed.providerType,
           baseURL: parsed.baseURL ?? DEFAULT_BASE_URL,
           model: parsed.model ?? DEFAULT_MODEL,
+          fallbackModel: parsed.fallbackModel,
           systemPrompt: parsed.systemPrompt ?? "",
           systemPromptPreset: parsed.systemPromptPreset ?? "custom",
           conceptCount: parsed.conceptCount ?? 4,

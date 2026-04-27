@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MODELS, type Settings } from "@/features/settings/types";
+import type { Settings } from "@/features/settings/types";
 import ProviderList from "./provider-list";
 import ProviderConfigForm from "./provider-config-form";
 import ModelComboSelect from "./model-combo-select";
@@ -231,7 +231,7 @@ export function SettingsModal({ settings, onUpdate, onClose, isOwnKey, providers
         {/* Footer */}
         <div className="p-6 border-t border-gray-200/30 flex items-center justify-between">
           <span className="text-[11px] text-gray-500">
-            {MODELS.find((m) => m.id === (settings.model.split('/')[1] || settings.model))?.label || settings.model.split('/')[1] || settings.model}
+            {settings.model.split('/')[1] || settings.model}
             {settings.ideateModel && ` · 🎨 Ideate: ${settings.ideateModel.split('/')[1] || settings.ideateModel}`}
             {(settings.unsplashKey || settings.openaiKey || settings.geminiKey) && ` · 🖼️ ${[settings.unsplashKey && "Unsplash", settings.openaiKey && "DALL·E", settings.geminiKey && "Gemini"].filter(Boolean).join(", ")}`}
           </span>

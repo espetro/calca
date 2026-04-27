@@ -35,6 +35,7 @@ export const settingsSchema = z.object({
   providerType: providerTypeSchema.optional(),
   baseURL: z.string(),
   model: z.string(),
+  fallbackModel: z.string().optional(),
   systemPrompt: z.string(),
   systemPromptPreset: z.string(),
   conceptCount: z.number(),
