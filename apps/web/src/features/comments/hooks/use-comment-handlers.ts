@@ -15,6 +15,7 @@ import type {
   Comment as CommentType,
   CommentMessage,
 } from "@/shared/types";
+import { trackCommentAdded } from "@app/analytics";
 
 interface RevisionJob {
   iterationId: string;
@@ -189,6 +190,7 @@ export const useCommentHandlers = (
       if (!commentDraft) return;
       const nextCount = commentCount + 1;
       setCommentCount(nextCount);
+      trackCommentAdded(false, nextCount);
 
       const commentId = `comment-${Date.now()}`;
       const userMessage: CommentMessage = {
@@ -285,9 +287,10 @@ export const useCommentHandlers = (
         thread: updatedThread,
       });
 
+      trackCommentAdded(true, commentCount + 1);
       processRevisionQueue();
     },
-    [activeComment, activeCommentIterationId, updateComment, processRevisionQueue, setActiveComment]
+    [activeComment, activeCommentIterationId, updateComment, processRevisionQueue, setActiveComment, commentCount]
   );
 
   return {

@@ -10,7 +10,6 @@ import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
 import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom } from "@/features/onboarding";
-import { FeedbackModal, showFeedbackAtom } from "@/features/feedback";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import { SummaryList } from "@/features/design/ui/summary-list";
@@ -27,6 +26,7 @@ import {
 } from "@/features/design/state/generation-atoms";
 import { useMountEffect } from "@/shared/utils/use-mount-effect";
 import { exportCanvas, openImportDialog } from "@/lib/export";
+import { trackExportComplete } from "@app/analytics";
 
 export default function Home() {
   const canvas = useCanvas();
@@ -91,7 +91,10 @@ export default function Home() {
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
 
   const handleExportDesign = useCallback(() => {
+    const startTime = Date.now();
     exportCanvas(groups);
+    const frameCount = groups.reduce((acc, g) => acc + g.iterations.length, 0);
+    trackExportComplete("svg", frameCount, Date.now() - startTime);
   }, [groups]);
 
   const handleImportDesign = useCallback(() => {

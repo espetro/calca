@@ -3,6 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
+      "@app/analytics": ["../../packages/analytics/src/index.ts"],
+      "@app/analytics/*": ["../../packages/analytics/src/*"],
       "@app/core/*": ["../../packages/core/src/*"],
       "@app/shared": ["../../packages/shared/src/index.ts"],
       "@app/server": ["../../apps/server/src/index.ts"]
