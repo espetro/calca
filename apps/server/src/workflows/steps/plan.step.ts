@@ -39,6 +39,7 @@ export const planStep = createStep({
         maxTokens: 2048,
         providerType: providerType as ProviderType | undefined,
         baseURL,
+        functionId: "plan",
       });
 
       const raw = result.text;

@@ -33,6 +33,7 @@ export const summaryStep = createStep({
       maxTokens: 512,
       providerType: providerType as ProviderType | undefined,
       baseURL,
+      functionId: "summary",
     });
     
     const raw = result.text;

@@ -9,27 +9,30 @@ export interface TelemetryCallbacks {
 }
 
 export interface TelemetryCallbacksOptions {
-  functionId?: string;
+  functionId: string;
+  frameIndex?: number;
   isEnabled?: boolean;
 }
 
 export function createTelemetryCallbacks(
   category: string[] = ["calca", "core", "ai", "telemetry"],
-  options?: TelemetryCallbacksOptions,
+  options: TelemetryCallbacksOptions,
 ): TelemetryCallbacks {
   const logger = getLogger(category);
-  const functionId = options?.functionId;
-  const isEnabled = options?.isEnabled ?? true;
+  const functionId = options.functionId;
+  const frameIndex = options.frameIndex;
+  const isEnabled = options.isEnabled ?? true;
 
   const startTimes = new Map<string, number>();
 
   return {
     onStart({ modelId, prompt, settings }) {
       if (!isEnabled) return;
-      const key = functionId ?? modelId;
+      const key = functionId;
       startTimes.set(key, Date.now());
       logger.debug("AI call started", {
         functionId,
+        frameIndex,
         modelId,
         promptLength: prompt.length,
         settings,
@@ -38,10 +41,11 @@ export function createTelemetryCallbacks(
 
     onFinish({ modelId, usage, finishReason, durationMs }) {
       if (!isEnabled) return;
-      const key = functionId ?? modelId;
+      const key = functionId;
       startTimes.delete(key);
       logger.info("AI call completed", {
         functionId,
+        frameIndex,
         modelId,
         usage,
         finishReason,
@@ -51,10 +55,11 @@ export function createTelemetryCallbacks(
 
     onError({ modelId, error }) {
       if (!isEnabled) return;
-      const key = functionId ?? modelId;
+      const key = functionId;
       startTimes.delete(key);
       logger.error("AI call failed", {
         functionId,
+        frameIndex,
         modelId,
         error: error.message,
       });

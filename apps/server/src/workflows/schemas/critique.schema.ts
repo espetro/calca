@@ -7,6 +7,7 @@ export const CritiqueInputSchema = z.object({
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
   providerType: z.string().optional(),
+  frameIndex: z.number().optional(),
 });
 
 export const CritiqueOutputSchema = z.object({

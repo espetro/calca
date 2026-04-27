@@ -28,10 +28,13 @@ export const layoutStep = createStep({
       apiKey,
       baseURL,
       providerType,
+      frameIndex,
     } = inputData;
 
     const useModel = model || DEFAULT_MODEL;
     const isRevision = !!(revision && existingHtml);
+    const frameIdx = frameIndex ?? 0;
+    const functionId = `layout:${frameIdx + 1}`;
 
     // ── Build user content ──────────────────────────────────────────
     let userContent: string;
@@ -109,6 +112,8 @@ RULES FOR USER IMAGES:
       maxTokens: 16384,
       enableCaching: true,
       systemPrompt: systemPrompt || '',
+      functionId,
+      frameIndex: frameIdx,
     });
 
     const heartbeatInterval = setInterval(() => {

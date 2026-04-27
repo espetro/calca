@@ -18,8 +18,9 @@ export const reviewStep = createStep({
   inputSchema: ReviewInputSchema,
   outputSchema: ReviewOutputSchema,
   execute: async ({ inputData }) => {
-    const { html, prompt, width, height, model, apiKey, baseURL, providerType } = inputData;
+    const { html, prompt, width, height, model, apiKey, baseURL, providerType, frameIndex } = inputData;
     const useModel = model || DEFAULT_MODEL;
+    const frameIdx = frameIndex ?? 0;
 
     const { stripped, restore } = stripBase64Images(html);
 
@@ -37,6 +38,8 @@ export const reviewStep = createStep({
       maxTokens: 16384,
       providerType: providerType as ProviderType | undefined,
       baseURL,
+      functionId: `review:${frameIdx + 1}`,
+      frameIndex: frameIdx,
     });
 
     const raw = result.text;

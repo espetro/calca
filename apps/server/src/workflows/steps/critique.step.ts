@@ -11,7 +11,8 @@ export const critiqueStep = createStep({
   inputSchema: CritiqueInputSchema,
   outputSchema: CritiqueOutputSchema,
   execute: async ({ inputData }) => {
-    const { html, prompt, model, apiKey, baseURL, providerType } = inputData;
+    const { html, prompt, model, apiKey, baseURL, providerType, frameIndex } = inputData;
+    const frameIdx = frameIndex ?? 0;
 
     // Strip base64 images to reduce token usage
     const { stripped } = stripBase64Images(html);
@@ -30,6 +31,8 @@ export const critiqueStep = createStep({
       maxTokens: 1024,
       providerType: providerType as ProviderType | undefined,
       baseURL,
+      functionId: `critique:${frameIdx + 1}`,
+      frameIndex: frameIdx,
     });
 
     return {

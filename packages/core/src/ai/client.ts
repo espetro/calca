@@ -68,9 +68,10 @@ export interface GenerateOptions {
   maxTokens: number;
   temperature?: number;
   headers?: Record<string, string | undefined>;
-  enableCaching?: boolean; // Enable prompt caching (layout stage only)
-  systemPrompt?: string; // System prompt for cache key generation
-  functionId?: string; // Telemetry function identifier (e.g. "plan", "layout:2")
+  enableCaching?: boolean;
+  systemPrompt?: string;
+  functionId?: string;
+  frameIndex?: number;
 }
 
 function buildHeaders(apiKey?: string, extraHeaders?: Record<string, string | undefined>): Record<string, string> {
@@ -191,7 +192,7 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
   let lastError: unknown;
 
-  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "generateWithFallback"], { functionId: options.functionId ?? "generateWithFallback" });
+  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "generateWithFallback"], { functionId: options.functionId ?? "generateWithFallback", frameIndex: options.frameIndex });
 
   for (let i = 0; i < fallbacks.length; i++) {
     const modelId = fallbacks[i];
@@ -303,7 +304,7 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
   const cacheHeaders = addCacheControlHeaders(headers, options.enableCaching);
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
 
-  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "streamAnthropic"], { functionId: options.functionId ?? "streamAnthropic" });
+  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "streamAnthropic"], { functionId: options.functionId ?? "streamAnthropic", frameIndex: options.frameIndex });
 
   return streamText({
     model,

@@ -17,16 +17,17 @@ async function convertWithAI(
   providerType?: ProviderType,
   baseURL?: string,
 ): Promise<string> {
-  const { result } = await generateWithFallback({
-    apiKey,
-    model,
-    messages: [
-      { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
-    ],
-    maxTokens: 4096,
-    providerType: providerType as ProviderType | undefined,
-    baseURL,
-  });
+    const { result } = await generateWithFallback({
+      apiKey,
+      model,
+      messages: [
+        { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
+      ],
+      maxTokens: 4096,
+      providerType: providerType as ProviderType | undefined,
+      baseURL,
+      functionId: "export",
+    });
 
   let resultText = result.text.trim();
   if (resultText.startsWith("```")) {

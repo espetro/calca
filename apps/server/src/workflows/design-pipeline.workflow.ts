@@ -165,6 +165,7 @@ const frameOrchestratorStep = createStep({
               contextImages,
               revision,
               existingHtml,
+              frameIndex: index,
             },
             writer,
             abortSignal,
@@ -226,6 +227,7 @@ const frameOrchestratorStep = createStep({
                 apiKey,
                 baseURL,
                 providerType,
+                frameIndex: index,
               },
             } as Parameters<typeof reviewStep.execute>[0]),
           );
@@ -256,6 +258,7 @@ const frameOrchestratorStep = createStep({
                 apiKey,
                 baseURL,
                 providerType,
+                frameIndex: index,
               },
             } as Parameters<typeof critiqueStep.execute>[0]),
           );
