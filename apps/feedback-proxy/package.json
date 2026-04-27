@@ -1,0 +1,17 @@
+{
+  "name": "@app/feedback-proxy",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Feedback proxy server — validates input, rate-limits, and creates GitHub Issues",
+  "license": "AGPL-3.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun src/index.ts",
+    "build": "bun build src/index.ts",
+    "typecheck": "bunx tsc --noEmit --project tsconfig.json"
+  },
+  "dependencies": {
+    "hono": "^4.0.0",
+    "octokit": "^4.1.0"
+  }
+}
