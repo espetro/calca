@@ -22,6 +22,8 @@
   "scripts": {
     "build": "echo 'build: not yet implemented'",
     "typecheck": "tsc --noEmit",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
     "test": "vitest run",
     "clean": "echo 'clean: not yet implemented'"
   },

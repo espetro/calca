@@ -1,29 +1,30 @@
 #!/usr/bin/env bun
-/// <reference types="bun" />
-import { $ } from 'bun';
+import { $ } from "zx";
 
-const checks = [
-  { name: 'oxlint', cmd: 'bunx oxlint' },
-  { name: 'oxfmt', cmd: 'bunx oxfmt --check' },
-  { name: 'tsc', cmd: 'bunx tsc --noEmit' },
-  { name: 'vitest', cmd: 'bunx vitest run' },
+const stages = [
+  { display: "TypeScript", turbo: "typecheck" },
+  { display: "Lint", turbo: "lint" },
+  { display: "Format", turbo: "format" },
+  { display: "Test", turbo: "test" },
 ];
 
 let failed = false;
 
-for (const check of checks) {
-  process.stdout.write(`Running ${check.name}... `);
+for (const { display, turbo } of stages) {
+  process.stdout.write(`Running ${display}... `);
 
   try {
-    await $`${check.cmd}`.quiet();
-    console.log('✅');
-  } catch (error) {
-    console.log('❌');
+    await $`bunx turbo ${turbo}`.quiet();
+    console.log("✅");
+  } catch {
+    console.log("❌");
     failed = true;
-    process.exit(1);
   }
 }
 
-if (!failed) {
-  console.log('All checks passed!');
+console.log("");
+if (failed) {
+  process.exit(1);
+} else {
+  console.log("All checks passed!");
 }

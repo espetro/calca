@@ -10,7 +10,8 @@
     "start": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "lint": "eslint src/ --ext .ts,.tsx",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
     "clean": "rm -rf dist"
   },
   "dependencies": {
