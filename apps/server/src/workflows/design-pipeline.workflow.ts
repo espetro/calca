@@ -16,6 +16,31 @@ import type { CritiqueOutput } from "./schemas/critique.schema";
 
 const logger = getLogger(["calca", "server", "workflow"]);
 
+function withStepLogging<T extends object, U extends object>(
+  step: ReturnType<typeof createStep<T, U>>,
+  stepName: string,
+): typeof step {
+  const originalExecute = step.execute;
+  step.execute = async (context: typeof originalExecute extends (ctx: infer C) => Promise<unknown> ? C : never) => {
+    const start = performance.now();
+    logger.info("Pipeline step starting", { step: stepName });
+    try {
+      const result = await originalExecute(context);
+      const elapsed = Math.round(performance.now() - start);
+      logger.info("Pipeline step completed", { step: stepName, durationMs: elapsed });
+      return result;
+    } catch (err) {
+      const elapsed = Math.round(performance.now() - start);
+      logger.error("Pipeline step failed", { step: stepName, durationMs: elapsed, error: err });
+      throw err;
+    }
+  };
+  return step;
+}
+
+const loggedPlanStep = withStepLogging(planStep, "plan");
+const loggedSummaryStep = withStepLogging(summaryStep, "summary");
+
 // ── Workflow-level schemas ────────────────────────────────────────────────────
 
 const WorkflowInputSchema = z.object({
@@ -81,6 +106,7 @@ const frameOrchestratorStep = createStep({
   inputSchema: PlanOutputSchema,
   outputSchema: FrameOrchestratorOutputSchema,
   execute: async ({ inputData, getInitData, writer, abortSignal }) => {
+    const start = performance.now();
     const { concepts } = inputData;
     const init = getInitData<WorkflowInput>();
     const {
@@ -102,7 +128,7 @@ const frameOrchestratorStep = createStep({
     const isQuickMode = mode === "quick";
     const total = concepts.length;
 
-    // ── Per-frame pipeline ──────────────────────────────────────────────────
+    logger.info("Pipeline step starting", { step: "frameOrchestrator", model });
 
     const runFramePipeline = async (
       concept: { name: string; direction: string },
@@ -110,8 +136,11 @@ const frameOrchestratorStep = createStep({
       previousCritique?: string,
     ): Promise<FrameResult> => {
       const conceptStr = concept.direction ? `${concept.name}: ${concept.direction}` : concept.name;
+      let html: string;
+      let width: number | undefined;
+      let height: number | undefined;
+      let comment: string | undefined;
 
-      // ── Layout ──────────────────────────────────────────────────────────
       writer.write({
         type: "workflow-step",
         step: "layout",
@@ -119,32 +148,35 @@ const frameOrchestratorStep = createStep({
         progress: 0.2 + (index / total) * 0.6,
       });
 
-      const layoutResult = unwrap<LayoutOutput>(
-        await layoutStep.execute({
-          inputData: {
-            prompt,
-            concept: conceptStr,
-            critique: previousCritique,
-            systemPrompt,
-            model,
-            apiKey,
-            baseURL,
-            providerType,
-            contextImages,
-            revision,
-            existingHtml,
-          },
-          writer,
-          abortSignal,
-        } as Parameters<typeof layoutStep.execute>[0]),
-      );
+      {
+        const start = performance.now();
+        logger.info("Pipeline step starting", { step: "layout", frameIndex: index, model });
+        const layoutResult = unwrap<LayoutOutput>(
+          await layoutStep.execute({
+            inputData: {
+              prompt,
+              concept: conceptStr,
+              critique: previousCritique,
+              systemPrompt,
+              model,
+              apiKey,
+              baseURL,
+              providerType,
+              contextImages,
+              revision,
+              existingHtml,
+            },
+            writer,
+            abortSignal,
+          } as Parameters<typeof layoutStep.execute>[0]),
+        );
+        logger.info("Pipeline step completed", { step: "layout", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+        html = layoutResult.html;
+        width = layoutResult.width;
+        height = layoutResult.height;
+        comment = layoutResult.comment;
+      }
 
-      let html: string = layoutResult.html;
-      const width: number | undefined = layoutResult.width;
-      const height: number | undefined = layoutResult.height;
-      const comment: string | undefined = layoutResult.comment;
-
-      // ── Images ──────────────────────────────────────────────────────────
       writer.write({
         type: "workflow-step",
         step: "images",
@@ -152,23 +184,26 @@ const frameOrchestratorStep = createStep({
         progress: 0.4 + (index / total) * 0.6,
       });
 
-      const imagesResult = unwrap<ImagesOutput>(
-        await imagesStep.execute({
-          inputData: {
-            html,
-            geminiKey,
-            unsplashKey,
-            openaiKey,
-            viewport: width && height ? { width, height } : undefined,
-          },
-          writer,
-          abortSignal,
-        } as Parameters<typeof imagesStep.execute>[0]),
-      );
+      {
+        const start = performance.now();
+        logger.info("Pipeline step starting", { step: "images", frameIndex: index });
+        const imagesResult = unwrap<ImagesOutput>(
+          await imagesStep.execute({
+            inputData: {
+              html,
+              geminiKey,
+              unsplashKey,
+              openaiKey,
+              viewport: width && height ? { width, height } : undefined,
+            },
+            writer,
+            abortSignal,
+          } as Parameters<typeof imagesStep.execute>[0]),
+        );
+        logger.info("Pipeline step completed", { step: "images", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+        html = imagesResult.html;
+      }
 
-      html = imagesResult.html;
-
-      // ── Review (skipped in quick mode) ──────────────────────────────────
       if (!isQuickMode) {
         writer.write({
           type: "workflow-step",
@@ -177,25 +212,28 @@ const frameOrchestratorStep = createStep({
           progress: 0.7 + (index / total) * 0.3,
         });
 
-        const reviewResult = unwrap<ReviewOutput>(
-          await reviewStep.execute({
-            inputData: {
-              html,
-              prompt,
-              width,
-              height,
-              model,
-              apiKey,
-              baseURL,
-              providerType,
-            },
-          } as Parameters<typeof reviewStep.execute>[0]),
-        );
-
-        html = reviewResult.html;
+        {
+          const start = performance.now();
+          logger.info("Pipeline step starting", { step: "review", frameIndex: index, model });
+          const reviewResult = unwrap<ReviewOutput>(
+            await reviewStep.execute({
+              inputData: {
+                html,
+                prompt,
+                width,
+                height,
+                model,
+                apiKey,
+                baseURL,
+                providerType,
+              },
+            } as Parameters<typeof reviewStep.execute>[0]),
+          );
+          logger.info("Pipeline step completed", { step: "review", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          html = reviewResult.html;
+        }
       }
 
-      // ── Critique (sequential mode only) ────────────────────────────────
       let critiqueText: string | undefined;
 
       if (!isQuickMode) {
@@ -207,6 +245,8 @@ const frameOrchestratorStep = createStep({
         });
 
         try {
+          const start = performance.now();
+          logger.info("Pipeline step starting", { step: "critique", frameIndex: index, model });
           const critiqueResult = unwrap<CritiqueOutput>(
             await critiqueStep.execute({
               inputData: {
@@ -219,7 +259,98 @@ const frameOrchestratorStep = createStep({
               },
             } as Parameters<typeof critiqueStep.execute>[0]),
           );
+          logger.info("Pipeline step completed", { step: "critique", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          critiqueText = critiqueResult.critique;
+        } catch {
+          // critique is optional — continue without it
+        }
+      }
 
+      writer.write({
+        type: "workflow-step",
+        step: "images",
+        frameIndex: index,
+        progress: 0.4 + (index / total) * 0.6,
+      });
+
+      {
+        const start = performance.now();
+        logger.info("Pipeline step starting", { step: "images", frameIndex: index });
+        const imagesResult = unwrap<ImagesOutput>(
+          await imagesStep.execute({
+            inputData: {
+              html: html!,
+              geminiKey,
+              unsplashKey,
+              openaiKey,
+              viewport: width! && height! ? { width: width!, height: height! } : undefined,
+            },
+            writer,
+            abortSignal,
+          } as Parameters<typeof imagesStep.execute>[0]),
+        );
+        logger.info("Pipeline step completed", { step: "images", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+        html = imagesResult.html;
+      }
+
+      if (!isQuickMode) {
+        writer.write({
+          type: "workflow-step",
+          step: "review",
+          frameIndex: index,
+          progress: 0.7 + (index / total) * 0.3,
+        });
+
+        {
+          const start = performance.now();
+          logger.info("Pipeline step starting", { step: "review", frameIndex: index, model });
+        const reviewResult = unwrap<ReviewOutput>(
+          await reviewStep.execute({
+            inputData: {
+              html,
+              prompt,
+              width,
+              height,
+              model,
+              apiKey,
+              baseURL,
+              providerType,
+              frameIndex: index,
+            },
+          } as Parameters<typeof reviewStep.execute>[0]),
+        );
+          logger.info("Pipeline step completed", { step: "review", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          html = reviewResult.html;
+        }
+      }
+
+      let critiqueText: string | undefined;
+
+      if (!isQuickMode) {
+        writer.write({
+          type: "workflow-step",
+          step: "critique",
+          frameIndex: index,
+          progress: 0.9 + (index / total) * 0.1,
+        });
+
+        try {
+          const start = performance.now();
+          logger.info("Pipeline step starting", { step: "critique", frameIndex: index, model });
+          const critiqueResult = unwrap<CritiqueOutput>(
+            await critiqueStep.execute({
+              inputData: {
+                html,
+                prompt,
+                model,
+                apiKey,
+                baseURL,
+                providerType,
+                frameIndex: index,
+              },
+            } as Parameters<typeof critiqueStep.execute>[0]),
+          );
+          logger.info("Pipeline step completed", { step: "critique", frameIndex: index, durationMs: Math.round(performance.now() - start) });
           critiqueText = critiqueResult.critique;
         } catch {
           // critique is optional — continue without it
@@ -301,6 +432,7 @@ const frameOrchestratorStep = createStep({
     // ── Build output ───────────────────────────────────────────────────────
     const lastFrame = frames[frames.length - 1];
     const labels = frames.map((f) => f.label).filter(Boolean);
+    logger.info("Pipeline step completed", { step: "frameOrchestrator", durationMs: Math.round(performance.now() - start) });
 
     return {
       frames,
@@ -342,9 +474,9 @@ export const designPipeline = createWorkflow({
   inputSchema: WorkflowInputSchema,
   outputSchema: WorkflowOutputSchema,
 })
-  .then(planStep)
+  .then(loggedPlanStep)
   .then(frameOrchestratorStep)
-  .then(summaryStep)
+  .then(loggedSummaryStep)
   .then(collectResultsStep)
   .commit();
 
