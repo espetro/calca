@@ -47,3 +47,4 @@ tmp/
 # project specific
 *.db*
 .osgrep
+*.dmg

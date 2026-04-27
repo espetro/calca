@@ -49,6 +49,7 @@ export interface Settings {
   selectedImages: SelectedImage[];
   theme: Theme;
   onboardingCompleted: boolean;
+  analyticsEnabled: boolean;
 }
 
 

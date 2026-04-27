@@ -6,6 +6,8 @@ import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { Separator } from "@/shared/components/ui/separator";
 import { Badge } from "@/shared/components/ui/badge";
+import { Switch } from "@/shared/components/ui/switch";
+import { optOut, optIn } from "@app/analytics";
 import {
   Select,
   SelectContent,
@@ -342,6 +344,15 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
     onUpdate({ openaiKey: value });
   };
 
+  const handleAnalyticsToggle = (checked: boolean) => {
+    if (checked) {
+      optIn();
+    } else {
+      optOut();
+    }
+    onUpdate({ analyticsEnabled: checked });
+  };
+
   useEffect(() => {
     if (selectedProvider && settings.model) {
       const error = validateModelInProvider(settings.model, selectedProvider.models);
@@ -521,6 +532,23 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           onChange={handleOpenaiKeyChange}
           placeholder="sk-..."
           error={apiKeyErrors.openai}
+        />
+      </div>
+
+      <Separator />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Analytics
+          </Label>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            Help us improve Calca by sharing anonymous usage patterns. No prompts or designs are ever shared.
+          </p>
+        </div>
+        <Switch
+          checked={settings.analyticsEnabled}
+          onCheckedChange={handleAnalyticsToggle}
         />
       </div>
 

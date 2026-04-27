@@ -14,6 +14,10 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const gitHash = process.env.GIT_HASH ?? "";
 
 export default defineConfig({
+  base: "./",
+  build: {
+    target: "esnext",
+  },
   plugins: [react(), tanstackRouter(), tailwindcss()],
   resolve: {
     alias: [

@@ -1,0 +1,22 @@
+{
+  "name": "@app/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "dev:web": "cd ../.. && bun run dev-web",
+    "dev:all": "bun run dev:web & bun run dev",
+    "build:web": "cd ../.. && bun run --filter=@app/web build",
+    "package": "electrobun package",
+    "build:full": "bun run build:web && electrobun package",
+    "clean": "rm -rf build artifacts Resources/web"
+  },
+  "dependencies": {
+    "@app/server": "workspace:*",
+    "electrobun": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}

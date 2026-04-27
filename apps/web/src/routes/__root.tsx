@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -6,12 +6,25 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
 import queryClient from "@/lib/services/api";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
+import {
+  trackAppSessionStart,
+  trackAppSessionEnd,
+  trackProviderChanged,
+  trackSettingsModelChanged,
+  trackThemeChanged,
+  optOut,
+  optIn,
+} from "@app/analytics";
 import "../app/globals.css";
 
 const GA_ID = import.meta.env.VITE_GA_ID;
 
 function RootLayout() {
   const settings = useAtomValue(settingsAtom);
+
+  const prevProviderRef = useRef(settings.providerType);
+  const prevModelRef = useRef(settings.model);
+  const prevThemeRef = useRef(settings.theme);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -33,6 +46,61 @@ function RootLayout() {
       mediaQuery.addEventListener("change", applyTheme);
       return () => mediaQuery.removeEventListener("change", applyTheme);
     }
+  }, [settings.theme]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("calca:last_session_end");
+    const previousDuration = stored ? Date.now() - parseInt(stored, 10) : undefined;
+    trackAppSessionStart(previousDuration);
+
+    const handleBeforeUnload = () => {
+      const sessionStart = localStorage.getItem("calca:session_start");
+      const duration = sessionStart ? Date.now() - parseInt(sessionStart, 10) : 0;
+      localStorage.setItem("calca:last_session_end", Date.now().toString());
+      const designsCreated = parseInt(localStorage.getItem("calca:designs_created") || "0", 10);
+      trackAppSessionEnd(duration, designsCreated);
+    };
+
+    localStorage.setItem("calca:session_start", Date.now().toString());
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!settings.analyticsEnabled) {
+      optOut();
+    } else {
+      optIn();
+    }
+  }, [settings.analyticsEnabled]);
+
+  useEffect(() => {
+    const prev = prevProviderRef.current;
+    const curr = settings.providerType;
+    if (prev !== undefined && prev !== curr) {
+      trackProviderChanged(prev || "none", curr || "none");
+    }
+    prevProviderRef.current = curr;
+  }, [settings.providerType]);
+
+  useEffect(() => {
+    const prev = prevModelRef.current;
+    const curr = settings.model;
+    if (prev !== undefined && prev !== curr) {
+      trackSettingsModelChanged(prev, curr);
+    }
+    prevModelRef.current = curr;
+  }, [settings.model]);
+
+  useEffect(() => {
+    const prev = prevThemeRef.current;
+    const curr = settings.theme;
+    if (prev !== undefined && prev !== curr) {
+      trackThemeChanged(prev, curr);
+    }
+    prevThemeRef.current = curr;
   }, [settings.theme]);
 
   return (

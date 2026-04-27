@@ -49,6 +49,7 @@ export const settingsSchema = z.object({
   selectedImages: z.array(selectedImageSchema),
   theme: themeSchema,
   onboardingCompleted: z.boolean(),
+  analyticsEnabled: z.boolean(),
 });
 
 export type SettingsInput = z.input<typeof settingsSchema>;

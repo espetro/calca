@@ -12,6 +12,13 @@ import {
 } from "@/features/design/state/generation-atoms";
 import type { GenerationGroup, PipelineStage, Point } from "@/shared/types";
 import { apiClient } from "@/lib/api-client";
+import {
+  trackGenerationStart,
+  trackGenerationComplete,
+  trackGenerationFailed,
+  trackPipelineStageStart,
+  trackPipelineStageComplete,
+} from "@app/analytics";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per
@@ -101,6 +108,8 @@ export const useWorkflowStream = () => {
   const setGenStatus = useSetAtom(genStatusAtom);
 
   const abortRef = useRef<AbortController | null>(null);
+  const generationStartTimeRef = useRef<number>(0);
+  const completedStepsRef = useRef<Set<string>>(new Set());
 
   const abort = useCallback(() => {
     abortRef.current?.abort();
@@ -134,6 +143,12 @@ export const useWorkflowStream = () => {
 
       setIsGenerating(true);
       setGenStatus("Starting workflow…");
+
+      generationStartTimeRef.current = Date.now();
+      completedStepsRef.current = new Set();
+
+      const wordCount = prompt.split(/\s+/).filter(Boolean).length;
+      trackGenerationStart(model || "unknown", wordCount, conceptCount);
 
       const newGroup: GenerationGroup = {
         createdAt: Date.now(),
@@ -213,7 +228,8 @@ export const useWorkflowStream = () => {
 
             if (!mapping) {continue;}
 
-            if (stepResult.status === "running") {
+            if (stepResult.status === "running" && !completedStepsRef.current.has(stepName + "_running")) {
+              completedStepsRef.current.add(stepName + "_running");
               for (let i = 0; i < conceptCount; i++) {
                 const iterId = iterIds[i];
                 if (!iterId) {continue;}
@@ -232,6 +248,7 @@ export const useWorkflowStream = () => {
                   };
                 });
               }
+              trackPipelineStageStart(mapping.stage, iterIds[0] || groupId);
 
               const statusLabel =
                 stepName === "frameOrchestrator"
@@ -249,6 +266,7 @@ export const useWorkflowStream = () => {
                 frames?: FrameResult[];
               };
               if (output.frames && Array.isArray(output.frames)) {
+                const stageDuration = Date.now() - generationStartTimeRef.current;
                 for (let i = 0; i < output.frames.length; i++) {
                   if (completedFrameIndices.has(i)) {continue;}
 
@@ -264,6 +282,8 @@ export const useWorkflowStream = () => {
                     ...prev,
                     [iterId]: { progress: 1, stage: "done" },
                   }));
+
+                  trackPipelineStageComplete("layout", iterId, stageDuration);
 
                   setGroups((prev) =>
                     prev.map((g) => {
@@ -439,11 +459,28 @@ export const useWorkflowStream = () => {
         }
 
         setGenStatus("Workflow complete");
+        const totalDuration = Date.now() - generationStartTimeRef.current;
+        const finalWordCount = prompt.split(/\s+/).filter(Boolean).length;
+        trackGenerationComplete(model || "unknown", finalWordCount, conceptCount, totalDuration);
       } catch (error: unknown) {
         if (error instanceof Error && error.name === "AbortError") return;
 
         const msg = error instanceof Error ? error.message : "Workflow failed";
         logger.error("Fatal error", { error: msg });
+
+        const errorType: "auth" | "rate_limit" | "timeout" | "provider_error" | "validation" | "unknown" =
+          msg.includes("401") || msg.includes("403") || msg.includes("unauthorized")
+            ? "auth"
+            : msg.includes("rate") || msg.includes("429")
+              ? "rate_limit"
+              : msg.includes("timeout")
+                ? "timeout"
+                : msg.includes("validation")
+                  ? "validation"
+                  : msg.includes("fetch") || msg.includes("network")
+                    ? "provider_error"
+                    : "unknown";
+        trackGenerationFailed(errorType, model || "unknown", msg);
 
         setGroups((prev) =>
           prev.map((g) => {

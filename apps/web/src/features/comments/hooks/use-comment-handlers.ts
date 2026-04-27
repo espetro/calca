@@ -12,6 +12,7 @@ import {
   commentCountAtom,
 } from "@/features/design/state/comment-atoms";
 import type { Comment as CommentType, CommentMessage } from "@/shared/types";
+import { trackCommentAdded } from "@app/analytics";
 
 interface RevisionJob {
   iterationId: string;
@@ -180,6 +181,7 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
       if (!commentDraft) {return;}
       const nextCount = commentCount + 1;
       setCommentCount(nextCount);
+      trackCommentAdded(false, nextCount);
 
       const commentId = `comment-${Date.now()}`;
       const userMessage: CommentMessage = {
@@ -267,12 +269,13 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
         thread: updatedThread,
       });
 
+      trackCommentAdded(true, commentCount + 1);
       processRevisionQueue();
     },
     [
       activeComment,
       activeCommentIterationId,
-      updateComment,
+      commentCount,
       processRevisionQueue,
       setActiveComment,
     ],
