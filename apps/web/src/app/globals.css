@@ -30,3 +30,14 @@ html, body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+body {
+  -webkit-user-select: none;
+}
+
+input,
+textarea,
+[contenteditable="true"],
+[contenteditable=""] {
+  -webkit-user-select: auto;
+}
