@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const ImagesInputSchema = z.object({
-  html: z.string(),
   geminiKey: z.string().optional(),
-  unsplashKey: z.string().optional(),
+  html: z.string(),
   openaiKey: z.string().optional(),
-  viewport: z.object({ width: z.number(), height: z.number() }).optional(),
+  unsplashKey: z.string().optional(),
+  viewport: z.object({ height: z.number(), width: z.number() }).optional(),
 });
 
 export const ImagesOutputSchema = z.object({

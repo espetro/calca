@@ -10,24 +10,24 @@ import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
 import { SettingsModal } from "@/features/settings";
 import {
-  WelcomeModal,
   TutorialTour,
-  showWelcomeAtom,
+  WelcomeModal,
   showTutorialAtom,
+  showWelcomeAtom,
 } from "@/features/onboarding";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
 import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import { SummaryList } from "@/features/design/ui/summary-list";
 import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
 import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
-import { settingsAtom, isOwnKeyAtom } from "@/features/settings/state/settings-atoms";
-import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
+import { isOwnKeyAtom, settingsAtom } from "@/features/settings/state/settings-atoms";
+import { groupsAtom, hydrateGroups, resetSessionAtom } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
 import {
-  showResetConfirmAtom,
-  toolModeAtom,
   showGitHashAtom,
   showLibraryAtom,
+  showResetConfirmAtom,
+  toolModeAtom,
 } from "@/features/design/state/generation-atoms";
 import { useMountEffect } from "@/shared/utils/use-mount-effect";
 import { exportCanvas, openImportDialog } from "@/lib/export";
@@ -81,7 +81,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (hasCheckedOnboarding.current) return;
+    if (hasCheckedOnboarding.current) {return;}
     hasCheckedOnboarding.current = true;
 
     if (!settings.onboardingCompleted) {
@@ -186,8 +186,8 @@ export default function Home() {
             testProvider={(config) =>
               probeModels.mutateAsync({
                 apiKey: config.apiKey,
-                providerType: config.apiType,
                 baseURL: config.baseUrl,
+                providerType: config.apiType,
               })
             }
           />

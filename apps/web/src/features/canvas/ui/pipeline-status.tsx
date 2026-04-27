@@ -20,7 +20,7 @@ export function PipelineStatusOverlay({
   const isError = status.stage === "error";
   const isQueued = status.stage === "queued";
 
-  if (isDone) return null;
+  if (isDone) {return null;}
 
   const topOffset = y + frameHeight + 8;
 

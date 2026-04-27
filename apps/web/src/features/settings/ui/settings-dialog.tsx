@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Separator } from "@/shared/components/ui/separator";
-import { SettingsSidebar, type SettingsSection } from "./settings-sidebar";
+import { type SettingsSection, SettingsSidebar } from "./settings-sidebar";
 import { SettingsGeneral } from "./settings-general";
 import { SettingsPersonalization } from "./settings-personalization";
 import { SettingsAbout } from "./settings-about";

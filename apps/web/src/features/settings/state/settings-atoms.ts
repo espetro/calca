@@ -14,17 +14,17 @@ const ENV_PROVIDER_ID = "environment";
 
 const createEnvProvider = (): ProviderConfig | null => {
   const baseUrl = import.meta.env.VITE_AI_BASE_URL;
-  if (!baseUrl) return null;
+  if (!baseUrl) {return null;}
 
   const modelName = import.meta.env.VITE_AI_MODEL;
   return {
-    id: ENV_PROVIDER_ID,
+    apiKey: import.meta.env.VITE_AI_API_KEY || "",
     apiType: "openai-compatible",
     baseUrl,
-    apiKey: import.meta.env.VITE_AI_API_KEY || "",
-    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
-    lastTested: null,
+    id: ENV_PROVIDER_ID,
     isEnv: true,
+    lastTested: null,
+    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
   };
 };
 
@@ -33,25 +33,25 @@ const createDefaultSettings = (): Settings => {
 
   return {
     apiKey: DEFAULT_API_KEY,
-    geminiKey: "",
-    unsplashKey: "",
-    openaiKey: "",
-    providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
     baseURL: DEFAULT_BASE_URL,
-    model: envProvider ? `${ENV_PROVIDER_ID}/${DEFAULT_MODEL}` : DEFAULT_MODEL,
-    systemPrompt: "",
-    systemPromptPreset: "custom",
     conceptCount: 4,
-    quickMode: false,
-    showZoomControls: false,
-    providers: envProvider ? [envProvider] : [],
+    critiqueMode: false,
+    geminiKey: "",
     ideateModel: undefined,
     isIdeating: false,
-    variations: 1,
-    critiqueMode: false,
-    selectedImages: [],
-    theme: "system",
+    model: envProvider ? `${ENV_PROVIDER_ID}/${DEFAULT_MODEL}` : DEFAULT_MODEL,
     onboardingCompleted: false,
+    openaiKey: "",
+    providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
+    providers: envProvider ? [envProvider] : [],
+    quickMode: false,
+    selectedImages: [],
+    showZoomControls: false,
+    systemPrompt: "",
+    systemPromptPreset: "custom",
+    theme: "system",
+    unsplashKey: "",
+    variations: 1,
   };
 };
 
@@ -62,7 +62,7 @@ const migrateModelFormat = (parsed: Partial<Settings>): Partial<Settings> => {
   const firstProvider = providers[0];
   const targetProvider = envProvider ?? firstProvider;
 
-  if (!targetProvider) return updates;
+  if (!targetProvider) {return updates;}
 
   if (parsed.model && !parsed.model.includes("/")) {
     updates.model = `${targetProvider.id}/${parsed.model}`;
@@ -112,16 +112,16 @@ const createStorage = () => {
         return cachedSettings;
       }
     },
-    setItem: (key: string, value: Settings) => {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-        cachedSettings = value;
-      } catch {}
-    },
     removeItem: (key: string) => {
       try {
         localStorage.removeItem(key);
         cachedSettings = null;
+      } catch {}
+    },
+    setItem: (key: string, value: Settings) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        cachedSettings = value;
       } catch {}
     },
   };
@@ -137,12 +137,12 @@ export const settingsAtom = atomWithStorage<Settings>(
 export const isOwnKeyAtom = atom((get) => {
   const settings = get(settingsAtom);
   const derived = deriveProviderFields(settings.providers, settings.model);
-  return !!derived.apiKey || (derived.providerType === "openai-compatible" && !!derived.baseURL);
+  return Boolean(derived.apiKey) || (derived.providerType === "openai-compatible" && Boolean(derived.baseURL));
 });
 
 export const hasGeminiKeyAtom = atom((get) => {
   const settings = get(settingsAtom);
-  return !!settings.geminiKey;
+  return Boolean(settings.geminiKey);
 });
 
 export const loadedAtom = atom(true);

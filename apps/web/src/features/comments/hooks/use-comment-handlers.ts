@@ -20,8 +20,7 @@ interface RevisionJob {
   thread: CommentMessage[];
 }
 
-interface RunPipelineForFrameFn {
-  (
+type RunPipelineForFrameFn = (
     iterId: string,
     prompt: string,
     style: string,
@@ -29,7 +28,7 @@ interface RunPipelineForFrameFn {
     critique: string | undefined,
     signal: AbortSignal,
     revisionOpts?: { revision: string; existingHtml: string },
-  ): Promise<{
+  ) => Promise<{
     html: string;
     label: string;
     width?: number;
@@ -37,7 +36,6 @@ interface RunPipelineForFrameFn {
     critique?: string;
     comment?: string;
   }>;
-}
 
 export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) => {
   const [groups, setGroups] = useAtom(groupsAtom);
@@ -57,7 +55,7 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
         prev.map((g) => ({
           ...g,
           iterations: g.iterations.map((iter) => {
-            if (iter.id !== iterId) return iter;
+            if (iter.id !== iterId) {return iter;}
             return {
               ...iter,
               comments: iter.comments.map((c) => (c.id === cId ? { ...c, ...update } : c)),
@@ -70,7 +68,7 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
   );
 
   const processRevisionQueue = useCallback(async () => {
-    if (isProcessingRevisionRef.current) return;
+    if (isProcessingRevisionRef.current) {return;}
     isProcessingRevisionRef.current = true;
 
     while (revisionQueueRef.current.length > 0) {
@@ -89,7 +87,7 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
             currentHtml = iter.html;
             currentPrompt = iter.prompt || "";
             const comment = iter.comments.find((c) => c.id === commentId);
-            if (comment?.thread) latestThread = comment.thread;
+            if (comment?.thread) {latestThread = comment.thread;}
           }
         }
       }
@@ -103,68 +101,68 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
           0,
           undefined,
           controller.signal,
-          { revision: text, existingHtml: currentHtml },
+          { existingHtml: currentHtml, revision: text },
         );
 
         setGroups((prev) =>
           prev.map((g) => ({
             ...g,
             iterations: g.iterations.map((iter) => {
-              if (iter.id !== iterationId) return iter;
+              if (iter.id !== iterationId) {return iter;}
               return {
                 ...iter,
+                height: result.height || iter.height,
                 html: result.html || iter.html,
                 width: result.width || iter.width,
-                height: result.height || iter.height,
               };
             }),
           })),
         );
 
         const calcaResponse: CommentMessage = {
+          createdAt: Date.now(),
           id: `msg-${Date.now()}`,
           role: "calca",
           text: result.comment || "Done! I've updated the design.",
-          createdAt: Date.now(),
         };
         const doneThread = [...latestThread, calcaResponse];
         updateComment(iterationId, commentId, {
-          status: "done",
           aiResponse: calcaResponse.text,
+          status: "done",
           thread: doneThread,
         });
         setActiveComment((prev) =>
           prev?.id === commentId
             ? {
                 ...prev,
-                status: "done",
                 aiResponse: calcaResponse.text,
+                status: "done",
                 thread: doneThread,
               }
             : prev,
         );
-      } catch (err) {
+      } catch (error) {
         logger.error("Revision failed", {
-          error: err instanceof Error ? err.message : String(err),
+          error: error instanceof Error ? error.message : String(error),
         });
         const errorResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
           role: "calca",
-          text: `Revision failed: ${err instanceof Error ? err.message : "Unknown error"}. Try again.`,
+          text: `Revision failed: ${error instanceof Error ? error.message : "Unknown error"}. Try again.`,
           createdAt: Date.now(),
         };
         const errorThread = [...latestThread, errorResponse];
         updateComment(iterationId, commentId, {
-          status: "done",
           aiResponse: errorResponse.text,
+          status: "done",
           thread: errorThread,
         });
         setActiveComment((prev) =>
           prev?.id === commentId
             ? {
                 ...prev,
-                status: "done",
                 aiResponse: errorResponse.text,
+                status: "done",
                 thread: errorThread,
               }
             : prev,
@@ -179,24 +177,24 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
 
   const handleCommentSubmit = useCallback(
     (text: string) => {
-      if (!commentDraft) return;
+      if (!commentDraft) {return;}
       const nextCount = commentCount + 1;
       setCommentCount(nextCount);
 
       const commentId = `comment-${Date.now()}`;
       const userMessage: CommentMessage = {
+        createdAt: Date.now(),
         id: `msg-${Date.now()}`,
         role: "user",
         text,
-        createdAt: Date.now(),
       };
       const newComment: CommentType = {
-        id: commentId,
-        position: commentDraft.position,
-        text,
-        number: nextCount,
         createdAt: Date.now(),
+        id: commentId,
+        number: nextCount,
+        position: commentDraft.position,
         status: "waiting",
+        text,
         thread: [userMessage],
       };
 
@@ -220,8 +218,8 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
       setCommentDraft(null);
 
       revisionQueueRef.current.push({
-        iterationId: iterId,
         commentId,
+        iterationId: iterId,
         text,
         thread: [userMessage],
       });
@@ -233,38 +231,38 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
 
   const handleCommentReply = useCallback(
     (text: string) => {
-      if (!activeComment || !activeCommentIterationId) return;
+      if (!activeComment || !activeCommentIterationId) {return;}
 
       const commentId = activeComment.id;
       const iterId = activeCommentIterationId;
       const currentThread = activeComment.thread || [
         {
+          createdAt: activeComment.createdAt,
           id: "msg-0",
           role: "user" as const,
           text: activeComment.text,
-          createdAt: activeComment.createdAt,
         },
       ];
 
       const userMessage: CommentMessage = {
+        createdAt: Date.now(),
         id: `msg-${Date.now()}`,
         role: "user",
         text,
-        createdAt: Date.now(),
       };
       const updatedThread = [...currentThread, userMessage];
 
       updateComment(iterId, commentId, {
-        thread: updatedThread,
         status: "waiting",
+        thread: updatedThread,
       });
       setActiveComment((prev) =>
-        prev ? { ...prev, thread: updatedThread, status: "waiting" } : prev,
+        prev ? { ...prev, status: "waiting", thread: updatedThread } : prev,
       );
 
       revisionQueueRef.current.push({
-        iterationId: iterId,
         commentId,
+        iterationId: iterId,
         text,
         thread: updatedThread,
       });
@@ -281,13 +279,13 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
   );
 
   return {
-    handleCommentSubmit,
-    handleCommentReply,
-    commentDraft,
-    setCommentDraft,
     activeComment,
-    setActiveComment,
     activeCommentIterationId,
+    commentDraft,
+    handleCommentReply,
+    handleCommentSubmit,
+    setActiveComment,
     setActiveCommentIterationId,
+    setCommentDraft,
   };
 };

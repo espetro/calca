@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ToolMode } from "@/shared/types";
 import type { ProviderConfig } from "@/features/settings/types";
 import { MODELS } from "@/features/settings/types";
 import { SettingsDialog } from "@/features/settings/ui/settings-dialog";
 import ToolButton from "./tool-button";
-import Zoom, { ZoomProps } from "./zoom";
+import type { ZoomProps } from "./zoom";
+import Zoom from "./zoom";
 
 interface ToolbarProps extends ZoomProps {
   mode: ToolMode;
@@ -40,7 +41,7 @@ export function Toolbar({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) {return;}
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
@@ -246,20 +247,20 @@ function ModeButton({
   color: "select" | "frame" | "component";
 }) {
   const activeStyles = {
-    select: {
-      background: "var(--tool-select-bg)",
-      color: "var(--tool-select-icon)",
-      boxShadow: "0 0 12px var(--glow-primary)",
+    component: {
+      background: "var(--tool-component-bg)",
+      color: "var(--tool-component-icon)",
+      boxShadow: "0 0 12px oklch(0.80 0.10 28.00 / 0.3)",
     },
     frame: {
       background: "var(--tool-frame-bg)",
       color: "var(--tool-frame-icon)",
       boxShadow: "0 0 12px oklch(0.78 0.09 220.00 / 0.3)",
     },
-    component: {
-      background: "var(--tool-component-bg)",
-      color: "var(--tool-component-icon)",
-      boxShadow: "0 0 12px oklch(0.80 0.10 28.00 / 0.3)",
+    select: {
+      background: "var(--tool-select-bg)",
+      color: "var(--tool-select-icon)",
+      boxShadow: "0 0 12px var(--glow-primary)",
     },
   };
 

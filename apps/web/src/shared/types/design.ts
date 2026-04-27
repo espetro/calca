@@ -27,10 +27,10 @@ export interface GenerationGroup {
 
 export interface CanvasImage {
   id: string;
-  dataUrl: string; // base64 data URI
+  dataUrl: string; // Base64 data URI
   name: string;
   width: number;
   height: number;
   position: import("./canvas").Point;
-  thumbnail: string; // smaller version for UI
+  thumbnail: string; // Smaller version for UI
 }

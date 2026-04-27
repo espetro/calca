@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { useAtom } from "jotai";
 import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { stripBase64Images } from "./strip-base64";
 
 describe("stripBase64Images", () => {

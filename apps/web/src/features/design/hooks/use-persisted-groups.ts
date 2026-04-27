@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
@@ -87,7 +87,7 @@ function extractBase64(groups: GenerationGroup[]): {
         : it.html,
     })),
   }));
-  return { stripped, images };
+  return { images, stripped };
 }
 
 /** Restore base64 from IndexedDB refs */
@@ -100,9 +100,7 @@ function restoreBase64(
     iterations: g.iterations.map((it) => ({
       ...it,
       html: it.html
-        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => {
-            return images[key] ? `src="${images[key]}"` : 'src="[img-missing]"';
-          })
+        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => images[key] ? `src="${images[key]}"` : 'src="[img-missing]"')
         : it.html,
     })),
   }));
@@ -138,7 +136,7 @@ export function usePersistedGroups() {
 
   // Debounced save to localStorage
   const persistGroups = useCallback((newGroups: GenerationGroup[]) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
+    if (saveTimer.current) {clearTimeout(saveTimer.current);}
     saveTimer.current = setTimeout(() => {
       try {
         // Only save groups that have real content
@@ -147,15 +145,15 @@ export function usePersistedGroups() {
         const { stripped, images } = extractBase64(toSave);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
         if (Object.keys(images).length > 0) {
-          saveImages(images).catch((err) =>
+          saveImages(images).catch((error) =>
             logger.debug("Failed to save images to IndexedDB", {
-              error: err instanceof Error ? err.message : String(err),
+              error: error instanceof Error ? error.message : String(error),
             }),
           );
         }
-      } catch (err) {
+      } catch (error) {
         logger.debug("Failed to save canvas session", {
-          error: err instanceof Error ? err.message : String(err),
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }, 500);
@@ -180,5 +178,5 @@ export function usePersistedGroups() {
     } catch {}
   }, []);
 
-  return { groups, setGroups, loaded, resetSession };
+  return { groups, loaded, resetSession, setGroups };
 }

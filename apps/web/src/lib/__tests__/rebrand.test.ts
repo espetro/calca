@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { execSync } from "node:child_process";
 import { resolve } from "node:path";
 
@@ -8,7 +8,7 @@ function grepFiles(pattern: string, glob: string): string[] {
   try {
     const output = execSync(
       `grep -rli --include="${glob}" "${pattern}" "${srcRoot}" 2>/dev/null || true`,
-      { encoding: "utf-8", timeout: 15_000 },
+      { encoding: "utf8", timeout: 15_000 },
     );
     return output
       .split("\n")
@@ -27,17 +27,17 @@ describe("rebrand verification", () => {
   }
 
   it("must not contain the old brand name 'gosto' (case-insensitive, whole word)", () => {
-    const matches = matchesExcludingExport("\\bgosto\\b");
+    const matches = matchesExcludingExport(String.raw`\bgosto\b`);
     expect(matches).toHaveLength(0);
   });
 
   it("must not contain 'calcar' (the typo, case-insensitive, whole word)", () => {
-    const matches = matchesExcludingExport("\\bcalcar\\b");
+    const matches = matchesExcludingExport(String.raw`\bcalcar\b`);
     expect(matches).toHaveLength(0);
   });
 
   it("must not contain the old .otto file format outside the export module", () => {
-    const matches = matchesExcludingExport("\\.otto\\b");
+    const matches = matchesExcludingExport(String.raw`\.otto\b`);
     expect(matches).toHaveLength(0);
   });
 });

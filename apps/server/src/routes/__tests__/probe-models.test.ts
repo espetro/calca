@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Context } from "hono";
 
 vi.mock("@app/core/ai/probe", () => ({
@@ -10,14 +10,14 @@ import { handleProbeModels } from "../probe-models";
 
 function createMockContext(body: unknown): Context {
   const json = vi.fn((data, status) => ({
-    status: status ?? 200,
     json: data,
+    status: status ?? 200,
   }));
   return {
+    json,
     req: {
       json: vi.fn().mockResolvedValue(body),
     },
-    json,
   } as unknown as Context;
 }
 
@@ -59,8 +59,8 @@ describe("handleProbeModels", () => {
 
     const ctx = createMockContext({
       apiKey: "sk-test",
-      providerType: "openai-compatible",
       baseURL: "http://localhost:1234/v1",
+      providerType: "openai-compatible",
     });
     await handleProbeModels(ctx);
 
@@ -75,8 +75,8 @@ describe("handleProbeModels", () => {
     (probeModels as ReturnType<typeof vi.fn>).mockResolvedValue({ "local-model": true });
 
     const ctx = createMockContext({
-      providerType: "openai-compatible",
       baseURL: "http://localhost:1234/v1",
+      providerType: "openai-compatible",
     });
     await handleProbeModels(ctx);
 

@@ -1,6 +1,7 @@
 import { Navigation } from "lucide-react";
 import ToolButton from "./tool-button";
-import Compass, { CompassProps } from "./compass";
+import type { CompassProps } from "./compass";
+import Compass from "./compass";
 
 export interface ZoomProps extends CompassProps {
   scale: number;
@@ -8,8 +9,7 @@ export interface ZoomProps extends CompassProps {
   onZoomOut: () => void;
 }
 
-const Zoom = ({ onZoomIn, onZoomOut, scale, ...compassProps }: ZoomProps) => {
-  return (
+const Zoom = ({ onZoomIn, onZoomOut, scale, ...compassProps }: ZoomProps) => (
     <>
       <ToolButton onClick={onZoomOut} title="Zoom out">
         <svg
@@ -43,6 +43,5 @@ const Zoom = ({ onZoomIn, onZoomOut, scale, ...compassProps }: ZoomProps) => {
       <Compass {...compassProps} />
     </>
   );
-};
 
 export default Zoom;

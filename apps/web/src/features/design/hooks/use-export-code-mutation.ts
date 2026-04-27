@@ -19,11 +19,9 @@ const exportCode = async (params: ExportCodeProps) => {
   return await response.json();
 };
 
-const useExportCodeMutation = () => {
-  return useMutation({
+const useExportCodeMutation = () => useMutation({
     mutationKey: MUTATION_KEY,
     mutationFn: exportCode,
   });
-};
 
 export default useExportCodeMutation;

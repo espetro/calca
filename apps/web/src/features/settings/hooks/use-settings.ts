@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
-import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
+import { useCallback, useEffect, useState } from "react";
+import type { ModelInfo, ProviderConfig, ProviderType, SelectedImage, Settings } from "../types";
 import { FALLBACK_MODELS } from "../types";
 import { migrateSettings } from "../lib/migrate-settings";
 import { deriveProviderFields } from "../lib/derive-provider-fields";
@@ -17,42 +17,42 @@ const ENV_PROVIDER_ID = "environment";
 
 const createEnvProvider = (): ProviderConfig | null => {
   const baseUrl = import.meta.env.VITE_AI_BASE_URL;
-  if (!baseUrl) return null;
+  if (!baseUrl) {return null;}
 
   const modelName = import.meta.env.VITE_AI_MODEL;
   return {
-    id: ENV_PROVIDER_ID,
+    apiKey: import.meta.env.VITE_AI_API_KEY || "",
     apiType: "openai-compatible",
     baseUrl,
-    apiKey: import.meta.env.VITE_AI_API_KEY || "",
-    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
-    lastTested: null,
+    id: ENV_PROVIDER_ID,
     isEnv: true,
+    lastTested: null,
+    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
   };
 };
 
 export function useSettings() {
   const [settings, setSettingsState] = useState<Settings>({
     apiKey: DEFAULT_API_KEY,
-    geminiKey: "",
-    unsplashKey: "",
-    openaiKey: "",
-    providerType: createEnvProvider() ? "openai-compatible" : undefined,
     baseURL: DEFAULT_BASE_URL,
-    model: DEFAULT_MODEL,
-    systemPrompt: "",
-    systemPromptPreset: "custom",
     conceptCount: 4,
-    quickMode: false,
-    showZoomControls: false,
-    providers: [],
+    critiqueMode: false,
+    geminiKey: "",
     ideateModel: undefined,
     isIdeating: false,
-    variations: 1,
-    critiqueMode: false,
-    selectedImages: [],
-    theme: "system",
+    model: DEFAULT_MODEL,
     onboardingCompleted: false,
+    openaiKey: "",
+    providerType: createEnvProvider() ? "openai-compatible" : undefined,
+    providers: [],
+    quickMode: false,
+    selectedImages: [],
+    showZoomControls: false,
+    systemPrompt: "",
+    systemPromptPreset: "custom",
+    theme: "system",
+    unsplashKey: "",
+    variations: 1,
   });
   const [loaded, setLoaded] = useState(false);
   const probeModels = useProbeModels();
@@ -79,8 +79,8 @@ export function useSettings() {
         }
 
         // Auto-migrate stale settings: if user has env config but settings
-        // are pointing to anthropic without an API key, switch to env provider
-        const hasEnvConfig = !!DEFAULT_BASE_URL;
+        // Are pointing to anthropic without an API key, switch to env provider
+        const hasEnvConfig = Boolean(DEFAULT_BASE_URL);
         const isStaleAnthropic = parsed.providerType === "anthropic" && !parsed.apiKey;
         if (hasEnvConfig && isStaleAnthropic && envProvider) {
           parsed.providerType = envProvider.apiType;
@@ -92,25 +92,25 @@ export function useSettings() {
 
         setSettingsState({
           apiKey: parsed.apiKey ?? DEFAULT_API_KEY,
-          geminiKey: parsed.geminiKey ?? "",
-          unsplashKey: parsed.unsplashKey ?? "",
-          openaiKey: parsed.openaiKey ?? "",
-          providerType: parsed.providerType,
           baseURL: parsed.baseURL ?? DEFAULT_BASE_URL,
-          model: parsed.model ?? DEFAULT_MODEL,
-          systemPrompt: parsed.systemPrompt ?? "",
-          systemPromptPreset: parsed.systemPromptPreset ?? "custom",
           conceptCount: parsed.conceptCount ?? 4,
-          quickMode: parsed.quickMode ?? false,
-          showZoomControls: parsed.showZoomControls ?? false,
-          providers,
+          critiqueMode: parsed.critiqueMode ?? false,
+          geminiKey: parsed.geminiKey ?? "",
           ideateModel: parsed.ideateModel,
           isIdeating: parsed.isIdeating ?? false,
-          variations: parsed.variations ?? 1,
-          critiqueMode: parsed.critiqueMode ?? false,
-          selectedImages: parsed.selectedImages ?? [],
-          theme: (parsed.theme as Settings["theme"]) ?? "system",
+          model: parsed.model ?? DEFAULT_MODEL,
           onboardingCompleted: false,
+          openaiKey: parsed.openaiKey ?? "",
+          providerType: parsed.providerType,
+          providers,
+          quickMode: parsed.quickMode ?? false,
+          selectedImages: parsed.selectedImages ?? [],
+          showZoomControls: parsed.showZoomControls ?? false,
+          systemPrompt: parsed.systemPrompt ?? "",
+          systemPromptPreset: parsed.systemPromptPreset ?? "custom",
+          theme: (parsed.theme as Settings["theme"]) ?? "system",
+          unsplashKey: parsed.unsplashKey ?? "",
+          variations: parsed.variations ?? 1,
         });
       } else {
         // No localStorage yet — seed env provider if env vars are set
@@ -136,13 +136,11 @@ export function useSettings() {
   const testProvider = useCallback(
     async (
       config: Omit<ProviderConfig, "models" | "lastTested">,
-    ): Promise<{ models: ModelInfo[]; error?: string }> => {
-      return probeModels.mutateAsync({
+    ): Promise<{ models: ModelInfo[]; error?: string }> => probeModels.mutateAsync({
         apiKey: config.apiKey,
         providerType: config.apiType,
         baseURL: config.baseUrl,
-      });
-    },
+      }),
     [probeModels.mutateAsync],
   );
 
@@ -181,23 +179,23 @@ export function useSettings() {
 
   // For anthropic we need an API key; for openai-compatible a baseURL is enough
   const isOwnKey =
-    !!derived.apiKey || (derived.providerType === "openai-compatible" && !!derived.baseURL);
-  const hasGeminiKey = !!settings.geminiKey;
+    Boolean(derived.apiKey) || (derived.providerType === "openai-compatible" && Boolean(derived.baseURL));
+  const hasGeminiKey = Boolean(settings.geminiKey);
 
   return {
+    addImage,
+    clearImages,
+    hasGeminiKey,
+    isOwnKey,
+    loaded,
+    providers: settings.providers,
+    removeImage,
+    setIsIdeating,
+    setSettings,
     settings: {
       ...settings,
       ...derived,
     },
-    setSettings,
-    setIsIdeating,
-    addImage,
-    removeImage,
-    clearImages,
-    isOwnKey,
-    hasGeminiKey,
-    loaded,
-    providers: settings.providers,
     testProvider,
   };
 }

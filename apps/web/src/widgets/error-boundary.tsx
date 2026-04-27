@@ -23,18 +23,18 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   state: ErrorBoundaryState = {
-    hasError: false,
     error: null,
+    hasError: false,
   };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return { error, hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     this.logger.error("React error caught", {
-      error: error.message,
       componentStack: errorInfo.componentStack,
+      error: error.message,
     });
   }
 
@@ -68,7 +68,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             {this.state.error?.message ?? "An unexpected error occurred."}
           </p>
           <button
-            onClick={() => this.setState({ hasError: false, error: null })}
+            onClick={() => this.setState({ error: null, hasError: false })}
             className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again

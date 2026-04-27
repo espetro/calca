@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Comment, CommentMessage } from "@/shared/types";
 
 interface CommentThreadProps {
@@ -17,14 +17,14 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
     comment.thread && comment.thread.length > 0
       ? comment.thread
       : [
-          { id: "msg-0", role: "user" as const, text: comment.text, createdAt: comment.createdAt },
+          { createdAt: comment.createdAt, id: "msg-0", role: "user" as const, text: comment.text },
           ...(comment.aiResponse
             ? [
                 {
+                  createdAt: comment.createdAt + 1,
                   id: "msg-1",
                   role: "calca" as const,
                   text: comment.aiResponse,
-                  createdAt: comment.createdAt + 1,
                 },
               ]
             : []),
@@ -39,7 +39,7 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
 
   const handleSubmit = () => {
     const trimmed = replyText.trim();
-    if (!trimmed) return;
+    if (!trimmed) {return;}
     setReplyText("");
     onReply(trimmed);
   };

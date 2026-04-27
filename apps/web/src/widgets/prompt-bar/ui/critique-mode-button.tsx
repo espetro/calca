@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { RefreshCw, Zap } from "lucide-react";
 import { useViewportSize } from "../hooks/use-viewport-size";
@@ -25,7 +25,7 @@ export function CritiqueModeButton({
   const { width: viewportWidth, height: viewportHeight } = useViewportSize();
 
   useLayoutEffect(() => {
-    if (!showCritiqueMode || !containerRef.current) return;
+    if (!showCritiqueMode || !containerRef.current) {return;}
 
     const buttonRect = containerRef.current.getBoundingClientRect();
 
@@ -100,8 +100,8 @@ export function CritiqueModeButton({
                 style={
                   !quickMode
                     ? {
-                        borderColor: "var(--mode-critique-fg)",
                         background: "var(--mode-critique-bg)",
+                        borderColor: "var(--mode-critique-fg)",
                       }
                     : { background: "var(--mode-critique-bg-subtle)" }
                 }
@@ -149,7 +149,7 @@ export function CritiqueModeButton({
                 }`}
                 style={
                   quickMode
-                    ? { borderColor: "var(--mode-quick-fg)", background: "var(--mode-quick-bg)" }
+                    ? { background: "var(--mode-quick-bg)", borderColor: "var(--mode-quick-fg)" }
                     : { background: "var(--mode-quick-bg-subtle)" }
                 }
               >

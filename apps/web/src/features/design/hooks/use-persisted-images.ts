@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
@@ -7,7 +7,7 @@ import type { CanvasImage } from "@/shared/types";
 
 const DB_NAME = "calca-canvas-images";
 const STORE_NAME = "ref-images";
-const DB_VERSION = 2; // bump from v1 used by groups hook
+const DB_VERSION = 2; // Bump from v1 used by groups hook
 const MAX_IMAGES = 20;
 
 /** @deprecated Use {@link useIndexedDB} */
@@ -17,7 +17,7 @@ function openDB(): Promise<IDBDatabase> {
     req.onupgradeneeded = () => {
       const db = req.result;
       if (!db.objectStoreNames.contains("images")) {
-        db.createObjectStore("images"); // existing store from groups hook
+        db.createObjectStore("images"); // Existing store from groups hook
       }
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME);
@@ -61,7 +61,7 @@ function compressForStorage(dataUrl: string, maxWidth: number = 800): Promise<st
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       resolve(canvas.toDataURL("image/jpeg", 0.6));
     };
-    img.onerror = () => resolve(dataUrl); // fallback to original
+    img.onerror = () => resolve(dataUrl); // Fallback to original
     img.src = dataUrl;
   });
 }
@@ -90,19 +90,19 @@ export function usePersistedImages() {
         if (stored && stored.length > 0) {
           setImagesRaw(
             stored.map((s) => ({
-              id: s.id,
               dataUrl: s.compressedDataUrl,
-              name: s.name,
-              width: s.width,
               height: s.height,
+              id: s.id,
+              name: s.name,
               position: s.position,
               thumbnail: s.thumbnail,
+              width: s.width,
             })),
           );
         }
-      } catch (err) {
+      } catch (error) {
         logger.debug("Failed to load canvas images", {
-          error: err instanceof Error ? err.message : String(err),
+          error: error instanceof Error ? error.message : String(error),
         });
       }
       setLoaded(true);
@@ -111,26 +111,26 @@ export function usePersistedImages() {
 
   // Debounced save to IndexedDB
   const persistImages = useCallback(async (newImages: CanvasImage[]) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
+    if (saveTimer.current) {clearTimeout(saveTimer.current);}
     saveTimer.current = setTimeout(async () => {
       try {
         const db = await openDB();
         // Compress images for storage (max 800px wide, JPEG 60%)
         const stored: StoredImage[] = await Promise.all(
           newImages.slice(0, MAX_IMAGES).map(async (img) => ({
-            id: img.id,
             compressedDataUrl: await compressForStorage(img.dataUrl),
-            name: img.name,
-            width: img.width,
             height: img.height,
+            id: img.id,
+            name: img.name,
             position: img.position,
             thumbnail: img.thumbnail,
+            width: img.width,
           })),
         );
         await dbPut(db, "canvas-images", stored);
-      } catch (err) {
+      } catch (error) {
         logger.debug("Failed to save canvas images", {
-          error: err instanceof Error ? err.message : String(err),
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }, 500);
@@ -147,5 +147,5 @@ export function usePersistedImages() {
     [persistImages],
   );
 
-  return { images, setImages, loaded };
+  return { images, loaded, setImages };
 }

@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
-  toolModeAtom,
-  spaceHeldAtom,
   selectedIdsAtom,
+  spaceHeldAtom,
+  toolModeAtom,
 } from "@/features/design/state/generation-atoms";
 import { commentDraftAtom } from "@/features/design/state/comment-atoms";
 import { groupsAtom } from "@/features/design/state/groups-atoms";
@@ -32,10 +32,10 @@ export const useKeyboardShortcuts = () => {
   useEffect(
     function registerGlobalKeyListeners() {
       const onKeyDown = (e: KeyboardEvent) => {
-        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {return;}
 
-        if (e.key === "v" || e.key === "V") setToolMode("select");
-        if (e.key === "c" || e.key === "C") setToolMode("comment");
+        if (e.key === "v" || e.key === "V") {setToolMode("select");}
+        if (e.key === "c" || e.key === "C") {setToolMode("comment");}
         if (e.key === " ") {
           e.preventDefault();
           setSpaceHeld(true);
@@ -68,7 +68,7 @@ export const useKeyboardShortcuts = () => {
       };
 
       const onKeyUp = (e: KeyboardEvent) => {
-        if (e.key === " ") setSpaceHeld(false);
+        if (e.key === " ") {setSpaceHeld(false);}
       };
 
       window.addEventListener("keydown", onKeyDown);

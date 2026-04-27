@@ -1,5 +1,5 @@
-import type { ProviderConfig, ProviderType, ModelInfo } from "../types";
-import { useState, useCallback } from "react";
+import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
+import { useCallback, useState } from "react";
 
 interface ProviderConfigFormProps {
   onSave: (provider: ProviderConfig) => void;
@@ -31,9 +31,9 @@ export default function ProviderConfigForm({
   // Validation
   const isValidId = useCallback(
     (value: string) => {
-      if (!value) return false;
-      if (!/^[a-z0-9-]+$/.test(value)) return false;
-      if (existingIds.includes(value)) return false;
+      if (!value) {return false;}
+      if (!/^[a-z0-9-]+$/.test(value)) {return false;}
+      if (existingIds.includes(value)) {return false;}
       return true;
     },
     [existingIds],
@@ -46,7 +46,7 @@ export default function ProviderConfigForm({
   const formatError = hasInvalidFormat ? "Only lowercase letters, numbers, and hyphens" : null;
 
   const handleTest = async () => {
-    if (!isValidId(id)) return;
+    if (!isValidId(id)) {return;}
 
     setIsTesting(true);
     setTestError(null);
@@ -64,15 +64,15 @@ export default function ProviderConfigForm({
   };
 
   const handleSave = () => {
-    if (!testResult || testError) return;
+    if (!testResult || testError) {return;}
 
     onSave({
-      id,
+      apiKey,
       apiType,
       baseUrl,
-      apiKey,
-      models: testResult.models,
+      id,
       lastTested: Date.now(),
+      models: testResult.models,
     });
   };
 
@@ -108,16 +108,16 @@ export default function ProviderConfigForm({
         <div className="space-y-2">
           {[
             {
-              id: "anthropic" as const,
-              label: "Anthropic",
               description: "Claude Opus 4.6, Sonnet 4.5, Opus 4, or Sonnet 4",
               icon: "🤖",
+              id: "anthropic" as const,
+              label: "Anthropic",
             },
             {
-              id: "openai-compatible" as const,
-              label: "OpenAI-Compatible",
               description: "GPT-4, GPT-4o, GPT-3.5 Turbo, or custom endpoints",
               icon: "🚀",
+              id: "openai-compatible" as const,
+              label: "OpenAI-Compatible",
             },
           ].map((provider) => (
             <button

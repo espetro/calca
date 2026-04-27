@@ -27,7 +27,7 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
     });
     const data = await response.json();
     if ("error" in data) {
-      return { models: [], error: data.error };
+      return { error: data.error, models: [] };
     }
     const { available } = data;
 
@@ -38,7 +38,7 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
     const models: ModelInfo[] = Object.entries(available)
       // TODO move this filter to the server
       .filter(([, isAvailable]) => isAvailable)
-      .map(([id]) => ({ id, displayName: id, description: "" }));
+      .map(([id]) => ({ description: "", displayName: id, id }));
 
     if (models.length === 0) {
       return { models: FALLBACK_MODELS };
@@ -47,14 +47,14 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
     return { models };
   } catch (error) {
     return {
-      models: [],
       error: error instanceof Error ? error.message : "Unknown error",
+      models: [],
     };
   }
 };
 
 export const useProbeModels = () =>
   useMutation({
-    mutationKey: MUTATION_KEY,
     mutationFn: probeModels,
+    mutationKey: MUTATION_KEY,
   });

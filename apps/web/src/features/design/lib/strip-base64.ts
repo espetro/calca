@@ -15,5 +15,5 @@ export function stripBase64Images(html: string): {
     }
     return result;
   };
-  return { stripped, restore };
+  return { restore, stripped };
 }

@@ -81,7 +81,7 @@ function extractBase64(groups: GenerationGroup[]): {
         : it.html,
     })),
   }));
-  return { stripped, images };
+  return { images, stripped };
 }
 
 function restoreBase64(
@@ -93,9 +93,7 @@ function restoreBase64(
     iterations: g.iterations.map((it) => ({
       ...it,
       html: it.html
-        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => {
-            return images[key] ? `src="${images[key]}"` : 'src="[img-missing]"';
-          })
+        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => images[key] ? `src="${images[key]}"` : 'src="[img-missing]"')
         : it.html,
     })),
   }));
@@ -104,22 +102,22 @@ function restoreBase64(
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
 function debouncedPersist(groups: GenerationGroup[]): void {
-  if (saveTimer) clearTimeout(saveTimer);
+  if (saveTimer) {clearTimeout(saveTimer);}
   saveTimer = setTimeout(() => {
     try {
       const toSave = groups.filter((g) => g.iterations.some((it) => it.html && !it.isLoading));
       const { stripped, images } = extractBase64(toSave);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
       if (Object.keys(images).length > 0) {
-        saveImagesToIDB(images).catch((err) =>
+        saveImagesToIDB(images).catch((error) =>
           logger.debug("Failed to save images to IndexedDB", {
-            error: err instanceof Error ? err.message : String(err),
+            error: error instanceof Error ? error.message : String(error),
           }),
         );
       }
-    } catch (err) {
+    } catch (error) {
       logger.debug("Failed to save canvas session", {
-        error: err instanceof Error ? err.message : String(err),
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }, 500);
@@ -128,7 +126,7 @@ function debouncedPersist(groups: GenerationGroup[]): void {
 const _groupsBase = atom<GenerationGroup[]>([]);
 
 export const groupsAtom = atom(
-  (get: { (a: typeof _groupsBase): GenerationGroup[] }) => get(_groupsBase),
+  (get: (a: typeof _groupsBase) => GenerationGroup[]) => get(_groupsBase),
   (
     _get: unknown,
     set: (

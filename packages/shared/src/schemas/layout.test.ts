@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateLayout, validateReview, validateCritique } from "../index";
+import { validateCritique, validateLayout, validateReview } from "../index";
 
 describe("LayoutSchema", () => {
   it("parses raw HTML with size hint", () => {

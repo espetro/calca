@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { atom } from "jotai";
 import { settingsSchema } from "../lib/settings-schema";
 
@@ -10,25 +10,25 @@ const createEnvProvider = () => null;
 
 const createDefaultSettings = () => ({
   apiKey: DEFAULT_API_KEY,
-  geminiKey: "",
-  unsplashKey: "",
-  openaiKey: "",
-  providerType: createEnvProvider() ? ("openai-compatible" as const) : undefined,
   baseURL: DEFAULT_BASE_URL,
-  model: createEnvProvider() ? `environment/${DEFAULT_MODEL}` : DEFAULT_MODEL,
-  systemPrompt: "",
-  systemPromptPreset: "custom",
   conceptCount: 4,
-  quickMode: false,
-  showZoomControls: false,
-  providers: createEnvProvider() ? [createEnvProvider()!] : [],
+  critiqueMode: false,
+  geminiKey: "",
   ideateModel: undefined,
   isIdeating: false,
-  variations: 1,
-  critiqueMode: false,
-  selectedImages: [] as Array<{ id: string; src: string; name?: string }>,
-  theme: "system" as const,
+  model: createEnvProvider() ? `environment/${DEFAULT_MODEL}` : DEFAULT_MODEL,
   onboardingCompleted: false,
+  openaiKey: "",
+  providerType: createEnvProvider() ? ("openai-compatible" as const) : undefined,
+  providers: createEnvProvider() ? [createEnvProvider()!] : [],
+  quickMode: false,
+  selectedImages: [] as Array<{ id: string; src: string; name?: string }>,
+  showZoomControls: false,
+  systemPrompt: "",
+  systemPromptPreset: "custom",
+  theme: "system" as const,
+  unsplashKey: "",
+  variations: 1,
 });
 
 describe("settings-atoms defaults", () => {
@@ -61,17 +61,16 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse accepts valid settings data", () => {
     const result = settingsSchema.safeParse({
       apiKey: "test-key",
+      baseURL: "https://api.anthropic.com",
+      conceptCount: 4,
+      critiqueMode: false,
       geminiKey: "",
-      unsplashKey: "",
+      ideateModel: undefined,
+      isIdeating: false,
+      model: "claude-sonnet-4-5",
+      onboardingCompleted: true,
       openaiKey: "",
       providerType: "anthropic",
-      baseURL: "https://api.anthropic.com",
-      model: "claude-sonnet-4-5",
-      systemPrompt: "",
-      systemPromptPreset: "custom",
-      conceptCount: 4,
-      quickMode: false,
-      showZoomControls: false,
       providers: [
         {
           id: "default",
@@ -82,13 +81,14 @@ describe("settingsSchema Zod validation", () => {
           lastTested: null,
         },
       ],
-      ideateModel: undefined,
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
+      quickMode: false,
       selectedImages: [],
+      showZoomControls: false,
+      systemPrompt: "",
+      systemPromptPreset: "custom",
       theme: "dark",
-      onboardingCompleted: true,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -100,23 +100,23 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse rejects invalid theme", () => {
     const result = settingsSchema.safeParse({
       apiKey: "",
-      geminiKey: "",
-      unsplashKey: "",
-      openaiKey: "",
       baseURL: "",
+      conceptCount: 4,
+      critiqueMode: false,
+      geminiKey: "",
+      isIdeating: false,
       model: "test",
+      onboardingCompleted: false,
+      openaiKey: "",
+      providers: [],
+      quickMode: false,
+      selectedImages: [],
+      showZoomControls: false,
       systemPrompt: "",
       systemPromptPreset: "custom",
-      conceptCount: 4,
-      quickMode: false,
-      showZoomControls: false,
-      providers: [],
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
-      selectedImages: [],
       theme: "invalid-theme",
-      onboardingCompleted: false,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(false);
   });
@@ -124,24 +124,24 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse rejects invalid providerType", () => {
     const result = settingsSchema.safeParse({
       apiKey: "",
+      baseURL: "",
+      conceptCount: 4,
+      critiqueMode: false,
       geminiKey: "",
-      unsplashKey: "",
+      isIdeating: false,
+      model: "test",
+      onboardingCompleted: false,
       openaiKey: "",
       providerType: "invalid-provider",
-      baseURL: "",
-      model: "test",
+      providers: [],
+      quickMode: false,
+      selectedImages: [],
+      showZoomControls: false,
       systemPrompt: "",
       systemPromptPreset: "custom",
-      conceptCount: 4,
-      quickMode: false,
-      showZoomControls: false,
-      providers: [],
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
-      selectedImages: [],
       theme: "system",
-      onboardingCompleted: false,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(false);
   });
@@ -149,23 +149,23 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse accepts minimal valid settings", () => {
     const result = settingsSchema.safeParse({
       apiKey: "",
-      geminiKey: "",
-      unsplashKey: "",
-      openaiKey: "",
       baseURL: "",
+      conceptCount: 4,
+      critiqueMode: false,
+      geminiKey: "",
+      isIdeating: false,
       model: "test",
+      onboardingCompleted: false,
+      openaiKey: "",
+      providers: [],
+      quickMode: false,
+      selectedImages: [],
+      showZoomControls: false,
       systemPrompt: "",
       systemPromptPreset: "custom",
-      conceptCount: 4,
-      quickMode: false,
-      showZoomControls: false,
-      providers: [],
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
-      selectedImages: [],
       theme: "system",
-      onboardingCompleted: false,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(true);
   });
@@ -173,23 +173,23 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse rejects conceptCount that is not a number", () => {
     const result = settingsSchema.safeParse({
       apiKey: "",
-      geminiKey: "",
-      unsplashKey: "",
-      openaiKey: "",
       baseURL: "",
+      conceptCount: "four",
+      critiqueMode: false,
+      geminiKey: "",
+      isIdeating: false,
       model: "test",
+      onboardingCompleted: false,
+      openaiKey: "",
+      providers: [],
+      quickMode: false,
+      selectedImages: [],
+      showZoomControls: false,
       systemPrompt: "",
       systemPromptPreset: "custom",
-      conceptCount: "four",
-      quickMode: false,
-      showZoomControls: false,
-      providers: [],
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
-      selectedImages: [],
       theme: "system",
-      onboardingCompleted: false,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(false);
   });
@@ -197,16 +197,14 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse accepts valid provider config in providers array", () => {
     const result = settingsSchema.safeParse({
       apiKey: "",
-      geminiKey: "",
-      unsplashKey: "",
-      openaiKey: "",
       baseURL: "",
-      model: "test",
-      systemPrompt: "",
-      systemPromptPreset: "custom",
       conceptCount: 4,
-      quickMode: false,
-      showZoomControls: false,
+      critiqueMode: false,
+      geminiKey: "",
+      isIdeating: false,
+      model: "test",
+      onboardingCompleted: false,
+      openaiKey: "",
       providers: [
         {
           id: "custom",
@@ -217,12 +215,14 @@ describe("settingsSchema Zod validation", () => {
           lastTested: 1234567890,
         },
       ],
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
+      quickMode: false,
       selectedImages: [],
+      showZoomControls: false,
+      systemPrompt: "",
+      systemPromptPreset: "custom",
       theme: "system",
-      onboardingCompleted: false,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -233,16 +233,14 @@ describe("settingsSchema Zod validation", () => {
   it("safeParse rejects invalid provider in providers array", () => {
     const result = settingsSchema.safeParse({
       apiKey: "",
-      geminiKey: "",
-      unsplashKey: "",
-      openaiKey: "",
       baseURL: "",
-      model: "test",
-      systemPrompt: "",
-      systemPromptPreset: "custom",
       conceptCount: 4,
-      quickMode: false,
-      showZoomControls: false,
+      critiqueMode: false,
+      geminiKey: "",
+      isIdeating: false,
+      model: "test",
+      onboardingCompleted: false,
+      openaiKey: "",
       providers: [
         {
           id: "bad",
@@ -253,12 +251,14 @@ describe("settingsSchema Zod validation", () => {
           lastTested: null,
         },
       ],
-      isIdeating: false,
-      variations: 1,
-      critiqueMode: false,
+      quickMode: false,
       selectedImages: [],
+      showZoomControls: false,
+      systemPrompt: "",
+      systemPromptPreset: "custom",
       theme: "system",
-      onboardingCompleted: false,
+      unsplashKey: "",
+      variations: 1,
     });
     expect(result.success).toBe(false);
   });
@@ -267,7 +267,7 @@ describe("settingsSchema Zod validation", () => {
 describe("settingsAtom derived atoms", () => {
   it("settings merge produces correct values", () => {
     const defaults = createDefaultSettings();
-    const override = { theme: "dark" as const, conceptCount: 8 };
+    const override = { conceptCount: 8, theme: "dark" as const };
     const merged = { ...defaults, ...override };
 
     expect(merged.theme).toBe("dark");

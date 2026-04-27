@@ -1,12 +1,12 @@
-import { useState, useRef, useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAtom } from "jotai";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import {
-  PromptInputContainer,
-  PromptInputHeader,
   PromptInputBody,
-  PromptInputTextarea,
+  PromptInputContainer,
   PromptInputFooter,
+  PromptInputHeader,
+  PromptInputTextarea,
 } from "./ai-prompt-input";
 import { ImagePill } from "./image-pill";
 import { AddMediaButton } from "./add-media-button";
@@ -53,8 +53,8 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour
         isIdeating
           ? {
               background: "var(--mode-ideate-bg)",
-              color: "var(--mode-ideate-fg)",
               border: "1px solid var(--mode-ideate-icon-bg)",
+              color: "var(--mode-ideate-fg)",
             }
           : {
               background: "var(--mode-ideate-bg-subtle)",
@@ -129,13 +129,13 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   const { addToHistory, navigateHistory, resetHistoryIndex } = usePromptHistory({
     onSave: (prompt) => {
       setValue("");
-      if (inputRef.current) inputRef.current.style.height = "auto";
+      if (inputRef.current) {inputRef.current.style.height = "auto";}
     },
   });
 
   const handleSubmit = useCallback(() => {
     const trimmed = value.trim();
-    if (!trimmed || isGenerating) return;
+    if (!trimmed || isGenerating) {return;}
 
     addToHistory(trimmed);
     onSubmit(trimmed);
@@ -155,13 +155,13 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
       }
 
       const input = inputRef.current;
-      if (!input) return;
+      if (!input) {return;}
 
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         const direction = e.key === "ArrowUp" ? "up" : "down";
         const newValue = navigateHistory(direction, value, {
-          start: input.selectionStart,
           end: input.selectionEnd,
+          start: input.selectionStart,
         });
         if (newValue !== value) {
           e.preventDefault();
@@ -186,7 +186,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
           setError("Invalid image file");
           return;
         }
-        addImage({ id: crypto.randomUUID(), src: dataUrl, name: file.name });
+        addImage({ id: crypto.randomUUID(), name: file.name, src: dataUrl });
       };
       reader.readAsDataURL(file);
     },

@@ -42,14 +42,14 @@ async function probeAnthropicModels(apiKey: string): Promise<Record<string, bool
   for (const model of MODELS) {
     try {
       await generateText({
-        model: getClaudeModel(model),
-        maxOutputTokens: 1,
-        messages: [{ role: "user", content: "hi" }],
         headers,
+        maxOutputTokens: 1,
+        messages: [{ content: "hi", role: "user" }],
+        model: getClaudeModel(model),
       });
       available[model] = true;
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
       logger.debug(`Probe ${model}: ${msg}`);
 
       // Only mark unavailable for definitive "not found" errors
@@ -79,8 +79,8 @@ async function probeOpenAICompatibleModels(
       headers.Authorization = `Bearer ${apiKey}`;
     }
     const response = await fetch(`${baseUrl}/models`, {
-      method: "GET",
       headers,
+      method: "GET",
     });
 
     if (!response.ok) {
@@ -92,7 +92,7 @@ async function probeOpenAICompatibleModels(
       return {};
     }
 
-    const data = (await response.json()) as { data?: Array<{ id: string }> };
+    const data = (await response.json()) as { data?: { id: string }[] };
     const models = data.data ?? [];
     const available: Record<string, boolean> = {};
 
@@ -101,8 +101,8 @@ async function probeOpenAICompatibleModels(
     }
 
     return available;
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
     logger.error(`OpenAI-compatible probe error: ${msg}`);
     return {};
   }

@@ -76,7 +76,7 @@ const _imagesBase = atom<CanvasImage[]>([]);
 
 // Every write triggers debounced IndexedDB persistence with JPEG compression
 export const canvasImagesAtom = atom(
-  (get: { (a: typeof _imagesBase): CanvasImage[] }) => get(_imagesBase),
+  (get: (a: typeof _imagesBase) => CanvasImage[]) => get(_imagesBase),
   (
     _get: unknown,
     set: (a: typeof _imagesBase, v: CanvasImage[] | ((p: CanvasImage[]) => CanvasImage[])) => void,
@@ -93,25 +93,25 @@ export const canvasImagesAtom = atom(
 let imagesSaveTimer: ReturnType<typeof setTimeout> | null = null;
 
 function debouncedPersistImages(images: CanvasImage[]): void {
-  if (imagesSaveTimer) clearTimeout(imagesSaveTimer);
+  if (imagesSaveTimer) {clearTimeout(imagesSaveTimer);}
   imagesSaveTimer = setTimeout(async () => {
     try {
       const db = await openDB();
       const stored: StoredImage[] = await Promise.all(
         images.slice(0, MAX_IMAGES).map(async (img) => ({
-          id: img.id,
           compressedDataUrl: await compressForStorage(img.dataUrl),
-          name: img.name,
-          width: img.width,
           height: img.height,
+          id: img.id,
+          name: img.name,
           position: img.position,
           thumbnail: img.thumbnail,
+          width: img.width,
         })),
       );
       await dbPut(db, "canvas-images", stored);
-    } catch (err) {
+    } catch (error) {
       logger.debug("Failed to save canvas images", {
-        error: err instanceof Error ? err.message : String(err),
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }, 500);
@@ -124,19 +124,19 @@ export async function hydrateImages(setImages: (imgs: CanvasImage[]) => void): P
     if (stored && stored.length > 0) {
       setImages(
         stored.map((s) => ({
-          id: s.id,
           dataUrl: s.compressedDataUrl,
-          name: s.name,
-          width: s.width,
           height: s.height,
+          id: s.id,
+          name: s.name,
           position: s.position,
           thumbnail: s.thumbnail,
+          width: s.width,
         })),
       );
     }
-  } catch (err) {
+  } catch (error) {
     logger.debug("Failed to load canvas images", {
-      error: err instanceof Error ? err.message : String(err),
+      error: error instanceof Error ? error.message : String(error),
     });
   }
 }

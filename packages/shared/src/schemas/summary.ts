@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const SummarySchema = z.object({
-  title: z.string().min(1).max(80),
   rationale: z.string().min(1).max(300),
+  title: z.string().min(1).max(80),
 });
 
 export const SummaryParsedSchema = SummarySchema;

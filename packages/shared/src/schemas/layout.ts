@@ -9,15 +9,15 @@ export const LayoutSchema = z.string().transform((raw) => {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
   }
   const fenceMatch = cleaned.match(/```(?:html)?\n?([\s\S]*?)\n?```/);
-  if (fenceMatch) cleaned = fenceMatch[1];
+  if (fenceMatch) {cleaned = fenceMatch[1];}
   cleaned = cleaned.trim();
 
   const sizeMatch = cleaned.match(/<!--size:(\d+)x(\d+)-->/);
   let width: number | undefined;
   let height: number | undefined;
   if (sizeMatch) {
-    width = parseInt(sizeMatch[1], 10);
-    height = parseInt(sizeMatch[2], 10);
+    width = Number.parseInt(sizeMatch[1], 10);
+    height = Number.parseInt(sizeMatch[2], 10);
     cleaned = cleaned.replace(/<!--size:\d+x\d+-->\n?/, "").trim();
   }
 
@@ -35,12 +35,14 @@ export const LayoutSchema = z.string().transform((raw) => {
     cleaned = cleaned.substring(htmlStart.index);
   }
   const lastTagMatch = cleaned.match(/([\s\S]*<\/(?:html|div|section|main|body)>)/i);
-  if (lastTagMatch) cleaned = lastTagMatch[1];
+  if (lastTagMatch) {cleaned = lastTagMatch[1];}
 
-  return { html: cleaned.trim(), width, height, comment };
+  return { comment, height, html: cleaned.trim(), width };
 });
 
 export const LayoutParsedSchema = z.object({
+  comment: z.string().optional(),
+  height: z.number().positive().optional(),
   html: z
     .string()
     .min(1)
@@ -48,8 +50,6 @@ export const LayoutParsedSchema = z.object({
       message: "String must contain a valid HTML tag",
     }),
   width: z.number().positive().optional(),
-  height: z.number().positive().optional(),
-  comment: z.string().optional(),
 });
 
 export const validateLayout = (raw: string) => {

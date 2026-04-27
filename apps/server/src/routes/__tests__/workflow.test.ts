@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Context } from "hono";
 
 // Mock dependencies before importing the handler
@@ -45,9 +45,9 @@ describe("handleWorkflow", () => {
     expect(handleWorkflowStream).toHaveBeenCalledOnce();
     expect(handleWorkflowStream).toHaveBeenCalledWith({
       mastra: expect.anything(),
-      workflowId: "designPipeline",
       params: { inputData: { prompt: "a pricing card" } },
       version: "v6",
+      workflowId: "designPipeline",
     });
     expect(createUIMessageStreamResponse).toHaveBeenCalledWith({ stream: mockStream });
     expect(result).toBe(mockResponse);
@@ -65,7 +65,7 @@ describe("handleWorkflow", () => {
   });
 
   it("passes the full request body as inputData", async () => {
-    const body = { prompt: "hero section", conceptCount: 4, preset: "marketing" };
+    const body = { conceptCount: 4, preset: "marketing", prompt: "hero section" };
     const mockStream = {};
     const mockResponse = new Response(null, { status: 200 });
 

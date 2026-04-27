@@ -1,7 +1,7 @@
-import { generateText, streamText, type ModelMessage } from "ai";
-import { getClaudeModel, getAIProvider, MODEL_FALLBACK_CHAIN } from "./providers";
+import { type ModelMessage, generateText, streamText } from "ai";
+import { MODEL_FALLBACK_CHAIN, getAIProvider, getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 import { createTelemetryCallbacks } from "./telemetry";
 
 const DEFAULT_MODEL = "claude-opus-4-6";
@@ -48,7 +48,7 @@ function buildHeaders(
   }
   if (extraHeaders) {
     for (const [k, v] of Object.entries(extraHeaders)) {
-      if (v) headers[k] = v;
+      if (v) {headers[k] = v;}
     }
   }
   return headers;
@@ -79,15 +79,15 @@ function addCacheControlToMessages(
     // Add cache_control to system messages for persistent caching
     content:
       msg.role === "system"
-        ? Array.isArray(msg.content)
-          ? (msg.content as ReadonlyArray<Record<string, unknown>>).map((c) => ({
+        ? (Array.isArray(msg.content)
+          ? (msg.content as readonly Record<string, unknown>[]).map((c) => ({
               ...c,
               cache_control: { type: "ephemeral" as const },
             }))
           : {
               ...(msg.content as unknown as Record<string, unknown>),
               cache_control: { type: "ephemeral" as const },
-            }
+            })
         : msg.content,
   })) as ModelMessage[];
 }
@@ -119,7 +119,7 @@ export async function generateWithFallback(
   const preferredModel = options.model || DEFAULT_MODEL;
   const idx = MODEL_FALLBACK_CHAIN.indexOf(preferredModel);
   const fallbacks =
-    idx >= 0 ? MODEL_FALLBACK_CHAIN.slice(idx) : [preferredModel, ...MODEL_FALLBACK_CHAIN];
+    idx !== -1 ? MODEL_FALLBACK_CHAIN.slice(idx) : [preferredModel, ...MODEL_FALLBACK_CHAIN];
 
   // Check cache if enabled (layout stage only)
   if (options.enableCaching && options.systemPrompt !== undefined) {
@@ -155,28 +155,28 @@ export async function generateWithFallback(
           telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages }),
         onStepFinish: (event) =>
           telemetry.onFinish({
+            durationMs: Date.now(),
+            finishReason: event.finishReason,
             modelId,
             usage: event.usage,
-            finishReason: event.finishReason,
-            durationMs: Date.now(),
           }),
         onFinish: (event) =>
           telemetry.onFinish({
+            durationMs: Date.now(),
+            finishReason: event.finishReason ?? "unknown",
             modelId,
             usage: event.totalUsage,
-            finishReason: event.finishReason ?? "unknown",
-            durationMs: Date.now(),
           }),
       });
       return { result, usedModel: modelId };
-    } catch (err: unknown) {
-      if (isModelNotFoundError(err)) {
+    } catch (error: unknown) {
+      if (isModelNotFoundError(error)) {
         console.warn(`Model ${modelId} unavailable, trying fallback...`);
-        lastError = err;
-        telemetry.onError({ modelId, error: err instanceof Error ? err : new Error(String(err)) });
+        lastError = error;
+        telemetry.onError({ error: error instanceof Error ? error : new Error(String(error)), modelId });
         continue;
       }
-      throw err;
+      throw error;
     }
   }
 
@@ -187,9 +187,9 @@ export async function generateWithFallback(
 function messagesToText(messages: ModelMessage[]): string {
   return messages
     .map((msg) => {
-      if (msg.role === "system") return `system:${JSON.stringify(msg.content)}`;
-      if (msg.role === "user") return `user:${JSON.stringify(msg.content)}`;
-      if (msg.role === "assistant") return `assistant:${JSON.stringify(msg.content)}`;
+      if (msg.role === "system") {return `system:${JSON.stringify(msg.content)}`;}
+      if (msg.role === "user") {return `user:${JSON.stringify(msg.content)}`;}
+      if (msg.role === "assistant") {return `assistant:${JSON.stringify(msg.content)}`;}
       return "";
     })
     .join("|");
@@ -231,17 +231,17 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
       telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages }),
     onStepFinish: (event) =>
       telemetry.onFinish({
+        durationMs: Date.now(),
+        finishReason: event.finishReason,
         modelId,
         usage: event.usage,
-        finishReason: event.finishReason,
-        durationMs: Date.now(),
       }),
     onFinish: (event) =>
       telemetry.onFinish({
+        durationMs: Date.now(),
+        finishReason: event.finishReason ?? "unknown",
         modelId,
         usage: event.totalUsage,
-        finishReason: event.finishReason ?? "unknown",
-        durationMs: Date.now(),
       }),
   });
 }

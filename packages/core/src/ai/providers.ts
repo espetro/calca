@@ -5,9 +5,7 @@ import type { LanguageModelV3 } from "@ai-sdk/provider";
 
 export type ProviderType = "anthropic" | "openai-compatible";
 
-type CallableProvider = {
-  (modelId: string): LanguageModelV3;
-};
+type CallableProvider = (modelId: string) => LanguageModelV3;
 
 export function getAIProvider(
   providerType: ProviderType,
@@ -15,35 +13,37 @@ export function getAIProvider(
   baseURL?: string,
 ): CallableProvider {
   switch (providerType) {
-    case "anthropic":
+    case "anthropic": {
       return anthropic;
-    case "openai-compatible":
+    }
+    case "openai-compatible": {
       return createOpenAICompatible({
-        name: "openai-compatible",
         apiKey,
         baseURL: baseURL ?? "",
+        name: "openai-compatible",
         supportsStructuredOutputs: true,
       });
+    }
   }
 }
 
 export const openaiModels = {
+  "gpt-3.5-turbo": "gpt-3.5-turbo",
   "gpt-4": "gpt-4",
   "gpt-4-turbo": "gpt-4-turbo",
   "gpt-4o": "gpt-4o",
   "gpt-4o-mini": "gpt-4o-mini",
-  "gpt-3.5-turbo": "gpt-3.5-turbo",
 } as const;
 
 export type OpenAIModelId = keyof typeof openaiModels;
 
 export const claudeModels = {
-  "claude-opus-4-6": anthropic("claude-opus-4-6"),
-  "claude-opus-4-5-20250918": anthropic("claude-opus-4-5-20250918"),
-  "claude-sonnet-4-5": anthropic("claude-sonnet-4-5"),
   "claude-opus-4": anthropic("claude-opus-4"),
+  "claude-opus-4-5-20250918": anthropic("claude-opus-4-5-20250918"),
+  "claude-opus-4-6": anthropic("claude-opus-4-6"),
   "claude-sonnet-4": anthropic("claude-sonnet-4"),
   "claude-sonnet-4-20250514": anthropic("claude-sonnet-4-20250514"),
+  "claude-sonnet-4-5": anthropic("claude-sonnet-4-5"),
 } as const;
 
 export const geminiModels = {
@@ -55,7 +55,7 @@ export type GeminiModelId = keyof typeof geminiModels;
 
 export function getClaudeModel(modelId: string) {
   const m = claudeModels[modelId as ClaudeModelId];
-  if (m) return m;
+  if (m) {return m;}
   if (modelId === "claude-sonnet-4-5-20250514") {
     return claudeModels["claude-sonnet-4-5"] ?? claudeModels["claude-sonnet-4-20250514"];
   }

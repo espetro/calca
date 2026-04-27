@@ -1,4 +1,4 @@
-import { createWorkflow, createStep } from "@mastra/core/workflows";
+import { createStep, createWorkflow } from "@mastra/core/workflows";
 import { z } from "zod";
 import { getLogger } from "@app/logger";
 
@@ -19,39 +19,39 @@ const logger = getLogger(["calca", "server", "workflow"]);
 // ── Workflow-level schemas ────────────────────────────────────────────────────
 
 const WorkflowInputSchema = z.object({
-  prompt: z.string(),
-  mode: z.enum(["quick", "sequential"]),
-  conceptCount: z.number().optional(),
-  model: z.string().optional(),
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
-  providerType: z.string().optional(),
-  geminiKey: z.string().optional(),
-  unsplashKey: z.string().optional(),
-  openaiKey: z.string().optional(),
-  systemPrompt: z.string().optional(),
+  conceptCount: z.number().optional(),
   contextImages: z.array(z.string()).optional(),
-  revision: z.string().optional(),
   existingHtml: z.string().optional(),
+  geminiKey: z.string().optional(),
+  mode: z.enum(["quick", "sequential"]),
+  model: z.string().optional(),
+  openaiKey: z.string().optional(),
+  prompt: z.string(),
+  providerType: z.string().optional(),
+  revision: z.string().optional(),
+  systemPrompt: z.string().optional(),
+  unsplashKey: z.string().optional(),
 });
 
 const FrameResultSchema = z.object({
-  html: z.string(),
-  width: z.number().optional(),
-  height: z.number().optional(),
-  label: z.string(),
   comment: z.string().optional(),
   critique: z.string().optional(),
+  height: z.number().optional(),
+  html: z.string(),
+  label: z.string(),
+  width: z.number().optional(),
 });
 
 const FrameOrchestratorOutputSchema = z.object({
-  frames: z.array(FrameResultSchema),
-  html: z.string(),
-  prompt: z.string(),
-  labels: z.array(z.string()),
-  model: z.string().optional(),
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
+  frames: z.array(FrameResultSchema),
+  html: z.string(),
+  labels: z.array(z.string()),
+  model: z.string().optional(),
+  prompt: z.string(),
   providerType: z.string().optional(),
 });
 
@@ -64,22 +64,19 @@ type WorkflowInput = z.infer<typeof WorkflowInputSchema>;
 type FrameResult = z.infer<typeof FrameResultSchema>;
 
 // Mastra step.execute() returns `TOutput | InnerOutput` where InnerOutput
-// is the return of suspend(). Since our steps never suspend, we safely
-// narrow via this helper.
+// Is the return of suspend(). Since our steps never suspend, we safely
+// Narrow via this helper.
 const unwrap = <T>(result: unknown): T => result as T;
 
 // ── Frame orchestrator step ───────────────────────────────────────────────────
 //
 // Receives plan output (concepts) and the full workflow input via getInitData().
 // Runs the per-frame pipeline (layout → images → review → critique) with
-// branching for quick vs sequential mode.
+// Branching for quick vs sequential mode.
 
 const frameOrchestratorStep = createStep({
-  id: "frameOrchestrator",
   description:
     "Runs the per-frame pipeline for each concept. Quick mode = parallel. Sequential mode = sequential with critique loop.",
-  inputSchema: PlanOutputSchema,
-  outputSchema: FrameOrchestratorOutputSchema,
   execute: async ({ inputData, getInitData, writer, abortSignal }) => {
     const { concepts } = inputData;
     const init = getInitData<WorkflowInput>();
@@ -113,14 +110,15 @@ const frameOrchestratorStep = createStep({
 
       // ── Layout ──────────────────────────────────────────────────────────
       writer.write({
-        type: "workflow-step",
-        step: "layout",
         frameIndex: index,
         progress: 0.2 + (index / total) * 0.6,
+        step: "layout",
+        type: "workflow-step",
       });
 
       const layoutResult = unwrap<LayoutOutput>(
         await layoutStep.execute({
+          abortSignal,
           inputData: {
             prompt,
             concept: conceptStr,
@@ -135,25 +133,25 @@ const frameOrchestratorStep = createStep({
             existingHtml,
           },
           writer,
-          abortSignal,
         } as Parameters<typeof layoutStep.execute>[0]),
       );
 
-      let html: string = layoutResult.html;
-      const width: number | undefined = layoutResult.width;
-      const height: number | undefined = layoutResult.height;
-      const comment: string | undefined = layoutResult.comment;
+      let {html} = layoutResult;
+      const {width} = layoutResult;
+      const {height} = layoutResult;
+      const {comment} = layoutResult;
 
       // ── Images ──────────────────────────────────────────────────────────
       writer.write({
-        type: "workflow-step",
-        step: "images",
         frameIndex: index,
         progress: 0.4 + (index / total) * 0.6,
+        step: "images",
+        type: "workflow-step",
       });
 
       const imagesResult = unwrap<ImagesOutput>(
         await imagesStep.execute({
+          abortSignal,
           inputData: {
             html,
             geminiKey,
@@ -162,37 +160,36 @@ const frameOrchestratorStep = createStep({
             viewport: width && height ? { width, height } : undefined,
           },
           writer,
-          abortSignal,
         } as Parameters<typeof imagesStep.execute>[0]),
       );
 
-      html = imagesResult.html;
+      ({ html } = imagesResult);
 
       // ── Review (skipped in quick mode) ──────────────────────────────────
       if (!isQuickMode) {
         writer.write({
-          type: "workflow-step",
-          step: "review",
           frameIndex: index,
           progress: 0.7 + (index / total) * 0.3,
+          step: "review",
+          type: "workflow-step",
         });
 
         const reviewResult = unwrap<ReviewOutput>(
           await reviewStep.execute({
             inputData: {
-              html,
-              prompt,
-              width,
-              height,
-              model,
               apiKey,
               baseURL,
+              height,
+              html,
+              model,
+              prompt,
               providerType,
+              width,
             },
           } as Parameters<typeof reviewStep.execute>[0]),
         );
 
-        html = reviewResult.html;
+        ({ html } = reviewResult);
       }
 
       // ── Critique (sequential mode only) ────────────────────────────────
@@ -200,21 +197,21 @@ const frameOrchestratorStep = createStep({
 
       if (!isQuickMode) {
         writer.write({
-          type: "workflow-step",
-          step: "critique",
           frameIndex: index,
           progress: 0.9 + (index / total) * 0.1,
+          step: "critique",
+          type: "workflow-step",
         });
 
         try {
           const critiqueResult = unwrap<CritiqueOutput>(
             await critiqueStep.execute({
               inputData: {
-                html,
-                prompt,
-                model,
                 apiKey,
                 baseURL,
+                html,
+                model,
+                prompt,
                 providerType,
               },
             } as Parameters<typeof critiqueStep.execute>[0]),
@@ -222,24 +219,24 @@ const frameOrchestratorStep = createStep({
 
           critiqueText = critiqueResult.critique;
         } catch {
-          // critique is optional — continue without it
+          // Critique is optional — continue without it
         }
       }
 
       writer.write({
-        type: "workflow-step",
-        step: "frameComplete",
         frameIndex: index,
         progress: (index + 1) / total,
+        step: "frameComplete",
+        type: "workflow-step",
       });
 
       return {
-        html,
-        width,
-        height,
-        label: `Variation ${index + 1}`,
         comment,
         critique: critiqueText,
+        height,
+        html,
+        label: `Variation ${index + 1}`,
+        width,
       };
     };
 
@@ -249,10 +246,10 @@ const frameOrchestratorStep = createStep({
 
     if (isQuickMode) {
       writer.write({
-        type: "workflow-step",
-        step: "frameOrchestrator",
-        progress: 0.1,
         message: `Running ${total} frames in parallel`,
+        progress: 0.1,
+        step: "frameOrchestrator",
+        type: "workflow-step",
       });
 
       const results = await Promise.allSettled(
@@ -260,7 +257,7 @@ const frameOrchestratorStep = createStep({
       );
 
       frames = results.map((r, i) => {
-        if (r.status === "fulfilled") return r.value;
+        if (r.status === "fulfilled") {return r.value;}
         logger.warn(`Frame ${i + 1} failed:`, r.reason);
         return {
           html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ Frame ${i + 1} failed</p></div>`,
@@ -273,14 +270,14 @@ const frameOrchestratorStep = createStep({
       let previousCritique: string | undefined;
 
       for (let i = 0; i < concepts.length; i++) {
-        if (abortSignal.aborted) break;
+        if (abortSignal.aborted) {break;}
 
         writer.write({
-          type: "workflow-step",
-          step: "frameOrchestrator",
           frameIndex: i,
-          progress: i / total,
           message: `Designing ${i + 1} of ${total}…`,
+          progress: i / total,
+          step: "frameOrchestrator",
+          type: "workflow-step",
         });
 
         try {
@@ -288,7 +285,7 @@ const frameOrchestratorStep = createStep({
           frames.push(result);
           previousCritique = result.critique;
         } catch (error) {
-          if (error instanceof Error && error.name === "AbortError") throw error;
+          if (error instanceof Error && error.name === "AbortError") {throw error;}
           logger.warn(`Frame ${i + 1} failed:`, { error });
           frames.push({
             html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ Frame ${i + 1} failed</p></div>`,
@@ -303,16 +300,19 @@ const frameOrchestratorStep = createStep({
     const labels = frames.map((f) => f.label).filter(Boolean);
 
     return {
-      frames,
-      html: lastFrame?.html ?? "",
-      prompt,
-      labels,
-      model,
       apiKey,
       baseURL,
+      frames,
+      html: lastFrame?.html ?? "",
+      labels,
+      model,
+      prompt,
       providerType,
     };
   },
+  id: "frameOrchestrator",
+  inputSchema: PlanOutputSchema,
+  outputSchema: FrameOrchestratorOutputSchema,
 });
 
 // ── Collect results step ──────────────────────────────────────────────────────
@@ -321,9 +321,6 @@ const frameOrchestratorStep = createStep({
 // (from summaryStep) into the final workflow output.
 
 const collectResultsStep = createStep({
-  id: "collectResults",
-  inputSchema: z.object({ summary: z.string() }),
-  outputSchema: WorkflowOutputSchema,
   execute: async ({ inputData, getStepResult }) => {
     const frameData = getStepResult(frameOrchestratorStep);
     return {
@@ -331,6 +328,9 @@ const collectResultsStep = createStep({
       summary: inputData.summary,
     };
   },
+  id: "collectResults",
+  inputSchema: z.object({ summary: z.string() }),
+  outputSchema: WorkflowOutputSchema,
 });
 
 // ── Workflow definition ───────────────────────────────────────────────────────

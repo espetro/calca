@@ -37,7 +37,7 @@ function cleanup(): void {
   root = null;
 }
 
-const mockLogger = { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() };
+const mockLogger = { debug: vi.fn(), error: vi.fn(), info: vi.fn(), warn: vi.fn() };
 const mockGetLogger = vi.fn(() => mockLogger);
 vi.mock("@app/logger", () => ({
   createLogger: vi.fn(),
@@ -138,8 +138,8 @@ describe("ErrorBoundary", () => {
     expect(mockLogger.error).toHaveBeenCalledWith(
       "React error caught",
       expect.objectContaining({
-        error: "Logging test error",
         componentStack: expect.any(String),
+        error: "Logging test error",
       }),
     );
   });

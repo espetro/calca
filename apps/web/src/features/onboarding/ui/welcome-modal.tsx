@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Joaquin Terrasa. All rights reserved.
 // Licensed under the AGPL-3.0. See packages/shared/LICENSE for details.
 
-import { Sparkles, LayoutGrid, Download } from "lucide-react";
+import { Download, LayoutGrid, Sparkles } from "lucide-react";
 
 import {
   Dialog,
@@ -54,8 +54,8 @@ export function WelcomeModal({
       onComplete({
         anthropicKey: "",
         geminiKey: "",
-        unsplashKey: "",
         openaiKey: "",
+        unsplashKey: "",
       });
     }
   };

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff, Plus, X } from "lucide-react";
 import { useSetAtom } from "jotai";
 import { Label } from "@/shared/components/ui/label";
@@ -94,36 +94,36 @@ function AddProviderForm({
   };
 
   const handleTest = async () => {
-    if (!canTest) return;
+    if (!canTest) {return;}
     setTestResult(null);
     try {
       const result = await probeModels.mutateAsync({
         apiKey,
-        providerType: apiType,
         baseURL: baseUrl,
+        providerType: apiType,
       });
       if (result.error) {
-        setTestResult({ success: false, message: result.error });
+        setTestResult({ message: result.error, success: false });
         setFetchedModels([]);
       } else {
-        setTestResult({ success: true, message: `Found ${result.models.length} models` });
+        setTestResult({ message: `Found ${result.models.length} models`, success: true });
         setFetchedModels(result.models);
       }
     } catch {
-      setTestResult({ success: false, message: "Connection failed" });
+      setTestResult({ message: "Connection failed", success: false });
       setFetchedModels([]);
     }
   };
 
   const handleSave = () => {
-    if (!canSave) return;
+    if (!canSave) {return;}
     const newProvider: ProviderConfig = {
-      id: providerId,
+      apiKey,
       apiType,
       baseUrl,
-      apiKey,
-      models: fetchedModels,
+      id: providerId,
       lastTested: Date.now(),
+      models: fetchedModels,
     };
     onSave(newProvider);
   };
@@ -263,9 +263,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
     return slashIndex > 0 ? settings.model.slice(slashIndex + 1) : settings.model;
   }, [settings.model]);
 
-  const selectedProvider = useMemo(() => {
-    return settings.providers.find((p) => p.id === selectedProviderId);
-  }, [settings.providers, selectedProviderId]);
+  const selectedProvider = useMemo(() => settings.providers.find((p) => p.id === selectedProviderId), [settings.providers, selectedProviderId]);
 
   const handleProviderChange = (providerId: string) => {
     const provider = settings.providers.find((p) => p.id === providerId);
@@ -313,7 +311,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
   };
 
   const handleProviderKeyChange = (value: string) => {
-    if (!selectedProvider) return;
+    if (!selectedProvider) {return;}
     const result = apiKeyValidationSchema.safeParse(value);
     const error = result.success ? null : (result.error.issues[0]?.message ?? null);
     setApiKeyErrors((prev) => ({ ...prev, [selectedProvider.id]: error }));
@@ -352,15 +350,15 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
   }, [settings.model, selectedProvider]);
 
   const providerLabel = selectedProvider
-    ? selectedProvider.apiType === "anthropic"
+    ? (selectedProvider.apiType === "anthropic"
       ? "Anthropic"
-      : "OpenAI-Compatible"
+      : "OpenAI-Compatible")
     : "Provider";
 
   const providerPlaceholder = selectedProvider
-    ? selectedProvider.apiType === "anthropic"
+    ? (selectedProvider.apiType === "anthropic"
       ? "sk-ant-..."
-      : "sk-..."
+      : "sk-...")
     : "API key...";
 
   return (
@@ -410,9 +408,9 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
               placeholder={
                 !selectedProvider
                   ? "Select a provider first"
-                  : selectedProvider.models.length === 0
+                  : (selectedProvider.models.length === 0
                     ? "No models available"
-                    : "Select a model"
+                    : "Select a model")
               }
             />
           </SelectTrigger>

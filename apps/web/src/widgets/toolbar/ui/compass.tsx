@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigation } from "lucide-react";
 import ToolButton from "./tool-button";
 
@@ -8,10 +8,10 @@ export interface CompassProps {
 }
 
 const Compass = ({ offset, onResetView }: CompassProps) => {
-  const [size, setSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+  const [size, setSize] = useState({ h: window.innerHeight, w: window.innerWidth });
 
   useEffect(() => {
-    const onResize = () => setSize({ w: window.innerWidth, h: window.innerHeight });
+    const onResize = () => setSize({ h: window.innerHeight, w: window.innerWidth });
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);

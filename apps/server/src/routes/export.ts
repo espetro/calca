@@ -1,8 +1,8 @@
-import { Hono, type Context } from "hono";
+import { type Context, Hono } from "hono";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import { htmlToSvg } from "../lib/html-to-svg";
-import { TAILWIND_PROMPT, REACT_PROMPT } from "../lib/export-prompts";
+import htmlToSvg from "../lib/html-to-svg";
+import { REACT_PROMPT, TAILWIND_PROMPT } from "../lib/export-prompts";
 import { getLogger } from "@app/logger";
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
@@ -19,13 +19,13 @@ async function convertWithAI(
 ): Promise<string> {
   const { result } = await generateWithFallback({
     apiKey,
-    model,
-    messages: [
-      { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
-    ],
-    maxTokens: 4096,
-    providerType: providerType as ProviderType | undefined,
     baseURL,
+    maxTokens: 4096,
+    messages: [
+      { content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}`, role: "user" },
+    ],
+    model,
+    providerType: providerType as ProviderType | undefined,
   });
 
   let resultText = result.text.trim();
@@ -52,10 +52,11 @@ export async function handleExport(c: Context) {
     const useModel = model || DEFAULT_MODEL;
 
     switch (format) {
-      case "svg":
+      case "svg": {
         return c.json({ result: htmlToSvg(html) });
+      }
 
-      case "tailwind":
+      case "tailwind": {
         return c.json({
           result: await convertWithAI(
             apiKey,
@@ -66,8 +67,9 @@ export async function handleExport(c: Context) {
             baseURL,
           ),
         });
+      }
 
-      case "react":
+      case "react": {
         return c.json({
           result: await convertWithAI(
             apiKey,
@@ -78,9 +80,11 @@ export async function handleExport(c: Context) {
             baseURL,
           ),
         });
+      }
 
-      default:
+      default: {
         return c.json({ error: "Invalid format" }, 400);
+      }
     }
   } catch (error) {
     logger.error("Export error:", { error });

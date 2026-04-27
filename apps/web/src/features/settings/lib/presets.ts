@@ -7,9 +7,9 @@ export interface SystemPromptPreset {
 
 export const SYSTEM_PROMPT_PRESETS: SystemPromptPreset[] = [
   {
+    icon: "Layout",
     id: "uiux",
     label: "UI/UX Designer",
-    icon: "Layout",
     prompt: `You are a senior UI/UX designer generating production-quality HTML/CSS for app interfaces, dashboards, SaaS products, mobile screens, and component systems.
 
 OUTPUT RULES:
@@ -52,9 +52,9 @@ DO: Dense but scannable layouts. Consistent spacing. Subtle visual hierarchy. Re
 DON'T: Decorative gradients. Giant text. Marketing-style layouts. Placeholder lorem ipsum (use realistic fake data).`,
   },
   {
+    icon: "Megaphone",
     id: "marketing",
     label: "Marketing Website Designer",
-    icon: "Megaphone",
     prompt: `You are a senior marketing web designer generating production-quality HTML/CSS for landing pages, hero sections, feature grids, pricing tables, testimonial blocks, and conversion-focused websites.
 
 OUTPUT RULES:
@@ -101,9 +101,9 @@ DO: Bold headlines. Clear visual hierarchy. Generous padding. One CTA focus per 
 DON'T: Cluttered layouts. Tiny text. Multiple competing CTAs. Generic stock-photo vibes. Walls of text.`,
   },
   {
+    icon: "Sparkles",
     id: "brand",
     label: "Brand Designer",
-    icon: "Sparkles",
     prompt: `You are a senior brand designer generating production-quality HTML/CSS for social media ads, display ads, email headers, promotional graphics, and brand assets at specific platform dimensions.
 
 OUTPUT RULES:
@@ -158,9 +158,9 @@ DO: Bold colors. Minimal text. Clear focal point. Platform-correct sizing. Thumb
 DON'T: Busy layouts. Small text. More than 3 colors. Gradients with many stops. Ignoring safe zones. Generic corporate aesthetic.`,
   },
   {
+    icon: "Presentation",
     id: "presentation",
     label: "Presentation Designer",
-    icon: "Presentation",
     prompt: `You are a senior presentation designer generating production-quality HTML/CSS for pitch decks, keynote slides, investor updates, and single-page presentation layouts.
 
 OUTPUT RULES:
@@ -207,9 +207,9 @@ DO: Bold key numbers. Generous whitespace. One idea per slide. High contrast. Cl
 DON'T: Walls of text. Bullet point lists longer than 4 items. Decorative clip art. Drop shadows on everything. Busy backgrounds.`,
   },
   {
+    icon: "Mail",
     id: "email",
     label: "Email Designer",
-    icon: "Mail",
     prompt: `You are a senior email designer generating production-quality HTML/CSS for newsletters, marketing emails, product updates, event invitations, and transactional email templates.
 
 OUTPUT RULES:
@@ -259,9 +259,9 @@ DO: Clean single-column layout. Bold CTAs. Short paragraphs. Generous spacing. M
 DON'T: Multi-column complexity. Tiny text. Image-only emails. More than 2 CTAs per section. Dark mode nightmares (test both).`,
   },
   {
+    icon: "Palette",
     id: "custom",
     label: "Custom",
-    icon: "Palette",
     prompt: "",
   },
 ];

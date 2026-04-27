@@ -4,50 +4,50 @@ import type { ProviderType } from "@app/core/ai/providers";
 const providerTypeSchema = z.enum(["anthropic", "openai-compatible"] satisfies ProviderType[]);
 
 const modelInfoSchema = z.object({
-  id: z.string(),
-  displayName: z.string(),
   description: z.string(),
+  displayName: z.string(),
+  id: z.string(),
 });
 
 export const providerConfigSchema = z.object({
-  id: z.string(),
+  apiKey: z.string(),
   apiType: providerTypeSchema,
   baseUrl: z.string(),
-  apiKey: z.string(),
-  models: z.array(modelInfoSchema),
-  lastTested: z.union([z.number(), z.null()]),
+  id: z.string(),
   isEnv: z.boolean().optional(),
+  lastTested: z.union([z.number(), z.null()]),
+  models: z.array(modelInfoSchema),
 });
 
 export const selectedImageSchema = z.object({
   id: z.string(),
-  src: z.string(),
   name: z.string().optional(),
+  src: z.string(),
 });
 
 const themeSchema = z.enum(["light", "dark", "system"]);
 
 export const settingsSchema = z.object({
   apiKey: z.string(),
-  geminiKey: z.string(),
-  unsplashKey: z.string(),
-  openaiKey: z.string(),
-  providerType: providerTypeSchema.optional(),
   baseURL: z.string(),
-  model: z.string(),
-  systemPrompt: z.string(),
-  systemPromptPreset: z.string(),
   conceptCount: z.number(),
-  quickMode: z.boolean(),
-  showZoomControls: z.boolean(),
-  providers: z.array(providerConfigSchema),
+  critiqueMode: z.boolean(),
+  geminiKey: z.string(),
   ideateModel: z.string().optional(),
   isIdeating: z.boolean(),
-  variations: z.number(),
-  critiqueMode: z.boolean(),
-  selectedImages: z.array(selectedImageSchema),
-  theme: themeSchema,
+  model: z.string(),
   onboardingCompleted: z.boolean(),
+  openaiKey: z.string(),
+  providerType: providerTypeSchema.optional(),
+  providers: z.array(providerConfigSchema),
+  quickMode: z.boolean(),
+  selectedImages: z.array(selectedImageSchema),
+  showZoomControls: z.boolean(),
+  systemPrompt: z.string(),
+  systemPromptPreset: z.string(),
+  theme: themeSchema,
+  unsplashKey: z.string(),
+  variations: z.number(),
 });
 
 export type SettingsInput = z.input<typeof settingsSchema>;

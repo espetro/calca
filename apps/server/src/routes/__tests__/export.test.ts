@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Context } from "hono";
 
 vi.mock("@app/core/ai/client", () => ({
@@ -10,19 +10,19 @@ vi.mock("../../lib/html-to-svg", () => ({
 }));
 
 import { generateWithFallback } from "@app/core/ai/client";
-import { htmlToSvg } from "../../lib/html-to-svg";
+import htmlToSvg from "../../lib/html-to-svg";
 import { handleExport } from "../export";
 
 function createMockContext(body: unknown): Context {
   const json = vi.fn((data, status) => ({
-    status: status ?? 200,
     json: data,
+    status: status ?? 200,
   }));
   return {
+    json,
     req: {
       json: vi.fn().mockResolvedValue(body),
     },
-    json,
   } as unknown as Context;
 }
 
@@ -34,8 +34,8 @@ describe("handleExport", () => {
   describe("svg format", () => {
     it("converts html to svg", async () => {
       const ctx = createMockContext({
-        html: '<div width="100px">hello</div>',
         format: "svg",
+        html: '<div width="100px">hello</div>',
       });
 
       await handleExport(ctx);
@@ -54,9 +54,9 @@ describe("handleExport", () => {
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: '<div style="background: blue">hello</div>',
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: '<div style="background: blue">hello</div>',
       });
 
       await handleExport(ctx);
@@ -73,9 +73,9 @@ describe("handleExport", () => {
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "react",
         apiKey: "sk-test",
+        format: "react",
+        html: "<div>hello</div>",
         model: "claude-sonnet-4-20250514",
       });
 
@@ -108,7 +108,7 @@ describe("handleExport", () => {
     });
 
     it("returns 400 for invalid format", async () => {
-      const ctx = createMockContext({ html: "<div>hello</div>", format: "pdf" });
+      const ctx = createMockContext({ format: "pdf", html: "<div>hello</div>" });
 
       await handleExport(ctx);
 
@@ -123,9 +123,9 @@ describe("handleExport", () => {
       );
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: "<div>hello</div>",
       });
 
       await handleExport(ctx);
@@ -139,9 +139,9 @@ describe("handleExport", () => {
       );
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "react",
         apiKey: "bad-key",
+        format: "react",
+        html: "<div>hello</div>",
       });
 
       await handleExport(ctx);
@@ -157,9 +157,9 @@ describe("handleExport", () => {
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: '<img src="data:image/png;base64,iVBOR..." />',
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: '<img src="data:image/png;base64,iVBOR..." />',
       });
 
       await handleExport(ctx);
@@ -183,9 +183,9 @@ describe("handleExport", () => {
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: "<div>hello</div>",
       });
 
       await handleExport(ctx);

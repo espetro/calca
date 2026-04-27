@@ -1,24 +1,24 @@
-import { useCallback, useRef, type RefCallback } from "react";
+import { type RefCallback, useCallback, useRef } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { m } from "@/lib/i18n";
 import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
 import { PipelineStatusOverlay } from "@/features/canvas";
-import { type useCanvas } from "@/features/canvas/hooks/use-canvas";
+import type { useCanvas } from "@/features/canvas/hooks/use-canvas";
 import { groupsAtom } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom } from "@/features/design/state/images-atoms";
 import {
-  toolModeAtom,
-  spaceHeldAtom,
-  rubberBandAtom,
-  selectedIdsAtom,
   draggingImageIdAtom,
   pipelineStagesAtom,
+  rubberBandAtom,
+  selectedIdsAtom,
+  spaceHeldAtom,
+  toolModeAtom,
 } from "@/features/design/state/generation-atoms";
 import {
-  draggingIdAtom,
   activeCommentAtom,
   activeCommentIterationIdAtom,
   commentDraftAtom,
+  draggingIdAtom,
 } from "@/features/design/state/comment-atoms";
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
@@ -85,10 +85,10 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
 
   const handleImageDragStart = useCallback(
     (id: string, e: React.MouseEvent) => {
-      if (toolMode !== "select" || spaceHeld) return;
+      if (toolMode !== "select" || spaceHeld) {return;}
       e.stopPropagation();
       const img = canvasImages.find((i) => i.id === id);
-      if (!img) return;
+      if (!img) {return;}
       imgDragRef.current = {
         id,
         startMouse: { x: e.clientX, y: e.clientY },
@@ -97,7 +97,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       imgDragStartPositions.current.clear();
       const movingIds = selectedIds.has(id) ? selectedIds : new Set([id]);
       for (const ci of canvasImages) {
-        if (movingIds.has(ci.id)) imgDragStartPositions.current.set(ci.id, { ...ci.position });
+        if (movingIds.has(ci.id)) {imgDragStartPositions.current.set(ci.id, { ...ci.position });}
       }
       setDraggingImageId(id);
     },
@@ -106,14 +106,14 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
 
   const handleImageDragMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!imgDragRef.current) return;
+      if (!imgDragRef.current) {return;}
       const dx = (e.clientX - imgDragRef.current.startMouse.x) / canvas.scale;
       const dy = (e.clientY - imgDragRef.current.startMouse.y) / canvas.scale;
       const dragId = imgDragRef.current.id;
       const movingIds = selectedIds.has(dragId) ? selectedIds : new Set([dragId]);
       setCanvasImages((prev) =>
         prev.map((img) => {
-          if (!movingIds.has(img.id)) return img;
+          if (!movingIds.has(img.id)) {return img;}
           const startPos = imgDragStartPositions.current.get(img.id) || img.position;
           return { ...img, position: { x: startPos.x + dx, y: startPos.y + dy } };
         }),
@@ -129,7 +129,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
 
   const handleFrameDragStart = useCallback(
     (iterationId: string, e: React.MouseEvent) => {
-      if (toolMode !== "select" || spaceHeld) return;
+      if (toolMode !== "select" || spaceHeld) {return;}
       e.stopPropagation();
       for (const group of groups) {
         const iter = group.iterations.find((it) => it.id === iterationId);
@@ -158,7 +158,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
 
   const handleFrameDragMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!dragRef.current) return;
+      if (!dragRef.current) {return;}
       const dx = (e.clientX - dragRef.current.startMouse.x) / canvas.scale;
       const dy = (e.clientY - dragRef.current.startMouse.y) / canvas.scale;
       const dragId = dragRef.current.iterationId;
@@ -167,7 +167,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         prev.map((g) => ({
           ...g,
           iterations: g.iterations.map((iter) => {
-            if (!movingIds.has(iter.id)) return iter;
+            if (!movingIds.has(iter.id)) {return iter;}
             const startPos = dragStartPositions.current.get(iter.id) || iter.position;
             return {
               ...iter,
@@ -188,7 +188,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   const processImageFiles = useCallback(
     (files: File[], dropX?: number, dropY?: number) => {
       files.forEach((file, idx) => {
-        if (!file.type.startsWith("image/")) return;
+        if (!file.type.startsWith("image/")) {return;}
         const reader = new FileReader();
         reader.onload = (e) => {
           const dataUrl = e.target?.result as string;
@@ -220,13 +220,13 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
             setCanvasImages((prev) => [
               ...prev,
               {
-                id: `img-${Date.now()}-${idx}`,
                 dataUrl: compressedDataUrl,
-                name: file.name,
-                width: img.width * displayScale,
                 height: img.height * displayScale,
+                id: `img-${Date.now()}-${idx}`,
+                name: file.name,
                 position: { x: cx, y: cy },
                 thumbnail,
+                width: img.width * displayScale,
               },
             ]);
           };
@@ -249,7 +249,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   const handleAddComment = useCallback(
     (iterationId: string, position: Point) => {
       const rect = canvasElRef.current?.getBoundingClientRect();
-      if (!rect) return;
+      if (!rect) {return;}
       for (const group of groups) {
         const iter = group.iterations.find((it) => it.id === iterationId);
         if (iter) {
@@ -282,12 +282,12 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
           return;
         }
         if (isSelectMode && !draggingId) {
-          if (!e.shiftKey) setSelectedIds(new Set());
+          if (!e.shiftKey) {setSelectedIds(new Set());}
           setRubberBand({
-            startX: e.clientX,
-            startY: e.clientY,
             currentX: e.clientX,
             currentY: e.clientY,
+            startX: e.clientX,
+            startY: e.clientY,
           });
         }
       }}
@@ -374,8 +374,8 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       }}
       onDrop={(e) => {
         e.preventDefault();
-        const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
-        if (files.length > 0) processImageFiles(files, e.clientX, e.clientY);
+        const files = [...e.dataTransfer.files].filter((f) => f.type.startsWith("image/"));
+        if (files.length > 0) {processImageFiles(files, e.clientX, e.clientY);}
       }}
     >
       <div
@@ -394,26 +394,26 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
                 : "border border-white/40 hover:shadow-lg"
             } ${
               toolMode === "select" && !spaceHeld
-                ? draggingImageId === img.id
+                ? (draggingImageId === img.id
                   ? "cursor-grabbing shadow-xl ring-2 ring-blue-400/30"
-                  : "cursor-grab"
+                  : "cursor-grab")
                 : ""
             }`}
             style={{
+              height: img.height,
               left: img.position.x,
               top: img.position.y,
               width: img.width,
-              height: img.height,
             }}
             onMouseDown={(e) => handleImageDragStart(img.id, e)}
             onClick={(e) => {
-              if (toolMode !== "select" || spaceHeld) return;
+              if (toolMode !== "select" || spaceHeld) {return;}
               e.stopPropagation();
               if (e.shiftKey) {
                 setSelectedIds((prev) => {
                   const next = new Set(prev);
-                  if (next.has(img.id)) next.delete(img.id);
-                  else next.add(img.id);
+                  if (next.has(img.id)) {next.delete(img.id);}
+                  else {next.add(img.id);}
                   return next;
                 });
               } else {
@@ -445,8 +445,8 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
               if (e?.shiftKey) {
                 setSelectedIds((prev) => {
                   const next = new Set(prev);
-                  if (next.has(iteration.id)) next.delete(iteration.id);
-                  else next.add(iteration.id);
+                  if (next.has(iteration.id)) {next.delete(iteration.id);}
+                  else {next.add(iteration.id);}
                   return next;
                 });
               } else {
@@ -468,7 +468,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
 
         {allIterations.map((iteration) => {
           const status = pipelineStages[iteration.id];
-          if (!status || status.stage === "done") return null;
+          if (!status || status.stage === "done") {return null;}
           return (
             <PipelineStatusOverlay
               key={`pipeline-${iteration.id}`}

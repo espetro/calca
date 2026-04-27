@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export interface IndexedDBInitOptions {
   name: string;
@@ -11,7 +11,7 @@ const init = ({ name, version, handleUpgradeNeeded }: IndexedDBInitOptions) =>
     const req = indexedDB.open(name, version);
     req.onupgradeneeded =
       handleUpgradeNeeded ??
-      function (this) {
+      function  onupgradeneeded(this) {
         const db = this.result;
         db.createObjectStore(name);
       };

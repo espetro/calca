@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import type {
-  DesignIteration,
   Comment as CommentType,
-  Point,
+  DesignIteration,
   PipelineStatus,
+  Point,
 } from "@/shared/types";
 import { STAGE_CONFIG } from "@/shared/types";
 import { ExportMenu } from "@/features/export";
 
 export const DEFAULT_FRAME_WIDTH = 480;
-const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // kept for export compat
+const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // Kept for export compat
 const INITIAL_IFRAME_HEIGHT = 2000; // Start tall, measure down
 
 interface DesignCardProps {
@@ -120,7 +120,7 @@ setTimeout(reportHeight, 2000);
 
   // Listen for height messages from sandboxed iframe
   useEffect(() => {
-    if (!iteration.html || iteration.isLoading) return;
+    if (!iteration.html || iteration.isLoading) {return;}
     measuredRef.current = false;
     measurementGenRef.current += 1;
     const currentGen = measurementGenRef.current;
@@ -136,7 +136,7 @@ setTimeout(reportHeight, 2000);
         e.data.id === iteration.id &&
         e.data.gen === currentGen
       ) {
-        const h = Math.min(Math.max(e.data.height, 50), 12000);
+        const h = Math.min(Math.max(e.data.height, 50), 12_000);
         if (!iteration.height || iteration.height === 0 || Math.abs(h - iteration.height) > 30) {
           setContentHeight(h);
           measuredRef.current = true;
@@ -148,11 +148,11 @@ setTimeout(reportHeight, 2000);
   }, [iteration.html, iteration.isLoading, iteration.id, iteration.height]);
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!isCommentMode) return;
+    if (!isCommentMode) {return;}
     e.stopPropagation();
 
     const rect = wrapperRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    if (!rect) {return;}
 
     const x = (e.clientX - rect.left) / scale;
     const y = (e.clientY - rect.top) / scale;
@@ -221,7 +221,7 @@ setTimeout(reportHeight, 2000);
                 : "cursor-grab hover:shadow-lg"
               : ""
         }`}
-        style={{ width: iteration.width || FRAME_WIDTH, height: frameHeight }}
+        style={{ height: frameHeight, width: iteration.width || FRAME_WIDTH }}
       >
         {/* No revision overlay — comment pins show status instead */}
 
@@ -257,13 +257,13 @@ setTimeout(reportHeight, 2000);
             sandbox="allow-scripts"
             srcDoc={srcdoc}
             style={{
-              width: iteration.width || FRAME_WIDTH,
+              border: "none",
+              display: "block",
               height: measuredRef.current
                 ? contentHeight
                 : iteration.height || INITIAL_IFRAME_HEIGHT,
-              border: "none",
-              display: "block",
               pointerEvents: "none",
+              width: iteration.width || FRAME_WIDTH,
             }}
           />
         )}
@@ -296,9 +296,9 @@ function RemixButton({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {return;}
     const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {setOpen(false);}
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -359,7 +359,7 @@ function RemixButton({
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && customPrompt.trim()) handleRemix(customPrompt.trim());
+                if (e.key === "Enter" && customPrompt.trim()) {handleRemix(customPrompt.trim());}
               }}
               placeholder="Try it with..."
               className="flex-1 px-3 py-2 rounded-lg text-[13px] bg-black/5 outline-none placeholder-gray-400"
@@ -379,6 +379,12 @@ function RemixButton({
 }
 
 const STATUS_COLORS = {
+  done: {
+    bg: "bg-emerald-500",
+    shadow: "rgba(16,185,129,0.4)",
+    anchor: "bg-emerald-400/60",
+    ping: "bg-emerald-400/30",
+  },
   waiting: {
     bg: "bg-gray-400",
     shadow: "rgba(156,163,175,0.4)",
@@ -390,12 +396,6 @@ const STATUS_COLORS = {
     shadow: "rgba(245,158,11,0.4)",
     anchor: "bg-amber-400/60",
     ping: "bg-amber-400/30",
-  },
-  done: {
-    bg: "bg-emerald-500",
-    shadow: "rgba(16,185,129,0.4)",
-    anchor: "bg-emerald-400/60",
-    ping: "bg-emerald-400/30",
   },
 } as const;
 

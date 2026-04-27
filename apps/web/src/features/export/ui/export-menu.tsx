@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getLogger } from "@app/logger";
 import useExportCodeMutation from "@/features/design/hooks/use-export-code-mutation";
 
@@ -17,15 +17,15 @@ interface ExportMenuProps {
 const logger = getLogger(["calca", "web", "export"]);
 
 const CODE_FORMATS: { id: ExportFormat; label: string; icon: string; ext: string }[] = [
-  { id: "tailwind", label: "Tailwind", icon: "⊞", ext: "html" },
-  { id: "react", label: "React", icon: "⚛", ext: "tsx" },
+  { ext: "html", icon: "⊞", id: "tailwind", label: "Tailwind" },
+  { ext: "tsx", icon: "⚛", id: "react", label: "React" },
 ];
 
 const IMAGE_FORMATS: { id: ExportFormat; label: string; icon: string; ext?: string }[] = [
-  { id: "svg", label: "SVG", icon: "◇", ext: "svg" },
-  { id: "png", label: "PNG", icon: "🖼" },
-  { id: "jpg", label: "JPG", icon: "📷" },
-  { id: "copy-image", label: "Copy as Image", icon: "📋" },
+  { ext: "svg", icon: "◇", id: "svg", label: "SVG" },
+  { icon: "🖼", id: "png", label: "PNG" },
+  { icon: "📷", id: "jpg", label: "JPG" },
+  { icon: "📋", id: "copy-image", label: "Copy as Image" },
 ];
 
 const ALL_FORMATS = [...CODE_FORMATS, ...IMAGE_FORMATS];
@@ -53,15 +53,15 @@ async function htmlToImageBlob(
     });
 
     const doc = iframe.contentDocument;
-    if (!doc) throw new Error("No iframe document");
+    if (!doc) {throw new Error("No iframe document");}
 
     // Wait for images
     const images = doc.querySelectorAll("img");
     await Promise.all(
-      Array.from(images).map(
+      [...images].map(
         (img) =>
           new Promise<void>((resolve) => {
-            if (img.complete) return resolve();
+            if (img.complete) {return resolve();}
             img.onload = () => resolve();
             img.onerror = () => resolve();
             setTimeout(resolve, 3000);
@@ -76,7 +76,7 @@ async function htmlToImageBlob(
 
     await new Promise((r) => setTimeout(r, 500));
 
-    const body = doc.body;
+    const {body} = doc;
     const h = body.scrollHeight;
     iframe.style.height = h + "px";
 
@@ -84,16 +84,16 @@ async function htmlToImageBlob(
     await new Promise((r) => setTimeout(r, 100));
 
     // Use html2canvas-pro for faithful DOM rasterization.
-    // html-to-image uses SVG foreignObject which measures text differently
-    // and causes line breaks that don't exist in the live canvas.
+    // Html-to-image uses SVG foreignObject which measures text differently
+    // And causes line breaks that don't exist in the live canvas.
     const html2canvas = (await import("html2canvas-pro")).default;
     const canvas = await html2canvas(body, {
-      width,
+      allowTaint: true,
+      backgroundColor: null,
       height: h,
       scale: 2,
       useCORS: true,
-      allowTaint: true,
-      backgroundColor: null,
+      width,
     });
 
     return new Promise<Blob>((resolve, reject) => {
@@ -127,7 +127,7 @@ export function ExportMenu({
 
   // Close on outside click
   useEffect(() => {
-    if (!open && !preview) return;
+    if (!open && !preview) {return;}
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -152,9 +152,9 @@ export function ExportMenu({
           if (format === "copy-image") {
             try {
               await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-            } catch (clipErr) {
+            } catch (error) {
               logger.error("Clipboard write failed, falling back to download", {
-                error: clipErr instanceof Error ? clipErr.message : String(clipErr),
+                error: error instanceof Error ? error.message : String(error),
               });
               // Fallback: download instead
               const url = URL.createObjectURL(blob);
@@ -180,24 +180,24 @@ export function ExportMenu({
 
         // Code exports — API call
         const data = await mutateAsync({
-          html,
-          format,
           apiKey,
+          baseURL: baseURL || undefined,
+          format,
+          html,
           model,
           providerType: providerType || undefined,
-          baseURL: baseURL || undefined,
         });
         if ("error" in data) {
           throw new Error(data.error);
         }
-        setPreview({ format, code: data.result });
-      } catch (err) {
-        logger.error("Export failed", { error: err instanceof Error ? err.message : String(err) });
+        setPreview({ code: data.result, format });
+      } catch (error) {
+        logger.error("Export failed", { error: error instanceof Error ? error.message : String(error) });
         if (format === "png" || format === "jpg" || format === "copy-image") {
           // Can't show preview for image failures
           logger.error("Image export failed");
         } else {
-          setPreview({ format, code: "// Export failed. Check API key and try again." });
+          setPreview({ code: "// Export failed. Check API key and try again.", format });
         }
       } finally {
         setExporting(null);
@@ -207,12 +207,12 @@ export function ExportMenu({
   );
 
   const handleCopy = useCallback(() => {
-    if (!preview) return;
+    if (!preview) {return;}
     navigator.clipboard.writeText(preview.code);
   }, [preview]);
 
   const handleDownload = useCallback(() => {
-    if (!preview) return;
+    if (!preview) {return;}
     const fmt = ALL_FORMATS.find((f) => f.id === preview.format);
     const mime = preview.format === "svg" ? "image/svg+xml" : "text/plain";
     const blob = new Blob([preview.code], { type: mime });

@@ -4,24 +4,24 @@ import { createLogger, getLogger } from "./index";
 describe("logger", () => {
   describe("createLogger", () => {
     it("initializes without throwing", async () => {
-      await expect(createLogger()).resolves.toBeUndefined();
+      await expect(createLogger({ env: {} })).resolves.toBeUndefined();
     });
 
     it("is idempotent — calling twice does not throw", async () => {
-      await expect(createLogger()).resolves.toBeUndefined();
-      await expect(createLogger()).resolves.toBeUndefined();
+      await expect(createLogger({ env: {} })).resolves.toBeUndefined();
+      await expect(createLogger({ env: {} })).resolves.toBeUndefined();
     });
 
     it("accepts an explicit level argument", async () => {
-      await expect(createLogger("debug")).resolves.toBeUndefined();
+      await expect(createLogger({ env: {}, level: "debug" })).resolves.toBeUndefined();
     });
 
     it("uses LOG_LEVEL env var when level is not provided", async () => {
-      await expect(createLogger(undefined, { LOG_LEVEL: "debug" })).resolves.toBeUndefined();
+      await expect(createLogger({ env: { LOG_LEVEL: "debug" } })).resolves.toBeUndefined();
     });
 
     it("falls back to DEFAULT_LOG_LEVEL for unknown LOG_LEVEL values", async () => {
-      await expect(createLogger(undefined, { LOG_LEVEL: "not-a-level" })).resolves.toBeUndefined();
+      await expect(createLogger({ env: { LOG_LEVEL: "not-a-level" } })).resolves.toBeUndefined();
     });
   });
 

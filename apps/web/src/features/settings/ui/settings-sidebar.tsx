@@ -1,4 +1,4 @@
-import { Settings, Palette, Wrench, Info } from "lucide-react";
+import { Info, Palette, Settings, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/shared/components/ui/badge";
 
@@ -16,10 +16,10 @@ const SECTIONS: {
   disabled?: boolean;
   badge?: string;
 }[] = [
-  { id: "general", label: "General", icon: Settings },
-  { id: "personalization", label: "Personalization", icon: Palette },
-  { id: "skills", label: "Skills", icon: Wrench, disabled: true, badge: "SOON" },
-  { id: "about", label: "About", icon: Info },
+  { icon: Settings, id: "general", label: "General" },
+  { icon: Palette, id: "personalization", label: "Personalization" },
+  { badge: "SOON", disabled: true, icon: Wrench, id: "skills", label: "Skills" },
+  { icon: Info, id: "about", label: "About" },
 ];
 
 export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSidebarProps) {

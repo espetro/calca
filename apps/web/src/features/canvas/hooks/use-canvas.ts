@@ -28,7 +28,7 @@ export function useCanvas() {
   }, []);
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isPanning.current) return;
+    if (!isPanning.current) {return;}
     const dx = e.clientX - lastMouse.current.x;
     const dy = e.clientY - lastMouse.current.y;
     lastMouse.current = { x: e.clientX, y: e.clientY };
@@ -58,11 +58,11 @@ export function useCanvas() {
         const newScale = Math.min(Math.max(prev.scale * zoomFactor, 0.1), 5);
         const scaleChange = newScale / prev.scale;
         return {
-          scale: newScale,
           offset: {
             x: mouseX - (mouseX - prev.offset.x) * scaleChange,
             y: mouseY - (mouseY - prev.offset.y) * scaleChange,
           },
+          scale: newScale,
         };
       });
     } else {
@@ -92,21 +92,17 @@ export function useCanvas() {
   );
 
   // Cleanup on unmount
-  useEffect(() => {
-    return () => {
+  useEffect(() => () => {
       if (canvasElRef.current) {
         canvasElRef.current.removeEventListener("wheel", wheelHandler);
       }
-    };
-  }, [wheelHandler]);
+    }, [wheelHandler]);
 
   const screenToCanvas = useCallback(
-    (screenX: number, screenY: number, rect: DOMRect): Point => {
-      return {
+    (screenX: number, screenY: number, rect: DOMRect): Point => ({
         x: (screenX - rect.left - state.offset.x) / state.scale,
         y: (screenY - rect.top - state.offset.y) / state.scale,
-      };
-    },
+      }),
     [state.offset, state.scale],
   );
 
@@ -135,7 +131,7 @@ export function useCanvas() {
       const vh = window.innerHeight;
       const contentW = bounds.maxX - bounds.minX;
       const contentH = bounds.maxY - bounds.minY;
-      if (contentW <= 0 || contentH <= 0) return;
+      if (contentW <= 0 || contentH <= 0) {return;}
 
       const scaleX = (vw - padding * 2) / contentW;
       const scaleY = (vh - padding * 2) / contentH;
@@ -145,26 +141,26 @@ export function useCanvas() {
       const centerY = (bounds.minY + bounds.maxY) / 2;
 
       setState({
-        scale: newScale,
         offset: {
           x: vw / 2 - centerX * newScale,
           y: vh / 2 - centerY * newScale,
         },
+        scale: newScale,
       });
     },
     [],
   );
 
   return {
-    offset: state.offset,
-    scale: state.scale,
     isPanning,
-    setCanvasRef,
+    offset: state.offset,
     onMouseDown,
     onMouseMove,
     onMouseUp,
-    screenToCanvas,
     resetView,
+    scale: state.scale,
+    screenToCanvas,
+    setCanvasRef,
     zoomIn,
     zoomOut,
     zoomToFit,

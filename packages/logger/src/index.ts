@@ -1,22 +1,24 @@
 import {
-  configure,
-  type Logger as LogtapeLogger,
   type LogLevel,
-  getLogger as getLogtapeLogger,
+  type Logger as LogtapeLogger,
+  configure,
   getConsoleSink,
+  getLogger as getLogtapeLogger,
   isLogLevel,
 } from "@logtape/logtape";
 import { getPrettyFormatter } from "@logtape/pretty";
 
+type ProcessEnv = Record<string, string | undefined>;
+
 const DEFAULT_LOG_LEVEL: LogLevel = "info";
-const VALID_LEVELS: LogLevel[] = ["debug", "info", "warning", "error", "fatal"];
+const VALID_LEVELS = new Set<LogLevel>(["debug", "info", "warning", "error", "fatal"]);
 
 const toLogtapeLevel = (level: LogLevel) => (isLogLevel(level) ? level : DEFAULT_LOG_LEVEL);
 
-function getLogLevelFromEnv(env: typeof process.env): LogLevel {
+function getLogLevelFromEnv(env: ProcessEnv): LogLevel {
   const envLevel: string | undefined = env.LOG_LEVEL?.toLowerCase();
 
-  if (envLevel && VALID_LEVELS.includes(envLevel as LogLevel)) {
+  if (envLevel && VALID_LEVELS.has(envLevel as LogLevel)) {
     return toLogtapeLevel(envLevel as LogLevel);
   }
 
@@ -25,34 +27,28 @@ function getLogLevelFromEnv(env: typeof process.env): LogLevel {
 
 let isConfigured = false;
 
-function getLogLevel(level: LogLevel, env: typeof process.env): LogLevel {
+function getLogLevel(level: LogLevel, env: ProcessEnv): LogLevel {
   if (level !== undefined) {
     return toLogtapeLevel(level);
   }
   return getLogLevelFromEnv(env);
 }
 
-export async function createLogger(level: LogLevel = "info", env?: typeof process.env) {
-  const environment = env ?? (typeof process !== "undefined" ? process.env : {});
+interface CreateLoggerProps {
+  level?: LogLevel;
+  env: ProcessEnv;
+}
+
+export async function createLogger({ level = "info", env }: CreateLoggerProps) {
   if (isConfigured) {
     return;
   }
 
-  const logLevel = getLogLevel(level, environment);
+  const logLevel = getLogLevel(level, env);
 
   const isBrowser = typeof globalThis !== "undefined" && "window" in globalThis;
 
   await configure({
-    sinks: {
-      console: getConsoleSink({
-        formatter: isBrowser
-          ? undefined
-          : getPrettyFormatter({
-              timestamp: "time",
-              level: "ABBR",
-            }),
-      }),
-    },
     filters: {},
     loggers: [
       {
@@ -66,6 +62,16 @@ export async function createLogger(level: LogLevel = "info", env?: typeof proces
         sinks: ["console"],
       },
     ],
+    sinks: {
+      console: getConsoleSink({
+        formatter: isBrowser
+          ? undefined
+          : getPrettyFormatter({
+              level: "ABBR",
+              timestamp: "time",
+            }),
+      }),
+    },
   });
 
   isConfigured = true;

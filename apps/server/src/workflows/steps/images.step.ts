@@ -8,51 +8,48 @@ import { ImagesInputSchema, ImagesOutputSchema } from "../schemas/images.schema"
 const logger = getLogger(["calca", "server", "workflow", "images"]);
 
 export const imagesStep = createStep({
-  id: "images",
-  inputSchema: ImagesInputSchema,
-  outputSchema: ImagesOutputSchema,
   execute: async ({ inputData, writer, abortSignal }) => {
     const { html, geminiKey, unsplashKey, openaiKey, viewport } = inputData;
 
     if (!geminiKey && !unsplashKey && !openaiKey) {
       writer.write({
-        type: "progress",
-        stage: "images",
         message: "No image API keys provided - skipping image generation",
+        stage: "images",
+        type: "progress",
       });
       return { html };
     }
 
     writer.write({
-      type: "progress",
-      stage: "images",
       message: "Starting image generation...",
+      stage: "images",
+      type: "progress",
     });
 
     try {
       const result = await generateImages({
-        html,
         geminiKey,
-        unsplashKey,
+        html,
         openaiKey,
+        unsplashKey,
         viewport,
       });
 
       if (result.imageCount > 0) {
         writer.write({
-          type: "progress",
-          stage: "images",
           current: result.imageCount,
-          total: result.imageCount,
           message: `Generated ${result.imageCount} image(s)`,
+          stage: "images",
+          total: result.imageCount,
+          type: "progress",
         });
       }
 
       if (result.skipped) {
         writer.write({
-          type: "progress",
-          stage: "images",
           message: result.reason || "Image generation skipped",
+          stage: "images",
+          type: "progress",
         });
       }
 
@@ -65,12 +62,15 @@ export const imagesStep = createStep({
       }
 
       writer.write({
-        type: "progress",
-        stage: "images",
         message: "Image generation failed - returning HTML unchanged",
+        stage: "images",
+        type: "progress",
       });
 
       return { html };
     }
   },
+  id: "images",
+  inputSchema: ImagesInputSchema,
+  outputSchema: ImagesOutputSchema,
 });

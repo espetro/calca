@@ -1,11 +1,14 @@
+const DEFAULT_WIDTH = 800;
+const DEFAULT_HEIGHT = 600;
+
 /**
  * Converts HTML/CSS to an SVG wrapper for rendering
  */
-export function htmlToSvg(html: string): string {
+const htmlToSvg = (html: string): string => {
   const widthMatch = html.match(/width\s*:\s*(\d+)px/);
   const heightMatch = html.match(/height\s*:\s*(\d+)px/);
-  const width = widthMatch ? parseInt(widthMatch[1]) : 800;
-  const height = heightMatch ? parseInt(heightMatch[1]) : 600;
+  const width = widthMatch ? Number.parseInt(widthMatch[1]) : DEFAULT_WIDTH;
+  const height = heightMatch ? Number.parseInt(heightMatch[1]) : DEFAULT_HEIGHT;
 
   const escaped = html.replace(/&(?!amp;|lt;|gt;|quot;|apos;)/g, "&amp;");
 
@@ -17,4 +20,6 @@ ${escaped}
     </div>
   </foreignObject>
 </svg>`;
-}
+};
+
+export default htmlToSvg;

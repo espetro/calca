@@ -1,4 +1,4 @@
-import { Sun, Moon, Monitor, Palette, Type, Globe } from "lucide-react";
+import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
 import type { Settings, Theme } from "../types";
 import { Switch } from "@/shared/components/ui/switch";
 import { Label } from "@/shared/components/ui/label";
@@ -12,9 +12,9 @@ import {
 } from "@/shared/components/ui/select";
 
 const THEME_OPTIONS: { value: Theme; label: string; icon: React.ReactNode }[] = [
-  { value: "light", label: "Light", icon: <Sun className="w-4 h-4" /> },
-  { value: "dark", label: "Dark", icon: <Moon className="w-4 h-4" /> },
-  { value: "system", label: "System", icon: <Monitor className="w-4 h-4" /> },
+  { icon: <Sun className="w-4 h-4" />, label: "Light", value: "light" },
+  { icon: <Moon className="w-4 h-4" />, label: "Dark", value: "dark" },
+  { icon: <Monitor className="w-4 h-4" />, label: "System", value: "system" },
 ];
 
 interface SettingsPersonalizationProps {

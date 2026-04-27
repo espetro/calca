@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 
 import { routeTree } from "./routeTree.gen";
 
-await createLogger();
+await createLogger({ env: import.meta.env });
 
 const router = createRouter({ routeTree });
 

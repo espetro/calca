@@ -1,6 +1,6 @@
 import { getLogger } from "@app/logger";
 import type { ModelMessage } from "ai";
-import type { LanguageModelUsage, FinishReason } from "ai";
+import type { FinishReason, LanguageModelUsage } from "ai";
 
 export interface TelemetryCallbacks {
   onStart(params: {
@@ -33,8 +33,32 @@ export function createTelemetryCallbacks(
   const startTimes = new Map<string, number>();
 
   return {
+    onError({ modelId, error }) {
+      if (!isEnabled) {return;}
+      const key = functionId ?? modelId;
+      startTimes.delete(key);
+      logger.error("AI call failed", {
+        error: error.message,
+        functionId,
+        modelId,
+      });
+    },
+
+    onFinish({ modelId, usage, finishReason, durationMs }) {
+      if (!isEnabled) {return;}
+      const key = functionId ?? modelId;
+      startTimes.delete(key);
+      logger.info("AI call completed", {
+        durationMs,
+        finishReason,
+        functionId,
+        modelId,
+        usage,
+      });
+    },
+
     onStart({ modelId, prompt, settings }) {
-      if (!isEnabled) return;
+      if (!isEnabled) {return;}
       const key = functionId ?? modelId;
       startTimes.set(key, Date.now());
       logger.debug("AI call started", {
@@ -42,30 +66,6 @@ export function createTelemetryCallbacks(
         modelId,
         promptLength: prompt.length,
         settings,
-      });
-    },
-
-    onFinish({ modelId, usage, finishReason, durationMs }) {
-      if (!isEnabled) return;
-      const key = functionId ?? modelId;
-      startTimes.delete(key);
-      logger.info("AI call completed", {
-        functionId,
-        modelId,
-        usage,
-        finishReason,
-        durationMs,
-      });
-    },
-
-    onError({ modelId, error }) {
-      if (!isEnabled) return;
-      const key = functionId ?? modelId;
-      startTimes.delete(key);
-      logger.error("AI call failed", {
-        functionId,
-        modelId,
-        error: error.message,
       });
     },
   };

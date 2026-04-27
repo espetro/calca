@@ -13,8 +13,8 @@ interface PromptItem {
 
 const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
   {
-    name: "UI Components",
     icon: "◻",
+    name: "UI Components",
     prompts: [
       {
         label: "Toast Notifications",
@@ -43,8 +43,8 @@ const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
     ],
   },
   {
-    name: "Full Pages",
     icon: "▣",
+    name: "Full Pages",
     prompts: [
       {
         label: "SaaS Hero Section",
@@ -65,8 +65,8 @@ const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
     ],
   },
   {
-    name: "Marketing",
     icon: "◈",
+    name: "Marketing",
     prompts: [
       {
         label: "Social Media Card",
@@ -91,7 +91,7 @@ const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
 export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
-  if (!open) return null;
+  if (!open) {return null;}
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);

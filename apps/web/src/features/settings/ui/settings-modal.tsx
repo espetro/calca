@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MODELS, type Settings } from "@/features/settings/types";
 import ProviderList from "./provider-list";
 import ProviderConfigForm from "./provider-config-form";
 import ModelComboSelect from "./model-combo-select";
-import { ProviderConfig, ModelInfo, ProviderType } from "../types";
+import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
 interface SettingsModalProps {
   settings: Settings;
   onUpdate: (update: Partial<Settings>) => void;
@@ -30,7 +30,7 @@ export function SettingsModal({
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {onClose();}
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -44,8 +44,8 @@ export function SettingsModal({
     if (settings.providers.length === 0 && provider.models.length > 0) {
       const firstModel = provider.models[0];
       onUpdate({
-        model: `${provider.id}/${firstModel.id}`,
         ideateModel: `${provider.id}/${firstModel.id}`,
+        model: `${provider.id}/${firstModel.id}`,
       });
     }
   };
@@ -83,8 +83,7 @@ export function SettingsModal({
     apiType: ProviderType,
     baseUrl: string,
     apiKey: string,
-  ) => {
-    return testProvider({ id, apiType, baseUrl, apiKey }).then(
+  ) => testProvider({ id, apiType, baseUrl, apiKey }).then(
       (result: { models: ModelInfo[]; error?: string }) => {
         if (result.error) {
           throw new Error(result.error);
@@ -92,7 +91,6 @@ export function SettingsModal({
         return { models: result.models };
       },
     );
-  };
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center">
@@ -280,11 +278,11 @@ export function SettingsModal({
             onClick={() => {
               // Auto-save keys if changed
               const updates: Partial<Settings> = {};
-              if (geminiKey.trim() !== settings.geminiKey) updates.geminiKey = geminiKey.trim();
+              if (geminiKey.trim() !== settings.geminiKey) {updates.geminiKey = geminiKey.trim();}
               if (unsplashKey.trim() !== settings.unsplashKey)
-                updates.unsplashKey = unsplashKey.trim();
-              if (openaiKey.trim() !== settings.openaiKey) updates.openaiKey = openaiKey.trim();
-              if (Object.keys(updates).length) onUpdate(updates);
+                {updates.unsplashKey = unsplashKey.trim();}
+              if (openaiKey.trim() !== settings.openaiKey) {updates.openaiKey = openaiKey.trim();}
+              if (Object.keys(updates).length) {onUpdate(updates);}
               onClose();
             }}
             className="text-[13px] font-medium text-gray-600 hover:text-gray-800 px-4 py-2 rounded-xl hover:bg-black/5 transition-all"
@@ -322,7 +320,7 @@ function ImageKeyField({
   linkUrl: string;
   linkLabel: string;
 }) {
-  const isSaved = !!savedValue;
+  const isSaved = Boolean(savedValue);
   const isChanged = value.trim() !== savedValue;
 
   return (

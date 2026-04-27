@@ -16,7 +16,7 @@ function stripBase64Images(html: string): {
     }
     return result;
   };
-  return { stripped, restore };
+  return { restore, stripped };
 }
 
 export function buildRevisionPrompt(
@@ -31,7 +31,7 @@ export function buildRevisionPrompt(
   const { stripped, restore } = stripBase64Images(existingHtml);
 
   return (
-    JSON.stringify({ stripped, restoreNeeded: true }) +
+    JSON.stringify({ restoreNeeded: true, stripped }) +
     "\n---PROMPT---\n" +
     `You are a world-class visual designer. You are EDITING an existing design — not creating a new one.${customBlock}
 

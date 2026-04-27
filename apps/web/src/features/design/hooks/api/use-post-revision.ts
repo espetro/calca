@@ -1,4 +1,4 @@
-import { DerivedProviderFields } from "@/features/settings/lib/derive-provider-fields";
+import type { DerivedProviderFields } from "@/features/settings/lib/derive-provider-fields";
 import { apiClient } from "@/lib/api-client";
 import { useMutation } from "@tanstack/react-query";
 
@@ -40,18 +40,18 @@ const getFrames = async (body: ReadableStream, signal: AbortSignal) => {
   while (true) {
     const { done, value } = await reader.read();
 
-    if (done) break;
+    if (done) {break;}
 
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split("\n");
     buffer = lines.pop() ?? "";
 
     for (const line of lines) {
-      if (signal.aborted) break;
-      if (!line || line.startsWith(":")) continue;
+      if (signal.aborted) {break;}
+      if (!line || line.startsWith(":")) {continue;}
 
       const colonIdx = line.indexOf(":");
-      if (colonIdx === -1) continue;
+      if (colonIdx === -1) {continue;}
 
       try {
         const part = JSON.parse(line.slice(colonIdx + 1)) as {
@@ -78,7 +78,7 @@ const getFrames = async (body: ReadableStream, signal: AbortSignal) => {
           }
         }
       } catch {
-        // skip unparseable lines
+        // Skip unparseable lines
       }
     }
   }
@@ -95,35 +95,33 @@ const getFrames = async (body: ReadableStream, signal: AbortSignal) => {
 };
 
 const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: RevisionInput) => {
-  if (!options) throw new Error("Revision requires options");
+  if (!options) {throw new Error("Revision requires options");}
 
   const response = await apiClient.api.workflow.$post({
     json: {
-      systemPrompt,
-      prompt,
-      mode: "quick",
-      conceptCount: 1,
-      model: derived.model,
       apiKey: derived.apiKey || undefined,
-      providerType: derived.providerType || undefined,
       baseURL: derived.baseURL || undefined,
-      revision: options.revision,
+      conceptCount: 1,
       existingHtml: options.existingHtml,
+      mode: "quick",
+      model: derived.model,
+      prompt,
+      providerType: derived.providerType || undefined,
+      revision: options.revision,
+      systemPrompt,
     },
     signal,
   });
-  const body = response.body;
+  const {body} = response;
 
-  if (!body) throw new Error("No response body");
+  if (!body) {throw new Error("No response body");}
 
   return await getFrames(body, signal);
 };
 
-const usePostRevision = () => {
-  return useMutation({
+const usePostRevision = () => useMutation({
     mutationKey: MUTATION_KEY,
     mutationFn: postRevision,
   });
-};
 
 export default usePostRevision;

@@ -7,9 +7,6 @@ import { CritiqueInputSchema, CritiqueOutputSchema } from "../schemas/critique.s
 import { stripBase64Images } from "../../lib/strip-base64";
 
 export const critiqueStep = createStep({
-  id: "critique",
-  inputSchema: CritiqueInputSchema,
-  outputSchema: CritiqueOutputSchema,
   execute: async ({ inputData }) => {
     const { html, prompt, model, apiKey, baseURL, providerType } = inputData;
 
@@ -18,22 +15,25 @@ export const critiqueStep = createStep({
 
     const messages: ModelMessage[] = [
       {
-        role: "user",
         content: buildCritiquePrompt(prompt || "", stripped),
+        role: "user",
       },
     ];
 
     const { result } = await generateWithFallback({
       apiKey,
-      model: model || "claude-opus-4-6",
-      messages,
-      maxTokens: 1024,
-      providerType: providerType as ProviderType | undefined,
       baseURL,
+      maxTokens: 1024,
+      messages,
+      model: model || "claude-opus-4-6",
+      providerType: providerType as ProviderType | undefined,
     });
 
     return {
       critique: result.text,
     };
   },
+  id: "critique",
+  inputSchema: CritiqueInputSchema,
+  outputSchema: CritiqueOutputSchema,
 });

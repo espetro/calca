@@ -8,12 +8,12 @@ export async function generateDesign(params: {
   maxTokens: number;
   temperature?: number;
 }): Promise<{ text: string; usedModel?: string }> {
-  const messages: ModelMessage[] = [{ role: "user", content: params.prompt }];
+  const messages: ModelMessage[] = [{ content: params.prompt, role: "user" }];
   const { result, usedModel } = await generateWithFallback({
     apiKey: params.apiKey,
-    model: params.model,
-    messages,
     maxTokens: params.maxTokens,
+    messages,
+    model: params.model,
     temperature: params.temperature,
   });
   return { text: result.text, usedModel };

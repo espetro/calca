@@ -8,7 +8,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: FIVE_HOURS_IN_MS,
-      // throwOnError
+      // ThrowOnError
     },
   },
 });

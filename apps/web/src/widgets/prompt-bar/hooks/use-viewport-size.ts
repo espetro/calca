@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ViewportSize {
   width: number;
   height: number;
 }
 
-const DEFAULT_SIZE: ViewportSize = { width: 0, height: 0 };
+const DEFAULT_SIZE: ViewportSize = { height: 0, width: 0 };
 
 export function useViewportSize(): ViewportSize {
   const [size, setSize] = useState<ViewportSize>(DEFAULT_SIZE);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {return;}
 
     const updateSize = () => {
       setSize({
-        width: window.innerWidth,
         height: window.innerHeight,
+        width: window.innerWidth,
       });
     };
 

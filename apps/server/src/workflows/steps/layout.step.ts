@@ -1,4 +1,4 @@
-import { type ImagePart, type ModelMessage, type TextPart } from "ai";
+import type { ImagePart, ModelMessage, TextPart } from "ai";
 import { createStep } from "@mastra/core/workflows";
 import { streamAnthropic } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
@@ -9,13 +9,10 @@ import { parseHtmlWithSize } from "../../lib/parse-html";
 import { LayoutInputSchema, LayoutOutputSchema } from "../schemas/layout.schema";
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-const HEARTBEAT_INTERVAL_MS = 5_000;
+const HEARTBEAT_INTERVAL_MS = 5000;
 
 export const layoutStep = createStep({
-  id: "layout",
   description: "Generate HTML/CSS layout from a design prompt using AI streaming",
-  inputSchema: LayoutInputSchema,
-  outputSchema: LayoutOutputSchema,
   execute: async ({ inputData, abortSignal, writer }) => {
     const {
       prompt,
@@ -31,7 +28,7 @@ export const layoutStep = createStep({
     } = inputData;
 
     const useModel = model || DEFAULT_MODEL;
-    const isRevision = !!(revision && existingHtml);
+    const isRevision = Boolean(revision && existingHtml);
 
     // ── Build user content ──────────────────────────────────────────
     let userContent: string;
@@ -60,14 +57,13 @@ export const layoutStep = createStep({
           const token = `[USER_IMAGE_${i + 1}]`;
           imageTokenMap[token] = dataUrl;
 
-          userParts.push({ type: "image", image: dataUrl });
+          userParts.push({ image: dataUrl, type: "image" });
           imageRefs.push(`- Image ${i + 1}: Use src="${token}" to place this image`);
         }
       }
 
       if (imageRefs.length > 0) {
         userParts.push({
-          type: "text",
           text: `USER-PROVIDED IMAGES — USE THESE IN THE DESIGN:
 The ${imageRefs.length} image${imageRefs.length > 1 ? "s" : "is"} provided by the user to include IN the design.
 
@@ -82,39 +78,40 @@ RULES FOR USER IMAGES:
 - You can STILL use data-placeholder divs for ADDITIONAL images beyond what the user provided
 
 `,
+          type: "text",
         });
       }
     }
 
-    userParts.push({ type: "text", text: userContent });
+    userParts.push({ text: userContent, type: "text" });
 
     // ── Build messages array ────────────────────────────────────────
     const messages: ModelMessage[] = [
       {
-        role: "user",
         content:
           userParts.length === 1 && userParts[0]!.type === "text" ? userParts[0]!.text : userParts,
+        role: "user",
       },
     ];
 
     // ── Stream with heartbeat ───────────────────────────────────────
     const stream = streamAnthropic({
-      model: useModel,
       apiKey,
-      providerType: providerType as ProviderType | undefined,
       baseURL,
-      messages,
-      maxTokens: 16384,
       enableCaching: true,
+      maxTokens: 16384,
+      messages,
+      model: useModel,
+      providerType: providerType as ProviderType | undefined,
       systemPrompt: systemPrompt || "",
     });
 
     const heartbeatInterval = setInterval(() => {
       writer
         .write({
-          type: "heartbeat",
           stage: "layout",
           timestamp: Date.now(),
+          type: "heartbeat",
         })
         .catch(() => {});
     }, HEARTBEAT_INTERVAL_MS);
@@ -158,13 +155,16 @@ RULES FOR USER IMAGES:
       }
 
       return {
+        comment: result.comment,
+        height: result.height,
         html: result.html,
         width: result.width,
-        height: result.height,
-        comment: result.comment,
       };
     } finally {
       clearInterval(heartbeatInterval);
     }
   },
+  id: "layout",
+  inputSchema: LayoutInputSchema,
+  outputSchema: LayoutOutputSchema,
 });

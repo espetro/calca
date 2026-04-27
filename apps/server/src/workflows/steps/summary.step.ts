@@ -13,9 +13,6 @@ const logger = getLogger(["calca", "server", "workflow", "summary"]);
 const DEFAULT_MODEL = "claude-opus-4-6";
 
 export const summaryStep = createStep({
-  id: "summary",
-  inputSchema: SummaryInputSchema,
-  outputSchema: SummaryOutputSchema,
   execute: async ({ inputData }) => {
     const { html, prompt, labels, model, apiKey, baseURL, providerType } = inputData;
 
@@ -23,18 +20,18 @@ export const summaryStep = createStep({
 
     const messages: ModelMessage[] = [
       {
-        role: "user",
         content: buildSummaryPrompt(prompt, stripped, labels ?? []),
+        role: "user",
       },
     ];
 
     const { result } = await generateWithFallback({
       apiKey,
-      model: model ?? DEFAULT_MODEL,
-      messages,
-      maxTokens: 512,
-      providerType: providerType as ProviderType | undefined,
       baseURL,
+      maxTokens: 512,
+      messages,
+      model: model ?? DEFAULT_MODEL,
+      providerType: providerType as ProviderType | undefined,
     });
 
     const raw = result.text;
@@ -42,9 +39,12 @@ export const summaryStep = createStep({
       const parsed = JSON.parse(raw);
       const validated = validateSummary(parsed);
       return { summary: JSON.stringify(validated) };
-    } catch (validationErr) {
-      logger.warn("Summary validation failed:", validationErr);
+    } catch (error) {
+      logger.warn("Summary validation failed:", { error });
       return { summary: raw };
     }
   },
+  id: "summary",
+  inputSchema: SummaryInputSchema,
+  outputSchema: SummaryOutputSchema,
 });

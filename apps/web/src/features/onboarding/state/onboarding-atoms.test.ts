@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  showWelcomeAtom,
-  showTutorialAtom,
   onboardingCompletedAtom,
+  showTutorialAtom,
+  showWelcomeAtom,
   tutorialStepAtom,
 } from "./onboarding-atoms";
 import { getDefaultStore } from "jotai";

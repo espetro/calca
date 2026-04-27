@@ -1,12 +1,12 @@
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Layout,
-  Megaphone,
-  Sparkles,
-  Presentation,
-  Mail,
-  Palette,
   type LucideIcon,
+  Mail,
+  Megaphone,
+  Palette,
+  Presentation,
+  Sparkles,
 } from "lucide-react";
 import { useAtom } from "jotai";
 import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";
@@ -15,11 +15,11 @@ import { useClickOutside } from "@/shared/hooks/use-click-outside";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Layout,
-  Megaphone,
-  Sparkles,
-  Presentation,
   Mail,
+  Megaphone,
   Palette,
+  Presentation,
+  Sparkles,
 };
 
 function getPresetIcon(iconName: string): LucideIcon {
@@ -45,11 +45,11 @@ export function FloatingPresetButton() {
 
   const handlePresetClick = (presetId: string) => {
     const preset = SYSTEM_PROMPT_PRESETS.find((p) => p.id === presetId);
-    if (!preset) return;
+    if (!preset) {return;}
 
     updateSettings({
-      systemPromptPreset: preset.id,
       systemPrompt: preset.id === "custom" ? "" : preset.prompt,
+      systemPromptPreset: preset.id,
     });
   };
 

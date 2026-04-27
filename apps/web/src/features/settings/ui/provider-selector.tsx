@@ -13,16 +13,16 @@ export default function ProviderSelector({
 }: ProviderSelectorProps) {
   const providers = [
     {
-      id: "anthropic" as const,
-      label: "Anthropic",
       description: "Claude Opus 4.6, Sonnet 4.5, Opus 4, or Sonnet 4",
       icon: "🤖",
+      id: "anthropic" as const,
+      label: "Anthropic",
     },
     {
-      id: "openai-compatible" as const,
-      label: "OpenAI-Compatible",
       description: "GPT-4, GPT-4o, GPT-3.5 Turbo, or custom endpoints",
       icon: "🚀",
+      id: "openai-compatible" as const,
+      label: "OpenAI-Compatible",
     },
   ];
 
@@ -36,9 +36,9 @@ export default function ProviderSelector({
           className={`w-full flex items-center justify-between px-5 py-3.5 rounded-xl text-left transition-all ${
             disabled
               ? "opacity-35 cursor-not-allowed bg-gray-100/30 border border-transparent"
-              : providerType === provider.id
+              : (providerType === provider.id
                 ? "bg-blue-500/10 border border-blue-300/40 text-gray-800"
-                : "bg-white/40 border border-transparent hover:bg-white/60 text-gray-600"
+                : "bg-white/40 border border-transparent hover:bg-white/60 text-gray-600")
           }`}
         >
           <div className="flex items-center gap-2">

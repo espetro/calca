@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useEffect } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 
 interface PromptInputContainerProps {
   children: React.ReactNode;
@@ -10,8 +10,7 @@ export const PromptInputContainer = ({
   children,
   isGenerating = false,
   className = "",
-}: PromptInputContainerProps) => {
-  return (
+}: PromptInputContainerProps) => (
     <div
       className={`flex flex-col items-stretch rounded-[20px] px-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] bg-white/20 backdrop-blur-3xl border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(255,255,255,0.15)] pointer-events-auto ${
         isGenerating
@@ -22,34 +21,27 @@ export const PromptInputContainer = ({
       {children}
     </div>
   );
-};
 
 interface PromptInputHeaderProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export const PromptInputHeader = ({ children, className = "" }: PromptInputHeaderProps) => {
-  return <div className={`flex items-center gap-2 mb-2 ${className}`}>{children}</div>;
-};
+export const PromptInputHeader = ({ children, className = "" }: PromptInputHeaderProps) => <div className={`flex items-center gap-2 mb-2 ${className}`}>{children}</div>;
 
 interface PromptInputBodyProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export const PromptInputBody = ({ children, className = "" }: PromptInputBodyProps) => {
-  return <div className={`flex items-center gap-2 ${className}`}>{children}</div>;
-};
+export const PromptInputBody = ({ children, className = "" }: PromptInputBodyProps) => <div className={`flex items-center gap-2 ${className}`}>{children}</div>;
 
 interface PromptInputFooterProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export const PromptInputFooter = ({ children, className = "" }: PromptInputFooterProps) => {
-  return <div className={`flex items-center justify-between gap-2 ${className}`}>{children}</div>;
-};
+export const PromptInputFooter = ({ children, className = "" }: PromptInputFooterProps) => <div className={`flex items-center justify-between gap-2 ${className}`}>{children}</div>;
 
 interface PromptInputTextareaProps {
   value: string;
@@ -68,7 +60,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
     useEffect(() => {
       const autoResize = () => {
         const el = textareaRef.current;
-        if (!el) return;
+        if (!el) {return;}
         el.style.height = "auto";
         const lineHeight = 22;
         const maxHeight = lineHeight * 6;

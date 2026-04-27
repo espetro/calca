@@ -5,7 +5,7 @@ import workflowRoute from "./routes/workflow";
 import exportRoute from "./routes/export";
 import probeModelsRoute from "./routes/probe-models";
 
-await createLogger();
+await createLogger({ env: process.env });
 
 const IDLE_TIMEOUT_IN_SECONDS = 255; // ? Max allowed by bun (4,25 minutes)
 
@@ -19,9 +19,9 @@ const app = new Hono()
   .route("/api/probe-models", probeModelsRoute);
 
 Bun.serve({
-  port: 3001,
-  idleTimeout: IDLE_TIMEOUT_IN_SECONDS,
   fetch: app.fetch,
+  idleTimeout: IDLE_TIMEOUT_IN_SECONDS,
+  port: 3001,
 });
 
 logger.info("Server running on http://localhost:3001");

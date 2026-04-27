@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAtomValue } from "jotai";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
@@ -23,11 +23,7 @@ function RootLayout() {
       } else if (settings.theme === "light") {
         root.classList.remove("dark");
       } else {
-        if (mediaQuery.matches) {
-          root.classList.add("dark");
-        } else {
-          root.classList.remove("dark");
-        }
+        root.classList.toggle("dark", mediaQuery.matches);
       }
     };
 
