@@ -9,20 +9,15 @@ import {
 import { getPrettyFormatter } from "@logtape/pretty";
 
 const DEFAULT_LOG_LEVEL: LogLevel = "info";
+const VALID_LEVELS: LogLevel[] = ["debug", "info", "warning", "error", "fatal"];
 
-function toLogtapeLevel(level: string): LogLevel {
-  if (level === "warn") return "warning";
-  if (level === "silent") return "fatal";
-  if (isLogLevel(level)) return level;
-  return DEFAULT_LOG_LEVEL;
-}
+const toLogtapeLevel = (level: LogLevel) => (isLogLevel(level) ? level : DEFAULT_LOG_LEVEL);
 
-function getLogLevelFromEnv(env: Record<string, string | undefined>): LogLevel {
-  const envLevel = env.LOG_LEVEL?.toLowerCase();
-  const validLevels = ["debug", "info", "warn", "error", "silent"];
+function getLogLevelFromEnv(env: typeof process.env): LogLevel {
+  const envLevel: string | undefined = env.LOG_LEVEL?.toLowerCase();
 
-  if (envLevel && validLevels.includes(envLevel)) {
-    return toLogtapeLevel(envLevel);
+  if (envLevel && VALID_LEVELS.includes(envLevel as LogLevel)) {
+    return toLogtapeLevel(envLevel as LogLevel);
   }
 
   return DEFAULT_LOG_LEVEL;
@@ -30,28 +25,22 @@ function getLogLevelFromEnv(env: Record<string, string | undefined>): LogLevel {
 
 let isConfigured = false;
 
-function getLogLevel(
-  level: string | undefined,
-  env: Record<string, string | undefined>,
-): LogLevel {
+function getLogLevel(level: LogLevel, env: typeof process.env): LogLevel {
   if (level !== undefined) {
     return toLogtapeLevel(level);
   }
   return getLogLevelFromEnv(env);
 }
 
-export async function createLogger(
-  level: string | undefined = undefined,
-  env: Record<string, string | undefined> = process.env ?? {},
-): Promise<void> {
+export async function createLogger(level: LogLevel = "info", env?: typeof process.env) {
+  const environment = env ?? (typeof process !== "undefined" ? process.env : {});
   if (isConfigured) {
     return;
   }
 
-  const logLevel = getLogLevel(level, env);
+  const logLevel = getLogLevel(level, environment);
 
-  const isBrowser =
-    typeof globalThis !== "undefined" && "window" in globalThis;
+  const isBrowser = typeof globalThis !== "undefined" && "window" in globalThis;
 
   await configure({
     sinks: {
