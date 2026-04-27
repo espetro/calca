@@ -196,6 +196,7 @@ app.post("/feedback", async (c) => {
 const port = Number(process.env.PORT ?? 3002);
 console.log(`[feedback-proxy] Listening on http://localhost:${port}`);
 
+export { app };
 export default {
   port,
   fetch: app.fetch,
