@@ -3,37 +3,37 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useCanvas } from "@/features/canvas";
-import { CommentInput, CommentThread } from "@/features/comments";
-import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
-import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
+import { useCanvas } from "#/features/canvas";
+import { CommentInput, CommentThread } from "#/features/comments";
+import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
+import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
 import {
   showGitHashAtom,
   showLibraryAtom,
   showResetConfirmAtom,
   toolModeAtom,
-} from "@/features/design/state/generation-atoms";
-import { groupsAtom, hydrateGroups, resetSessionAtom } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
-import { SummaryList } from "@/features/design/ui/summary-list";
-import { FeedbackModal } from "@/features/feedback";
+} from "#/features/design/state/generation-atoms";
+import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/state/groups-atoms";
+import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
+import { SummaryList } from "#/features/design/ui/summary-list";
+import { FeedbackModal } from "#/features/feedback";
 import {
   showTutorialAtom,
   showWelcomeAtom,
   TutorialTour,
   WelcomeModal,
-} from "@/features/onboarding";
-import { SettingsModal } from "@/features/settings";
-import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
-import { isOwnKeyAtom, loadedAtom, settingsAtom } from "@/features/settings/state/settings-atoms";
-import { exportCanvas, openImportDialog } from "@/lib/export";
-import { m } from "@/lib/i18n";
-import { useMountEffect } from "@/shared/utils/use-mount-effect";
-import { CanvasArea } from "@/widgets/canvas-area";
-import { ErrorBoundary } from "@/widgets/error-boundary";
-import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
-import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
-import { Toolbar } from "@/widgets/toolbar";
+} from "#/features/onboarding";
+import { SettingsModal } from "#/features/settings";
+import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
+import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
+import { exportCanvas, openImportDialog } from "#/lib/export";
+import { m } from "#/lib/i18n";
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
+import { CanvasArea } from "#/widgets/canvas-area";
+import { ErrorBoundary } from "#/widgets/error-boundary";
+import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
+import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
+import { Toolbar } from "#/widgets/toolbar";
 
 export default function Home() {
   const canvas = useCanvas();

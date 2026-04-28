@@ -16,10 +16,10 @@ import {
   isGeneratingAtom,
   pipelineStagesAtom,
   genStatusAtom,
-} from "@/features/design/state/generation-atoms";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import { apiClient } from "@/lib/api-client";
-import type { GenerationGroup, PipelineStage, Point } from "@/shared/types";
+} from "#/features/design/state/generation-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import { apiClient } from "#/lib/api-client";
+import type { GenerationGroup, PipelineStage, Point } from "#/shared/types";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per

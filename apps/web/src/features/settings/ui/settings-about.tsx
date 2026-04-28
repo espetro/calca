@@ -1,7 +1,7 @@
 import { Bug, Code2, Globe, Heart, MessageCircle } from "lucide-react";
 
-import { Badge } from "@/shared/components/ui/badge";
-import { Separator } from "@/shared/components/ui/separator";
+import { Badge } from "#/shared/components/ui/badge";
+import { Separator } from "#/shared/components/ui/separator";
 
 export function SettingsAbout() {
   return (

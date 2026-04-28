@@ -3,7 +3,7 @@ import { atom } from "jotai";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
 
-import type { GenerationGroup } from "@/shared/types";
+import type { GenerationGroup } from "#/shared/types";
 
 const STORAGE_KEY = "calca-canvas-session";
 const IMG_DB_NAME = "calca-canvas-images";

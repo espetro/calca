@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { Settings } from "@/features/settings/types";
+import type { Settings } from "#/features/settings/types";
 
 import { ModelInfo, ProviderConfig, ProviderType } from "../types";
 import ProviderConfigForm from "./provider-config-form";

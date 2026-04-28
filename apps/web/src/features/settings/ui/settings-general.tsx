@@ -4,20 +4,20 @@ import { useSetAtom } from "jotai";
 import { Eye, EyeOff, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-import { showTutorialAtom } from "@/features/onboarding/state/onboarding-atoms";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
+import { showTutorialAtom } from "#/features/onboarding/state/onboarding-atoms";
+import { Badge } from "#/shared/components/ui/badge";
+import { Button } from "#/shared/components/ui/button";
+import { Input } from "#/shared/components/ui/input";
+import { Label } from "#/shared/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { Separator } from "@/shared/components/ui/separator";
-import { Switch } from "@/shared/components/ui/switch";
+} from "#/shared/components/ui/select";
+import { Separator } from "#/shared/components/ui/separator";
+import { Switch } from "#/shared/components/ui/switch";
 
 import { useProbeModels } from "../hooks/use-probe-models";
 import { apiKeyValidationSchema, validateModelInProvider } from "../lib/settings-schema";

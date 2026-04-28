@@ -1,15 +1,15 @@
 import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
 
-import { Label } from "@/shared/components/ui/label";
+import { Label } from "#/shared/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { Separator } from "@/shared/components/ui/separator";
-import { Switch } from "@/shared/components/ui/switch";
+} from "#/shared/components/ui/select";
+import { Separator } from "#/shared/components/ui/separator";
+import { Switch } from "#/shared/components/ui/switch";
 
 import type { Settings, Theme } from "../types";
 

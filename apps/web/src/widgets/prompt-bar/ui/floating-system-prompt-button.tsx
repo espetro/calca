@@ -2,8 +2,8 @@ import { useAtom } from "jotai";
 import { MessageSquare } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
-import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";
-import { useClickOutside } from "@/shared/hooks/use-click-outside";
+import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
+import { useClickOutside } from "#/shared/hooks/use-click-outside";
 
 export function FloatingSystemPromptButton() {
   const [isOpen, setIsOpen] = useState(false);

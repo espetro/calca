@@ -9,7 +9,7 @@ import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "web", "export"]);
 
-import type { GenerationGroup } from "@/shared/types";
+import type { GenerationGroup } from "#/shared/types";
 
 // ---------------------------------------------------------------------------
 // Constants

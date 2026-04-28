@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { SYSTEM_PROMPT_PRESETS } from "@/features/settings/lib/presets";
-import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";
-import { useClickOutside } from "@/shared/hooks/use-click-outside";
+import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
+import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
+import { useClickOutside } from "#/shared/hooks/use-click-outside";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Layout,

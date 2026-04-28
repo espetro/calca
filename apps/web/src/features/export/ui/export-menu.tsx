@@ -1,7 +1,7 @@
 import { getLogger } from "@app/logger";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import useExportCodeMutation from "@/features/design/hooks/use-export-code-mutation";
+import useExportCodeMutation from "#/features/design/hooks/use-export-code-mutation";
 
 type ExportFormat = "svg" | "tailwind" | "react" | "png" | "jpg" | "copy-image";
 

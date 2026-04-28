@@ -12,16 +12,16 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "#/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
-import { Switch } from "@/shared/components/ui/switch";
+} from "#/shared/components/ui/dialog";
+import { Input } from "#/shared/components/ui/input";
+import { Label } from "#/shared/components/ui/label";
+import { Switch } from "#/shared/components/ui/switch";
 
 import { submitFeedback } from "../api";
 import { canSubmitFeedback, recordSubmission } from "../lib/rate-limiter";

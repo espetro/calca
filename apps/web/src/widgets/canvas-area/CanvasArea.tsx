@@ -2,15 +2,15 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type RefCallback, useCallback, useRef } from "react";
 import { useMemo } from "react";
 
-import { PipelineStatusOverlay } from "@/features/canvas";
-import type { useCanvas } from "@/features/canvas/hooks/use-canvas";
-import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "@/features/design";
+import { PipelineStatusOverlay } from "#/features/canvas";
+import type { useCanvas } from "#/features/canvas/hooks/use-canvas";
+import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "#/features/design";
 import {
   activeCommentAtom,
   activeCommentIterationIdAtom,
   commentDraftAtom,
   draggingIdAtom,
-} from "@/features/design/state/comment-atoms";
+} from "#/features/design/state/comment-atoms";
 import {
   draggingImageIdAtom,
   pipelineStagesAtom,
@@ -18,14 +18,14 @@ import {
   selectedIdsAtom,
   spaceHeldAtom,
   toolModeAtom,
-} from "@/features/design/state/generation-atoms";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom } from "@/features/design/state/images-atoms";
-import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import { settingsAtom } from "@/features/settings/state/settings-atoms";
-import { m } from "@/lib/i18n";
-import type { DesignIteration, Point } from "@/shared/types";
-import { RubberBandOverlay } from "@/widgets/rubber-band-selection";
+} from "#/features/design/state/generation-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import { canvasImagesAtom } from "#/features/design/state/images-atoms";
+import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
+import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { m } from "#/lib/i18n";
+import type { DesignIteration, Point } from "#/shared/types";
+import { RubberBandOverlay } from "#/widgets/rubber-band-selection";
 
 type CanvasHandle = ReturnType<typeof useCanvas>;
 
@@ -258,7 +258,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   );
 
   const handleClickComment = useCallback(
-    (comment: import("@/shared/types").Comment, iterationId: string) => {
+    (comment: import("#/shared/types").Comment, iterationId: string) => {
       setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
       setActiveCommentIterationId((prev) => (comment ? iterationId : null));
     },

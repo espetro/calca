@@ -11,9 +11,9 @@ import {
   activeCommentAtom,
   activeCommentIterationIdAtom,
   commentCountAtom,
-} from "@/features/design/state/comment-atoms";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import type { Comment as CommentType, CommentMessage } from "@/shared/types";
+} from "#/features/design/state/comment-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import type { Comment as CommentType, CommentMessage } from "#/shared/types";
 
 interface RevisionJob {
   iterationId: string;

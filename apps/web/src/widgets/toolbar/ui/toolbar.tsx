@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-import { BugIcon } from "@/features/feedback";
-import type { ProviderConfig } from "@/features/settings/types";
-import { MODELS } from "@/features/settings/types";
-import { SettingsDialog } from "@/features/settings/ui/settings-dialog";
-import type { ToolMode } from "@/shared/types";
+import { BugIcon } from "#/features/feedback";
+import type { ProviderConfig } from "#/features/settings/types";
+import { MODELS } from "#/features/settings/types";
+import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
+import type { ToolMode } from "#/shared/types";
 
 import ToolButton from "./tool-button";
 import type { ZoomProps } from "./zoom";

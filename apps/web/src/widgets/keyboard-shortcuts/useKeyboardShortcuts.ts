@@ -1,15 +1,15 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef } from "react";
 
-import { commentDraftAtom } from "@/features/design/state/comment-atoms";
+import { commentDraftAtom } from "#/features/design/state/comment-atoms";
 import {
   selectedIdsAtom,
   spaceHeldAtom,
   toolModeAtom,
-} from "@/features/design/state/generation-atoms";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom } from "@/features/design/state/images-atoms";
-import { feedbackModalOpenAtom } from "@/features/feedback/store";
+} from "#/features/design/state/generation-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import { canvasImagesAtom } from "#/features/design/state/images-atoms";
+import { feedbackModalOpenAtom } from "#/features/feedback/store";
 
 /**
  * Registers global keyboard shortcuts (V, C, Space, Escape, Delete/Backspace, Cmd+Shift+B).
