@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun run src/index.ts",
-    "dev:web": "cd ../.. && bun run dev-web",
+    "dev": "echo 'dev: electrobun desktop app not yet ready for turbo dev'",
+    "dev:web": "cd ../.. && bun run dev",
     "dev:all": "bun run dev:web & bun run dev",
     "build:web": "cd ../.. && bun run --filter=@app/web build",
     "package": "electrobun package",
@@ -17,6 +17,6 @@
     "electrobun": "latest"
   },
   "devDependencies": {
-    "typescript": "latest"
+    "typescript": "^6.0.3"
   }
 }
