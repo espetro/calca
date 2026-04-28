@@ -7,6 +7,9 @@ interface ImportMetaEnv {
   readonly VITE_AI_API_KEY: string;
   readonly VITE_AI_MODEL: string;
   readonly VITE_API_BASE_URL: string;
+  readonly VITE_FEEDBACK_PROXY_URL: string;
+  readonly VITE_POSTHOG_KEY: string;
+  readonly LOG_LEVEL: string;
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv;
