@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "dev-desktop": "cd platforms/desktop && bun run dev:all",
-    "build": "turbo build",
+    "build": "cd platforms/desktop && bun run build",
+    "build:packages": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
     "test:e2e": "gauge run e2e/specs",
@@ -22,7 +23,6 @@
     "format": "turbo format",
     "validate": "bun scripts/validate.ts",
     "package:desktop": "cd platforms/desktop && bun run build:full",
-    "build:desktop": "cd platforms/desktop && bun run build:web",
     "clean": "turbo clean"
   },
   "devDependencies": {
