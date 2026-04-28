@@ -1,6 +1,6 @@
 import app from "./app";
 
-const IDLE_TIMEOUT_IN_SECONDS = 0;
+const IDLE_TIMEOUT_IN_SECONDS = 0; // ! No timeout – we must set per-request timeout
 
 Bun.serve({
   fetch: app.fetch,
