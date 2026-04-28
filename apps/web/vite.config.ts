@@ -20,14 +20,7 @@ export default defineConfig({
   },
   plugins: [react(), tanstackRouter(), tailwindcss()],
   resolve: {
-    alias: [
-      { find: "#", replacement: resolve(__dirname, "./src") },
-      { find: "@", replacement: resolve(__dirname, "./src") },
-      {
-        find: "@app/analytics",
-        replacement: resolve(__dirname, "../../packages/analytics/src/index.ts"),
-      },
-    ],
+    alias: [{ find: "#", replacement: resolve(__dirname, "./src") }],
   },
   define: {
     "import.meta.env.VITE_GIT_HASH": JSON.stringify(gitHash),
