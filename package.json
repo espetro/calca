@@ -11,19 +11,18 @@
     "platforms/*"
   ],
   "scripts": {
-    "dev-desktop": "cd platforms/desktop && bun run dev:all",
-    "build": "cd platforms/desktop && bun run build",
-    "build:packages": "turbo build",
+    "build": "turbo build",
+    "build:desktop": "bun run --cwd platforms/desktop build",
+    "clean": "turbo clean",
     "dev": "turbo dev",
+    "dev:desktop": "bun run --cwd platforms/desktop start",
+    "format": "turbo format",
+    "lint": "turbo lint",
     "test": "turbo test",
     "test:e2e": "gauge run e2e/specs",
     "test:e2e:spec": "gauge run",
     "typecheck": "turbo typecheck",
-    "lint": "turbo lint",
-    "format": "turbo format",
-    "validate": "bun scripts/validate.ts",
-    "package:desktop": "cd platforms/desktop && bun run build:full",
-    "clean": "turbo clean"
+    "validate": "bun scripts/validate.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
