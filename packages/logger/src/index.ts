@@ -45,6 +45,7 @@ export async function createLogger({ level = "info", env }: CreateLoggerProps) {
   }
 
   const logLevel = getLogLevel(level, env);
+  console.log(`Log level set to ${logLevel}`);
 
   const isBrowser = typeof globalThis !== "undefined" && "window" in globalThis;
 
