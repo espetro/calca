@@ -11,7 +11,6 @@
  *   trackGenerationComplete({ model: "claude-sonnet-4-5", wordCount: 12, conceptCount: 4, durationMs: 5000 });
  */
 
-import { captureEvent } from "./posthog-client";
 import {
   AI_GENERATION_START,
   AI_GENERATION_COMPLETE,
@@ -27,6 +26,7 @@ import {
   SETTINGS_MODEL_CHANGED,
   SETTINGS_THEME_CHANGED,
 } from "./events";
+import { captureEvent } from "./posthog-client";
 import type {
   AIGenerationStartEvent,
   AIGenerationCompleteEvent,

@@ -161,9 +161,7 @@ describe("posthog-client", () => {
   describe("optIn", () => {
     it("calls posthog.opt_in_capturing and re-enables captures", async () => {
       setupLocalStorage();
-      const { initAnalytics, optIn, isAnalyticsEnabled } = await import(
-        "../posthog-client"
-      );
+      const { initAnalytics, optIn, isAnalyticsEnabled } = await import("../posthog-client");
 
       initAnalytics("test-api-key");
 
@@ -206,9 +204,7 @@ describe("posthog-client", () => {
 
     it("returns false after opt-out", async () => {
       setupLocalStorage();
-      const { initAnalytics, optOut, isAnalyticsEnabled } = await import(
-        "../posthog-client"
-      );
+      const { initAnalytics, optOut, isAnalyticsEnabled } = await import("../posthog-client");
 
       initAnalytics("test-api-key");
       optOut();

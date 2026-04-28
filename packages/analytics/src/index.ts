@@ -11,13 +11,7 @@
  *   captureEvent(APP_SESSION_START, { previousSessionDurationMs: 30000 });
  */
 
-export {
-  initAnalytics,
-  captureEvent,
-  optOut,
-  optIn,
-  isAnalyticsEnabled,
-} from "./posthog-client";
+export { initAnalytics, captureEvent, optOut, optIn, isAnalyticsEnabled } from "./posthog-client";
 
 export {
   APP_SESSION_START,

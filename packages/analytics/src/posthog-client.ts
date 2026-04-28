@@ -1,4 +1,5 @@
 import { posthog } from "posthog-js";
+
 import type { AnalyticsEventProperties } from "./types";
 
 const ANALYTICS_ENABLED_KEY = "calca:analytics_enabled";
