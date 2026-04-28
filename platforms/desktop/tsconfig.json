@@ -2,12 +2,13 @@
   "extends": "../../packages/config/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "moduleResolution": "bundler",
+    "lib": ["ESNext"],
+    "types": ["@types/bun"],
     "paths": {
       "electrobun/bun": ["./src/electrobun.d.ts"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "scripts/*.ts"],
   "exclude": ["**/node_modules/**", "**/electrobun/*", "dist", "**/dist/*", "**/.bun/**"]
 }
