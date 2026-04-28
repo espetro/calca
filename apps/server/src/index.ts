@@ -8,7 +8,7 @@ import workflowRoute from "./routes/workflow";
 
 await createLogger({ env: process.env });
 
-const IDLE_TIMEOUT_IN_SECONDS = 255; // ? Max allowed by bun (4,25 minutes)
+const IDLE_TIMEOUT_IN_SECONDS = 0; // ? Max allowed by bun (4,25 minutes), thus we disable it
 
 const logger = getLogger(["calca", "server"]);
 
