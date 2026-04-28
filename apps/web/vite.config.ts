@@ -27,6 +27,7 @@ export default defineConfig({
     "import.meta.env.VITE_AI_BASE_URL": JSON.stringify(process.env.VITE_AI_BASE_URL ?? ""),
     "import.meta.env.VITE_AI_API_KEY": JSON.stringify(process.env.VITE_AI_API_KEY ?? ""),
     "import.meta.env.VITE_AI_MODEL": JSON.stringify(process.env.VITE_AI_MODEL ?? ""),
+    "import.meta.env.VITE_LOG_LEVEL": JSON.stringify(process.env.LOG_LEVEL ?? ""),
   },
   server: {
     port: 5173,

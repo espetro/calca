@@ -9,7 +9,7 @@ import { feedbackModalOpenAtom } from "#/features/feedback/store";
 
 import { routeTree } from "./routeTree.gen";
 
-await createLogger({ env: process.env });
+await createLogger({ env: { LOG_LEVEL: import.meta.env.VITE_LOG_LEVEL } });
 // initAnalytics();
 
 document.addEventListener("contextmenu", (e) => e.preventDefault());
