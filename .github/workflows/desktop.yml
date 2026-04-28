@@ -1,7 +1,7 @@
 name: Desktop Build
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.10"
       - run: bun install
       - run: bun run typecheck
       - run: bun test
@@ -23,12 +25,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.10"
       - run: bun install
       - run: bun run build:desktop
       - uses: actions/upload-artifact@v4
         with:
-          name: calca-desktop
-          path: platforms/desktop/build/
+          name: calca-desktop-macos
+          path: platforms/desktop/artifacts/
 
   release:
     needs: build-desktop
@@ -39,10 +43,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.10"
       - run: bun install
       - run: bun run build:desktop
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: platforms/desktop/build/*.dmg
+          files: |
+            platforms/desktop/artifacts/*.dmg
+            platforms/desktop/artifacts/*.zip
           generate_release_notes: true
