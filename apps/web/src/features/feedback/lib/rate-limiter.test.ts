@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
 import { canSubmitFeedback, recordSubmission, resetRateLimitState } from "./rate-limiter";
 
 const mockLocalStorage = new Map<string, string>();

@@ -178,7 +178,8 @@ export function canSubmitFeedback(): RateLimitResult {
   if (sessionCount >= SESSION_MAX) {
     return {
       allowed: false,
-      reason: "Maximum submissions reached for this session. Please refresh the page to submit more.",
+      reason:
+        "Maximum submissions reached for this session. Please refresh the page to submit more.",
     };
   }
 

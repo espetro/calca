@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { getLogger } from "@app/logger";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
 
@@ -100,7 +100,9 @@ function restoreBase64(
     iterations: g.iterations.map((it) => ({
       ...it,
       html: it.html
-        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => images[key] ? `src="${images[key]}"` : 'src="[img-missing]"')
+        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) =>
+            images[key] ? `src="${images[key]}"` : 'src="[img-missing]"',
+          )
         : it.html,
     })),
   }));
@@ -136,7 +138,9 @@ export function usePersistedGroups() {
 
   // Debounced save to localStorage
   const persistGroups = useCallback((newGroups: GenerationGroup[]) => {
-    if (saveTimer.current) {clearTimeout(saveTimer.current);}
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+    }
     saveTimer.current = setTimeout(() => {
       try {
         // Only save groups that have real content

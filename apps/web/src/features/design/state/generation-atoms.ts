@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import type { PipelineStatus, ToolMode } from "@/shared/types";
 
 export const showResetConfirmAtom = atom<boolean>(false);

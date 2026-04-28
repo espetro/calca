@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import type { Point } from "@/shared/types/canvas";
 
 export const canvasOffsetAtom = atom<Point>({ x: 0, y: 0 });

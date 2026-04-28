@@ -1,5 +1,5 @@
-import { atom } from "jotai";
 import { getLogger } from "@app/logger";
+import { atom } from "jotai";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
 
@@ -93,7 +93,9 @@ function restoreBase64(
     iterations: g.iterations.map((it) => ({
       ...it,
       html: it.html
-        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => images[key] ? `src="${images[key]}"` : 'src="[img-missing]"')
+        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) =>
+            images[key] ? `src="${images[key]}"` : 'src="[img-missing]"',
+          )
         : it.html,
     })),
   }));
@@ -102,7 +104,9 @@ function restoreBase64(
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
 function debouncedPersist(groups: GenerationGroup[]): void {
-  if (saveTimer) {clearTimeout(saveTimer);}
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+  }
   saveTimer = setTimeout(() => {
     try {
       const toSave = groups.filter((g) => g.iterations.some((it) => it.html && !it.isLoading));

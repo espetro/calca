@@ -11,7 +11,7 @@ const init = ({ name, version, handleUpgradeNeeded }: IndexedDBInitOptions) =>
     const req = indexedDB.open(name, version);
     req.onupgradeneeded =
       handleUpgradeNeeded ??
-      function  onupgradeneeded(this) {
+      function onupgradeneeded(this) {
         const db = this.result;
         db.createObjectStore(name);
       };

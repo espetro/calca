@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import type { Comment, Point } from "@/shared/types";
 
 export const commentDraftAtom = atom<{

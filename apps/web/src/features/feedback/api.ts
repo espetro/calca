@@ -1,7 +1,6 @@
 import type { FeedbackFormData, FeedbackSubmitResult } from "./types";
 
-const FEEDBACK_PROXY_URL =
-  import.meta.env.VITE_FEEDBACK_PROXY_URL || "http://localhost:3002";
+const FEEDBACK_PROXY_URL = import.meta.env.VITE_FEEDBACK_PROXY_URL || "http://localhost:3002";
 
 interface SystemInfo {
   appVersion: string;
@@ -21,9 +20,7 @@ function getSystemInfo(): SystemInfo {
   };
 }
 
-export async function submitFeedback(
-  data: FeedbackFormData
-): Promise<FeedbackSubmitResult> {
+export async function submitFeedback(data: FeedbackFormData): Promise<FeedbackSubmitResult> {
   const payload = {
     ...data,
     systemInfo: data.includeSystemInfo ? getSystemInfo() : undefined,

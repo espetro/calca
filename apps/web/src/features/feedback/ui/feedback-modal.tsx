@@ -1,28 +1,39 @@
-import { useCallback, useEffect, useState } from "react";
+import { captureEvent, FEEDBACK_RATE_LIMITED, FEEDBACK_SUBMITTED } from "@app/analytics";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { Bug, Lightbulb, MessageSquare, Send, X, RotateCcw, ExternalLink, CheckCircle2 } from "lucide-react";
+import {
+  Bug,
+  CheckCircle2,
+  ExternalLink,
+  Lightbulb,
+  MessageSquare,
+  RotateCcw,
+  Send,
+  X,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+
+import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
-import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Switch } from "@/shared/components/ui/switch";
-import { captureEvent, FEEDBACK_RATE_LIMITED, FEEDBACK_SUBMITTED } from "@app/analytics";
-import type { FeedbackType } from "../types";
-import {
-  feedbackModalOpenAtom,
-  feedbackFormDataAtom,
-  feedbackSubmitStatusAtom,
-  feedbackSubmitErrorAtom,
-  feedbackSubmitResultAtom,
-  defaultFeedbackFormData,
-} from "../store";
+
 import { submitFeedback } from "../api";
 import { canSubmitFeedback, recordSubmission } from "../lib/rate-limiter";
+import {
+  defaultFeedbackFormData,
+  feedbackFormDataAtom,
+  feedbackModalOpenAtom,
+  feedbackSubmitErrorAtom,
+  feedbackSubmitResultAtom,
+  feedbackSubmitStatusAtom,
+} from "../store";
+import type { FeedbackType } from "../types";
 
 const TAB_CONFIG: { id: FeedbackType; label: string; icon: React.ReactNode }[] = [
   { id: "bug", label: "Bug Report", icon: <Bug className="w-3.5 h-3.5" /> },
@@ -46,7 +57,10 @@ export function FeedbackModal() {
   const [error, setError] = useAtom(feedbackSubmitErrorAtom);
   const [result, setResult] = useAtom(feedbackSubmitResultAtom);
 
-  const [validationErrors, setValidationErrors] = useState<{ title?: string; description?: string }>({});
+  const [validationErrors, setValidationErrors] = useState<{
+    title?: string;
+    description?: string;
+  }>({});
 
   const reset = useCallback(() => {
     setFormData(defaultFeedbackFormData);
@@ -117,10 +131,7 @@ export function FeedbackModal() {
     setFormData((prev) => ({ ...prev, type }));
   };
 
-  const updateField = <K extends keyof typeof formData>(
-    field: K,
-    value: (typeof formData)[K]
-  ) => {
+  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (field === "title" || field === "description") {
       setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -197,7 +208,9 @@ export function FeedbackModal() {
                 </div>
                 <div className="space-y-1">
                   <p className="text-base font-medium text-foreground">Something went wrong</p>
-                  <p className="text-sm text-muted-foreground">{error || "Failed to submit feedback"}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {error || "Failed to submit feedback"}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={handleRetry}>
@@ -275,7 +288,9 @@ export function FeedbackModal() {
                   />
                   <div className="flex justify-between">
                     {validationErrors.description ? (
-                      <span className="text-xs text-destructive">{validationErrors.description}</span>
+                      <span className="text-xs text-destructive">
+                        {validationErrors.description}
+                      </span>
                     ) : (
                       <span />
                     )}
@@ -306,9 +321,7 @@ export function FeedbackModal() {
                     <Switch
                       id="feedback-system-info"
                       checked={formData.includeSystemInfo}
-                      onCheckedChange={(checked) =>
-                        updateField("includeSystemInfo", checked)
-                      }
+                      onCheckedChange={(checked) => updateField("includeSystemInfo", checked)}
                       size="sm"
                     />
                     <Label htmlFor="feedback-system-info" className="text-sm cursor-pointer">
@@ -328,17 +341,10 @@ export function FeedbackModal() {
           {/* Footer */}
           {(status === "idle" || status === "submitting") && (
             <div className="px-6 py-4 border-t border-border flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={isSubmitting}
-              >
+              <Button variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-              >
+              <Button onClick={handleSubmit} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <span className="animate-spin mr-1.5">⟳</span>

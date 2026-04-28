@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import type { FeedbackFormData, FeedbackSubmitStatus, FeedbackType } from "./types";
 
 export const feedbackModalOpenAtom = atom(false);
@@ -17,4 +18,6 @@ export const feedbackSubmitStatusAtom = atom<FeedbackSubmitStatus>("idle");
 
 export const feedbackSubmitErrorAtom = atom<string | null>(null);
 
-export const feedbackSubmitResultAtom = atom<{ issueUrl: string; issueNumber: number } | null>(null);
+export const feedbackSubmitResultAtom = atom<{ issueUrl: string; issueNumber: number } | null>(
+  null,
+);

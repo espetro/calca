@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { getLogger } from "@app/logger";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import useExportCodeMutation from "@/features/design/hooks/use-export-code-mutation";
 
 type ExportFormat = "svg" | "tailwind" | "react" | "png" | "jpg" | "copy-image";
@@ -53,7 +54,9 @@ async function htmlToImageBlob(
     });
 
     const doc = iframe.contentDocument;
-    if (!doc) {throw new Error("No iframe document");}
+    if (!doc) {
+      throw new Error("No iframe document");
+    }
 
     // Wait for images
     const images = doc.querySelectorAll("img");
@@ -61,7 +64,9 @@ async function htmlToImageBlob(
       [...images].map(
         (img) =>
           new Promise<void>((resolve) => {
-            if (img.complete) {return resolve();}
+            if (img.complete) {
+              return resolve();
+            }
             img.onload = () => resolve();
             img.onerror = () => resolve();
             setTimeout(resolve, 3000);
@@ -76,7 +81,7 @@ async function htmlToImageBlob(
 
     await new Promise((r) => setTimeout(r, 500));
 
-    const {body} = doc;
+    const { body } = doc;
     const h = body.scrollHeight;
     iframe.style.height = h + "px";
 
@@ -127,7 +132,9 @@ export function ExportMenu({
 
   // Close on outside click
   useEffect(() => {
-    if (!open && !preview) {return;}
+    if (!open && !preview) {
+      return;
+    }
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -192,7 +199,9 @@ export function ExportMenu({
         }
         setPreview({ code: data.result, format });
       } catch (error) {
-        logger.error("Export failed", { error: error instanceof Error ? error.message : String(error) });
+        logger.error("Export failed", {
+          error: error instanceof Error ? error.message : String(error),
+        });
         if (format === "png" || format === "jpg" || format === "copy-image") {
           // Can't show preview for image failures
           logger.error("Image export failed");
@@ -207,12 +216,16 @@ export function ExportMenu({
   );
 
   const handleCopy = useCallback(() => {
-    if (!preview) {return;}
+    if (!preview) {
+      return;
+    }
     navigator.clipboard.writeText(preview.code);
   }, [preview]);
 
   const handleDownload = useCallback(() => {
-    if (!preview) {return;}
+    if (!preview) {
+      return;
+    }
     const fmt = ALL_FORMATS.find((f) => f.id === preview.format);
     const mime = preview.format === "svg" ? "image/svg+xml" : "text/plain";
     const blob = new Blob([preview.code], { type: mime });

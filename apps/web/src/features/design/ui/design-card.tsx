@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+
+import { ExportMenu } from "@/features/export";
 import type {
   Comment as CommentType,
   DesignIteration,
@@ -6,7 +8,6 @@ import type {
   Point,
 } from "@/shared/types";
 import { STAGE_CONFIG } from "@/shared/types";
-import { ExportMenu } from "@/features/export";
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // Kept for export compat
@@ -120,7 +121,9 @@ setTimeout(reportHeight, 2000);
 
   // Listen for height messages from sandboxed iframe
   useEffect(() => {
-    if (!iteration.html || iteration.isLoading) {return;}
+    if (!iteration.html || iteration.isLoading) {
+      return;
+    }
     measuredRef.current = false;
     measurementGenRef.current += 1;
     const currentGen = measurementGenRef.current;
@@ -148,11 +151,15 @@ setTimeout(reportHeight, 2000);
   }, [iteration.html, iteration.isLoading, iteration.id, iteration.height]);
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!isCommentMode) {return;}
+    if (!isCommentMode) {
+      return;
+    }
     e.stopPropagation();
 
     const rect = wrapperRef.current?.getBoundingClientRect();
-    if (!rect) {return;}
+    if (!rect) {
+      return;
+    }
 
     const x = (e.clientX - rect.left) / scale;
     const y = (e.clientY - rect.top) / scale;
@@ -296,9 +303,13 @@ function RemixButton({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) {return;}
+    if (!open) {
+      return;
+    }
     const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {setOpen(false);}
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -359,7 +370,9 @@ function RemixButton({
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && customPrompt.trim()) {handleRemix(customPrompt.trim());}
+                if (e.key === "Enter" && customPrompt.trim()) {
+                  handleRemix(customPrompt.trim());
+                }
               }}
               placeholder="Try it with..."
               className="flex-1 px-3 py-2 rounded-lg text-[13px] bg-black/5 outline-none placeholder-gray-400"

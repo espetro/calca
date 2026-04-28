@@ -1,9 +1,10 @@
 // Copyright (c) 2026 Joaquin Terrasa. All rights reserved.
 // Licensed under the AGPL-3.0. See packages/shared/LICENSE for details.
 
-import { useCallback, useRef } from "react";
-import { useSetAtom } from "jotai";
 import { Tour, TourCard, TourOverlay, TourProvider, TourStep } from "@tour-kit/react";
+import { useSetAtom } from "jotai";
+import { useCallback, useRef } from "react";
+
 import { showTutorialAtom } from "../state/onboarding-atoms";
 
 export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boolean }) {

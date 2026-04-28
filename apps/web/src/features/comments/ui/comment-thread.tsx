@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+
 import type { Comment, CommentMessage } from "@/shared/types";
 
 interface CommentThreadProps {
@@ -39,7 +40,9 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
 
   const handleSubmit = () => {
     const trimmed = replyText.trim();
-    if (!trimmed) {return;}
+    if (!trimmed) {
+      return;
+    }
     setReplyText("");
     onReply(trimmed);
   };

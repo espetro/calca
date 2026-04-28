@@ -11,4 +11,9 @@ export {
   feedbackSubmitErrorAtom,
   feedbackSubmitResultAtom,
 } from "./store";
-export type { FeedbackType, FeedbackFormData, FeedbackSubmitResult, FeedbackSubmitStatus } from "./types";
+export type {
+  FeedbackType,
+  FeedbackFormData,
+  FeedbackSubmitResult,
+  FeedbackSubmitStatus,
+} from "./types";

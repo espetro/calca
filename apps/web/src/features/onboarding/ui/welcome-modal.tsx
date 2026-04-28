@@ -3,6 +3,7 @@
 
 import { Download, LayoutGrid, Sparkles } from "lucide-react";
 
+import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
-import { Button } from "@/shared/components/ui/button";
 
 interface WelcomeModalProps {
   open?: boolean;

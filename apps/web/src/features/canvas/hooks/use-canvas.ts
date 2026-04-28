@@ -28,7 +28,9 @@ export function useCanvas() {
   }, []);
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isPanning.current) {return;}
+    if (!isPanning.current) {
+      return;
+    }
     const dx = e.clientX - lastMouse.current.x;
     const dy = e.clientY - lastMouse.current.y;
     lastMouse.current = { x: e.clientX, y: e.clientY };
@@ -92,17 +94,20 @@ export function useCanvas() {
   );
 
   // Cleanup on unmount
-  useEffect(() => () => {
+  useEffect(
+    () => () => {
       if (canvasElRef.current) {
         canvasElRef.current.removeEventListener("wheel", wheelHandler);
       }
-    }, [wheelHandler]);
+    },
+    [wheelHandler],
+  );
 
   const screenToCanvas = useCallback(
     (screenX: number, screenY: number, rect: DOMRect): Point => ({
-        x: (screenX - rect.left - state.offset.x) / state.scale,
-        y: (screenY - rect.top - state.offset.y) / state.scale,
-      }),
+      x: (screenX - rect.left - state.offset.x) / state.scale,
+      y: (screenY - rect.top - state.offset.y) / state.scale,
+    }),
     [state.offset, state.scale],
   );
 
@@ -131,7 +136,9 @@ export function useCanvas() {
       const vh = window.innerHeight;
       const contentW = bounds.maxX - bounds.minX;
       const contentH = bounds.maxY - bounds.minY;
-      if (contentW <= 0 || contentH <= 0) {return;}
+      if (contentW <= 0 || contentH <= 0) {
+        return;
+      }
 
       const scaleX = (vw - padding * 2) / contentW;
       const scaleY = (vh - padding * 2) / contentH;

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { getLogger } from "@app/logger";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
 
@@ -111,7 +111,9 @@ export function usePersistedImages() {
 
   // Debounced save to IndexedDB
   const persistImages = useCallback(async (newImages: CanvasImage[]) => {
-    if (saveTimer.current) {clearTimeout(saveTimer.current);}
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+    }
     saveTimer.current = setTimeout(async () => {
       try {
         const db = await openDB();

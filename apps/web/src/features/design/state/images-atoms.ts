@@ -1,5 +1,5 @@
-import { atom } from "jotai";
 import { getLogger } from "@app/logger";
+import { atom } from "jotai";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
 
@@ -93,7 +93,9 @@ export const canvasImagesAtom = atom(
 let imagesSaveTimer: ReturnType<typeof setTimeout> | null = null;
 
 function debouncedPersistImages(images: CanvasImage[]): void {
-  if (imagesSaveTimer) {clearTimeout(imagesSaveTimer);}
+  if (imagesSaveTimer) {
+    clearTimeout(imagesSaveTimer);
+  }
   imagesSaveTimer = setTimeout(async () => {
     try {
       const db = await openDB();

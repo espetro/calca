@@ -1,17 +1,9 @@
-import { useCallback, useRef } from "react";
-import { useSetAtom } from "jotai";
 import { getLogger } from "@app/logger";
+import { useSetAtom } from "jotai";
+import { useCallback, useRef } from "react";
 
 const logger = getLogger(["calca", "web", "design", "stream"]);
 
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import {
-  isGeneratingAtom,
-  pipelineStagesAtom,
-  genStatusAtom,
-} from "@/features/design/state/generation-atoms";
-import type { GenerationGroup, PipelineStage, Point } from "@/shared/types";
-import { apiClient } from "@/lib/api-client";
 import {
   trackGenerationStart,
   trackGenerationComplete,
@@ -19,6 +11,15 @@ import {
   trackPipelineStageStart,
   trackPipelineStageComplete,
 } from "@app/analytics";
+
+import {
+  isGeneratingAtom,
+  pipelineStagesAtom,
+  genStatusAtom,
+} from "@/features/design/state/generation-atoms";
+import { groupsAtom } from "@/features/design/state/groups-atoms";
+import { apiClient } from "@/lib/api-client";
+import type { GenerationGroup, PipelineStage, Point } from "@/shared/types";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per
@@ -70,10 +71,14 @@ const STEP_STAGE_MAP: Record<string, { stage: PipelineStage; progress: number }>
 };
 
 const parseSSELine = (line: string): { type: string; [key: string]: unknown } | null => {
-  if (!line || line.startsWith(":")) {return null;}
+  if (!line || line.startsWith(":")) {
+    return null;
+  }
 
   const colonIdx = line.indexOf(":");
-  if (colonIdx === -1) {return null;}
+  if (colonIdx === -1) {
+    return null;
+  }
 
   try {
     return JSON.parse(line.slice(colonIdx + 1)) as { type: string; [key: string]: unknown };
@@ -172,7 +177,9 @@ export const useWorkflowStream = () => {
 
       setGroups((prev) =>
         prev.map((g) => {
-          if (g.id !== groupId) {return g;}
+          if (g.id !== groupId) {
+            return g;
+          }
           return {
             ...g,
             iterations: iterIds.map((iterId, i) => ({
@@ -210,9 +217,11 @@ export const useWorkflowStream = () => {
           },
           signal: controller.signal,
         });
-        const {body} = response;
+        const { body } = response;
 
-        if (!body) {throw new Error("No response body");}
+        if (!body) {
+          throw new Error("No response body");
+        }
 
         const reader = body.getReader();
         const decoder = new TextDecoder();
@@ -226,13 +235,20 @@ export const useWorkflowStream = () => {
             const stepName = stepResult.name;
             const mapping = STEP_STAGE_MAP[stepName];
 
-            if (!mapping) {continue;}
+            if (!mapping) {
+              continue;
+            }
 
-            if (stepResult.status === "running" && !completedStepsRef.current.has(stepName + "_running")) {
+            if (
+              stepResult.status === "running" &&
+              !completedStepsRef.current.has(stepName + "_running")
+            ) {
               completedStepsRef.current.add(stepName + "_running");
               for (let i = 0; i < conceptCount; i++) {
                 const iterId = iterIds[i];
-                if (!iterId) {continue;}
+                if (!iterId) {
+                  continue;
+                }
 
                 setPipelineStages((prev) => {
                   const existing = prev[iterId];
@@ -268,13 +284,19 @@ export const useWorkflowStream = () => {
               if (output.frames && Array.isArray(output.frames)) {
                 const stageDuration = Date.now() - generationStartTimeRef.current;
                 for (let i = 0; i < output.frames.length; i++) {
-                  if (completedFrameIndices.has(i)) {continue;}
+                  if (completedFrameIndices.has(i)) {
+                    continue;
+                  }
 
                   const frame = output.frames[i];
-                  if (!frame) {continue;}
+                  if (!frame) {
+                    continue;
+                  }
 
                   const iterId = iterIds[i];
-                  if (!iterId) {continue;}
+                  if (!iterId) {
+                    continue;
+                  }
 
                   completedFrameIndices.add(i);
 
@@ -287,11 +309,15 @@ export const useWorkflowStream = () => {
 
                   setGroups((prev) =>
                     prev.map((g) => {
-                      if (g.id !== groupId) {return g;}
+                      if (g.id !== groupId) {
+                        return g;
+                      }
                       return {
                         ...g,
                         iterations: g.iterations.map((existing) => {
-                          if (existing.id !== iterId) {return existing;}
+                          if (existing.id !== iterId) {
+                            return existing;
+                          }
                           return {
                             ...existing,
                             height: frame.height || existing.height,
@@ -312,11 +338,13 @@ export const useWorkflowStream = () => {
 
         const processLine = (line: string) => {
           const part = parseSSELine(line);
-          if (!part) {return;}
+          if (!part) {
+            return;
+          }
 
           if (part.type === "data-workflow") {
             const dataPart = part as unknown as DataWorkflowPart;
-            const {data} = dataPart;
+            const { data } = dataPart;
 
             mapStepToStages(data.steps);
 
@@ -337,7 +365,9 @@ export const useWorkflowStream = () => {
             logger.error("Stream error", { error: errorText });
             for (let i = 0; i < conceptCount; i++) {
               const iterId = iterIds[i];
-              if (!iterId || completedFrameIndices.has(i)) {continue;}
+              if (!iterId || completedFrameIndices.has(i)) {
+                continue;
+              }
 
               setPipelineStages((prev) => ({
                 ...prev,
@@ -346,11 +376,15 @@ export const useWorkflowStream = () => {
 
               setGroups((prev) =>
                 prev.map((g) => {
-                  if (g.id !== groupId) {return g;}
+                  if (g.id !== groupId) {
+                    return g;
+                  }
                   return {
                     ...g,
                     iterations: g.iterations.map((existing) => {
-                      if (existing.id !== iterId) {return existing;}
+                      if (existing.id !== iterId) {
+                        return existing;
+                      }
                       return {
                         ...existing,
                         html: `<div style="padding:32px;color:#666;font-family:system-ui">
@@ -369,7 +403,9 @@ export const useWorkflowStream = () => {
             setGroups((prev) =>
               prev
                 .map((g) => {
-                  if (g.id !== groupId) {return g;}
+                  if (g.id !== groupId) {
+                    return g;
+                  }
                   const kept = g.iterations.filter((iter) => !iter.isLoading);
                   const removedIds = g.iterations
                     .filter((iter) => iter.isLoading)
@@ -390,14 +426,18 @@ export const useWorkflowStream = () => {
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) {break;}
+          if (done) {
+            break;
+          }
 
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split("\n");
           buffer = lines.pop() ?? "";
 
           for (const line of lines) {
-            if (controller.signal.aborted) {break;}
+            if (controller.signal.aborted) {
+              break;
+            }
             processLine(line);
           }
         }
@@ -409,11 +449,15 @@ export const useWorkflowStream = () => {
         const finalOutput = workflowOutput as WorkflowOutput | null;
         if (finalOutput?.frames) {
           for (let i = 0; i < finalOutput.frames.length; i++) {
-            if (completedFrameIndices.has(i)) {continue;}
+            if (completedFrameIndices.has(i)) {
+              continue;
+            }
 
             const frame = finalOutput.frames[i];
             const iterId = iterIds[i];
-            if (!frame || !iterId) {continue;}
+            if (!frame || !iterId) {
+              continue;
+            }
 
             setPipelineStages((prev) => ({
               ...prev,
@@ -422,11 +466,15 @@ export const useWorkflowStream = () => {
 
             setGroups((prev) =>
               prev.map((g) => {
-                if (g.id !== groupId) {return g;}
+                if (g.id !== groupId) {
+                  return g;
+                }
                 return {
                   ...g,
                   iterations: g.iterations.map((existing) => {
-                    if (existing.id !== iterId) {return existing;}
+                    if (existing.id !== iterId) {
+                      return existing;
+                    }
                     return {
                       ...existing,
                       height: frame.height || existing.height,
@@ -468,7 +516,13 @@ export const useWorkflowStream = () => {
         const msg = error instanceof Error ? error.message : "Workflow failed";
         logger.error("Fatal error", { error: msg });
 
-        const errorType: "auth" | "rate_limit" | "timeout" | "provider_error" | "validation" | "unknown" =
+        const errorType:
+          | "auth"
+          | "rate_limit"
+          | "timeout"
+          | "provider_error"
+          | "validation"
+          | "unknown" =
           msg.includes("401") || msg.includes("403") || msg.includes("unauthorized")
             ? "auth"
             : msg.includes("rate") || msg.includes("429")
@@ -484,11 +538,15 @@ export const useWorkflowStream = () => {
 
         setGroups((prev) =>
           prev.map((g) => {
-            if (g.id !== groupId) {return g;}
+            if (g.id !== groupId) {
+              return g;
+            }
             return {
               ...g,
               iterations: g.iterations.map((iter) => {
-                if (!iter.isLoading) {return iter;}
+                if (!iter.isLoading) {
+                  return iter;
+                }
                 setPipelineStages((prev) => ({
                   ...prev,
                   [iter.id]: { progress: 0, stage: "error" },

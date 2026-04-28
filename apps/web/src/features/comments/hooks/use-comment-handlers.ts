@@ -1,18 +1,19 @@
-import { useCallback, useRef } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { getLogger } from "@app/logger";
+import { useAtom } from "jotai";
+import { useCallback, useRef } from "react";
 
 const logger = getLogger(["calca", "web", "comments"]);
 
-import { groupsAtom } from "@/features/design/state/groups-atoms";
+import { trackCommentAdded } from "@app/analytics";
+
 import {
   commentDraftAtom,
   activeCommentAtom,
   activeCommentIterationIdAtom,
   commentCountAtom,
 } from "@/features/design/state/comment-atoms";
+import { groupsAtom } from "@/features/design/state/groups-atoms";
 import type { Comment as CommentType, CommentMessage } from "@/shared/types";
-import { trackCommentAdded } from "@app/analytics";
 
 interface RevisionJob {
   iterationId: string;
@@ -22,21 +23,21 @@ interface RevisionJob {
 }
 
 type RunPipelineForFrameFn = (
-    iterId: string,
-    prompt: string,
-    style: string,
-    index: number,
-    critique: string | undefined,
-    signal: AbortSignal,
-    revisionOpts?: { revision: string; existingHtml: string },
-  ) => Promise<{
-    html: string;
-    label: string;
-    width?: number;
-    height?: number;
-    critique?: string;
-    comment?: string;
-  }>;
+  iterId: string,
+  prompt: string,
+  style: string,
+  index: number,
+  critique: string | undefined,
+  signal: AbortSignal,
+  revisionOpts?: { revision: string; existingHtml: string },
+) => Promise<{
+  html: string;
+  label: string;
+  width?: number;
+  height?: number;
+  critique?: string;
+  comment?: string;
+}>;
 
 export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) => {
   const [groups, setGroups] = useAtom(groupsAtom);
@@ -56,7 +57,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
         prev.map((g) => ({
           ...g,
           iterations: g.iterations.map((iter) => {
-            if (iter.id !== iterId) {return iter;}
+            if (iter.id !== iterId) {
+              return iter;
+            }
             return {
               ...iter,
               comments: iter.comments.map((c) => (c.id === cId ? { ...c, ...update } : c)),
@@ -69,7 +72,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
   );
 
   const processRevisionQueue = useCallback(async () => {
-    if (isProcessingRevisionRef.current) {return;}
+    if (isProcessingRevisionRef.current) {
+      return;
+    }
     isProcessingRevisionRef.current = true;
 
     while (revisionQueueRef.current.length > 0) {
@@ -88,7 +93,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
             currentHtml = iter.html;
             currentPrompt = iter.prompt || "";
             const comment = iter.comments.find((c) => c.id === commentId);
-            if (comment?.thread) {latestThread = comment.thread;}
+            if (comment?.thread) {
+              latestThread = comment.thread;
+            }
           }
         }
       }
@@ -109,7 +116,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
           prev.map((g) => ({
             ...g,
             iterations: g.iterations.map((iter) => {
-              if (iter.id !== iterationId) {return iter;}
+              if (iter.id !== iterationId) {
+                return iter;
+              }
               return {
                 ...iter,
                 height: result.height || iter.height,
@@ -178,7 +187,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
 
   const handleCommentSubmit = useCallback(
     (text: string) => {
-      if (!commentDraft) {return;}
+      if (!commentDraft) {
+        return;
+      }
       const nextCount = commentCount + 1;
       setCommentCount(nextCount);
       trackCommentAdded(false, nextCount);
@@ -233,7 +244,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
 
   const handleCommentReply = useCallback(
     (text: string) => {
-      if (!activeComment || !activeCommentIterationId) {return;}
+      if (!activeComment || !activeCommentIterationId) {
+        return;
+      }
 
       const commentId = activeComment.id;
       const iterId = activeCommentIterationId;
@@ -272,13 +285,7 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
       trackCommentAdded(true, commentCount + 1);
       processRevisionQueue();
     },
-    [
-      activeComment,
-      activeCommentIterationId,
-      commentCount,
-      processRevisionQueue,
-      setActiveComment,
-    ],
+    [activeComment, activeCommentIterationId, commentCount, processRevisionQueue, setActiveComment],
   );
 
   return {

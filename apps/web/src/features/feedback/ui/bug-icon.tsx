@@ -1,5 +1,6 @@
-import { Bug } from "lucide-react";
 import { useSetAtom } from "jotai";
+import { Bug } from "lucide-react";
+
 import { feedbackModalOpenAtom } from "../store";
 
 export function BugIcon() {

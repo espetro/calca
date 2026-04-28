@@ -1,11 +1,12 @@
+import { getDefaultStore } from "jotai";
 import { describe, expect, it } from "vitest";
+
 import {
   onboardingCompletedAtom,
   showTutorialAtom,
   showWelcomeAtom,
   tutorialStepAtom,
 } from "./onboarding-atoms";
-import { getDefaultStore } from "jotai";
 
 describe("onboarding atoms", () => {
   const store = getDefaultStore();

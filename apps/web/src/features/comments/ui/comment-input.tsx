@@ -21,7 +21,9 @@ export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps
 
   const handleSubmit = () => {
     const trimmed = text.trim();
-    if (!trimmed) {return;}
+    if (!trimmed) {
+      return;
+    }
     onSubmit(trimmed);
   };
 
@@ -47,7 +49,9 @@ export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps
               e.preventDefault();
               handleSubmit();
             }
-            if (e.key === "Escape") {onCancel();}
+            if (e.key === "Escape") {
+              onCancel();
+            }
           }}
           placeholder="Describe your revision..."
           className="w-full text-[13px] text-gray-800 placeholder-gray-400/60 bg-white/60 backdrop-blur-sm rounded-xl px-3 py-2.5 outline-none resize-none border border-white/40 focus:border-blue-300/60 focus:bg-white/80 transition-all"
