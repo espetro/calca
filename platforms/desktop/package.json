@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "echo 'dev: electrobun desktop app not yet ready for turbo dev'",
+    "dev": "electrobun dev --watch",
     "dev:web": "cd ../.. && bun run dev",
-    "dev:all": "bun run dev:web & bun run dev",
+    "dev:all": "bash scripts/dev.sh",
     "build:web": "cd ../.. && bun run --filter=@app/web build",
+    "build": "bun run scripts/build.sh",
     "package": "electrobun package",
     "build:full": "bun run build:web && electrobun package",
     "clean": "rm -rf build artifacts Resources/web"

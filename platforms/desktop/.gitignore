@@ -9,5 +9,5 @@ dist-macos-*/
 build/
 artifacts/
 node_modules/
-Resources/web/
+Resources/
 .turbo/

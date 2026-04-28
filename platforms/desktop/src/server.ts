@@ -5,7 +5,7 @@
  * Server configuration and request handler.
  */
 
-import serverApp from "@app/server";
+import serverApp from "@app/server/app";
 import { isDev, VITE_DEV_URL, HOST, PORT } from "./constants";
 import { getErrorPageHtml } from "./error-page";
 
@@ -49,7 +49,11 @@ function getContentType(path: string): string {
 export async function handleFetch(request: Request): Promise<Response> {
   const url = new URL(request.url);
 
-  // In dev mode, proxy to Vite dev server
+  // API routes must be handled before the dev proxy to avoid an infinite loop
+  if (url.pathname.startsWith("/api/") || url.pathname === "/health") {
+    return serverApp.fetch(request);
+  }
+
   if (isDev) {
     try {
       const response = await fetch(new URL(url.pathname + url.search, VITE_DEV_URL), {
@@ -70,14 +74,6 @@ export async function handleFetch(request: Request): Promise<Response> {
     }
   }
 
-  // Production mode: serve API routes via Hono, static files from Resources/web/
-
-  // API routes -> Hono server
-  if (url.pathname.startsWith("/api/") || url.pathname === "/health") {
-    return serverApp.fetch(request);
-  }
-
-  // Static files from Resources/web/
   const staticPath = url.pathname === "/" ? "/index.html" : url.pathname;
   const filePath = `Resources/web${staticPath}`;
 

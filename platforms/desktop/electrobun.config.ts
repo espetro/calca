@@ -19,6 +19,7 @@ const config: ElectrobunConfig = {
       "../../apps/web/dist": "Resources/web",
       "../../apps/Resources/version.json": "Resources/version.json",
     },
+    watch: ["../../apps/server/src"],
   },
 };
 
