@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { app } from "../index.js";
 
 const mockOctokitInstance = {
@@ -10,7 +11,9 @@ const mockOctokitInstance = {
 };
 
 vi.mock("octokit", () => ({
-  Octokit: vi.fn(() => mockOctokitInstance),
+  Octokit: vi.fn(function () {
+    return mockOctokitInstance;
+  }),
 }));
 
 describe("POST /feedback", () => {
@@ -36,7 +39,7 @@ describe("POST /feedback", () => {
     });
 
     expect(res.status).toBe(201);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json).toEqual({
       issueUrl: "https://github.com/owner/repo/issues/42",
       issueNumber: 42,
@@ -62,7 +65,7 @@ describe("POST /feedback", () => {
     });
 
     expect(res.status).toBe(400);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json.error).toContain("type must be one of");
   });
 
@@ -100,14 +103,12 @@ describe("POST /feedback", () => {
     });
 
     expect(res.status).toBe(429);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json.error).toContain("Too many requests");
   });
 
   it("returns 500 when GitHub API call fails", async () => {
-    mockOctokitInstance.rest.issues.create.mockRejectedValue(
-      new Error("API Error"),
-    );
+    mockOctokitInstance.rest.issues.create.mockRejectedValue(new Error("API Error"));
 
     const res = await app.request("/feedback", {
       method: "POST",
@@ -120,7 +121,7 @@ describe("POST /feedback", () => {
     });
 
     expect(res.status).toBe(500);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json.error).toContain("Failed to create GitHub issue");
   });
 
@@ -134,7 +135,7 @@ describe("POST /feedback", () => {
     });
 
     expect(res.status).toBe(400);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json.error).toBeTruthy();
   });
 
@@ -180,7 +181,7 @@ describe("POST /feedback", () => {
     });
 
     expect(res.status).toBe(500);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json.error).toContain("Server configuration error");
   });
 });
@@ -190,7 +191,7 @@ describe("GET /health", () => {
     const res = await app.request("/health");
 
     expect(res.status).toBe(200);
-    const json = await res.json();
+    const json = (await res.json()) as Record<string, unknown>;
     expect(json.status).toBe("ok");
     expect(json.timestamp).toBeTruthy();
   });
