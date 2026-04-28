@@ -132,7 +132,7 @@ function RootLayout() {
       )}
       <QueryClientProvider client={queryClient}>
         <Outlet />
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
       </QueryClientProvider>
       <Toaster position="bottom-right" offset="40px" toastOptions={{ style: { width: "240px" } }} />
     </>

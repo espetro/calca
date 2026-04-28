@@ -6,6 +6,7 @@ import { MODELS } from "#/features/settings/types";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import type { ToolMode } from "#/shared/types";
 
+import ModeButton from "./mode";
 import ToolButton from "./tool-button";
 import type { ZoomProps } from "./zoom";
 import Zoom from "./zoom";
@@ -239,51 +240,6 @@ function MenuItem({
     >
       <span className="text-sm">{icon}</span>
       {label}
-    </button>
-  );
-}
-
-function ModeButton({
-  active,
-  onClick,
-  title,
-  children,
-  color,
-}: {
-  active: boolean;
-  onClick: () => void;
-  title: string;
-  children: React.ReactNode;
-  color: "select" | "frame" | "component";
-}) {
-  const activeStyles = {
-    component: {
-      background: "var(--tool-component-bg)",
-      color: "var(--tool-component-icon)",
-      boxShadow: "0 0 12px oklch(0.80 0.10 28.00 / 0.3)",
-    },
-    frame: {
-      background: "var(--tool-frame-bg)",
-      color: "var(--tool-frame-icon)",
-      boxShadow: "0 0 12px oklch(0.78 0.09 220.00 / 0.3)",
-    },
-    select: {
-      background: "var(--tool-select-bg)",
-      color: "var(--tool-select-icon)",
-      boxShadow: "0 0 12px var(--glow-primary)",
-    },
-  };
-
-  return (
-    <button
-      onClick={onClick}
-      title={title}
-      className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
-        active ? "" : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
-      }`}
-      style={active ? activeStyles[color] : undefined}
-    >
-      {children}
     </button>
   );
 }
