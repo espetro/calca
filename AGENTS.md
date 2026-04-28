@@ -14,8 +14,9 @@
 calca/
 ├── apps/
 │   ├── web/          → Next.js frontend (SPA-like) — see [apps/web/AGENTS.md](./apps/web/AGENTS.md)
-│   ├── desktop/      → Electrobun wrapper — see [apps/desktop/AGENTS.md](./apps/desktop/AGENTS.md)
 │   └── server/       → API server — see [apps/server/AGENTS.md](./apps/server/AGENTS.md)
+├── platforms/
+│   └── desktop/      → Electrobun wrapper (macOS + Windows) — see [platforms/desktop/AGENTS.md](./platforms/desktop/AGENTS.md)
 ├── packages/
 │   ├── shared/       → Types & contracts — see [packages/shared/AGENTS.md](./packages/shared/AGENTS.md)
 │   ├── core/         → AI-agnostic logic — see [packages/core/AGENTS.md](./packages/core/AGENTS.md)
@@ -38,7 +39,8 @@ calca/
 > | **`packages/shared/`**   | ✅ Implemented — types & contracts                                                           |
 > | **`apps/web/`**          | ✅ Active — contains the full Next.js app with FSD features                                  |
 > | **`apps/server/`**       | Scaffolding only                                                                             |
-> | **`apps/desktop/`**      | Scaffolding only                                                                             |
+> | **`platforms/desktop/`** | ✅ Implemented — Electrobun desktop wrapper                                               |
+> | **`apps/desktop/`**      | ⚠️ Deprecated — scaffolding only (superseded by `platforms/desktop/`)                          |
 > | **`packages/database/`** | Scaffolding only                                                                             |
 >
 > **Additional packages not in the target diagram:** `packages/config/`, `packages/logger/`, `packages/types/`, `apps/cli/`, `apps/landing/`
@@ -250,7 +252,7 @@ Dive deeper into the area you're working on:
 | ----------------- | ------------------------------------------------ | -------------------------------------------------------- |
 | `apps/web`        | Next.js frontend, canvas, components, API routes | [apps/web/AGENTS.md](./apps/web/AGENTS.md)               |
 | `apps/server`     | API endpoints, authentication, business logic    | [apps/server/AGENTS.md](./apps/server/AGENTS.md)         |
-| `apps/desktop`    | Electrobun wrapper, native menus, system tray    | [apps/desktop/AGENTS.md](./apps/desktop/AGENTS.md)       |
+| `platforms/desktop` | Electrobun wrapper, native menus, system tray    | [platforms/desktop/AGENTS.md](./platforms/desktop/AGENTS.md)       |
 | `packages/shared` | Type definitions, API contracts, schemas         | [packages/shared/AGENTS.md](./packages/shared/AGENTS.md) |
 | `packages/core`   | AI providers, pipeline stages, prompts           | [packages/core/AGENTS.md](./packages/core/AGENTS.md)     |
 
