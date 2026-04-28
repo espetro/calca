@@ -9,7 +9,9 @@ export const LayoutSchema = z.string().transform((raw) => {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
   }
   const fenceMatch = cleaned.match(/```(?:html)?\n?([\s\S]*?)\n?```/);
-  if (fenceMatch) {cleaned = fenceMatch[1];}
+  if (fenceMatch) {
+    cleaned = fenceMatch[1];
+  }
   cleaned = cleaned.trim();
 
   const sizeMatch = cleaned.match(/<!--size:(\d+)x(\d+)-->/);
@@ -35,7 +37,9 @@ export const LayoutSchema = z.string().transform((raw) => {
     cleaned = cleaned.substring(htmlStart.index);
   }
   const lastTagMatch = cleaned.match(/([\s\S]*<\/(?:html|div|section|main|body)>)/i);
-  if (lastTagMatch) {cleaned = lastTagMatch[1];}
+  if (lastTagMatch) {
+    cleaned = lastTagMatch[1];
+  }
 
   return { comment, height, html: cleaned.trim(), width };
 });

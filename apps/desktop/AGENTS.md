@@ -193,10 +193,7 @@ export function createAppMenu() {
     },
     {
       label: "Window",
-      submenu: [
-        { role: "minimize" },
-        { role: "close" },
-      ],
+      submenu: [{ role: "minimize" }, { role: "close" }],
     },
   ];
 
@@ -322,16 +319,19 @@ bun run package
 ## Platform-Specific Notes
 
 ### macOS
+
 - Use `Cmd` for keyboard shortcuts
 - Support dark mode via `nativeTheme`
 - Add to dock with bounce animation for notifications
 
 ### Windows
+
 - Use `Ctrl` for keyboard shortcuts
 - Support Windows notifications
 - Handle window state (minimize to tray)
 
 ### Linux
+
 - Test on Ubuntu/GNOME
 - Support system tray (may require libappindicator)
 

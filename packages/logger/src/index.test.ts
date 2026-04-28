@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { createLogger, getLogger } from "./index";
 
 describe("logger", () => {

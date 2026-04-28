@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { Octokit } from "octokit";
+
 import { FeedbackRequest, FeedbackResponse } from "./types.js";
 
 interface RateLimitEntry {
@@ -52,7 +53,9 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfterSeconds?: num
   return { allowed: true };
 }
 
-function validateFeedback(body: unknown): { ok: true; data: FeedbackRequest } | { ok: false; error: string } {
+function validateFeedback(
+  body: unknown,
+): { ok: true; data: FeedbackRequest } | { ok: false; error: string } {
   if (!body || typeof body !== "object") {
     return { ok: false, error: "Request body must be a JSON object" };
   }
@@ -81,7 +84,10 @@ function validateFeedback(body: unknown): { ok: true; data: FeedbackRequest } | 
     return { ok: false, error: "email must be a valid string (max 254 chars)" };
   }
 
-  if (b.metadata !== undefined && (typeof b.metadata !== "object" || b.metadata === null || Array.isArray(b.metadata))) {
+  if (
+    b.metadata !== undefined &&
+    (typeof b.metadata !== "object" || b.metadata === null || Array.isArray(b.metadata))
+  ) {
     return { ok: false, error: "metadata must be a plain object" };
   }
 
@@ -99,19 +105,16 @@ function validateFeedback(body: unknown): { ok: true; data: FeedbackRequest } | 
 
 const app = new Hono();
 
-app.use(
-  "*",
-  async (c, next) => {
-    const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*";
-    c.header("Access-Control-Allow-Origin", allowedOrigin);
-    c.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    c.header("Access-Control-Allow-Headers", "Content-Type");
-    if (c.req.method === "OPTIONS") {
-      return c.body(null, 204);
-    }
-    await next();
-  },
-);
+app.use("*", async (c, next) => {
+  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*";
+  c.header("Access-Control-Allow-Origin", allowedOrigin);
+  c.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  c.header("Access-Control-Allow-Headers", "Content-Type");
+  if (c.req.method === "OPTIONS") {
+    return c.body(null, 204);
+  }
+  await next();
+});
 
 app.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
@@ -119,8 +122,9 @@ app.get("/health", (c) => {
 
 app.post("/feedback", async (c) => {
   const ip =
-    (c.req.header("x-forwarded-for") ?? c.req.header("cf-connecting-ip") ?? "unknown").split(",")[0].trim() ??
-    "unknown";
+    (c.req.header("x-forwarded-for") ?? c.req.header("cf-connecting-ip") ?? "unknown")
+      .split(",")[0]
+      .trim() ?? "unknown";
   const limitResult = checkRateLimit(ip);
   if (!limitResult.allowed) {
     c.header("Retry-After", String(limitResult.retryAfterSeconds));
@@ -157,8 +161,10 @@ app.post("/feedback", async (c) => {
 
   const metadataLines: string[] = [];
   if (data.email) metadataLines.push(`- **Email**: ${data.email}`);
-  if (data.metadata) metadataLines.push(`- **Metadata**: ${JSON.stringify(data.metadata, null, 2)}`);
-  const metadataSection = metadataLines.length > 0 ? `\n### Metadata\n${metadataLines.join("\n")}\n` : "";
+  if (data.metadata)
+    metadataLines.push(`- **Metadata**: ${JSON.stringify(data.metadata, null, 2)}`);
+  const metadataSection =
+    metadataLines.length > 0 ? `\n### Metadata\n${metadataLines.join("\n")}\n` : "";
 
   const bodyMarkdown = [
     `## ${data.type.charAt(0).toUpperCase() + data.type.slice(1)} Report`,
