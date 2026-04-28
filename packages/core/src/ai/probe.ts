@@ -1,5 +1,5 @@
 import { getLogger } from "@app/logger";
-import { generateText } from "ai";
+import { CallSettings, generateText, LanguageModel } from "ai";
 
 import { getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
@@ -11,25 +11,20 @@ export interface ModelInfo {
   available: boolean;
 }
 
-export async function probeModels(
-  apiKey: string,
-  baseURL?: string,
-  providerType?: ProviderType,
-  preferredModel?: string,
-  fallbackModel?: string,
-): Promise<Record<string, boolean>> {
-  if (providerType === "openai-compatible") {
-    return probeOpenAICompatibleModels(apiKey, baseURL);
-  }
-  return probeAnthropicModels(apiKey, preferredModel, fallbackModel);
-}
+const probeModel = async (model: LanguageModel, settings: CallSettings) =>
+  await generateText({
+    ...settings,
+    model,
+    maxOutputTokens: 1,
+    messages: [{ content: "hi", role: "user" }],
+  });
 
-async function probeAnthropicModels(
+const probeAnthropicModels = async (
   apiKey: string,
   preferredModel?: string,
   fallbackModel?: string,
-): Promise<Record<string, boolean>> {
-  const headers: Record<string, string> = { "x-anthropic-key": apiKey };
+) => {
+  const headers = { "x-anthropic-key": apiKey };
   const available: Record<string, boolean> = {};
 
   const modelsToProbe = [preferredModel, fallbackModel].filter(Boolean) as string[];
@@ -40,12 +35,7 @@ async function probeAnthropicModels(
 
   for (const model of modelsToProbe) {
     try {
-      await generateText({
-        headers,
-        maxOutputTokens: 1,
-        messages: [{ content: "hi", role: "user" }],
-        model: getClaudeModel(model),
-      });
+      await probeModel(getClaudeModel(model), { headers });
       available[model] = true;
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -55,7 +45,18 @@ async function probeAnthropicModels(
   }
 
   return available;
-}
+};
+
+export const probeModels = async (
+  apiKey: string,
+  baseURL?: string,
+  providerType?: ProviderType,
+  preferredModel?: string,
+  fallbackModel?: string,
+) =>
+  providerType === "openai-compatible"
+    ? probeOpenAICompatibleModels(apiKey, baseURL)
+    : probeAnthropicModels(apiKey, preferredModel, fallbackModel);
 
 async function probeOpenAICompatibleModels(
   apiKey: string,

@@ -445,6 +445,7 @@ const frameOrchestratorStep = createStep({
         });
 
         try {
+          // oxlint-disable-next-line no-await-in-loop
           const result = await runFramePipeline(concepts[i]!, i, previousCritique);
           frames.push(result);
           previousCritique = result.critique;

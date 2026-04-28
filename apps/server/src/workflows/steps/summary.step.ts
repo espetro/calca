@@ -42,8 +42,8 @@ export const summaryStep = createStep({
       const parsed = JSON.parse(raw);
       const validated = validateSummary(parsed);
       return { summary: JSON.stringify(validated) };
-    } catch (validationErr) {
-      logger.warn("Summary validation failed:", validationErr);
+    } catch (error) {
+      logger.warn("Summary validation failed:", { error });
       return { summary: raw };
     }
   },

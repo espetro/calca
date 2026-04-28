@@ -25,7 +25,7 @@ import {
 } from "@/features/onboarding";
 import { SettingsModal } from "@/features/settings";
 import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
-import { hasModelAtom, isOwnKeyAtom, settingsAtom } from "@/features/settings/state/settings-atoms";
+import { isOwnKeyAtom, loadedAtom, settingsAtom } from "@/features/settings/state/settings-atoms";
 import { exportCanvas, openImportDialog } from "@/lib/export";
 import { m } from "@/lib/i18n";
 import { useMountEffect } from "@/shared/utils/use-mount-effect";
@@ -39,7 +39,7 @@ export default function Home() {
   const canvas = useCanvas();
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
-  const hasModel = useAtomValue(hasModelAtom);
+  const loaded = useAtomValue(loadedAtom);
   const probeModels = useProbeModels();
 
   useKeyboardShortcuts();
@@ -88,10 +88,10 @@ export default function Home() {
     if (hasCheckedOnboarding.current) return;
     hasCheckedOnboarding.current = true;
 
-    if (!settings.onboardingCompleted) {
+    if (loaded && !settings.onboardingCompleted) {
       setShowWelcome(true);
     }
-  }, [settings.onboardingCompleted, setShowWelcome]);
+  }, [settings.onboardingCompleted, setShowWelcome, loaded]);
 
   const pipeline = useGenerationPipeline(canvas);
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
