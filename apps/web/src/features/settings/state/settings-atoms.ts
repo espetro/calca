@@ -1,9 +1,10 @@
+import type { ProviderType } from "@app/core/ai/providers";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import type { ProviderType } from "@app/core/ai/providers";
-import type { ProviderConfig, Settings } from "../types";
-import { settingsSchema } from "../lib/settings-schema";
+
 import { deriveProviderFields } from "../lib/derive-provider-fields";
+import { settingsSchema } from "../lib/settings-schema";
+import type { ProviderConfig, Settings } from "../types";
 
 const STORAGE_KEY = "calca-settings";
 const DEFAULT_BASE_URL = import.meta.env.VITE_AI_BASE_URL || "";
@@ -92,7 +93,10 @@ const createStorage = () => {
         const parsed = JSON.parse(raw);
         const result = settingsSchema.safeParse(parsed);
         if (!result.success) {
-          console.warn("[settings] Schema validation failed, using defaults:", result.error.flatten());
+          console.warn(
+            "[settings] Schema validation failed, using defaults:",
+            result.error.flatten(),
+          );
           cachedSettings = defaults;
           return cachedSettings;
         }

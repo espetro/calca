@@ -1,5 +1,6 @@
-import { useState } from "react";
 import { useAtom, useSetAtom } from "jotai";
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -7,11 +8,12 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Separator } from "@/shared/components/ui/separator";
-import { type SettingsSection, SettingsSidebar } from "./settings-sidebar";
+
+import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
+import { SettingsAbout } from "./settings-about";
 import { SettingsGeneral } from "./settings-general";
 import { SettingsPersonalization } from "./settings-personalization";
-import { SettingsAbout } from "./settings-about";
-import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
+import { type SettingsSection, SettingsSidebar } from "./settings-sidebar";
 
 interface SettingsDialogProps {
   open: boolean;

@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import type { ModelInfo } from "../types";
+
 import { apiClient } from "@/lib/api-client";
+
+import type { ModelInfo } from "../types";
 
 const MUTATION_KEY = ["/api/probe-models"] as const;
 

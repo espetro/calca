@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { atom } from "jotai";
+import { describe, expect, it } from "vitest";
+
 import { settingsSchema } from "../lib/settings-schema";
 
 const ENV_PROVIDER_ID = "environment";
@@ -89,6 +90,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "dark",
       onboardingCompleted: true,
+      analyticsEnabled: true,
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -117,6 +119,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "invalid-theme",
       onboardingCompleted: false,
+      analyticsEnabled: false,
     });
     expect(result.success).toBe(false);
   });
@@ -142,6 +145,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "system",
       onboardingCompleted: false,
+      analyticsEnabled: false,
     });
     expect(result.success).toBe(false);
   });
@@ -166,6 +170,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "system",
       onboardingCompleted: false,
+      analyticsEnabled: false,
     });
     expect(result.success).toBe(true);
   });
@@ -190,6 +195,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "system",
       onboardingCompleted: false,
+      analyticsEnabled: false,
     });
     expect(result.success).toBe(false);
   });
@@ -223,6 +229,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "system",
       onboardingCompleted: false,
+      analyticsEnabled: false,
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -259,6 +266,7 @@ describe("settingsSchema Zod validation", () => {
       selectedImages: [],
       theme: "system",
       onboardingCompleted: false,
+      analyticsEnabled: false,
     });
     expect(result.success).toBe(false);
   });

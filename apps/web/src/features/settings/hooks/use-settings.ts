@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
-import type { ProviderType, ProviderConfig, ModelInfo, Settings, SelectedImage } from "../types";
-import { migrateSettings } from "../lib/migrate-settings";
+import { useCallback, useEffect, useState } from "react";
+
 import { deriveProviderFields } from "../lib/derive-provider-fields";
+import { migrateSettings } from "../lib/migrate-settings";
+import type { ModelInfo, ProviderConfig, ProviderType, SelectedImage, Settings } from "../types";
 import { useProbeModels } from "./use-probe-models";
 
 export type { ProviderType, Settings, SelectedImage };
@@ -22,9 +23,7 @@ const createEnvProvider = (): ProviderConfig | null => {
     apiType: "openai-compatible",
     baseUrl,
     apiKey: import.meta.env.VITE_AI_API_KEY || "",
-    models: modelName
-      ? [{ id: modelName, displayName: modelName, description: "" }]
-      : [],
+    models: modelName ? [{ id: modelName, displayName: modelName, description: "" }] : [],
     lastTested: null,
     isEnv: true,
   };
@@ -53,6 +52,7 @@ export function useSettings() {
     selectedImages: [],
     theme: "system",
     onboardingCompleted: false,
+    analyticsEnabled: false,
   });
   const [loaded, setLoaded] = useState(false);
   const probeModels = useProbeModels();
@@ -112,6 +112,7 @@ export function useSettings() {
           selectedImages: parsed.selectedImages ?? [],
           theme: (parsed.theme as Settings["theme"]) ?? "system",
           onboardingCompleted: false,
+          analyticsEnabled: parsed.analyticsEnabled ?? false,
         });
       } else {
         // No localStorage yet — seed env provider if env vars are set
@@ -134,19 +135,25 @@ export function useSettings() {
     });
   }, []);
 
-  const testProvider = useCallback(async (
-    config: Omit<ProviderConfig, "models" | "lastTested">
-  ): Promise<{ models: ModelInfo[]; error?: string }> => {
-    return probeModels.mutateAsync({
-      apiKey: config.apiKey,
-      providerType: config.apiType,
-      baseURL: config.baseUrl,
-    });
-  }, [probeModels.mutateAsync]);
+  const testProvider = useCallback(
+    async (
+      config: Omit<ProviderConfig, "models" | "lastTested">,
+    ): Promise<{ models: ModelInfo[]; error?: string }> => {
+      return probeModels.mutateAsync({
+        apiKey: config.apiKey,
+        providerType: config.apiType,
+        baseURL: config.baseUrl,
+      });
+    },
+    [probeModels.mutateAsync],
+  );
 
-  const setIsIdeating = useCallback((value: boolean) => {
-    setSettings({ isIdeating: value });
-  }, [setSettings]);
+  const setIsIdeating = useCallback(
+    (value: boolean) => {
+      setSettings({ isIdeating: value });
+    },
+    [setSettings],
+  );
 
   const addImage = useCallback((image: SelectedImage) => {
     setSettingsState((prev) => {
@@ -176,8 +183,7 @@ export function useSettings() {
 
   // For anthropic we need an API key; for openai-compatible a baseURL is enough
   const isOwnKey =
-    !!derived.apiKey ||
-    (derived.providerType === "openai-compatible" && !!derived.baseURL);
+    !!derived.apiKey || (derived.providerType === "openai-compatible" && !!derived.baseURL);
   const hasGeminiKey = !!settings.geminiKey;
 
   return {

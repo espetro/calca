@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { type LegacySettings, type MigratedSettings, migrateSettings } from "./migrate-settings";
 
 describe("migrateSettings", () => {

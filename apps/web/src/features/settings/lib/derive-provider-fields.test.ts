@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { type DerivedProviderFields, deriveProviderFields } from "./derive-provider-fields";
+
 import type { ProviderConfig } from "../types";
+import { type DerivedProviderFields, deriveProviderFields } from "./derive-provider-fields";
 
 const createProvider = (overrides: Partial<ProviderConfig> = {}): ProviderConfig => ({
   apiKey: "",

@@ -1,8 +1,6 @@
 import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
-import type { Settings, Theme } from "../types";
-import { Switch } from "@/shared/components/ui/switch";
+
 import { Label } from "@/shared/components/ui/label";
-import { Separator } from "@/shared/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -10,6 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
+import { Separator } from "@/shared/components/ui/separator";
+import { Switch } from "@/shared/components/ui/switch";
+
+import type { Settings, Theme } from "../types";
 
 const THEME_OPTIONS: { value: Theme; label: string; icon: React.ReactNode }[] = [
   { icon: <Sun className="w-4 h-4" />, label: "Light", value: "light" },

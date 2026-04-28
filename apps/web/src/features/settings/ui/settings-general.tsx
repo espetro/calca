@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { Eye, EyeOff, Plus, X } from "lucide-react";
+import { optIn, optOut } from "@app/analytics";
+import type { ProviderType } from "@app/core/ai/providers";
 import { useSetAtom } from "jotai";
-import { Label } from "@/shared/components/ui/label";
-import { Input } from "@/shared/components/ui/input";
-import { Button } from "@/shared/components/ui/button";
-import { Separator } from "@/shared/components/ui/separator";
+import { Eye, EyeOff, Plus, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
+import { showTutorialAtom } from "@/features/onboarding/state/onboarding-atoms";
 import { Badge } from "@/shared/components/ui/badge";
-import { Switch } from "@/shared/components/ui/switch";
-import { optOut, optIn } from "@app/analytics";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -15,11 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-import { showTutorialAtom } from "@/features/onboarding/state/onboarding-atoms";
+import { Separator } from "@/shared/components/ui/separator";
+import { Switch } from "@/shared/components/ui/switch";
+
 import { useProbeModels } from "../hooks/use-probe-models";
-import type { ProviderConfig, Settings } from "../types";
-import type { ProviderType } from "@app/core/ai/providers";
 import { apiKeyValidationSchema, validateModelInProvider } from "../lib/settings-schema";
+import type { ProviderConfig, Settings } from "../types";
 
 interface SettingsGeneralProps {
   settings: Settings;
@@ -96,7 +98,9 @@ function AddProviderForm({
   };
 
   const handleTest = async () => {
-    if (!canTest) {return;}
+    if (!canTest) {
+      return;
+    }
     setTestResult(null);
     try {
       const result = await probeModels.mutateAsync({
@@ -118,7 +122,9 @@ function AddProviderForm({
   };
 
   const handleSave = () => {
-    if (!canSave) {return;}
+    if (!canSave) {
+      return;
+    }
     const newProvider: ProviderConfig = {
       apiKey,
       apiType,
@@ -265,7 +271,10 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
     return slashIndex > 0 ? settings.model.slice(slashIndex + 1) : settings.model;
   }, [settings.model]);
 
-  const selectedProvider = useMemo(() => settings.providers.find((p) => p.id === selectedProviderId), [settings.providers, selectedProviderId]);
+  const selectedProvider = useMemo(
+    () => settings.providers.find((p) => p.id === selectedProviderId),
+    [settings.providers, selectedProviderId],
+  );
 
   const handleProviderChange = (providerId: string) => {
     const provider = settings.providers.find((p) => p.id === providerId);
@@ -313,7 +322,9 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
   };
 
   const handleProviderKeyChange = (value: string) => {
-    if (!selectedProvider) {return;}
+    if (!selectedProvider) {
+      return;
+    }
     const result = apiKeyValidationSchema.safeParse(value);
     const error = result.success ? null : (result.error.issues[0]?.message ?? null);
     setApiKeyErrors((prev) => ({ ...prev, [selectedProvider.id]: error }));
@@ -361,15 +372,15 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
   }, [settings.model, selectedProvider]);
 
   const providerLabel = selectedProvider
-    ? (selectedProvider.apiType === "anthropic"
+    ? selectedProvider.apiType === "anthropic"
       ? "Anthropic"
-      : "OpenAI-Compatible")
+      : "OpenAI-Compatible"
     : "Provider";
 
   const providerPlaceholder = selectedProvider
-    ? (selectedProvider.apiType === "anthropic"
+    ? selectedProvider.apiType === "anthropic"
       ? "sk-ant-..."
-      : "sk-...")
+      : "sk-..."
     : "API key...";
 
   return (
@@ -419,9 +430,9 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
               placeholder={
                 !selectedProvider
                   ? "Select a provider first"
-                  : (selectedProvider.models.length === 0
+                  : selectedProvider.models.length === 0
                     ? "No models available"
-                    : "Select a model")
+                    : "Select a model"
               }
             />
           </SelectTrigger>
@@ -543,13 +554,11 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
             Analytics
           </Label>
           <p className="text-[11px] text-muted-foreground mt-1">
-            Help us improve Calca by sharing anonymous usage patterns. No prompts or designs are ever shared.
+            Help us improve Calca by sharing anonymous usage patterns. No prompts or designs are
+            ever shared.
           </p>
         </div>
-        <Switch
-          checked={settings.analyticsEnabled}
-          onCheckedChange={handleAnalyticsToggle}
-        />
+        <Switch checked={settings.analyticsEnabled} onCheckedChange={handleAnalyticsToggle} />
       </div>
 
       <Separator />

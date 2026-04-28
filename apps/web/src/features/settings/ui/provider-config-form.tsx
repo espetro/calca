@@ -1,5 +1,6 @@
-import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
 import { useCallback, useState } from "react";
+
+import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
 
 interface ProviderConfigFormProps {
   onSave: (provider: ProviderConfig) => void;
@@ -31,9 +32,15 @@ export default function ProviderConfigForm({
   // Validation
   const isValidId = useCallback(
     (value: string) => {
-      if (!value) {return false;}
-      if (!/^[a-z0-9-]+$/.test(value)) {return false;}
-      if (existingIds.includes(value)) {return false;}
+      if (!value) {
+        return false;
+      }
+      if (!/^[a-z0-9-]+$/.test(value)) {
+        return false;
+      }
+      if (existingIds.includes(value)) {
+        return false;
+      }
       return true;
     },
     [existingIds],
@@ -46,7 +53,9 @@ export default function ProviderConfigForm({
   const formatError = hasInvalidFormat ? "Only lowercase letters, numbers, and hyphens" : null;
 
   const handleTest = async () => {
-    if (!isValidId(id)) {return;}
+    if (!isValidId(id)) {
+      return;
+    }
 
     setIsTesting(true);
     setTestError(null);
@@ -64,7 +73,9 @@ export default function ProviderConfigForm({
   };
 
   const handleSave = () => {
-    if (!testResult || testError) {return;}
+    if (!testResult || testError) {
+      return;
+    }
 
     onSave({
       apiKey,
