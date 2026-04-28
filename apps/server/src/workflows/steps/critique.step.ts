@@ -1,10 +1,11 @@
-import { createStep } from "@mastra/core/workflows";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ModelMessage } from "ai";
 import { buildCritiquePrompt } from "@app/core/prompts/critique";
-import { CritiqueInputSchema, CritiqueOutputSchema } from "../schemas/critique.schema";
+import { createStep } from "@mastra/core/workflows";
+import type { ModelMessage } from "ai";
+
 import { stripBase64Images } from "../../lib/strip-base64";
+import { CritiqueInputSchema, CritiqueOutputSchema } from "../schemas/critique.schema";
 
 export const critiqueStep = createStep({
   id: "critique",

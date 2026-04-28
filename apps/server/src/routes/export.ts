@@ -1,9 +1,10 @@
-import { Hono, type Context } from "hono";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import { htmlToSvg } from "../lib/html-to-svg";
-import { TAILWIND_PROMPT, REACT_PROMPT } from "../lib/export-prompts";
 import { getLogger } from "@app/logger";
+import { type Context, Hono } from "hono";
+
+import { REACT_PROMPT, TAILWIND_PROMPT } from "../lib/export-prompts";
+import htmlToSvg from "../lib/html-to-svg";
 
 const logger = getLogger(["calca", "server", "routes", "export"]);
 
@@ -15,17 +16,17 @@ async function convertWithAI(
   providerType?: ProviderType,
   baseURL?: string,
 ): Promise<string> {
-    const { result } = await generateWithFallback({
-      apiKey,
-      model,
-      messages: [
-        { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
-      ],
-      maxTokens: 4096,
-      providerType: providerType as ProviderType | undefined,
-      baseURL,
-      functionId: "export",
-    });
+  const { result } = await generateWithFallback({
+    apiKey,
+    model,
+    messages: [
+      { role: "user", content: `${systemPrompt}\n\nHere is the HTML/CSS to convert:\n\n${html}` },
+    ],
+    maxTokens: 4096,
+    providerType: providerType as ProviderType | undefined,
+    baseURL,
+    functionId: "export",
+  });
 
   let resultText = result.text.trim();
   if (resultText.startsWith("```")) {

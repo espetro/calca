@@ -1,13 +1,14 @@
-import { createStep } from "@mastra/core/workflows";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ModelMessage } from "ai";
 import { buildReviewPrompt } from "@app/core/prompts/review";
+import { getLogger } from "@app/logger";
 import { validateReview } from "@app/shared";
+import { createStep } from "@mastra/core/workflows";
+import type { ModelMessage } from "ai";
+
 import { parseHtmlWithSize } from "../../lib/parse-html";
 import { stripBase64Images } from "../../lib/strip-base64";
 import { ReviewInputSchema, ReviewOutputSchema } from "../schemas/review.schema";
-import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "server", "workflow", "review"]);
 
@@ -16,7 +17,8 @@ export const reviewStep = createStep({
   inputSchema: ReviewInputSchema,
   outputSchema: ReviewOutputSchema,
   execute: async ({ inputData }) => {
-    const { html, prompt, width, height, model, apiKey, baseURL, providerType, frameIndex } = inputData;
+    const { html, prompt, width, height, model, apiKey, baseURL, providerType, frameIndex } =
+      inputData;
     const useModel = model;
     const frameIdx = frameIndex ?? 0;
 

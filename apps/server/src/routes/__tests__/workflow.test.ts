@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Context } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock dependencies before importing the handler
 vi.mock("@mastra/ai-sdk", () => ({
@@ -16,6 +16,7 @@ vi.mock("../../workflows/mastra", () => ({
 
 import { handleWorkflowStream } from "@mastra/ai-sdk";
 import { createUIMessageStreamResponse } from "ai";
+
 import { handleWorkflow } from "../workflow";
 
 function createMockContext(body: unknown): Context {

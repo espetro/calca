@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Context } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@app/core/ai/probe", () => ({
   probeModels: vi.fn(),
 }));
 
 import { probeModels } from "@app/core/ai/probe";
+
 import { handleProbeModels } from "../probe-models";
 
 function createMockContext(body: unknown): Context {

@@ -1,27 +1,28 @@
-import { createWorkflow, createStep } from "@mastra/core/workflows";
-import { z } from "zod";
 import { getLogger } from "@app/logger";
+import { createStep, createWorkflow } from "@mastra/core/workflows";
+import { z } from "zod";
 
-import { planStep } from "./steps/plan.step";
-import { layoutStep } from "./steps/layout.step";
-import { imagesStep } from "./steps/images.step";
-import { reviewStep } from "./steps/review.step";
-import { critiqueStep } from "./steps/critique.step";
-import { summaryStep } from "./steps/summary.step";
-import { PlanOutputSchema } from "./schemas/plan.schema";
-import type { LayoutOutput } from "./schemas/layout.schema";
-import type { ImagesOutput } from "./schemas/images.schema";
-import type { ReviewOutput } from "./schemas/review.schema";
 import type { CritiqueOutput } from "./schemas/critique.schema";
+import type { ImagesOutput } from "./schemas/images.schema";
+import type { LayoutOutput } from "./schemas/layout.schema";
+import { PlanOutputSchema } from "./schemas/plan.schema";
+import type { ReviewOutput } from "./schemas/review.schema";
+import { critiqueStep } from "./steps/critique.step";
+import { imagesStep } from "./steps/images.step";
+import { layoutStep } from "./steps/layout.step";
+import { planStep } from "./steps/plan.step";
+import { reviewStep } from "./steps/review.step";
+import { summaryStep } from "./steps/summary.step";
 
 const logger = getLogger(["calca", "server", "workflow"]);
 
-function withStepLogging<T extends object, U extends object>(
-  step: ReturnType<typeof createStep<T, U>>,
-  stepName: string,
-): typeof step {
+function withStepLogging<
+  S extends ReturnType<typeof createStep<string, undefined, object, object>>,
+>(step: S, stepName: string): S {
   const originalExecute = step.execute;
-  step.execute = async (context: typeof originalExecute extends (ctx: infer C) => Promise<unknown> ? C : never) => {
+  step.execute = async (
+    context: typeof originalExecute extends (ctx: infer C) => Promise<unknown> ? C : never,
+  ) => {
     const start = performance.now();
     logger.info("Pipeline step starting", { step: stepName });
     try {
@@ -171,7 +172,11 @@ const frameOrchestratorStep = createStep({
             abortSignal,
           } as Parameters<typeof layoutStep.execute>[0]),
         );
-        logger.info("Pipeline step completed", { step: "layout", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+        logger.info("Pipeline step completed", {
+          step: "layout",
+          frameIndex: index,
+          durationMs: Math.round(performance.now() - start),
+        });
         html = layoutResult.html;
         width = layoutResult.width;
         height = layoutResult.height;
@@ -201,7 +206,11 @@ const frameOrchestratorStep = createStep({
             abortSignal,
           } as Parameters<typeof imagesStep.execute>[0]),
         );
-        logger.info("Pipeline step completed", { step: "images", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+        logger.info("Pipeline step completed", {
+          step: "images",
+          frameIndex: index,
+          durationMs: Math.round(performance.now() - start),
+        });
         html = imagesResult.html;
       }
 
@@ -231,7 +240,11 @@ const frameOrchestratorStep = createStep({
               },
             } as Parameters<typeof reviewStep.execute>[0]),
           );
-          logger.info("Pipeline step completed", { step: "review", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          logger.info("Pipeline step completed", {
+            step: "review",
+            frameIndex: index,
+            durationMs: Math.round(performance.now() - start),
+          });
           html = reviewResult.html;
         }
       }
@@ -262,7 +275,11 @@ const frameOrchestratorStep = createStep({
               },
             } as Parameters<typeof critiqueStep.execute>[0]),
           );
-          logger.info("Pipeline step completed", { step: "critique", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          logger.info("Pipeline step completed", {
+            step: "critique",
+            frameIndex: index,
+            durationMs: Math.round(performance.now() - start),
+          });
           critiqueText = critiqueResult.critique;
         } catch {
           // critique is optional — continue without it
@@ -292,7 +309,11 @@ const frameOrchestratorStep = createStep({
             abortSignal,
           } as Parameters<typeof imagesStep.execute>[0]),
         );
-        logger.info("Pipeline step completed", { step: "images", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+        logger.info("Pipeline step completed", {
+          step: "images",
+          frameIndex: index,
+          durationMs: Math.round(performance.now() - start),
+        });
         html = imagesResult.html;
       }
 
@@ -307,27 +328,29 @@ const frameOrchestratorStep = createStep({
         {
           const start = performance.now();
           logger.info("Pipeline step starting", { step: "review", frameIndex: index, model });
-        const reviewResult = unwrap<ReviewOutput>(
-          await reviewStep.execute({
-            inputData: {
-              html,
-              prompt,
-              width,
-              height,
-              model,
-              apiKey,
-              baseURL,
-              providerType,
-              frameIndex: index,
-            },
-          } as Parameters<typeof reviewStep.execute>[0]),
-        );
-          logger.info("Pipeline step completed", { step: "review", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          const reviewResult = unwrap<ReviewOutput>(
+            await reviewStep.execute({
+              inputData: {
+                html,
+                prompt,
+                width,
+                height,
+                model,
+                apiKey,
+                baseURL,
+                providerType,
+                frameIndex: index,
+              },
+            } as Parameters<typeof reviewStep.execute>[0]),
+          );
+          logger.info("Pipeline step completed", {
+            step: "review",
+            frameIndex: index,
+            durationMs: Math.round(performance.now() - start),
+          });
           html = reviewResult.html;
         }
       }
-
-      let critiqueText: string | undefined;
 
       if (!isQuickMode) {
         writer.write({
@@ -353,7 +376,11 @@ const frameOrchestratorStep = createStep({
               },
             } as Parameters<typeof critiqueStep.execute>[0]),
           );
-          logger.info("Pipeline step completed", { step: "critique", frameIndex: index, durationMs: Math.round(performance.now() - start) });
+          logger.info("Pipeline step completed", {
+            step: "critique",
+            frameIndex: index,
+            durationMs: Math.round(performance.now() - start),
+          });
           critiqueText = critiqueResult.critique;
         } catch {
           // critique is optional — continue without it
@@ -435,7 +462,10 @@ const frameOrchestratorStep = createStep({
     // ── Build output ───────────────────────────────────────────────────────
     const lastFrame = frames[frames.length - 1];
     const labels = frames.map((f) => f.label).filter(Boolean);
-    logger.info("Pipeline step completed", { step: "frameOrchestrator", durationMs: Math.round(performance.now() - start) });
+    logger.info("Pipeline step completed", {
+      step: "frameOrchestrator",
+      durationMs: Math.round(performance.now() - start),
+    });
 
     return {
       frames,

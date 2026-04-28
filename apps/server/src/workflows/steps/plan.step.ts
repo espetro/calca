@@ -1,10 +1,11 @@
-import { createStep } from "@mastra/core/workflows";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ModelMessage } from "ai";
 import { buildPlanPrompt } from "@app/core/prompts/plan";
-import { PlanInputSchema, PlanOutputSchema } from "../schemas/plan.schema";
 import { getLogger } from "@app/logger";
+import { createStep } from "@mastra/core/workflows";
+import type { ModelMessage } from "ai";
+
+import { PlanInputSchema, PlanOutputSchema } from "../schemas/plan.schema";
 
 const logger = getLogger(["calca", "server", "workflow", "plan"]);
 

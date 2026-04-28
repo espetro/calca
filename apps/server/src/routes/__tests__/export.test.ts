@@ -1,15 +1,16 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Context } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@app/core/ai/client", () => ({
   generateWithFallback: vi.fn(),
 }));
 
 vi.mock("../../lib/html-to-svg", () => ({
-  htmlToSvg: vi.fn((html: string) => `<svg>${html}</svg>`),
+  default: vi.fn((html: string) => `<svg>${html}</svg>`),
 }));
 
 import { generateWithFallback } from "@app/core/ai/client";
+
 import htmlToSvg from "../../lib/html-to-svg";
 import { handleExport } from "../export";
 
@@ -176,8 +177,8 @@ describe("handleExport", () => {
     });
   });
 
-  describe("uses default model when none provided", () => {
-    it("falls back to claude-sonnet-4-20250514", async () => {
+  describe("passes model through when provided", () => {
+    it("uses the specified model", async () => {
       (generateWithFallback as ReturnType<typeof vi.fn>).mockResolvedValue({
         result: { text: "<div>ok</div>" },
       } as Awaited<ReturnType<typeof generateWithFallback>>);
@@ -186,6 +187,7 @@ describe("handleExport", () => {
         apiKey: "sk-test",
         format: "tailwind",
         html: "<div>hello</div>",
+        model: "claude-sonnet-4-20250514",
       });
 
       await handleExport(ctx);

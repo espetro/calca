@@ -1,7 +1,6 @@
-import { createStep } from "@mastra/core/workflows";
-
 import { generateImages } from "@app/core/pipeline/images";
 import { getLogger } from "@app/logger";
+import { createStep } from "@mastra/core/workflows";
 
 import { ImagesInputSchema, ImagesOutputSchema } from "../schemas/images.schema";
 
