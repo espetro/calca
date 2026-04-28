@@ -5,7 +5,8 @@
   "license": "AGPL-3.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./app": "./src/app.ts"
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",
