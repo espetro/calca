@@ -6,8 +6,11 @@
  */
 
 import serverApp from "@app/server/app";
+
 import { isDev, VITE_DEV_URL, HOST, PORT } from "./constants";
 import { getErrorPageHtml } from "./error-page";
+
+const IDLE_TIMEOUT_IN_SECONDS = 0; // ! No timeout – we must set per-request timeout
 
 export async function waitForServer(url: string, timeoutMs = 30000): Promise<void> {
   const start = Date.now();
@@ -64,13 +67,16 @@ export async function handleFetch(request: Request): Promise<Response> {
       });
       return response;
     } catch {
-      return new Response(getErrorPageHtml(
-        "Dev Server Unavailable",
-        "Could not connect to the Vite development server. Make sure to run the web app first."
-      ), {
-        status: 503,
-        headers: { "Content-Type": "text/html" },
-      });
+      return new Response(
+        getErrorPageHtml(
+          "Dev Server Unavailable",
+          "Could not connect to the Vite development server. Make sure to run the web app first.",
+        ),
+        {
+          status: 503,
+          headers: { "Content-Type": "text/html" },
+        },
+      );
     }
   }
 
@@ -97,13 +103,16 @@ export async function handleFetch(request: Request): Promise<Response> {
     });
   }
 
-  return new Response(getErrorPageHtml(
-    "Static Files Missing",
-    "Could not find the web app bundle. The application may not be properly installed."
-  ), {
-    status: 503,
-    headers: { "Content-Type": "text/html" },
-  });
+  return new Response(
+    getErrorPageHtml(
+      "Static Files Missing",
+      "Could not find the web app bundle. The application may not be properly installed.",
+    ),
+    {
+      status: 503,
+      headers: { "Content-Type": "text/html" },
+    },
+  );
 }
 
 export function startServer(): void {
@@ -111,15 +120,16 @@ export function startServer(): void {
     port: PORT,
     hostname: HOST,
     fetch: handleFetch,
+    idleTimeout: IDLE_TIMEOUT_IN_SECONDS,
     error: (error) => {
       console.error("[desktop] Server error:", error);
-      return new Response(getErrorPageHtml(
-        "Server Error",
-        `An unexpected error occurred: ${error.message}`
-      ), {
-        status: 500,
-        headers: { "Content-Type": "text/html" },
-      });
+      return new Response(
+        getErrorPageHtml("Server Error", `An unexpected error occurred: ${error.message}`),
+        {
+          status: 500,
+          headers: { "Content-Type": "text/html" },
+        },
+      );
     },
   });
 }
