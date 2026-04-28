@@ -34,7 +34,7 @@ export function FloatingSystemPromptButton() {
         aria-label="System Prompt"
         className={`flex items-center justify-center w-12 h-12 rounded-2xl transition-all ${
           isOpen || hasCustomPrompt
-            ? "bg-blue-500/90 text-white shadow-lg"
+            ? "bg-primary/90 text-white shadow-lg"
             : "bg-white/20 backdrop-blur-3xl border border-white/30 text-gray-700 hover:bg-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
         }`}
       >

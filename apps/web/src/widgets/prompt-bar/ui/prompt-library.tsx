@@ -164,7 +164,7 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                     <div className="flex items-center gap-1.5 mt-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
                       <button
                         onClick={() => handleUse(p.text)}
-                        className="text-[11px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-3 py-1.5 rounded-lg transition-all"
+                        className="text-[11px] font-medium text-white bg-primary/90 hover:bg-primary px-3 py-1.5 rounded-lg transition-all"
                       >
                         Use prompt →
                       </button>

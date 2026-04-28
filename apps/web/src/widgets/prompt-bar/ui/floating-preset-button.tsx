@@ -65,7 +65,7 @@ export function FloatingPresetButton() {
         aria-label="Designer Preset"
         className={`flex items-center justify-center w-12 h-12 rounded-2xl transition-all ${
           isOpen || settings.systemPromptPreset !== "custom"
-            ? "bg-amber-500/90 text-white shadow-lg"
+            ? "bg-chart-1/90 text-white shadow-lg"
             : "bg-white/20 backdrop-blur-3xl border border-white/30 text-gray-700 hover:bg-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
         }`}
       >
@@ -91,7 +91,7 @@ export function FloatingPresetButton() {
                   onClick={() => handlePresetClick(preset.id)}
                   className={`flex items-center gap-2 text-left text-[12px] font-medium px-3 py-2 rounded-lg transition-all ${
                     settings.systemPromptPreset === preset.id
-                      ? "bg-amber-500/90 text-white shadow-sm"
+                      ? "bg-chart-1/90 text-white shadow-sm"
                       : "bg-white/50 text-gray-600 hover:bg-white/80"
                   }`}
                 >
