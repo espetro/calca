@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 
-import type { SelectedImage } from "@/features/settings/types";
+import type { SelectedImage } from "#/features/settings/types";
 
 interface ImagePillProps {
   image: SelectedImage;

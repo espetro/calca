@@ -2,16 +2,9 @@
   "extends": "../../packages/config/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "../../",
     "lib": ["ESNext", "DOM"],
     "types": ["node", "vitest", "bun"],
-    "rewriteRelativeImportExtensions": true,
-    "paths": {
-      "@app/server/*": ["./src/*"],
-      "@app/core/*": ["../../packages/core/src/*"],
-      "@app/shared": ["../../packages/shared/src/index.ts"],
-      "@app/shared/*": ["../../packages/shared/src/*"]
-    }
+    "rewriteRelativeImportExtensions": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]

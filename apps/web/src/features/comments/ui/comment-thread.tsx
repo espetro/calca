@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { Comment, CommentMessage } from "@/shared/types";
+import type { Comment, CommentMessage } from "#/shared/types";
 
 interface CommentThreadProps {
   comment: Comment;

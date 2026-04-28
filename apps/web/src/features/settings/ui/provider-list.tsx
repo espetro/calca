@@ -1,4 +1,4 @@
-import type { ProviderConfig } from "@/features/settings/types";
+import type { ProviderConfig } from "#/features/settings/types";
 
 interface ProviderListProps {
   providers: ProviderConfig[];

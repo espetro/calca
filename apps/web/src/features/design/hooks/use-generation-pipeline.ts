@@ -1,17 +1,17 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo, useRef } from "react";
 
-import { useWorkflowStream } from "@/features/design/hooks/use-workflow-stream";
+import { useWorkflowStream } from "#/features/design/hooks/use-workflow-stream";
 import {
   genStatusAtom,
   isGeneratingAtom,
   pipelineStagesAtom,
-} from "@/features/design/state/generation-atoms";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom } from "@/features/design/state/images-atoms";
-import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import { settingsAtom } from "@/features/settings/state/settings-atoms";
-import type { DesignIteration, GenerationGroup, Point } from "@/shared/types";
+} from "#/features/design/state/generation-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import { canvasImagesAtom } from "#/features/design/state/images-atoms";
+import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
+import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import type { DesignIteration, GenerationGroup, Point } from "#/shared/types";
 
 import usePostRevision from "./api/use-post-revision";
 

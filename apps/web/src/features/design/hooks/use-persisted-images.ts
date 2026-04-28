@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const logger = getLogger(["calca", "web", "design", "persist"]);
 
-import type { CanvasImage } from "@/shared/types";
+import type { CanvasImage } from "#/shared/types";
 
 const DB_NAME = "calca-canvas-images";
 const STORE_NAME = "ref-images";

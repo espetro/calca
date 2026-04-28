@@ -1,15 +1,5 @@
 {
   "extends": "../../packages/config/tsconfig/vite.json",
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"],
-      "@app/analytics": ["../../packages/analytics/src/index.ts"],
-      "@app/analytics/*": ["../../packages/analytics/src/*"],
-      "@app/core/*": ["../../packages/core/src/*"],
-      "@app/shared": ["../../packages/shared/src/index.ts"],
-      "@app/server": ["../../apps/server/src/index.ts"]
-    }
-  },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/vite-env.d.ts", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -5,8 +5,6 @@
     "rootDir": "./src",
     "moduleResolution": "bundler",
     "paths": {
-      "@app/server": ["../../packages/server/src/index.ts"],
-      "@app/shared": ["../../packages/shared/src/index.ts"],
       "electrobun/bun": ["./src/electrobun.d.ts"]
     }
   },

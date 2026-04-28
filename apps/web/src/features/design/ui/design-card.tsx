@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
-import { ExportMenu } from "@/features/export";
+import { ExportMenu } from "#/features/export";
 import type {
   Comment as CommentType,
   DesignIteration,
   PipelineStatus,
   Point,
-} from "@/shared/types";
-import { STAGE_CONFIG } from "@/shared/types";
+} from "#/shared/types";
+import { STAGE_CONFIG } from "#/shared/types";
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // Kept for export compat

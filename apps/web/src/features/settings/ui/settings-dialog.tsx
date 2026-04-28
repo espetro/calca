@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@/shared/components/ui/dialog";
-import { Separator } from "@/shared/components/ui/separator";
+} from "#/shared/components/ui/dialog";
+import { Separator } from "#/shared/components/ui/separator";
 
 import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
 import { SettingsAbout } from "./settings-about";

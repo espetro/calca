@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
-import type { DerivedProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import { apiClient } from "@/lib/api-client";
+import type { DerivedProviderFields } from "#/features/settings/lib/derive-provider-fields";
+import { apiClient } from "#/lib/api-client";
 
 const MUTATION_KEY = ["/api/workflow", "revision"] as const;
 

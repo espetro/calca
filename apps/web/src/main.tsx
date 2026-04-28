@@ -5,7 +5,7 @@ import { createStore } from "jotai";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
-import { feedbackModalOpenAtom } from "@/features/feedback/store";
+import { feedbackModalOpenAtom } from "#/features/feedback/store";
 
 import { routeTree } from "./routeTree.gen";
 

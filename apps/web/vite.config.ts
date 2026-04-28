@@ -21,23 +21,13 @@ export default defineConfig({
   plugins: [react(), tanstackRouter(), tailwindcss()],
   resolve: {
     alias: [
+      { find: "#", replacement: resolve(__dirname, "./src") },
       { find: "@", replacement: resolve(__dirname, "./src") },
-      {
-        find: "@app/core",
-        replacement: resolve(__dirname, "../../packages/core/src"),
-      },
-      {
-        find: "@app/shared",
-        replacement: resolve(__dirname, "../../packages/shared/src/index.ts"),
-      },
       {
         find: "@app/analytics",
         replacement: resolve(__dirname, "../../packages/analytics/src/index.ts"),
       },
     ],
-  },
-  optimizeDeps: {
-    exclude: ["@app/core", "@app/shared", "@app/analytics"],
   },
   define: {
     "import.meta.env.VITE_GIT_HASH": JSON.stringify(gitHash),

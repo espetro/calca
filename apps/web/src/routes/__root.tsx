@@ -14,8 +14,8 @@ import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import { Toaster } from "sonner";
 
-import { settingsAtom } from "@/features/settings/state/settings-atoms";
-import queryClient from "@/lib/services/api";
+import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import queryClient from "#/lib/services/api";
 
 import "../app/globals.css";
 

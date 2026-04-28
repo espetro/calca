@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
-import { settingsAtom } from "@/features/settings/state/settings-atoms";
+import { settingsAtom } from "#/features/settings/state/settings-atoms";
 
 import { usePromptHistory } from "../hooks/use-prompt-history";
 import { AddMediaButton } from "./add-media-button";

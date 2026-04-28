@@ -1,4 +1,4 @@
-import { type PipelineStatus, STAGE_CONFIG } from "@/shared/types";
+import { type PipelineStatus, STAGE_CONFIG } from "#/shared/types";
 
 interface PipelineStatusBarProps {
   status: PipelineStatus;
