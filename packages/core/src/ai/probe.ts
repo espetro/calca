@@ -1,7 +1,8 @@
+import { getLogger } from "@app/logger";
 import { generateText } from "ai";
+
 import { getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
-import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "core", "ai", "probe"]);
 

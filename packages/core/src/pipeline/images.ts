@@ -1,7 +1,7 @@
+import { getLogger } from "@app/logger";
 import { generateImage } from "ai";
 
 import { getGeminiImageModel } from "../ai/providers";
-import { getLogger } from "@app/logger";
 
 export type ImageSource = "unsplash" | "dalle" | "gemini";
 
@@ -36,12 +36,16 @@ export interface Placeholder {
 async function generateUnsplashImage(ph: Placeholder, unsplashKey: string): Promise<string | null> {
   const rawQuery = ph.query || ph.description;
   const query = rawQuery.split(/[,.]/)[0].split(" ").slice(0, 5).join(" ");
-  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=1&orientation=${ph.width > ph.height * 1.3 ? "landscape" : (ph.height > ph.width * 1.3 ? "portrait" : "squarish")}`;
+  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=1&orientation=${ph.width > ph.height * 1.3 ? "landscape" : ph.height > ph.width * 1.3 ? "portrait" : "squarish"}`;
   const res = await fetch(url, { headers: { Authorization: `Client-ID ${unsplashKey}` } });
-  if (!res.ok) {return null;}
+  if (!res.ok) {
+    return null;
+  }
   const data = (await res.json()) as { results?: { urls: { raw: string } }[] };
   const photo = data.results?.[0];
-  if (!photo) {return null;}
+  if (!photo) {
+    return null;
+  }
   return `${photo.urls.raw}&w=${ph.width}&h=${ph.height}&fit=crop&auto=format`;
 }
 
@@ -58,10 +62,14 @@ async function generateDalleImage(ph: Placeholder, openaiKey: string): Promise<s
     headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
     method: "POST",
   });
-  if (!res.ok) {return null;}
+  if (!res.ok) {
+    return null;
+  }
   const data = (await res.json()) as { data?: { b64_json: string }[] };
   const b64 = data.data?.[0]?.b64_json;
-  if (!b64) {return null;}
+  if (!b64) {
+    return null;
+  }
   return `data:image/png;base64,${b64}`;
 }
 
@@ -93,9 +101,15 @@ export async function generateImages(params: {
 
   // Parse placeholders from HTML
   const availableSources: string[] = [];
-  if (unsplashKey) {availableSources.push("unsplash");}
-  if (openaiKey) {availableSources.push("dalle");}
-  if (geminiKey) {availableSources.push("gemini");}
+  if (unsplashKey) {
+    availableSources.push("unsplash");
+  }
+  if (openaiKey) {
+    availableSources.push("dalle");
+  }
+  if (geminiKey) {
+    availableSources.push("gemini");
+  }
 
   if (availableSources.length === 0) {
     return { html, imageCount: 0, reason: "No image API keys", skipped: true };
@@ -108,12 +122,14 @@ export async function generateImages(params: {
   let idx = 0;
   const defaultSource: ImageSource = availableSources.includes("unsplash")
     ? "unsplash"
-    : (availableSources.includes("dalle")
+    : availableSources.includes("dalle")
       ? "dalle"
-      : "gemini");
+      : "gemini";
   while ((match = regex.exec(html)) !== null) {
     let source = (match[4] || defaultSource) as ImageSource;
-    if (!availableSources.includes(source)) {source = defaultSource;}
+    if (!availableSources.includes(source)) {
+      source = defaultSource;
+    }
 
     const htmlWidth = Number.parseInt(match[2], 10);
     const htmlHeight = Number.parseInt(match[3], 10);
@@ -137,9 +153,15 @@ export async function generateImages(params: {
   // Generate images
   const imageMap = new Map<number, string>();
   const fallbackChain: ImageSource[] = [];
-  if (unsplashKey) {fallbackChain.push("unsplash");}
-  if (openaiKey) {fallbackChain.push("dalle");}
-  if (geminiKey) {fallbackChain.push("gemini");}
+  if (unsplashKey) {
+    fallbackChain.push("unsplash");
+  }
+  if (openaiKey) {
+    fallbackChain.push("dalle");
+  }
+  if (geminiKey) {
+    fallbackChain.push("gemini");
+  }
 
   const batchSize = 6; // Tuned for better parallelism while respecting provider rate limits
   const batchCount = Math.ceil(placeholders.length / batchSize);
@@ -166,15 +188,21 @@ export async function generateImages(params: {
             let result: string | null = null;
             switch (source) {
               case "unsplash": {
-                if (unsplashKey) {result = await generateUnsplashImage(ph, unsplashKey);}
+                if (unsplashKey) {
+                  result = await generateUnsplashImage(ph, unsplashKey);
+                }
                 break;
               }
               case "dalle": {
-                if (openaiKey) {result = await generateDalleImage(ph, openaiKey);}
+                if (openaiKey) {
+                  result = await generateDalleImage(ph, openaiKey);
+                }
                 break;
               }
               case "gemini": {
-                if (geminiKey) {result = await generateGeminiImage(ph, geminiKey);}
+                if (geminiKey) {
+                  result = await generateGeminiImage(ph, geminiKey);
+                }
                 break;
               }
             }

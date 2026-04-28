@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { generateImages, getClosestDalleSize } from "./images";
 
 describe("getClosestDalleSize", () => {

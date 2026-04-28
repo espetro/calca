@@ -1,14 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import {
-  getAIProvider,
-  type ProviderType,
-  getClaudeModel,
-  getGeminiModel,
-  getGeminiImageModel,
   buildModelFallbackChain,
   claudeModels,
   geminiModels,
+  getAIProvider,
+  getClaudeModel,
+  getGeminiImageModel,
+  getGeminiModel,
   openaiModels,
+  type ProviderType,
 } from "./providers";
 
 describe("getAIProvider", () => {
@@ -127,7 +128,9 @@ describe("buildModelFallbackChain", () => {
   });
 
   it("does NOT duplicate preferredModel when fallbackModel equals preferredModel", () => {
-    expect(buildModelFallbackChain("claude-opus-4-6", "claude-opus-4-6")).toEqual(["claude-opus-4-6"]);
+    expect(buildModelFallbackChain("claude-opus-4-6", "claude-opus-4-6")).toEqual([
+      "claude-opus-4-6",
+    ]);
   });
 });
 

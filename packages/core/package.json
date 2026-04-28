@@ -9,6 +9,7 @@
     "./ai": "./src/ai/index.ts",
     "./ai/providers": "./src/ai/providers.ts",
     "./ai/client": "./src/ai/client.ts",
+    "./ai/probe": "./src/ai/probe.ts",
     "./prompts": "./src/prompts/index.ts",
     "./prompts/plan": "./src/prompts/plan.ts",
     "./prompts/layout": "./src/prompts/layout.ts",

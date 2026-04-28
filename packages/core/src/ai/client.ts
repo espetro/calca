@@ -1,10 +1,12 @@
-import { generateText, streamText, type ModelMessage } from 'ai';
-import type { LanguageModelUsage, FinishReason } from 'ai';
-import { getClaudeModel, getAIProvider, buildModelFallbackChain } from './providers';
-import type { ProviderType } from './providers';
-import { createHash } from 'crypto';
-import { createTelemetryCallbacks } from './telemetry';
-import { getLogger } from '@app/logger';
+import { createHash } from "crypto";
+
+import { getLogger } from "@app/logger";
+import { generateText, type ModelMessage, streamText } from "ai";
+import type { FinishReason, LanguageModelUsage } from "ai";
+
+import { buildModelFallbackChain, getAIProvider, getClaudeModel } from "./providers";
+import type { ProviderType } from "./providers";
+import { createTelemetryCallbacks } from "./telemetry";
 
 const CACHE_MAX_ENTRIES = 100;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -46,8 +48,11 @@ function generateCacheKey(
   model: string,
   userMessages: string,
 ): string {
-  const systemHash = createHash('sha256').update(systemPrompt || '').digest('hex').substring(0, 16);
-  const messagesHash = createHash('sha256').update(userMessages).digest('hex').substring(0, 16);
+  const systemHash = createHash("sha256")
+    .update(systemPrompt || "")
+    .digest("hex")
+    .substring(0, 16);
+  const messagesHash = createHash("sha256").update(userMessages).digest("hex").substring(0, 16);
   return `${systemHash}:${providerType}:${model}:${messagesHash}`;
 }
 
@@ -67,10 +72,13 @@ export interface GenerateOptions {
   frameIndex?: number;
 }
 
-function buildHeaders(apiKey?: string, extraHeaders?: Record<string, string | undefined>): Record<string, string> {
+function buildHeaders(
+  apiKey?: string,
+  extraHeaders?: Record<string, string | undefined>,
+): Record<string, string> {
   const headers: Record<string, string> = {};
   if (apiKey) {
-    headers['x-anthropic-key'] = apiKey;
+    headers["x-anthropic-key"] = apiKey;
   }
   if (extraHeaders) {
     for (const [k, v] of Object.entries(extraHeaders)) {
@@ -86,7 +94,7 @@ function addCacheControlHeaders(
   enableCaching?: boolean,
 ): Record<string, string> {
   if (enableCaching) {
-    headers['anthropic-beta'] = 'prompt-caching-2024-07-31';
+    headers["anthropic-beta"] = "prompt-caching-2024-07-31";
   }
   return headers;
 }
@@ -100,35 +108,37 @@ function addCacheControlToMessages(
     return messages;
   }
 
-  return messages.map(msg => ({
+  return messages.map((msg) => ({
     ...msg,
     // Add cache_control to system messages for persistent caching
-    content: msg.role === 'system'
-      ? Array.isArray(msg.content)
-        ? (msg.content as ReadonlyArray<Record<string, unknown>>).map(c => ({
-            ...c,
-            cache_control: { type: 'ephemeral' as const },
-          }))
-        : {
-            ...((msg.content as unknown) as Record<string, unknown>),
-            cache_control: { type: 'ephemeral' as const },
-          }
-      : msg.content,
+    content:
+      msg.role === "system"
+        ? Array.isArray(msg.content)
+          ? (msg.content as ReadonlyArray<Record<string, unknown>>).map((c) => ({
+              ...c,
+              cache_control: { type: "ephemeral" as const },
+            }))
+          : {
+              ...(msg.content as unknown as Record<string, unknown>),
+              cache_control: { type: "ephemeral" as const },
+            }
+        : msg.content,
   })) as ModelMessage[];
 }
 
 function isModelNotFoundError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
-  return msg.includes('not_found') || msg.includes('404') || msg.includes('Could not resolve') || msg.includes('does not exist') || msg.includes('model');
+  return (
+    msg.includes("not_found") ||
+    msg.includes("404") ||
+    msg.includes("Could not resolve") ||
+    msg.includes("does not exist") ||
+    msg.includes("model")
+  );
 }
 
-function getModel(
-  modelId: string,
-  providerType: ProviderType,
-  apiKey?: string,
-  baseURL?: string,
-) {
-  if (providerType === 'anthropic') {
+function getModel(modelId: string, providerType: ProviderType, apiKey?: string, baseURL?: string) {
+  if (providerType === "anthropic") {
     return getClaudeModel(modelId);
   }
   const provider = getAIProvider(providerType, apiKey, baseURL);
@@ -143,21 +153,29 @@ function wrapTelemetry<T>(fn: () => T): T {
   }
 }
 
-export async function generateWithFallback(options: GenerateOptions): Promise<{ result: Awaited<ReturnType<typeof generateText>>; usedModel: string }> {
+export async function generateWithFallback(
+  options: GenerateOptions,
+): Promise<{ result: Awaited<ReturnType<typeof generateText>>; usedModel: string }> {
   if (!options.model) {
     throw new Error("No model specified. Configure a model in Settings.");
   }
 
-  const providerType = options.providerType ?? (options.baseURL ? 'openai-compatible' : 'anthropic');
+  const providerType =
+    options.providerType ?? (options.baseURL ? "openai-compatible" : "anthropic");
   const preferredModel = options.model;
   const fallbacks = buildModelFallbackChain(preferredModel, options.fallbackModel);
 
-  const cacheLogger = getLogger(['calca', 'core', 'ai', 'cache']);
+  const cacheLogger = getLogger(["calca", "core", "ai", "cache"]);
 
   // Check cache if enabled
   if (options.enableCaching && options.systemPrompt !== undefined) {
     const userContent = messagesToText(options.messages);
-    const cacheKey = generateCacheKey(options.systemPrompt, providerType, preferredModel, userContent);
+    const cacheKey = generateCacheKey(
+      options.systemPrompt,
+      providerType,
+      preferredModel,
+      userContent,
+    );
     const cached = promptCache.get(cacheKey);
 
     if (cached && !isExpired(cached)) {
@@ -184,14 +202,17 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
   let lastError: unknown;
 
-  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "generateWithFallback"], { functionId: options.functionId ?? "generateWithFallback", frameIndex: options.frameIndex });
+  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "generateWithFallback"], {
+    functionId: options.functionId ?? "generateWithFallback",
+    frameIndex: options.frameIndex,
+  });
 
   for (let i = 0; i < fallbacks.length; i++) {
     const modelId = fallbacks[i];
 
     // Add backoff delay between fallback attempts (not before first attempt)
     if (i > 0) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     cacheLogger.info(`Trying model: ${modelId} (fallback attempt ${i + 1}/${fallbacks.length})`);
 
@@ -202,21 +223,37 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
         messages: cachedMessages,
         maxOutputTokens: options.maxTokens,
         temperature: options.temperature,
-        ...(providerType === 'anthropic' ? { headers: cacheHeaders } : {}),
+        ...(providerType === "anthropic" ? { headers: cacheHeaders } : {}),
         experimental_onStart: ({ model: m }) => {
           try {
             telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages });
-          } catch { /* ignore telemetry errors */ }
+          } catch {
+            /* ignore telemetry errors */
+          }
         },
         onStepFinish: (event) => {
           try {
-            telemetry.onFinish({ modelId, usage: event.usage, finishReason: event.finishReason, durationMs: Date.now() });
-          } catch { /* ignore telemetry errors */ }
+            telemetry.onFinish({
+              modelId,
+              usage: event.usage,
+              finishReason: event.finishReason,
+              durationMs: Date.now(),
+            });
+          } catch {
+            /* ignore telemetry errors */
+          }
         },
         onFinish: (event) => {
           try {
-            telemetry.onFinish({ modelId, usage: event.totalUsage, finishReason: event.finishReason ?? "unknown", durationMs: Date.now() });
-          } catch { /* ignore telemetry errors */ }
+            telemetry.onFinish({
+              modelId,
+              usage: event.totalUsage,
+              finishReason: event.finishReason ?? "unknown",
+              durationMs: Date.now(),
+            });
+          } catch {
+            /* ignore telemetry errors */
+          }
         },
       });
 
@@ -224,7 +261,12 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
       if (options.enableCaching && options.systemPrompt !== undefined) {
         evictIfNeeded();
         const userContent = messagesToText(options.messages);
-        const cacheKey = generateCacheKey(options.systemPrompt, providerType, preferredModel, userContent);
+        const cacheKey = generateCacheKey(
+          options.systemPrompt,
+          providerType,
+          preferredModel,
+          userContent,
+        );
         promptCache.set(cacheKey, {
           result: {
             text: result.text,
@@ -240,8 +282,13 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
       if (isModelNotFoundError(err)) {
         lastError = err;
         try {
-          telemetry.onError({ modelId, error: err instanceof Error ? err : new Error(String(err)) });
-        } catch { /* ignore telemetry errors */ }
+          telemetry.onError({
+            modelId,
+            error: err instanceof Error ? err : new Error(String(err)),
+          });
+        } catch {
+          /* ignore telemetry errors */
+        }
         continue;
       }
       throw err;
@@ -254,13 +301,13 @@ export async function generateWithFallback(options: GenerateOptions): Promise<{ 
 // Helper: extract text from messages for cache key
 function messagesToText(messages: ModelMessage[]): string {
   return messages
-    .map(msg => {
-      if (msg.role === 'system') return `system:${JSON.stringify(msg.content)}`;
-      if (msg.role === 'user') return `user:${JSON.stringify(msg.content)}`;
-      if (msg.role === 'assistant') return `assistant:${JSON.stringify(msg.content)}`;
-      return '';
+    .map((msg) => {
+      if (msg.role === "system") return `system:${JSON.stringify(msg.content)}`;
+      if (msg.role === "user") return `user:${JSON.stringify(msg.content)}`;
+      if (msg.role === "assistant") return `assistant:${JSON.stringify(msg.content)}`;
+      return "";
     })
-    .join('|');
+    .join("|");
 }
 
 export function streamAnthropic(options: GenerateOptions): ReturnType<typeof streamText> {
@@ -268,11 +315,12 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
     throw new Error("No model specified. Configure a model in Settings.");
   }
 
-  const providerType = options.providerType ?? (options.baseURL ? 'openai-compatible' : 'anthropic');
+  const providerType =
+    options.providerType ?? (options.baseURL ? "openai-compatible" : "anthropic");
   const modelId = options.model;
   const model = getModel(modelId, providerType, options.apiKey, options.baseURL);
 
-  const cacheLogger = getLogger(['calca', 'core', 'ai', 'cache']);
+  const cacheLogger = getLogger(["calca", "core", "ai", "cache"]);
 
   // Check cache if enabled
   if (options.enableCaching && options.systemPrompt !== undefined) {
@@ -296,28 +344,47 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
   const cacheHeaders = addCacheControlHeaders(headers, options.enableCaching);
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
 
-  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "streamAnthropic"], { functionId: options.functionId ?? "streamAnthropic", frameIndex: options.frameIndex });
+  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "streamAnthropic"], {
+    functionId: options.functionId ?? "streamAnthropic",
+    frameIndex: options.frameIndex,
+  });
 
   return streamText({
     model,
     messages: cachedMessages,
     maxOutputTokens: options.maxTokens,
     temperature: options.temperature,
-    ...(providerType === 'anthropic' ? { headers: cacheHeaders } : {}),
+    ...(providerType === "anthropic" ? { headers: cacheHeaders } : {}),
     experimental_onStart: ({ model: m }) => {
       try {
         telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages });
-      } catch { /* ignore telemetry errors */ }
+      } catch {
+        /* ignore telemetry errors */
+      }
     },
     onStepFinish: (event) => {
       try {
-        telemetry.onFinish({ modelId, usage: event.usage, finishReason: event.finishReason, durationMs: Date.now() });
-      } catch { /* ignore telemetry errors */ }
+        telemetry.onFinish({
+          modelId,
+          usage: event.usage,
+          finishReason: event.finishReason,
+          durationMs: Date.now(),
+        });
+      } catch {
+        /* ignore telemetry errors */
+      }
     },
     onFinish: (event) => {
       try {
-        telemetry.onFinish({ modelId, usage: event.totalUsage, finishReason: event.finishReason ?? "unknown", durationMs: Date.now() });
-      } catch { /* ignore telemetry errors */ }
+        telemetry.onFinish({
+          modelId,
+          usage: event.totalUsage,
+          finishReason: event.finishReason ?? "unknown",
+          durationMs: Date.now(),
+        });
+      } catch {
+        /* ignore telemetry errors */
+      }
     },
   });
 }

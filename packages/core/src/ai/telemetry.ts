@@ -1,10 +1,19 @@
 import { getLogger } from "@app/logger";
 import type { ModelMessage } from "ai";
-import type { LanguageModelUsage, FinishReason } from "ai";
+import type { FinishReason, LanguageModelUsage } from "ai";
 
 export interface TelemetryCallbacks {
-  onStart(params: { modelId: string; prompt: ModelMessage[]; settings?: Record<string, unknown> }): void;
-  onFinish(params: { modelId: string; usage: LanguageModelUsage; finishReason: FinishReason; durationMs: number }): void;
+  onStart(params: {
+    modelId: string;
+    prompt: ModelMessage[];
+    settings?: Record<string, unknown>;
+  }): void;
+  onFinish(params: {
+    modelId: string;
+    usage: LanguageModelUsage;
+    finishReason: FinishReason;
+    durationMs: number;
+  }): void;
   onError(params: { modelId: string; error: Error }): void;
 }
 
