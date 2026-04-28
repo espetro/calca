@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { DESIGN_EXTENSION, IMPORT_EXTENSIONS } from "../index";
 
 describe("export format constants", () => {

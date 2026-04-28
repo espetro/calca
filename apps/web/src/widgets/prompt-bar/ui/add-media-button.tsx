@@ -1,5 +1,5 @@
-import { useRef } from "react";
 import { ImageIcon } from "lucide-react";
+import { useRef } from "react";
 
 interface AddMediaButtonProps {
   onFileSelect: (file: File) => void;

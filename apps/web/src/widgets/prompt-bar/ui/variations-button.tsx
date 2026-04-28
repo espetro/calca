@@ -1,8 +1,9 @@
-import { useViewportSize } from "../hooks/use-viewport-size";
-import { useWindowEvent } from "../hooks/use-window-event";
 import { Dices, Minus, Plus } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+
+import { useViewportSize } from "../hooks/use-viewport-size";
+import { useWindowEvent } from "../hooks/use-window-event";
 
 const VARIATION_COLORS: Record<number, { bg: string; color: string }> = {
   1: { bg: "transparent", color: "" },
@@ -35,7 +36,9 @@ export function VariationsButton({
   const { height: viewportHeight } = useViewportSize();
 
   useLayoutEffect(() => {
-    if (!showVariations || !containerRef.current) {return;}
+    if (!showVariations || !containerRef.current) {
+      return;
+    }
 
     const buttonRect = containerRef.current.getBoundingClientRect();
 
@@ -77,9 +80,9 @@ export function VariationsButton({
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
           disabled
             ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"
-            : (conceptCount !== 1
+            : conceptCount !== 1
               ? ""
-              : "bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200/50")
+              : "bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200/50"
         }`}
         style={
           !disabled && conceptCount !== 1

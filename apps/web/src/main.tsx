@@ -1,15 +1,16 @@
 import { createLogger } from "@app/logger";
-import { initAnalytics } from "@app/analytics";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+// import { initAnalytics } from "@app/analytics";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { createStore } from "jotai";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { createStore } from "jotai";
 
-import { routeTree } from "./routeTree.gen";
 import { feedbackModalOpenAtom } from "@/features/feedback/store";
 
+import { routeTree } from "./routeTree.gen";
+
 await createLogger({ env: import.meta.env });
-initAnalytics();
+// initAnalytics();
 
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 

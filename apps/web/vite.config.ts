@@ -4,8 +4,8 @@ import { fileURLToPath } from "url";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
 import dotenv from "dotenv";
+import { defineConfig } from "vite";
 
 dotenv.config({ path: "../../.env" });
 
@@ -30,10 +30,14 @@ export default defineConfig({
         find: "@app/shared",
         replacement: resolve(__dirname, "../../packages/shared/src/index.ts"),
       },
+      {
+        find: "@app/analytics",
+        replacement: resolve(__dirname, "../../packages/analytics/src/index.ts"),
+      },
     ],
   },
   optimizeDeps: {
-    exclude: ["@app/core", "@app/shared"],
+    exclude: ["@app/core", "@app/shared", "@app/analytics"],
   },
   define: {
     "import.meta.env.VITE_GIT_HASH": JSON.stringify(gitHash),

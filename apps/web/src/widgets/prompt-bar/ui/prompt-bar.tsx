@@ -1,6 +1,10 @@
-import { useCallback, useRef, useState } from "react";
 import { useAtom } from "jotai";
+import { useCallback, useRef, useState } from "react";
+
 import { settingsAtom } from "@/features/settings/state/settings-atoms";
+
+import { usePromptHistory } from "../hooks/use-prompt-history";
+import { AddMediaButton } from "./add-media-button";
 import {
   PromptInputBody,
   PromptInputContainer,
@@ -8,13 +12,11 @@ import {
   PromptInputHeader,
   PromptInputTextarea,
 } from "./ai-prompt-input";
-import { ImagePill } from "./image-pill";
-import { AddMediaButton } from "./add-media-button";
-import { VariationsButton } from "./variations-button";
 import { CritiqueModeButton } from "./critique-mode-button";
 import { FloatingPresetButton } from "./floating-preset-button";
 import { FloatingSystemPromptButton } from "./floating-system-prompt-button";
-import { usePromptHistory } from "../hooks/use-prompt-history";
+import { ImagePill } from "./image-pill";
+import { VariationsButton } from "./variations-button";
 
 const ArrowUpIcon = () => (
   <svg
@@ -129,13 +131,17 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
   const { addToHistory, navigateHistory, resetHistoryIndex } = usePromptHistory({
     onSave: (prompt) => {
       setValue("");
-      if (inputRef.current) {inputRef.current.style.height = "auto";}
+      if (inputRef.current) {
+        inputRef.current.style.height = "auto";
+      }
     },
   });
 
   const handleSubmit = useCallback(() => {
     const trimmed = value.trim();
-    if (!trimmed || isGenerating) {return;}
+    if (!trimmed || isGenerating) {
+      return;
+    }
 
     addToHistory(trimmed);
     onSubmit(trimmed);
@@ -155,7 +161,9 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
       }
 
       const input = inputRef.current;
-      if (!input) {return;}
+      if (!input) {
+        return;
+      }
 
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         const direction = e.key === "ArrowUp" ? "up" : "down";

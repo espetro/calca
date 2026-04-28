@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import { Navigation } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import ToolButton from "./tool-button";
 
 export interface CompassProps {

@@ -1,6 +1,7 @@
-import { useCallback, useRef, useState } from "react";
-import { MessageSquare } from "lucide-react";
 import { useAtom } from "jotai";
+import { MessageSquare } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+
 import { settingsAtom, updateSettingsAtom } from "@/features/settings/state/settings-atoms";
 import { useClickOutside } from "@/shared/hooks/use-click-outside";
 

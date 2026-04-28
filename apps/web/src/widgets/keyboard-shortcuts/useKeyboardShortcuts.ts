@@ -1,11 +1,12 @@
-import { useEffect, useRef } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useRef } from "react";
+
+import { commentDraftAtom } from "@/features/design/state/comment-atoms";
 import {
   selectedIdsAtom,
   spaceHeldAtom,
   toolModeAtom,
 } from "@/features/design/state/generation-atoms";
-import { commentDraftAtom } from "@/features/design/state/comment-atoms";
 import { groupsAtom } from "@/features/design/state/groups-atoms";
 import { canvasImagesAtom } from "@/features/design/state/images-atoms";
 import { feedbackModalOpenAtom } from "@/features/feedback/store";
@@ -34,10 +35,16 @@ export const useKeyboardShortcuts = () => {
   useEffect(
     function registerGlobalKeyListeners() {
       const onKeyDown = (e: KeyboardEvent) => {
-        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {return;}
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+          return;
+        }
 
-        if (e.key === "v" || e.key === "V") {setToolMode("select");}
-        if (e.key === "c" || e.key === "C") {setToolMode("comment");}
+        if (e.key === "v" || e.key === "V") {
+          setToolMode("select");
+        }
+        if (e.key === "c" || e.key === "C") {
+          setToolMode("comment");
+        }
         if (e.key === " ") {
           e.preventDefault();
           setSpaceHeld(true);
@@ -78,7 +85,9 @@ export const useKeyboardShortcuts = () => {
       };
 
       const onKeyUp = (e: KeyboardEvent) => {
-        if (e.key === " ") {setSpaceHeld(false);}
+        if (e.key === " ") {
+          setSpaceHeld(false);
+        }
       };
 
       window.addEventListener("keydown", onKeyDown);
@@ -88,6 +97,14 @@ export const useKeyboardShortcuts = () => {
         window.removeEventListener("keyup", onKeyUp);
       };
     },
-    [setToolMode, setSpaceHeld, setCommentDraft, setSelectedIds, setGroups, setCanvasImages, setFeedbackOpen],
+    [
+      setToolMode,
+      setSpaceHeld,
+      setCommentDraft,
+      setSelectedIds,
+      setGroups,
+      setCanvasImages,
+      setFeedbackOpen,
+    ],
   );
 };

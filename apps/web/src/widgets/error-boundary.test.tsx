@@ -5,12 +5,12 @@ const jsdom = new JSDOM("<!DOCTYPE html><html><body></body></html>", { url: "htt
 (global as unknown as { window: typeof window }).window = jsdom.window as unknown as Window &
   typeof globalThis;
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { act } from "react";
 import React from "react";
-import { ErrorBoundary } from "./error-boundary";
-
 import { createRoot, type Root } from "react-dom/client";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+
+import { ErrorBoundary } from "./error-boundary";
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -37,8 +37,12 @@ function cleanup(): void {
   root = null;
 }
 
-const mockLogger = { debug: vi.fn(), error: vi.fn(), info: vi.fn(), warn: vi.fn() };
-const mockGetLogger = vi.fn(() => mockLogger);
+const { mockLogger, mockGetLogger } = vi.hoisted(() => {
+  const mockLogger = { debug: vi.fn(), error: vi.fn(), info: vi.fn(), warn: vi.fn() };
+  const mockGetLogger = vi.fn(() => mockLogger);
+  return { mockLogger, mockGetLogger };
+});
+
 vi.mock("@app/logger", () => ({
   createLogger: vi.fn(),
   getLogger: mockGetLogger,

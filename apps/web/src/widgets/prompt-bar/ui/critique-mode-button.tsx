@@ -1,6 +1,7 @@
+import { RefreshCw, Zap } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { RefreshCw, Zap } from "lucide-react";
+
 import { useViewportSize } from "../hooks/use-viewport-size";
 import { useWindowEvent } from "../hooks/use-window-event";
 
@@ -25,7 +26,9 @@ export function CritiqueModeButton({
   const { width: viewportWidth, height: viewportHeight } = useViewportSize();
 
   useLayoutEffect(() => {
-    if (!showCritiqueMode || !containerRef.current) {return;}
+    if (!showCritiqueMode || !containerRef.current) {
+      return;
+    }
 
     const buttonRect = containerRef.current.getBoundingClientRect();
 

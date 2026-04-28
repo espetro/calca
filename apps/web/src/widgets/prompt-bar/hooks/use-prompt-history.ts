@@ -1,6 +1,6 @@
-import { useCallback, useRef, useState } from "react";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { useCallback, useRef, useState } from "react";
 
 const HISTORY_KEY = "calca-prompt-history";
 const MAX_HISTORY = 50;
@@ -20,7 +20,9 @@ export function usePromptHistory(options: UsePromptHistoryOptions = {}) {
   const addToHistory = useCallback(
     (prompt: string) => {
       const trimmed = prompt.trim();
-      if (!trimmed) {return;}
+      if (!trimmed) {
+        return;
+      }
 
       const newHistory = [trimmed, ...history.filter((h) => h !== trimmed)].slice(0, MAX_HISTORY);
       setHistory(newHistory);
@@ -51,9 +53,13 @@ export function usePromptHistory(options: UsePromptHistoryOptions = {}) {
       }
 
       if (direction === "up") {
-        if (history.length === 0) {return currentValue;}
+        if (history.length === 0) {
+          return currentValue;
+        }
         const newIndex = historyIndex + 1;
-        if (newIndex >= history.length) {return currentValue;}
+        if (newIndex >= history.length) {
+          return currentValue;
+        }
 
         if (historyIndex === -1) {
           setDraft(currentValue);
@@ -63,7 +69,9 @@ export function usePromptHistory(options: UsePromptHistoryOptions = {}) {
         return history[newIndex];
       }
 
-      if (historyIndex <= -1) {return currentValue;}
+      if (historyIndex <= -1) {
+        return currentValue;
+      }
 
       const newIndex = historyIndex - 1;
       setHistoryIndex(newIndex);

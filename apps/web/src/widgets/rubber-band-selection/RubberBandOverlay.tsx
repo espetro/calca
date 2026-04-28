@@ -1,10 +1,13 @@
 import { useAtomValue } from "jotai";
+
 import { rubberBandAtom } from "@/features/design/state/generation-atoms";
 
 export const RubberBandOverlay = () => {
   const rubberBand = useAtomValue(rubberBandAtom);
 
-  if (!rubberBand) {return null;}
+  if (!rubberBand) {
+    return null;
+  }
 
   return (
     <div

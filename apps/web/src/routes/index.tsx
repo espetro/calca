@@ -1,33 +1,39 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { m } from "@/lib/i18n";
+import { trackExportComplete } from "@app/analytics";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { ErrorBoundary } from "@/widgets/error-boundary";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import { useCanvas } from "@/features/canvas";
-import { CanvasArea } from "@/widgets/canvas-area";
-import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
-import { Toolbar } from "@/widgets/toolbar";
 import { CommentInput, CommentThread } from "@/features/comments";
-import { SettingsModal } from "@/features/settings";
-import { FeedbackModal } from "@/features/feedback";
-import { WelcomeModal, TutorialTour, showWelcomeAtom, showTutorialAtom } from "@/features/onboarding";
-import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
-import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
-import { SummaryList } from "@/features/design/ui/summary-list";
 import { useCommentHandlers } from "@/features/comments/hooks/use-comment-handlers";
-import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
-import { settingsAtom, isOwnKeyAtom, hasModelAtom } from "@/features/settings/state/settings-atoms";
-import { groupsAtom, resetSessionAtom, hydrateGroups } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
+import { useGenerationPipeline } from "@/features/design/hooks/use-generation-pipeline";
 import {
-  showResetConfirmAtom,
-  toolModeAtom,
   showGitHashAtom,
   showLibraryAtom,
+  showResetConfirmAtom,
+  toolModeAtom,
 } from "@/features/design/state/generation-atoms";
-import { useMountEffect } from "@/shared/utils/use-mount-effect";
+import { groupsAtom, hydrateGroups, resetSessionAtom } from "@/features/design/state/groups-atoms";
+import { canvasImagesAtom, hydrateImages } from "@/features/design/state/images-atoms";
+import { SummaryList } from "@/features/design/ui/summary-list";
+import { FeedbackModal } from "@/features/feedback";
+import {
+  showTutorialAtom,
+  showWelcomeAtom,
+  TutorialTour,
+  WelcomeModal,
+} from "@/features/onboarding";
+import { SettingsModal } from "@/features/settings";
+import { useProbeModels } from "@/features/settings/hooks/use-probe-models";
+import { hasModelAtom, isOwnKeyAtom, settingsAtom } from "@/features/settings/state/settings-atoms";
 import { exportCanvas, openImportDialog } from "@/lib/export";
-import { trackExportComplete } from "@app/analytics";
+import { m } from "@/lib/i18n";
+import { useMountEffect } from "@/shared/utils/use-mount-effect";
+import { CanvasArea } from "@/widgets/canvas-area";
+import { ErrorBoundary } from "@/widgets/error-boundary";
+import { useKeyboardShortcuts } from "@/widgets/keyboard-shortcuts";
+import { PromptBar, PromptLibrary } from "@/widgets/prompt-bar";
+import { Toolbar } from "@/widgets/toolbar";
 
 export default function Home() {
   const canvas = useCanvas();
@@ -35,7 +41,6 @@ export default function Home() {
   const isOwnKey = useAtomValue(isOwnKeyAtom);
   const hasModel = useAtomValue(hasModelAtom);
   const probeModels = useProbeModels();
-
 
   useKeyboardShortcuts();
 
@@ -205,10 +210,10 @@ export default function Home() {
             onClick={() => setShowResetConfirm(false)}
           />
           <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
-            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">{m.dialog.resetTitle()}</h3>
-            <p className="text-[13px] text-gray-500 mb-6">
-              {m.dialog.resetDescription()}
-            </p>
+            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">
+              {m.dialog.resetTitle()}
+            </h3>
+            <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => setShowResetConfirm(false)}

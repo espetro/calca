@@ -174,7 +174,8 @@ export async function readCanvasFile(file: File): Promise<DeserializedCanvas> {
     throw new Error(
       isOttoFile
         ? `Failed to parse .otto file: ${message}`
-        : `Failed to parse .design file: ${message}`, { cause: error },
+        : `Failed to parse .design file: ${message}`,
+      { cause: error },
     );
   }
 }
@@ -215,7 +216,9 @@ export function openImportDialog(onFile: (groups: GenerationGroup[]) => void): v
   input.accept = IMPORT_EXTENSIONS.join(",");
   input.onchange = (e) => {
     const file = (e.target as HTMLInputElement).files?.[0];
-    if (!file) {return;}
+    if (!file) {
+      return;
+    }
 
     readCanvasFile(file)
       .then(({ groups, isLegacyOtto }) => {

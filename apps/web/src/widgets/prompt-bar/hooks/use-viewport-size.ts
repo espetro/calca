@@ -11,7 +11,9 @@ export function useViewportSize(): ViewportSize {
   const [size, setSize] = useState<ViewportSize>(DEFAULT_SIZE);
 
   useEffect(() => {
-    if (typeof window === "undefined") {return;}
+    if (typeof window === "undefined") {
+      return;
+    }
 
     const updateSize = () => {
       setSize({

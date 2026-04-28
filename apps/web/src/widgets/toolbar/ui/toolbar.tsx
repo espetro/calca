@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import type { ToolMode } from "@/shared/types";
+
+import { BugIcon } from "@/features/feedback";
 import type { ProviderConfig } from "@/features/settings/types";
 import { MODELS } from "@/features/settings/types";
 import { SettingsDialog } from "@/features/settings/ui/settings-dialog";
-import { BugIcon } from "@/features/feedback";
+import type { ToolMode } from "@/shared/types";
+
 import ToolButton from "./tool-button";
 import type { ZoomProps } from "./zoom";
 import Zoom from "./zoom";
@@ -42,7 +44,9 @@ export function Toolbar({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!menuOpen) {return;}
+    if (!menuOpen) {
+      return;
+    }
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);

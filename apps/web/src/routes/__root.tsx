@@ -1,20 +1,22 @@
-import { useEffect, useRef } from "react";
-import { useAtomValue } from "jotai";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Toaster } from "sonner";
-import queryClient from "@/lib/services/api";
-import { settingsAtom } from "@/features/settings/state/settings-atoms";
 import {
-  trackAppSessionStart,
+  optIn,
+  optOut,
   trackAppSessionEnd,
+  trackAppSessionStart,
   trackProviderChanged,
   trackSettingsModelChanged,
   trackThemeChanged,
-  optOut,
-  optIn,
 } from "@app/analytics";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { useAtomValue } from "jotai";
+import { useEffect, useRef } from "react";
+import { Toaster } from "sonner";
+
+import { settingsAtom } from "@/features/settings/state/settings-atoms";
+import queryClient from "@/lib/services/api";
+
 import "../app/globals.css";
 
 const GA_ID = import.meta.env.VITE_GA_ID;

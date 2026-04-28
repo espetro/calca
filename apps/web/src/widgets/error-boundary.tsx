@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { getLogger } from "@app/logger";
+import React from "react";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;

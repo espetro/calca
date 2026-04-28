@@ -91,7 +91,9 @@ const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
 export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
-  if (!open) {return null;}
+  if (!open) {
+    return null;
+  }
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
