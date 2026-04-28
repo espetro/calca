@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 interface CommentInputProps {
   position: { screenX: number; screenY: number };
@@ -11,9 +13,9 @@ export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useMountEffect(() => {
     inputRef.current?.focus();
-  }, []);
+  });
 
   // Clamp position so it doesn't overflow viewport
   const clampedX = Math.min(position.screenX + 16, window.innerWidth - 300);

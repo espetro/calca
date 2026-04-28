@@ -16,6 +16,7 @@ import { Toaster } from "sonner";
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
 import queryClient from "#/lib/services/api";
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 import "../app/globals.css";
 
@@ -28,6 +29,7 @@ function RootLayout() {
   const prevModelRef = useRef(settings.model);
   const prevThemeRef = useRef(settings.theme);
 
+  // oxlint-disable-next-line react-hooks/rules-of-hooks -- External DOM sync reacting to settings atom change. Conditional mediaQuery listener requires useEffect.
   useEffect(() => {
     const root = document.documentElement;
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -50,7 +52,7 @@ function RootLayout() {
     }
   }, [settings.theme]);
 
-  useEffect(() => {
+  useMountEffect(function trackSessionLifecycle() {
     const stored = localStorage.getItem("calca:last_session_end");
     const previousDuration = stored ? Date.now() - parseInt(stored, 10) : undefined;
     trackAppSessionStart(previousDuration);
@@ -68,8 +70,9 @@ function RootLayout() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  });
 
+  // oxlint-disable-next-line react-hooks/rules-of-hooks -- External analytics service sync on state change.
   useEffect(() => {
     if (!settings.analyticsEnabled) {
       optOut();
@@ -78,32 +81,44 @@ function RootLayout() {
     }
   }, [settings.analyticsEnabled]);
 
-  useEffect(() => {
-    const prev = prevProviderRef.current;
-    const curr = settings.providerType;
-    if (prev !== undefined && prev !== curr) {
-      trackProviderChanged(prev || "none", curr || "none");
-    }
-    prevProviderRef.current = curr;
-  }, [settings.providerType]);
+  // oxlint-disable-next-line react-hooks/rules-of-hooks -- Analytics side-effect reacting to settings atom change.
+  useEffect(
+    function trackProviderChange() {
+      const prev = prevProviderRef.current;
+      const curr = settings.providerType;
+      if (prev !== undefined && prev !== curr) {
+        trackProviderChanged(prev || "none", curr || "none");
+      }
+      prevProviderRef.current = curr;
+    },
+    [settings.providerType],
+  );
 
-  useEffect(() => {
-    const prev = prevModelRef.current;
-    const curr = settings.model;
-    if (prev !== undefined && prev !== curr) {
-      trackSettingsModelChanged(prev, curr);
-    }
-    prevModelRef.current = curr;
-  }, [settings.model]);
+  // oxlint-disable-next-line react-hooks/rules-of-hooks -- Analytics side-effect reacting to settings atom change.
+  useEffect(
+    function trackModelChange() {
+      const prev = prevModelRef.current;
+      const curr = settings.model;
+      if (prev !== undefined && prev !== curr) {
+        trackSettingsModelChanged(prev, curr);
+      }
+      prevModelRef.current = curr;
+    },
+    [settings.model],
+  );
 
-  useEffect(() => {
-    const prev = prevThemeRef.current;
-    const curr = settings.theme;
-    if (prev !== undefined && prev !== curr) {
-      trackThemeChanged(prev, curr);
-    }
-    prevThemeRef.current = curr;
-  }, [settings.theme]);
+  // oxlint-disable-next-line react-hooks/rules-of-hooks -- Analytics side-effect reacting to settings atom change.
+  useEffect(
+    function trackThemeChange() {
+      const prev = prevThemeRef.current;
+      const curr = settings.theme;
+      if (prev !== undefined && prev !== curr) {
+        trackThemeChanged(prev, curr);
+      }
+      prevThemeRef.current = curr;
+    },
+    [settings.theme],
+  );
 
   return (
     <>

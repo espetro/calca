@@ -130,6 +130,7 @@ export function ExportMenu({
 
   const { mutateAsync } = useExportCodeMutation();
 
+  // oxlint-disable no-restricted-syntax -- Conditional click-outside listener requiring dynamic open/preview state. Cannot use useMountEffect.
   // Close on outside click
   useEffect(() => {
     if (!open && !preview) {

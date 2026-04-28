@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import type { Settings } from "#/features/settings/types";
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 import { ModelInfo, ProviderConfig, ProviderType } from "../types";
 import ProviderConfigForm from "./provider-config-form";
@@ -29,13 +30,13 @@ export function SettingsModal({
   const [openaiKey, setOpenaiKey] = useState(settings.openaiKey);
   const [showAddProvider, setShowAddProvider] = useState(false);
 
-  useEffect(() => {
+  useMountEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onClose]);
+  });
 
   const handleAddProvider = (provider: ProviderConfig) => {
     const newProviders = [...settings.providers, provider];

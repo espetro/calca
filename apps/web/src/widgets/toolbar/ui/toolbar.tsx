@@ -43,6 +43,7 @@ export function Toolbar({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // oxlint-disable no-restricted-syntax -- Conditional click-outside listener for menu state. Cannot use useMountEffect.
   useEffect(() => {
     if (!menuOpen) {
       return;

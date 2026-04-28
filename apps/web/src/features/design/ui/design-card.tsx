@@ -8,6 +8,7 @@ import type {
   Point,
 } from "#/shared/types";
 import { STAGE_CONFIG } from "#/shared/types";
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // Kept for export compat
@@ -120,6 +121,7 @@ setTimeout(reportHeight, 2000);
       : undefined;
 
   // Listen for height messages from sandboxed iframe
+  // oxlint-disable-next-line
   useEffect(() => {
     if (!iteration.html || iteration.isLoading) {
       return;
@@ -302,6 +304,7 @@ function RemixButton({
   const [customPrompt, setCustomPrompt] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // oxlint-disable-next-line
   useEffect(() => {
     if (!open) {
       return;
@@ -415,10 +418,10 @@ const STATUS_COLORS = {
 function CommentPin({ comment, onClick }: { comment: CommentType; onClick: () => void }) {
   const [isNew, setIsNew] = useState(true);
 
-  useEffect(() => {
+  useMountEffect(() => {
     const timer = setTimeout(() => setIsNew(false), 2000);
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   const status = comment.status || "waiting";
   const colors = STATUS_COLORS[status];

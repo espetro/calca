@@ -70,6 +70,7 @@ export function FeedbackModal() {
     setValidationErrors({});
   }, [setFormData, setStatus, setError, setResult]);
 
+  // oxlint-disable no-restricted-syntax -- Form reset side-effect reacting to dialog open state. Cannot use useMountEffect for conditional reset.
   useEffect(() => {
     if (!open) {
       reset();

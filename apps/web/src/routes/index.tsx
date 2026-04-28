@@ -1,7 +1,7 @@
 import { trackExportComplete } from "@app/analytics";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useCanvas } from "#/features/canvas";
 import { CommentInput, CommentThread } from "#/features/comments";
@@ -63,17 +63,17 @@ export default function Home() {
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
 
-  useEffect(() => {
+  useMountEffect(() => {
     setShowGitHash(new URLSearchParams(window.location.search).has("devMode"));
-  }, [setShowGitHash]);
+  });
 
-  useEffect(() => {
+  useMountEffect(() => {
     if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
       setSettings((prev) => ({ ...prev, quickMode: true }));
     }
-  }, [setSettings]);
+  });
 
-  useEffect(() => {
+  useMountEffect(() => {
     const handler = (e: WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
@@ -81,7 +81,7 @@ export default function Home() {
     };
     document.addEventListener("wheel", handler, { passive: false });
     return () => document.removeEventListener("wheel", handler);
-  }, []);
+  });
 
   useMountEffect(() => {
     const stored = localStorage.getItem("calca-settings");

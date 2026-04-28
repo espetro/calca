@@ -63,6 +63,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
   ({ value, onChange, placeholder, disabled = false, className = "", onKeyDown }, ref) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+    // oxlint-disable no-restricted-syntax -- DOM textarea resize reacting to value prop change. Cannot use derived state for DOM measurement.
     useEffect(() => {
       const autoResize = () => {
         const el = textareaRef.current;

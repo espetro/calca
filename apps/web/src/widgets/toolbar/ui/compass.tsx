@@ -1,5 +1,5 @@
 import { Navigation } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useViewportSize } from "@mantine/hooks";
 
 import ToolButton from "./tool-button";
 
@@ -9,16 +9,10 @@ export interface CompassProps {
 }
 
 const Compass = ({ offset, onResetView }: CompassProps) => {
-  const [size, setSize] = useState({ h: window.innerHeight, w: window.innerWidth });
+  const { width, height } = useViewportSize();
 
-  useEffect(() => {
-    const onResize = () => setSize({ h: window.innerHeight, w: window.innerWidth });
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  const dx = offset.x - size.w / 2;
-  const dy = offset.y - size.h / 2;
+  const dx = offset.x - width / 2;
+  const dy = offset.y - height / 2;
   const angle = Math.atan2(dx, -dy) * (180 / Math.PI);
 
   return (

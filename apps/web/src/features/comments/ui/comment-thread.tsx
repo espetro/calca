@@ -31,7 +31,7 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
             : []),
         ];
 
-  // Scroll to bottom when thread updates
+  // oxlint-disable -- DOM scroll side-effect reacting to thread data change. Cannot use derived state for scroll position.
   useEffect(() => {
     if (threadRef.current) {
       threadRef.current.scrollTop = threadRef.current.scrollHeight;

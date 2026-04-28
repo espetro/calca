@@ -2,8 +2,8 @@ import { RefreshCw, Zap } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { useViewportSize } from "../hooks/use-viewport-size";
-import { useWindowEvent } from "../hooks/use-window-event";
+import { useViewportSize } from "@mantine/hooks";
+import { useWindowEvent } from "@mantine/hooks";
 
 interface CritiqueModeButtonProps {
   quickMode: boolean;

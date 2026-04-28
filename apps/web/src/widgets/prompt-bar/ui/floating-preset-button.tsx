@@ -12,7 +12,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
-import { useClickOutside } from "#/shared/hooks/use-click-outside";
+import { useClickOutside } from "@mantine/hooks";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Layout,
@@ -35,7 +35,8 @@ export function FloatingPresetButton() {
   const [, updateSettings] = useAtom(updateSettingsAtom);
 
   const handleClose = useCallback(() => setIsOpen(false), []);
-  useClickOutside([panelRef, buttonRef], isOpen, handleClose);
+
+  useClickOutside(handleClose, null, [panelRef.current, buttonRef.current], isOpen);
 
   const selectedPreset = useMemo(
     () => SYSTEM_PROMPT_PRESETS.find((p) => p.id === settings.systemPromptPreset),

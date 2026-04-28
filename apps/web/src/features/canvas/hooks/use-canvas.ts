@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 interface Point {
   x: number;
@@ -94,14 +96,11 @@ export function useCanvas() {
   );
 
   // Cleanup on unmount
-  useEffect(
-    () => () => {
-      if (canvasElRef.current) {
-        canvasElRef.current.removeEventListener("wheel", wheelHandler);
-      }
-    },
-    [wheelHandler],
-  );
+  useMountEffect(() => () => {
+    if (canvasElRef.current) {
+      canvasElRef.current.removeEventListener("wheel", wheelHandler);
+    }
+  });
 
   const screenToCanvas = useCallback(
     (screenX: number, screenY: number, rect: DOMRect): Point => ({

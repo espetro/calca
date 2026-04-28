@@ -364,6 +364,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
     onUpdate({ analyticsEnabled: checked });
   };
 
+  // oxlint-disable -- Model validation side-effect reacting to settings atom change. Conditional error state requires useEffect.
   useEffect(() => {
     if (selectedProvider && settings.model) {
       const error = validateModelInProvider(settings.model, selectedProvider.models);

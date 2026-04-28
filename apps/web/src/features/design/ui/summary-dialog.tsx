@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
-import { useEffect } from "react";
+
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 import { groupsAtom } from "../state/groups-atoms";
 
@@ -12,18 +13,15 @@ export function SummaryDialog({ groupId, onClose }: SummaryDialogProps) {
   const [groups] = useAtom(groupsAtom);
   const group = groups.find((g) => g.id === groupId);
 
-  useEffect(
-    function handleEscapeKey() {
-      const handler = (e: KeyboardEvent) => {
-        if (e.key === "Escape") {
-          onClose();
-        }
-      };
-      document.addEventListener("keydown", handler);
-      return () => document.removeEventListener("keydown", handler);
-    },
-    [onClose],
-  );
+  useMountEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  });
 
   if (!group || !group.summary) {
     return null;
