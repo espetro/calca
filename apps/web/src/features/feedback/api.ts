@@ -16,7 +16,7 @@ function getSystemInfo(): SystemInfo {
     os: navigator.platform,
     screenResolution: `${window.screen.width}x${window.screen.height}`,
     userAgent: navigator.userAgent,
-    url: window.location.href,
+    url: window.location.pathname,
   };
 }
 

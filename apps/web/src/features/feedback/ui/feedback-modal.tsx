@@ -46,7 +46,7 @@ function getSystemInfoPreview(): string {
     `App Version: 0.3.0`,
     `OS: ${navigator.platform}`,
     `Screen: ${window.screen.width}x${window.screen.height}`,
-    `URL: ${window.location.href}`,
+    `URL: ${window.location.pathname}`,
   ].join("\n");
 }
 
