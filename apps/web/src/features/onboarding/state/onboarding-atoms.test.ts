@@ -1,12 +1,7 @@
 import { getDefaultStore } from "jotai";
 import { describe, expect, it } from "vitest";
 
-import {
-  onboardingCompletedAtom,
-  showTutorialAtom,
-  showWelcomeAtom,
-  tutorialStepAtom,
-} from "./onboarding-atoms";
+import { showTutorialAtom, showWelcomeAtom, tutorialStepAtom } from "./onboarding-atoms";
 
 describe("onboarding atoms", () => {
   const store = getDefaultStore();
@@ -19,18 +14,8 @@ describe("onboarding atoms", () => {
     expect(store.get(showTutorialAtom)).toBe(false);
   });
 
-  it("onboardingCompletedAtom defaults to false", () => {
-    expect(store.get(onboardingCompletedAtom)).toBe(false);
-  });
-
   it("tutorialStepAtom defaults to 0", () => {
     expect(store.get(tutorialStepAtom)).toBe(0);
-  });
-
-  it("setting onboardingCompleted to true works", () => {
-    store.set(onboardingCompletedAtom, true);
-    expect(store.get(onboardingCompletedAtom)).toBe(true);
-    store.set(onboardingCompletedAtom, false);
   });
 
   it("showWelcomeAtom can be toggled", () => {

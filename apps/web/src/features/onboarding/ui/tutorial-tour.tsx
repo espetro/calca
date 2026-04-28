@@ -11,8 +11,15 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
   const { onComplete } = props;
   const setShowTutorial = useSetAtom(showTutorialAtom);
   const centerRef = useRef<HTMLElement>(null);
+  // Ref to guard against multiple completions
+  const completedRef = useRef(false);
 
   const handleComplete = useCallback(() => {
+    // Prevent the function from running more than once
+    if (completedRef.current) return;
+    completedRef.current = true;
+
+    console.debug("TutorialTour: Completing tour");
     setShowTutorial(false);
     onComplete?.();
   }, [setShowTutorial, onComplete]);

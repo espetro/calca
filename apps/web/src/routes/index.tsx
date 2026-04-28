@@ -1,7 +1,7 @@
 import { trackExportComplete } from "@app/analytics";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useCanvas } from "@/features/canvas";
 import { CommentInput, CommentThread } from "@/features/comments";
@@ -60,7 +60,6 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false);
   const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
   const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
-  const hasCheckedOnboarding = useRef(false);
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
 
@@ -84,14 +83,16 @@ export default function Home() {
     return () => document.removeEventListener("wheel", handler);
   }, []);
 
-  useEffect(() => {
-    if (hasCheckedOnboarding.current) return;
-    hasCheckedOnboarding.current = true;
-
-    if (loaded && !settings.onboardingCompleted) {
-      setShowWelcome(true);
+  useMountEffect(() => {
+    const stored = localStorage.getItem("calca-settings");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.onboardingCompleted === true) return;
+      } catch {}
     }
-  }, [settings.onboardingCompleted, setShowWelcome, loaded]);
+    setShowWelcome(true);
+  });
 
   const pipeline = useGenerationPipeline(canvas);
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
