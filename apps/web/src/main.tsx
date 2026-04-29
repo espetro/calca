@@ -1,7 +1,7 @@
 import { createLogger } from "@app/logger";
 // import { initAnalytics } from "@app/analytics";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { createStore } from "jotai";
+import { createStore, Provider } from "jotai";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
@@ -19,7 +19,9 @@ const store = createStore();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 );
 
