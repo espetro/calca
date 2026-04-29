@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "watch": "electrobun dev --watch",
-    "start": "bun run scripts/start.ts",
+    "dev:desktop": "bun run scripts/watch.ts",
     "build": "electrobun build --env=stable",
     "clean": "rm -rf build artifacts Resources/web"
   },

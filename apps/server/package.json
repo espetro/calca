@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",
+    "start": "bun dist/index.js",
     "build": "tsc",
     "typecheck": "bunx tsc --noEmit",
     "test": "vitest run --passWithNoTests",
