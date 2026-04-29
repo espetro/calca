@@ -16,32 +16,6 @@ import { summaryStep } from "./steps/summary.step";
 
 const logger = getLogger(["calca", "server", "workflow"]);
 
-function withStepLogging<
-  S extends ReturnType<typeof createStep<string, undefined, object, object>>,
->(step: S, stepName: string): S {
-  const originalExecute = step.execute;
-  step.execute = async (
-    context: typeof originalExecute extends (ctx: infer C) => Promise<unknown> ? C : never,
-  ) => {
-    const start = performance.now();
-    logger.info("Pipeline step starting", { step: stepName });
-    try {
-      const result = await originalExecute(context);
-      const elapsed = Math.round(performance.now() - start);
-      logger.info("Pipeline step completed", { step: stepName, durationMs: elapsed });
-      return result;
-    } catch (err) {
-      const elapsed = Math.round(performance.now() - start);
-      logger.error("Pipeline step failed", { step: stepName, durationMs: elapsed, error: err });
-      throw err;
-    }
-  };
-  return step;
-}
-
-const loggedPlanStep = withStepLogging(planStep, "plan");
-const loggedSummaryStep = withStepLogging(summaryStep, "summary");
-
 // ── Workflow-level schemas ────────────────────────────────────────────────────
 
 const WorkflowInputSchema = z.object({
@@ -508,9 +482,9 @@ export const designPipeline = createWorkflow({
   inputSchema: WorkflowInputSchema,
   outputSchema: WorkflowOutputSchema,
 })
-  .then(loggedPlanStep)
+  .then(planStep)
   .then(frameOrchestratorStep)
-  .then(loggedSummaryStep)
+  .then(summaryStep)
   .then(collectResultsStep)
   .commit();
 

@@ -3,6 +3,9 @@
 Thumbs.db
 
 # JS/TS specific
+*js
+*map
+*.d.ts
 bun.lockb
 node_modules/
 dist/
