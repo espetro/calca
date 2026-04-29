@@ -3,7 +3,7 @@
 
 cla:
   # Repository identifier
-  repo: espetro/gosto
+  repo: espetro/calca
 
   # Path to the CLA document in the repository
   path: CLA.md
