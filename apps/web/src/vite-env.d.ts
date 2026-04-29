@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference types="@testing-library/jest-dom" />
 interface ImportMetaEnv {
+  readonly VITE_APP_VERSION: string;
   readonly VITE_GIT_HASH: string;
   readonly VITE_GA_ID: string;
   readonly VITE_AI_BASE_URL: string;

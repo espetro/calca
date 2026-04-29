@@ -4,6 +4,8 @@ import { Badge } from "#/shared/components/ui/badge";
 import { Separator } from "#/shared/components/ui/separator";
 
 export function SettingsAbout() {
+  const appVersion = import.meta.env.VITE_APP_VERSION;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -12,7 +14,7 @@ export function SettingsAbout() {
           <p className="text-xs text-muted-foreground">AI design tool for the web</p>
         </div>
         <Badge variant="secondary" className="text-[10px]">
-          v0.1.0
+          {appVersion}
         </Badge>
       </div>
 

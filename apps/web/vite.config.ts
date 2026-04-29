@@ -7,6 +7,8 @@ import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import { defineConfig } from "vite";
 
+import { version } from "./package.json";
+
 dotenv.config({ path: "../../.env" });
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -20,10 +22,6 @@ for (const [key, value] of Object.entries(process.env)) {
   }
 }
 
-// Explicit mappings for vars without the VITE_ prefix
-envDefine["import.meta.env.VITE_GIT_HASH"] = JSON.stringify(process.env.GIT_HASH ?? "");
-envDefine["import.meta.env.LOG_LEVEL"] = JSON.stringify(process.env.LOG_LEVEL ?? "");
-
 export default defineConfig({
   base: "./",
   build: {
@@ -33,7 +31,13 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "#", replacement: resolve(__dirname, "./src") }],
   },
-  define: envDefine,
+  define: {
+    ...envDefine,
+    // Explicit mappings for vars without the VITE_ prefix
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(version),
+    "import.meta.env.VITE_GIT_HASH": JSON.stringify(process.env.GIT_HASH ?? ""),
+    "import.meta.env.LOG_LEVEL": JSON.stringify(process.env.LOG_LEVEL ?? ""),
+  },
   server: {
     port: 5173,
     proxy: {
