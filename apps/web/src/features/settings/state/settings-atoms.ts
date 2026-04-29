@@ -3,6 +3,7 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 import { deriveProviderFields } from "../lib/derive-provider-fields";
+import { resetToFactory } from "../lib/reset-to-factory";
 import { settingsSchema } from "../lib/settings-schema";
 import type { ProviderConfig, Settings } from "../types";
 
@@ -155,4 +156,9 @@ export const loadedAtom = atom(true);
 
 export const updateSettingsAtom = atom(null, (_get, set, update: Partial<Settings>) => {
   set(settingsAtom, (prev) => ({ ...prev, ...update }));
+});
+
+export const resetToFactoryAtom = atom(null, async (_get, set) => {
+  await resetToFactory();
+  window.location.reload();
 });

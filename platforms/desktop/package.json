@@ -1,12 +1,13 @@
 {
   "name": "@app/electrobun",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
     "watch": "electrobun dev --watch",
     "dev:desktop": "bun run scripts/watch.ts",
     "build": "electrobun build --env=stable",
+    "build:desktop": "electrobun build --env=stable",
     "clean": "rm -rf build artifacts Resources/web"
   },
   "dependencies": {

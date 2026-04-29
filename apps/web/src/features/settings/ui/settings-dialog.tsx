@@ -13,6 +13,7 @@ import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
 import { SettingsAbout } from "./settings-about";
 import { SettingsGeneral } from "./settings-general";
 import { SettingsPersonalization } from "./settings-personalization";
+import { SettingsReset } from "./settings-reset";
 import { type SettingsSection, SettingsSidebar } from "./settings-sidebar";
 
 interface SettingsDialogProps {
@@ -63,6 +64,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             )}
             {activeSection === "skills" && <PlaceholderContent title="Skills" />}
             {activeSection === "about" && <SettingsAbout />}
+            {activeSection === "reset" && <SettingsReset />}
           </div>
         </div>
       </DialogContent>

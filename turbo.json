@@ -33,12 +33,16 @@
     },
     "build:desktop": {
       "dependsOn": [
-        "^build"
+        "clean",
+        "^build",
+        "@app/web#build"
       ],
+      "cache": false,
       "outputs": [
         "build/**",
         "artifacts/**"
-      ]
+      ],
+      "inputs": []
     },
     "typecheck": {
       "dependsOn": [
@@ -70,7 +74,8 @@
       "outputs": []
     },
     "clean": {
-      "cache": false
+      "cache": false,
+      "dependsOn": []
     }
   }
 }

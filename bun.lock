@@ -181,7 +181,7 @@
     },
     "platforms/desktop": {
       "name": "@app/electrobun",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "dependencies": {
         "@app/server": "workspace:*",
         "electrobun": "^1.16.0",

@@ -1,9 +1,9 @@
-import { Info, Palette, Settings, Wrench } from "lucide-react";
+import { Info, Palette, RotateCcw, Settings, Wrench } from "lucide-react";
 
 import { cn } from "#/lib/utils";
 import { Badge } from "#/shared/components/ui/badge";
 
-export type SettingsSection = "general" | "personalization" | "skills" | "about";
+export type SettingsSection = "general" | "personalization" | "skills" | "about" | "reset";
 
 interface SettingsSidebarProps {
   activeSection: SettingsSection;
@@ -21,6 +21,7 @@ const SECTIONS: {
   { icon: Palette, id: "personalization", label: "Personalization" },
   { badge: "SOON", disabled: true, icon: Wrench, id: "skills", label: "Skills" },
   { icon: Info, id: "about", label: "About" },
+  { icon: RotateCcw, id: "reset", label: "Reset to Factory Settings" },
 ];
 
 export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSidebarProps) {

@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "build:desktop": "bun run --cwd platforms/desktop build",
+    "build:desktop": "turbo run build:desktop",
     "clean": "turbo clean",
     "dev": "turbo dev",
     "dev:desktop": "bun run --cwd platforms/desktop dev:desktop",
