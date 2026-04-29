@@ -13,8 +13,6 @@ import {
   PromptInputTextarea,
 } from "./ai-prompt-input";
 import { CritiqueModeButton } from "./critique-mode-button";
-import { FloatingPresetButton } from "./floating-preset-button";
-import { FloatingSystemPromptButton } from "./floating-system-prompt-button";
 import { ImagePill } from "./image-pill";
 import { VariationsButton } from "./variations-button";
 
@@ -345,13 +343,6 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
           )}
         </PromptInputContainer>
       </div>
-
-      {!isGenerating && (
-        <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 pointer-events-auto">
-          <FloatingPresetButton />
-          <FloatingSystemPromptButton />
-        </div>
-      )}
     </>
   );
 }

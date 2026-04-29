@@ -4,6 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { lazy, Suspense, useCallback, useState } from "react";
 
 import { useCanvas } from "#/features/canvas";
+import { CanvasHUD } from "#/features/canvas-hud";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
 
 const CommentInput = lazy(() =>
@@ -49,6 +50,7 @@ import { ErrorBoundary } from "#/widgets/error-boundary";
 import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
 import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
 import { Toolbar } from "#/widgets/toolbar";
+import { ModeSidebar } from "#/features/mode-sidebar";
 
 export default function Home() {
   const canvas = useCanvas();
@@ -71,12 +73,12 @@ export default function Home() {
   });
 
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
-  const setToolMode = useSetAtom(toolModeAtom);
   const [showSettings, setShowSettings] = useState(false);
   const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
   const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
+  const [toolMode, setToolMode] = useAtom(toolModeAtom);
 
   useMountEffect(() => {
     setShowGitHash(new URLSearchParams(window.location.search).has("devMode"));
@@ -132,13 +134,6 @@ export default function Home() {
       </ErrorBoundary>
 
       <Toolbar
-        mode={useAtomValue(toolModeAtom)}
-        onModeChange={setToolMode}
-        scale={canvas.scale}
-        offset={canvas.offset}
-        onZoomIn={canvas.zoomIn}
-        onZoomOut={canvas.zoomOut}
-        onResetView={canvas.resetView}
         onNewSession={() => setShowResetConfirm(true)}
         onExport={handleExportDesign}
         onImport={handleImportDesign}
@@ -146,6 +141,19 @@ export default function Home() {
         model={settings.model}
         providers={settings.providers}
         hasFrames={groups.length > 0}
+      />
+
+      <ModeSidebar
+        mode={toolMode}
+        onModeChange={setToolMode}
+      />
+
+      <CanvasHUD
+        scale={canvas.scale}
+        offset={canvas.offset}
+        onZoomIn={canvas.zoomIn}
+        onZoomOut={canvas.zoomOut}
+        onResetView={canvas.resetView}
       />
 
       <PromptBar

@@ -3,6 +3,7 @@ import { type RefCallback, useCallback, useRef } from "react";
 import { useMemo } from "react";
 
 import { PipelineStatusOverlay } from "#/features/canvas";
+import { ContextToolbar } from "#/features/context-toolbar";
 import type { useCanvas } from "#/features/canvas/hooks/use-canvas";
 import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "#/features/design";
 import {
@@ -489,12 +490,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
             onAddComment={handleAddComment}
             onClickComment={handleClickComment}
             onDragStart={(e) => handleFrameDragStart(iteration.id, e)}
-            onRemix={onRemix}
             scale={canvas.scale}
-            apiKey={derived.apiKey || undefined}
-            model={derived.model}
-            providerType={derived.providerType || undefined}
-            baseURL={derived.baseURL || undefined}
             pipelineStatus={pipelineStages[iteration.id]}
           />
         ))}
@@ -527,6 +523,18 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
       )}
 
       <RubberBandOverlay />
+
+      {selectedIds.size === 1 && (
+        <ContextToolbar
+          scale={canvas.scale}
+          offset={canvas.offset}
+          onRemix={onRemix}
+          apiKey={derived.apiKey || undefined}
+          model={derived.model}
+          providerType={derived.providerType || undefined}
+          baseURL={derived.baseURL || undefined}
+        />
+      )}
     </div>
   );
 };

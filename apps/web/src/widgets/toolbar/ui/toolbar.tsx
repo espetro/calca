@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
-import { BugIcon } from "#/features/feedback";
 import type { ProviderConfig } from "#/features/settings/types";
 import { MODELS } from "#/features/settings/types";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
-import type { ToolMode } from "#/shared/types";
 
-import ModeButton from "./mode";
 import ToolButton from "./tool-button";
-import type { ZoomProps } from "./zoom";
-import Zoom from "./zoom";
 
-interface ToolbarProps extends ZoomProps {
-  mode: ToolMode;
+interface ToolbarProps {
   isOwnKey: boolean;
   model: string;
   providers: ProviderConfig[];
@@ -20,12 +14,9 @@ interface ToolbarProps extends ZoomProps {
   onExport: () => void;
   onImport: () => void;
   onNewSession: () => void;
-  onModeChange: (mode: ToolMode) => void;
 }
 
 export function Toolbar({
-  mode,
-  onModeChange,
   onNewSession,
   onExport,
   onImport,
@@ -33,7 +24,6 @@ export function Toolbar({
   model,
   providers,
   hasFrames,
-  ...zoomProps
 }: ToolbarProps) {
   const [providerId, modelId] = model.includes("/") ? model.split("/") : [null, model];
   const provider = providerId ? providers.find((p) => p.id === providerId) : undefined;
@@ -64,72 +54,6 @@ export function Toolbar({
       className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-toolbar-bg-transparent border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]"
     >
       <div className="flex items-center gap-1.5 overflow-x-auto">
-        <ModeButton
-          active={mode === "select"}
-          onClick={() => onModeChange("select")}
-          title="Select (V)"
-          color="select"
-        >
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M5 3l14 9-7 1-4 7z" fill={mode === "select" ? "currentColor" : "none"} />
-          </svg>
-        </ModeButton>
-
-        <ModeButton
-          active={mode === "draw-area"}
-          onClick={() => onModeChange("draw-area")}
-          title="Draw Area"
-          color="frame"
-        >
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-            <path d="M12 3v18" />
-            <path d="M3 12h18" />
-          </svg>
-        </ModeButton>
-
-        <ModeButton
-          active={mode === "edit-component"}
-          onClick={() => onModeChange("edit-component")}
-          title="Edit Component"
-          color="component"
-        >
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12.5 1.5a2.121 2.121 0 0 1 3 3L12 8l-4.5 1.5-1.5-4.5 6.5-3.5z" />
-            <path d="M5.5 12.5a2.121 2.121 0 0 1 3 3L4 19l-1.5-4.5 3-2z" />
-            <path d="M16.5 12.5a2.121 2.121 0 0 0-3 3L18 19l1.5-4.5-3-2z" />
-            <circle cx="12" cy="12" r="2" />
-          </svg>
-        </ModeButton>
-
-        <div className="w-px h-5 bg-foreground/15 mx-1" />
-
-        <Zoom {...zoomProps} />
-
-        <div className="w-px h-5 bg-foreground/15 mx-1" />
-
         <button
           onClick={() => setSettingsOpen(true)}
           data-tour="toolbar-settings"
@@ -153,10 +77,6 @@ export function Toolbar({
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
         </button>
-
-        <div className="w-px h-5 bg-foreground/15 mx-1" />
-
-        <BugIcon />
 
         <div className="w-px h-5 bg-foreground/15 mx-1" />
       </div>
