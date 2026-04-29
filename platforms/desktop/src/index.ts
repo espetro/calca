@@ -13,6 +13,7 @@ import { setupApplicationMenu } from "./menu";
 import { waitForServer, startServer } from "./server";
 import { setupDatabaseDirectory } from "./database";
 import { createWindow } from "./window";
+import { checkAndNotify } from "./updater";
 
 // Auto-update status (stored on globalThis for display)
 declare global {
@@ -53,6 +54,10 @@ async function main(): Promise<void> {
 
   // Create the browser window after server starts
   createWindow();
+
+  // Check for updates on startup and every 60 minutes
+  checkAndNotify();
+  setInterval(checkAndNotify, 60 * 60 * 1000);
 }
 
 // ============================================================================

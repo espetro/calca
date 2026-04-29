@@ -21,6 +21,9 @@ const config: ElectrobunConfig = {
     },
     watch: ["../../apps/server/src"],
   },
+  release: {
+    baseUrl: "https://github.com/espetro/calca/releases/latest/download",
+  },
 };
 
 export default config;

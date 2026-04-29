@@ -5,9 +5,10 @@
  * Browser window creation and management.
  */
 
-import { BrowserWindow, ContextMenu } from "electrobun/bun";
+import { BrowserWindow, BrowserView, ContextMenu } from "electrobun/bun";
 import { platform } from "process";
 import { isDev, VITE_DEV_URL, HOST, PORT, MIN_WIDTH, MIN_HEIGHT } from "./constants";
+import { setupUpdaterRPC } from "./webview/rpc";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -30,6 +31,8 @@ export function createWindow(): void {
     minHeight: MIN_HEIGHT,
     url: windowUrl,
   });
+
+  mainWindow.webview.defineRPC(setupUpdaterRPC(mainWindow.webview as BrowserView));
 
   // Enforce minimum size on resize
   mainWindow.on("resize", (event) => {

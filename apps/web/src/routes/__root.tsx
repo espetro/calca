@@ -17,6 +17,7 @@ import { Toaster } from "sonner";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
 import queryClient from "#/lib/services/api";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
+import { UpdateNotification } from "#/widgets/update-notification/UpdateNotification";
 
 import "../app/globals.css";
 
@@ -135,6 +136,7 @@ function RootLayout() {
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
       </QueryClientProvider>
       <Toaster position="bottom-right" offset="40px" toastOptions={{ style: { width: "240px" } }} />
+      <UpdateNotification />
     </>
   );
 }
