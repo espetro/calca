@@ -1,29 +1,40 @@
 // oxlint-disable unicorn/require-module-specifiers
 
+import { resolve } from "path";
+
+import { getLogger } from "@logtape/logtape";
 import { $, path, cd } from "zx";
+
+import { initLogger } from "../src/logger";
+
+const logDir = resolve(import.meta.dirname, "..", "logs");
+
+await initLogger({ logDir, prefix: "build" });
+
+const logger = getLogger(["calca", "build"]);
 
 const SCRIPT_DIR = import.meta.dirname;
 const REPO_ROOT = path.resolve(SCRIPT_DIR, "..", "..", "..");
 const DESKTOP_DIR = path.resolve(REPO_ROOT, "platforms", "desktop");
 
 const main = async () => {
-  console.log("==> Cleaning desktop build artifacts...");
+  logger.info("==> Cleaning desktop build artifacts...");
   cd(DESKTOP_DIR);
   await $`bun run clean`;
 
-  console.log("==> Building web app...");
+  logger.info("==> Building web app...");
   cd(REPO_ROOT);
   await $`bun run --filter=@app/web build`;
 
-  console.log("==> Copying web build to desktop Resources...");
+  logger.info("==> Copying web build to desktop Resources...");
   await $`mkdir -p ${DESKTOP_DIR}/Resources/web`;
   await $`cp -r ${REPO_ROOT}/apps/web/dist/* ${DESKTOP_DIR}/Resources/web/`;
 
-  console.log("==> Building Electrobun app...");
+  logger.info("==> Building Electrobun app...");
   cd(DESKTOP_DIR);
   await $`./node_modules/.bin/electrobun build --env=stable`;
 
-  console.log("==> Done! Artifacts in platforms/desktop/artifacts/");
+  logger.info("==> Done! Artifacts in platforms/desktop/artifacts/");
 };
 
 await main();

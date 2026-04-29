@@ -1,101 +1,89 @@
-// @ts-nocheck - Electrobun types have issues, but the API works at runtime
-/**
- * platforms/desktop/src/updater.ts
- *
- * Auto-update module for the Calca desktop app.
- * Uses Electrobun's built-in Updater for hash-based update detection and patching.
- */
-
+import { getLogger } from "@logtape/logtape";
+import type { BrowserWindow } from "electrobun/bun";
 import { Updater } from "electrobun/bun";
-import { getMainWindow } from "./window";
-import { versionInfo } from "./version";
 
-// ============================================================================
-// RPC Message Senders
-// ============================================================================
+const log = getLogger(["calca", "desktop", "updater"]);
 
-function sendStateToWebview(state: Record<string, unknown>): void {
-	const mainWindow = getMainWindow();
-	if (!mainWindow) return;
-
-	// Call the global callback that UpdateNotification.tsx registers
+function sendStateToWebview(
+	win: BrowserWindow,
+	state: Record<string, unknown>,
+): void {
 	const script = `window.__calcaUpdaterStateCallback?.(${JSON.stringify(state)})`;
-	mainWindow.evaluate(script);
+	win.webview.executeJavascript(script);
 }
 
-// ============================================================================
-// checkAndNotify
-// ============================================================================
+export const updaterHandlers = {
+	updater__startDownload: async () => {
+		try {
+			await downloadAndPrepare();
+		} catch (error) {
+			log.error`startDownload handler error: ${error}`;
+		}
+	},
+	updater__apply: async () => {
+		try {
+			await applyIfReady();
+		} catch (error) {
+			log.error`apply handler error: ${error}`;
+		}
+	},
+};
 
-/**
- * Checks for updates and notifies the webview if one is available.
- * Also sends a "ready" notification if an update was already downloaded.
- */
-export async function checkAndNotify(): Promise<void> {
+export async function checkAndNotify(win?: BrowserWindow): Promise<void> {
 	try {
+		const info = await Updater.getLocallocalInfo();
 		const result = await Updater.checkForUpdate();
 
 		if (Updater.updateInfo()?.updateReady) {
-			sendStateToWebview({ state: "ready", version: result.version });
+			if (win) sendStateToWebview(win, { state: "ready", version: result.version });
 			return;
 		}
 
 		if (result.updateAvailable) {
-			sendStateToWebview({
-				state: "available",
-				version: result.version,
-				currentVersion: versionInfo.version,
-			});
+			if (win)
+				sendStateToWebview(win, {
+					state: "available",
+					version: result.version,
+					currentVersion: info.version,
+				});
 		}
 	} catch (error) {
-		console.error("[updater] checkAndNotify failed:", error);
+		log.error`checkAndNotify failed: ${error}`;
 	}
 }
 
-// ============================================================================
-// downloadAndPrepare
-// ============================================================================
-
-/**
- * Downloads the update and notifies the webview of progress.
- * After successful download, sends a "ready" notification.
- */
-export async function downloadAndPrepare(): Promise<void> {
+export async function downloadAndPrepare(win?: BrowserWindow): Promise<void> {
 	try {
 		Updater.onStatusChange((entry) => {
-			if (entry.status === "download-progress") {
-				sendStateToWebview({ state: "downloading" });
+			if (entry.status === "download-progress" && win) {
+				sendStateToWebview(win, { state: "downloading" });
 			}
 		});
 
-		sendStateToWebview({ state: "downloading" });
+		if (win) sendStateToWebview(win, { state: "downloading" });
 
 		await Updater.downloadUpdate();
 
-		if (Updater.updateInfo()?.updateReady) {
-			sendStateToWebview({
+		if (Updater.updateInfo()?.updateReady && win) {
+			sendStateToWebview(win, {
 				state: "ready",
 				version: Updater.updateInfo()?.version ?? "",
 			});
 		}
 	} catch (error) {
-		console.error("[updater] downloadAndPrepare failed:", error);
+		log.error`downloadAndPrepare failed: ${error}`;
 	}
 }
 
-// ============================================================================
-// applyIfReady
-// ============================================================================
-
 export async function applyIfReady(): Promise<void> {
 	if (!Updater.updateInfo()?.updateReady) {
-		console.warn("[updater] applyIfReady: update not ready yet");
+		log.warn`applyIfReady: update not ready yet`;
 		return;
 	}
 
 	try {
 		await Updater.applyUpdate();
 	} catch (error) {
-		console.error("[updater] applyIfReady failed:", error);
+		log.error`applyIfReady failed: ${error}`;
 	}
 }

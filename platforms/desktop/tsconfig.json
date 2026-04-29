@@ -4,10 +4,7 @@
     "outDir": "./dist",
     "moduleResolution": "bundler",
     "lib": ["ESNext"],
-    "types": ["@types/bun"],
-    "paths": {
-      "electrobun/bun": ["./src/electrobun.d.ts"]
-    }
+    "types": ["@types/bun"]
   },
   "include": ["src/**/*.ts", "scripts/*.ts"],
   "exclude": ["**/node_modules/**", "**/electrobun/*", "dist", "**/dist/*", "**/.bun/**"]

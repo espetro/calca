@@ -36,7 +36,8 @@
       "dependsOn": [
         "^build"
       ],
-      "outputs": []
+      "outputs": [],
+      "outputLogs": "errors-only"
     },
     "test": {
       "dependsOn": [
@@ -44,13 +45,15 @@
       ],
       "outputs": [
         "coverage/**"
-      ]
+      ],
+      "outputLogs": "errors-only"
     },
     "lint": {
       "dependsOn": [
         "^build"
       ],
-      "outputs": []
+      "outputs": [],
+      "outputLogs": "errors-only"
     },
     "format": {
       "outputs": []

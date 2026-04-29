@@ -5,10 +5,10 @@
  * Application constants for the Calca desktop app.
  */
 
-export const PORT = 3001;
-export const HOST = "127.0.0.1";
+export const PORT = parseInt(process.env.CALCA_PORT ?? "3847", 10);
+export const HOST = "localhost";
 export const MIN_WIDTH = 1136;
 export const MIN_HEIGHT = 428;
 
-export const isDev = process.env.NODE_ENV !== "production";
+/** @deprecated DON'T use a dev url, but rather a prod url */
 export const VITE_DEV_URL = "http://localhost:5173";

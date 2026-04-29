@@ -1,4 +1,3 @@
-// @ts-nocheck - Electrobun types have issues, but the API works at runtime
 /**
  * platforms/desktop/src/menu.ts
  *
@@ -6,15 +5,34 @@
  */
 
 import { ApplicationMenu } from "electrobun/bun";
-import { versionInfo } from "./version";
-import { getMainWindow } from "./window";
 
 export function setupApplicationMenu(): void {
+  // ApplicationMenu.on("open-feedback-dialog", (event) => {
+  //   // Open feedback modal via IPC to webview
+  //   const mainWindow = getMainWindow();
+  //   if (mainWindow) {
+  //     mainWindow.evaluate("window.__openFeedback?.()");
+  //   }
+  // });
+
+  // ApplicationMenu.on("open-about-dialog", (event) => {
+  //   const mainWindow = getMainWindow();
+  //   if (mainWindow) {
+  //     // TODO Show "About" section in Settings dialog
+  //     mainWindow.evaluate(`
+  //               alert('Calca v${versionInfo.version}\\nAn AI design tool for the desktop.');
+  //             `);
+  //   }
+  // });
+
   ApplicationMenu.setApplicationMenu([
     {
       label: "Calca",
       submenu: [
+        //
         { role: "about" },
+        { type: "separator" },
+        { role: "settings" },
         { type: "separator" },
         { role: "quit" },
       ],
@@ -22,61 +40,32 @@ export function setupApplicationMenu(): void {
     {
       label: "Edit",
       submenu: [
-        { role: "undo" },
-        { role: "redo" },
-        { type: "separator" },
-        { role: "cut" },
-        { role: "copy" },
-        { role: "paste" },
-        { role: "selectAll" },
+        //
+        { role: "find" },
       ],
     },
     {
       label: "View",
       submenu: [
-        { role: "reload" },
-        { role: "forceReload" },
-        { role: "toggleDevTools" },
-        { type: "separator" },
-        { role: "resetZoom" },
-        { role: "zoomIn" },
-        { role: "zoomOut" },
-        { type: "separator" },
+        //
         { role: "togglefullscreen" },
       ],
     },
     {
       label: "Window",
-      submenu: [
-        { role: "minimize" },
-        { role: "zoom" },
-        { role: "close" },
-      ],
+      submenu: [{ role: "minimize" }, { role: "zoom" }, { role: "close" }],
     },
     {
       label: "Help",
       submenu: [
         {
           label: "Report a Bug...",
-          click: () => {
-            // Open feedback modal via IPC to webview
-            const mainWindow = getMainWindow();
-            if (mainWindow) {
-              mainWindow.evaluate("window.__openFeedback?.()");
-            }
-          },
+          action: "open-feedback-dialog",
         },
         { type: "separator" },
         {
           label: "About Calca",
-          click: () => {
-            const mainWindow = getMainWindow();
-            if (mainWindow) {
-              mainWindow.evaluate(`
-                alert('Calca v${versionInfo.version}\\nAn AI design tool for the desktop.');
-              `);
-            }
-          },
+          action: "open-about-dialog",
         },
       ],
     },

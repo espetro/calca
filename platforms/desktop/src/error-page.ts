@@ -1,13 +1,10 @@
-// @ts-nocheck - Electrobun types have issues, but the API works at runtime
 /**
  * platforms/desktop/src/error-page.ts
  *
  * Startup error page HTML generator.
  */
 
-import { versionInfo } from "./version";
-
-export function getErrorPageHtml(title: string, message: string): string {
+export function getErrorPageHtml(title: string, message: string, version: string): string {
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -39,7 +36,7 @@ export function getErrorPageHtml(title: string, message: string): string {
     <h1>${title}</h1>
     <p>${message}</p>
     <p>Please try restarting the application. If the problem persists, check the console for more details.</p>
-    <div class="version">Calca v${versionInfo.version}</div>
+    <div class="version">Calca v${version}</div>
   </div>
 </body>
 </html>`;
