@@ -5,7 +5,7 @@
  * Browser window creation and management.
  */
 
-import { BrowserWindow, BrowserView, ContextMenu } from "electrobun/bun";
+import { BrowserWindow, ContextMenu } from "electrobun/bun";
 import { platform } from "process";
 import { isDev, VITE_DEV_URL, MIN_WIDTH, MIN_HEIGHT } from "./constants";
 import { setupUpdaterRPC } from "./webview/rpc";
@@ -67,7 +67,7 @@ export function createWindow(): void {
       url: VITE_DEV_URL,
     });
 
-    mainWindow.webview.defineRPC(setupUpdaterRPC(mainWindow.webview as BrowserView));
+    setupUpdaterRPC(mainWindow.webview);
 
     mainWindow.on("closed", () => {
       mainWindow = null;
@@ -114,7 +114,7 @@ export function createWindow(): void {
       hidden: true,
     });
 
-    mainWindow.webview.defineRPC(setupUpdaterRPC(mainWindow.webview as BrowserView));
+    setupUpdaterRPC(mainWindow.webview);
 
     mainWindow.on("closed", () => {
       mainWindow = null;

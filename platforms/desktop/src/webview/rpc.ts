@@ -32,27 +32,24 @@ export function getUpdaterWebview(): BrowserView | null {
  * Handlers respond to requests from the webview.
  *
  * @param webview - The BrowserView to attach handlers to
- * @returns RPC handler object for use with BrowserView.defineRPC
  */
 export function setupUpdaterRPC(webview: BrowserView) {
 	activeWebview = webview;
 
-	return {
-		request: {
-			updater__startDownload: async () => {
-				try {
-					await downloadAndPrepare();
-				} catch (error) {
-					console.error("[updater] startDownload handler error:", error);
-				}
-			},
-			updater__apply: async () => {
-				try {
-					await applyIfReady();
-				} catch (error) {
-					console.error("[updater] apply handler error:", error);
-				}
-			},
+	webview.rpc.setRequestHandler({
+		updater__startDownload: async () => {
+			try {
+				await downloadAndPrepare();
+			} catch (error) {
+				console.error("[updater] startDownload handler error:", error);
+			}
 		},
-	};
+		updater__apply: async () => {
+			try {
+				await applyIfReady();
+			} catch (error) {
+				console.error("[updater] apply handler error:", error);
+			}
+		},
+	});
 }
