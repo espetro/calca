@@ -6,6 +6,7 @@
   "tasks": {
     "build": {
       "dependsOn": [
+        "^clean",
         "^build"
       ],
       "outputs": [
@@ -30,19 +31,6 @@
       "dependsOn": [
         "^build"
       ]
-    },
-    "build:desktop": {
-      "dependsOn": [
-        "clean",
-        "^build",
-        "@app/web#build"
-      ],
-      "cache": false,
-      "outputs": [
-        "build/**",
-        "artifacts/**"
-      ],
-      "inputs": []
     },
     "typecheck": {
       "dependsOn": [
