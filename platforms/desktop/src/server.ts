@@ -80,36 +80,14 @@ export async function handleFetch(request: Request): Promise<Response> {
     }
   }
 
-  const staticPath = url.pathname === "/" ? "/index.html" : url.pathname;
-  const filePath = `Resources/web${staticPath}`;
-
-  try {
-    const file = Bun.file(filePath);
-    if (await file.exists()) {
-      const contentType = getContentType(staticPath);
-      return new Response(file, {
-        headers: { "Content-Type": contentType },
-      });
-    }
-  } catch {
-    // File not found or error reading
-  }
-
-  // SPA fallback: serve index.html for non-API routes
-  const indexFile = Bun.file("Resources/web/index.html");
-  if (await indexFile.exists()) {
-    return new Response(indexFile, {
-      headers: { "Content-Type": "text/html" },
-    });
-  }
-
+  // Production: static files are served via views:// protocol, only API routes handled here
   return new Response(
     getErrorPageHtml(
-      "Static Files Missing",
-      "Could not find the web app bundle. The application may not be properly installed.",
+      "Not Found",
+      "This endpoint is not available in production mode.",
     ),
     {
-      status: 503,
+      status: 404,
       headers: { "Content-Type": "text/html" },
     },
   );

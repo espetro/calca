@@ -12,7 +12,7 @@ import { versionInfo } from "./version";
 import { setupApplicationMenu } from "./menu";
 import { waitForServer, startServer } from "./server";
 import { setupDatabaseDirectory } from "./database";
-import { createWindow } from "./window";
+import { createWindow, loadMainContent, getMainWindow } from "./window";
 import { checkAndNotify } from "./updater";
 
 // Auto-update status (stored on globalThis for display)
@@ -28,6 +28,7 @@ declare global {
 // ============================================================================
 
 async function main(): Promise<void> {
+  console.time("startup");
   console.log(`[desktop] Starting Calca v${versionInfo.version}`);
   console.log(`[desktop] Mode: ${isDev ? "development" : "production"}`);
 
@@ -42,22 +43,43 @@ async function main(): Promise<void> {
     }
   }
 
-  // Start server
-  startServer();
-  console.log(`[desktop] Server running on http://127.0.0.1:3001`);
-
   // Setup database directory
   setupDatabaseDirectory();
 
   // Setup application menu
   setupApplicationMenu();
 
-  // Create the browser window after server starts
+  // Create the browser window (splash in prod, direct in dev)
   createWindow();
 
   // Check for updates on startup and every 60 minutes
   checkAndNotify();
   setInterval(checkAndNotify, 60 * 60 * 1000);
+
+  if (isDev) {
+    // Dev mode: window already has URL set, just start server
+    startServer();
+    console.log(`[desktop] Server running on http://127.0.0.1:3001`);
+    console.timeEnd("startup");
+  } else {
+    // Production mode: show splash immediately, then start server and load content
+    console.time("splash");
+    const win = getMainWindow();
+    if (win) {
+      win.show();
+      console.timeEnd("splash");
+    }
+
+    console.time("server");
+    startServer();
+    console.timeEnd("server");
+    console.log(`[desktop] Server running on http://127.0.0.1:3001`);
+
+    // Load main content via views:// protocol
+    if (win) {
+      loadMainContent(win);
+    }
+  }
 }
 
 // ============================================================================
