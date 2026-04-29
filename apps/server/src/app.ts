@@ -6,7 +6,7 @@ import exportRoute from "./routes/export";
 import probeModelsRoute from "./routes/probe-models";
 import workflowRoute from "./routes/workflow";
 
-await createLogger({ env: process.env });
+await createLogger(process.env.LOG_LEVEL);
 
 const logger = getLogger(["calca", "server"]);
 

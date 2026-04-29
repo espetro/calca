@@ -8,53 +8,45 @@ import {
 } from "@logtape/logtape";
 import { getPrettyFormatter } from "@logtape/pretty";
 
-type ProcessEnv = Record<string, string | undefined>;
-
 const DEFAULT_LOG_LEVEL: LogLevel = "info";
-const VALID_LEVELS = new Set<LogLevel>(["debug", "info", "warning", "error", "fatal"]);
 
-const toLogtapeLevel = (level: LogLevel) => (isLogLevel(level) ? level : DEFAULT_LOG_LEVEL);
-
-function getLogLevelFromEnv(env: ProcessEnv): LogLevel {
-  const envLevel: string | undefined = env.LOG_LEVEL?.toLowerCase();
-
-  if (envLevel && VALID_LEVELS.has(envLevel as LogLevel)) {
-    return toLogtapeLevel(envLevel as LogLevel);
-  }
-
-  return DEFAULT_LOG_LEVEL;
-}
-
+// * Module-level flag to cache if the logger has been already configured
 let isConfigured = false;
 
-function getLogLevel(level: LogLevel, env: ProcessEnv): LogLevel {
-  if (level !== undefined) {
-    return toLogtapeLevel(level);
+const getLogLevel = (level: LogLevel | undefined): LogLevel => {
+  if (level === undefined) {
+    return DEFAULT_LOG_LEVEL;
   }
-  return getLogLevelFromEnv(env);
-}
 
-interface CreateLoggerProps {
-  level?: LogLevel;
-  env: ProcessEnv;
-}
+  const parsed = level.trim().toLowerCase();
 
-export async function createLogger({ level = "info", env }: CreateLoggerProps) {
+  if (isLogLevel(parsed)) {
+    return parsed;
+  }
+
+  console.warn(`Unknown log level ${parsed}. Setting to ${DEFAULT_LOG_LEVEL}`);
+  return DEFAULT_LOG_LEVEL;
+};
+
+export async function createLogger(level?: LogLevel) {
   if (isConfigured) {
     return;
   }
 
-  const logLevel = getLogLevel(level, env);
-  console.log(`Log level set to ${logLevel}`);
+  const validLevel = getLogLevel(level);
+  console.log(`Log level set to ${validLevel}`);
 
   const isBrowser = typeof globalThis !== "undefined" && "window" in globalThis;
+  const formatter = isBrowser
+    ? undefined
+    : getPrettyFormatter({ level: "ABBR", timestamp: "time" });
 
   await configure({
     filters: {},
     loggers: [
       {
         category: ["calca"],
-        lowestLevel: logLevel,
+        lowestLevel: validLevel,
         sinks: ["console"],
       },
       {
@@ -65,12 +57,7 @@ export async function createLogger({ level = "info", env }: CreateLoggerProps) {
     ],
     sinks: {
       console: getConsoleSink({
-        formatter: isBrowser
-          ? undefined
-          : getPrettyFormatter({
-              level: "ABBR",
-              timestamp: "time",
-            }),
+        formatter,
       }),
     },
   });

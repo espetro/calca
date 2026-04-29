@@ -6,6 +6,6 @@
     "types": ["node", "vitest", "bun"],
     "rewriteRelativeImportExtensions": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "env.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
