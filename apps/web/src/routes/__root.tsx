@@ -8,11 +8,14 @@ import {
   trackThemeChanged,
 } from "@app/analytics";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
+
+const ReactQueryDevtools = lazy(() =>
+  import("@tanstack/react-query-devtools").then((m) => ({ default: m.ReactQueryDevtools }))
+);
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
 import queryClient from "#/lib/services/api";
@@ -25,6 +28,7 @@ const GA_ID = import.meta.env.VITE_GA_ID;
 
 function RootLayout() {
   const settings = useAtomValue(settingsAtom);
+  const [devtoolsReady, setDevtoolsReady] = useState(false);
 
   const prevProviderRef = useRef(settings.providerType);
   const prevModelRef = useRef(settings.model);
@@ -52,6 +56,10 @@ function RootLayout() {
       return () => mediaQuery.removeEventListener("change", applyTheme);
     }
   }, [settings.theme]);
+
+  useMountEffect(function mountDevtools() {
+    setDevtoolsReady(true);
+  });
 
   useMountEffect(function trackSessionLifecycle() {
     const stored = localStorage.getItem("calca:last_session_end");
@@ -133,7 +141,11 @@ function RootLayout() {
       )}
       <QueryClientProvider client={queryClient}>
         <Outlet />
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+        {devtoolsReady && (
+          <Suspense fallback={null}>
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+          </Suspense>
+        )}
       </QueryClientProvider>
       <Toaster position="bottom-right" offset="40px" toastOptions={{ style: { width: "240px" } }} />
       <UpdateNotification />

@@ -1,11 +1,17 @@
 import { trackExportComplete } from "@app/analytics";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useState } from "react";
+import { lazy, Suspense, useCallback, useState } from "react";
 
 import { useCanvas } from "#/features/canvas";
-import { CommentInput, CommentThread } from "#/features/comments";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
+
+const CommentInput = lazy(() =>
+  import("#/features/comments").then((m) => ({ default: m.CommentInput }))
+);
+const CommentThread = lazy(() =>
+  import("#/features/comments").then((m) => ({ default: m.CommentThread }))
+);
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
 import {
   showGitHashAtom,
@@ -16,14 +22,23 @@ import {
 import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
 import { SummaryList } from "#/features/design/ui/summary-list";
-import { FeedbackModal } from "#/features/feedback";
+const FeedbackModal = lazy(() =>
+  import("#/features/feedback").then((m) => ({ default: m.FeedbackModal }))
+);
 import {
   showTutorialAtom,
   showWelcomeAtom,
-  TutorialTour,
-  WelcomeModal,
 } from "#/features/onboarding";
-import { SettingsModal } from "#/features/settings";
+
+const TutorialTour = lazy(() =>
+  import("#/features/onboarding").then((m) => ({ default: m.TutorialTour }))
+);
+const WelcomeModal = lazy(() =>
+  import("#/features/onboarding").then((m) => ({ default: m.WelcomeModal }))
+);
+const SettingsModal = lazy(() =>
+  import("#/features/settings").then((m) => ({ default: m.SettingsModal }))
+);
 import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { exportCanvas, openImportDialog } from "#/lib/export";
@@ -151,27 +166,29 @@ export default function Home() {
       )}
 
       <ErrorBoundary category={["calca", "web", "features", "comments"]}>
-        {commentHandlers.commentDraft && (
-          <CommentInput
-            position={{
-              screenX: commentHandlers.commentDraft.screenX,
-              screenY: commentHandlers.commentDraft.screenY,
-            }}
-            onSubmit={commentHandlers.handleCommentSubmit}
-            onCancel={() => commentHandlers.setCommentDraft(null)}
-          />
-        )}
+        <Suspense fallback={null}>
+          {commentHandlers.commentDraft && (
+            <CommentInput
+              position={{
+                screenX: commentHandlers.commentDraft.screenX,
+                screenY: commentHandlers.commentDraft.screenY,
+              }}
+              onSubmit={commentHandlers.handleCommentSubmit}
+              onCancel={() => commentHandlers.setCommentDraft(null)}
+            />
+          )}
 
-        {commentHandlers.activeComment && (
-          <CommentThread
-            comment={commentHandlers.activeComment}
-            onClose={() => {
-              commentHandlers.setActiveComment(null);
-              commentHandlers.setActiveCommentIterationId(null);
-            }}
-            onReply={commentHandlers.handleCommentReply}
-          />
-        )}
+          {commentHandlers.activeComment && (
+            <CommentThread
+              comment={commentHandlers.activeComment}
+              onClose={() => {
+                commentHandlers.setActiveComment(null);
+                commentHandlers.setActiveCommentIterationId(null);
+              }}
+              onReply={commentHandlers.handleCommentReply}
+            />
+          )}
+        </Suspense>
       </ErrorBoundary>
 
       <PromptLibrary
@@ -185,24 +202,28 @@ export default function Home() {
 
       {showSettings && (
         <ErrorBoundary category={["calca", "web", "features", "settings"]}>
-          <SettingsModal
-            settings={settings}
-            onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
-            onClose={() => setShowSettings(false)}
-            isOwnKey={isOwnKey}
-            providers={settings.providers}
-            testProvider={(config) =>
-              probeModels.mutateAsync({
-                apiKey: config.apiKey,
-                providerType: config.apiType,
-                baseURL: config.baseUrl,
-              })
-            }
-          />
+          <Suspense fallback={null}>
+            <SettingsModal
+              settings={settings}
+              onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
+              onClose={() => setShowSettings(false)}
+              isOwnKey={isOwnKey}
+              providers={settings.providers}
+              testProvider={(config) =>
+                probeModels.mutateAsync({
+                  apiKey: config.apiKey,
+                  providerType: config.apiType,
+                  baseURL: config.baseUrl,
+                })
+              }
+            />
+          </Suspense>
         </ErrorBoundary>
       )}
 
-      <FeedbackModal />
+      <Suspense fallback={null}>
+        <FeedbackModal />
+      </Suspense>
 
       {showResetConfirm && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center">
@@ -238,36 +259,38 @@ export default function Home() {
       )}
 
       <ErrorBoundary category={["calca", "web", "features", "onboarding"]}>
-        {showWelcome && (
-          <WelcomeModal
-            open={showWelcome}
-            onTakeTour={() => {
-              setShowWelcome(false);
-              setShowTutorial(true);
-            }}
-            onSkip={() => {
-              if (!settings.model) {
-                setShowSettings(true);
-                return;
-              }
-              setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
-              setShowWelcome(false);
-            }}
-          />
-        )}
+        <Suspense fallback={null}>
+          {showWelcome && (
+            <WelcomeModal
+              open={showWelcome}
+              onTakeTour={() => {
+                setShowWelcome(false);
+                setShowTutorial(true);
+              }}
+              onSkip={() => {
+                if (!settings.model) {
+                  setShowSettings(true);
+                  return;
+                }
+                setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
+                setShowWelcome(false);
+              }}
+            />
+          )}
 
-        {showTutorial && (
-          <TutorialTour
-            onComplete={() => {
-              setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
-              setShowTutorial(false);
-            }}
-            hasFrames={
-              groups.length > 0 &&
-              groups.some((g) => g.iterations.some((i) => !i.isLoading && i.html))
-            }
-          />
-        )}
+          {showTutorial && (
+            <TutorialTour
+              onComplete={() => {
+                setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
+                setShowTutorial(false);
+              }}
+              hasFrames={
+                groups.length > 0 &&
+                groups.some((g) => g.iterations.some((i) => !i.isLoading && i.html))
+              }
+            />
+          )}
+        </Suspense>
       </ErrorBoundary>
 
       {(!isOwnKey || !settings.model) && !showWelcome && (
