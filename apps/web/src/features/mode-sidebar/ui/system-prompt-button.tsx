@@ -1,18 +1,22 @@
 import { useAtom } from "jotai";
 import { MessageSquare } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
 import { useClickOutside } from "@mantine/hooks";
 
+import { sidebarDialogAtom } from "../state/dialog-atom";
+
 export function SystemPromptButton() {
-  const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [settings] = useAtom(settingsAtom);
   const [, updateSettings] = useAtom(updateSettingsAtom);
+  const [openDialog, setOpenDialog] = useAtom(sidebarDialogAtom);
 
-  const handleClose = useCallback(() => setIsOpen(false), []);
+  const isOpen = openDialog === "system-prompt";
+
+  const handleClose = useCallback(() => setOpenDialog(null), [setOpenDialog]);
 
   useClickOutside(handleClose, null, [panelRef.current, buttonRef.current], isOpen);
 
@@ -26,16 +30,20 @@ export function SystemPromptButton() {
   const hasCustomPrompt =
     settings.systemPromptPreset === "custom" && settings.systemPrompt.length > 0;
 
+  const handleToggle = () => {
+    setOpenDialog(isOpen ? null : "system-prompt");
+  };
+
   return (
     <div className="relative">
       <button
         ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         aria-label="System Prompt"
-        className={`flex items-center justify-center w-12 h-12 rounded-2xl transition-all ${
+        className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
           isOpen || hasCustomPrompt
-            ? "bg-primary/90 text-white shadow-lg"
-            : "bg-white/20 backdrop-blur-3xl border border-white/30 text-gray-700 hover:bg-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
+            ? "bg-primary/90 text-white"
+            : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
         }`}
       >
         <MessageSquare className="w-5 h-5" />
@@ -44,7 +52,7 @@ export function SystemPromptButton() {
       {isOpen && (
         <div
           ref={panelRef}
-          className="absolute right-full mr-3 top-1/2 -translate-y-1/2 z-[60] w-[320px] max-h-[80vh] overflow-y-auto bg-white/20 backdrop-blur-3xl border border-white/30 rounded-2xl shadow-[0_12px_48px_rgba(0,0,0,0.12),0_4px12px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] p-4"
+          className="absolute right-full mr-3 top-1/2 -translate-y-1/2 z-[60] w-[280px] max-h-[calc(100vh-180px)] overflow-y-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-[0_12px_48px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <MessageSquare className="w-4 h-4 text-gray-600" />
