@@ -6,7 +6,6 @@ import type {
   PipelineStatus,
   Point,
 } from "#/shared/types";
-import { STAGE_CONFIG } from "#/shared/types";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 export const DEFAULT_FRAME_WIDTH = 480;
