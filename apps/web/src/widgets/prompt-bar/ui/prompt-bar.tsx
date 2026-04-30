@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
-import { useCallback, useRef, useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { ComponentProps, useCallback, useRef, useState } from "react";
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
 
@@ -16,20 +17,22 @@ import { CritiqueModeButton } from "./critique-mode-button";
 import { ImagePill } from "./image-pill";
 import { VariationsButton } from "./variations-button";
 
-const ArrowUpIcon = () => (
-  <svg
-    className="w-4 h-4"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="12" y1="19" x2="12" y2="5" />
-    <polyline points="5 12 12 5 19 12" />
-  </svg>
-);
+interface SubmitButtonProps extends ComponentProps<"button"> {
+  onSubmit: () => void;
+}
+
+const SubmitButton = ({ onSubmit, className, ...props }: SubmitButtonProps) => {
+  return (
+    <button
+      {...props}
+      onClick={onSubmit}
+      className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0 ${className}`}
+      title="Send (Enter)"
+    >
+      <ArrowRight />
+    </button>
+  );
+};
 
 interface ActionButtonProps {
   isGenerating: boolean;
@@ -329,14 +332,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     dataTour="prompt-generation-mode"
                   />
                   <ActionButton isGenerating={isGenerating} dataTour="prompt-action-mode" />
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!value.trim() || isGenerating}
-                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0"
-                    title="Send (Enter)"
-                  >
-                    <ArrowUpIcon />
-                  </button>
+                  <SubmitButton onSubmit={handleSubmit} disabled={!value.trim() || isGenerating} />
                 </div>
               </PromptInputFooter>
             </>
