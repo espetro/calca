@@ -3,7 +3,7 @@
 import { resolve } from "path";
 
 import { getLogger } from "@logtape/logtape";
-import { $, path, cd } from "zx";
+import { $, path } from "zx";
 
 import { initLogger } from "../src/logger";
 
@@ -19,20 +19,17 @@ const DESKTOP_DIR = path.resolve(REPO_ROOT, "platforms", "desktop");
 
 const main = async () => {
   logger.info("==> Cleaning desktop build artifacts...");
-  cd(DESKTOP_DIR);
-  await $`bun run clean`;
+  await $`bun run --cwd ${DESKTOP_DIR} clean`;
 
   logger.info("==> Building web app...");
-  cd(REPO_ROOT);
-  await $`bun run --filter=@app/web build`;
+  await $`bun run --cwd ${REPO_ROOT} --filter=@app/web build`;
 
   logger.info("==> Copying web build to desktop Resources...");
   await $`mkdir -p ${DESKTOP_DIR}/Resources/web`;
   await $`cp -r ${REPO_ROOT}/apps/web/dist/* ${DESKTOP_DIR}/Resources/web/`;
 
   logger.info("==> Building Electrobun app...");
-  cd(DESKTOP_DIR);
-  await $`./node_modules/.bin/electrobun build --env=stable`;
+  await $({ cwd: DESKTOP_DIR })`./node_modules/.bin/electrobun build --env=stable`;
 
   logger.info("==> Done! Artifacts in platforms/desktop/artifacts/");
 };
