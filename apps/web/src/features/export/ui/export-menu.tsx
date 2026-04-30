@@ -1,7 +1,19 @@
 import { getLogger } from "@app/logger";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { ChevronDown, Download } from "lucide-react";
 
 import useExportCodeMutation from "#/features/design/hooks/use-export-code-mutation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "#/shared/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "#/shared/components/ui/tooltip";
 
 type ExportFormat = "svg" | "tailwind" | "react" | "png" | "jpg" | "copy-image";
 
@@ -127,24 +139,20 @@ export function ExportMenu({
   const [exporting, setExporting] = useState<ExportFormat | null>(null);
   const [preview, setPreview] = useState<{ format: ExportFormat; code: string } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const { mutateAsync } = useExportCodeMutation();
 
-  // oxlint-disable no-restricted-syntax -- Conditional click-outside listener requiring dynamic open/preview state. Cannot use useMountEffect.
-  // Close on outside click
-  useEffect(() => {
-    if (!open && !preview) {
-      return;
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpen(false);
-        setPreview(null);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open, preview]);
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+  };
 
   const handleExport = useCallback(
     async (format: ExportFormat) => {
@@ -240,43 +248,41 @@ export function ExportMenu({
 
   return (
     <div ref={menuRef} className="relative" onClick={(e) => e.stopPropagation()}>
-      {/* Export button */}
-      <button
-        onClick={() => {
-          setOpen(!open);
-          setPreview(null);
-        }}
-        className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-gray-400 hover:text-gray-600 hover:bg-black/5 transition-all"
-        title="Export design"
-      >
-        <svg
-          className="w-3.5 h-3.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-        Export
-      </button>
+      <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger
+              asChild
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={(e) => e.preventDefault()}
+            >
+              <button className="w-8 h-8 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 hover:bg-foreground/10 transition-all">
+                <Download className="w-4 h-4" />
+                <ChevronDown className="w-3 h-3 ml-[-2px]" />
+              </button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="top">Export</TooltipContent>
+        </Tooltip>
 
-      {/* Dropdown */}
-      {open && (
-        <div className="absolute top-full left-0 mt-1 bg-white/60 backdrop-blur-2xl rounded-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1 min-w-[180px] z-30">
+        <DropdownMenuContent
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          align="start"
+          side="bottom"
+          sideOffset={4}
+          className="min-w-[180px] bg-white/60 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1 rounded-xl"
+        >
           <div className="px-2.5 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
             Image
           </div>
           {IMAGE_FORMATS.map((fmt) => (
-            <button
+            <DropdownMenuItem
               key={fmt.id}
               onClick={() => handleExport(fmt.id)}
               disabled={exporting !== null}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-gray-700 hover:bg-black/5 disabled:opacity-40 transition-colors text-left"
+              className="rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer disabled:opacity-40"
             >
               <span className="text-sm w-4 text-center">{fmt.icon}</span>
               <span>{fmt.label}</span>
@@ -298,18 +304,18 @@ export function ExportMenu({
                   />
                 </svg>
               )}
-            </button>
+            </DropdownMenuItem>
           ))}
           <div className="my-1 border-t border-gray-200/30" />
           <div className="px-2.5 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
             Code
           </div>
           {CODE_FORMATS.map((fmt) => (
-            <button
+            <DropdownMenuItem
               key={fmt.id}
               onClick={() => handleExport(fmt.id)}
               disabled={exporting !== null}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-gray-700 hover:bg-black/5 disabled:opacity-40 transition-colors text-left"
+              className="rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer disabled:opacity-40"
             >
               <span className="text-sm w-4 text-center">{fmt.icon}</span>
               <span>{fmt.label}</span>
@@ -331,10 +337,10 @@ export function ExportMenu({
                   />
                 </svg>
               )}
-            </button>
+            </DropdownMenuItem>
           ))}
-        </div>
-      )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Loading indicator (when dropdown is closed) */}
       {exporting && !open && (
