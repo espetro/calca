@@ -1,4 +1,3 @@
-// @ts-nocheck - Electrobun types have issues, but the API works at runtime
 /**
  * platforms/desktop/src/constants.ts
  *
