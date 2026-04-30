@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
 import { useClickOutside } from "@mantine/hooks";
 
-export function FloatingSystemPromptButton() {
+export function SystemPromptButton() {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -54,7 +54,7 @@ export function FloatingSystemPromptButton() {
           <textarea
             value={settings.systemPrompt}
             onChange={handleChange}
-            placeholder='Add custom instructions for the AI designer...&#10;&#10;e.g. "You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy..."'
+            placeholder='Add custom instructions for the AI designer...\n\ne.g. "You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy..."'
             className="w-full h-32 px-4 py-3 rounded-xl bg-white/70 border border-gray-200/50 text-[13px] text-gray-700 placeholder-gray-400 outline-none focus:border-blue-300/50 focus:ring-1 focus:ring-blue-200/30 resize-y font-mono"
           />
           <p className="mt-2 text-[10px] text-gray-500">

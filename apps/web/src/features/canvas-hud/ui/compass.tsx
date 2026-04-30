@@ -1,7 +1,7 @@
 import { Navigation } from "lucide-react";
 import { useViewportSize } from "@mantine/hooks";
 
-import ToolButton from "./tool-button";
+import ToolButton from "#/widgets/toolbar/ui/tool-button";
 
 export interface CompassProps {
   offset: { x: number; y: number };

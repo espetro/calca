@@ -27,7 +27,7 @@ function getPresetIcon(iconName: string): LucideIcon {
   return ICON_MAP[iconName] || Palette;
 }
 
-export function FloatingPresetButton() {
+export function PresetButton() {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
