@@ -2,13 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildModelFallbackChain,
-  claudeModels,
-  geminiModels,
   getAIProvider,
   getClaudeModel,
   getGeminiImageModel,
   getGeminiModel,
-  openaiModels,
   type ProviderType,
 } from "./providers";
 
@@ -72,7 +69,7 @@ describe("getClaudeModel", () => {
   it("returns default fallback for unknown model IDs", () => {
     const result = getClaudeModel("unknown-model");
     expect(result).toBeDefined();
-    expect(result).toBe(claudeModels["claude-opus-4-6"]);
+    expect(result).toBe("claude-opus-4-6");
   });
 
   it("returns claude-sonnet-4-5 for legacy ID when available", () => {
@@ -89,13 +86,13 @@ describe("getGeminiModel", () => {
   it("returns default gemini-2.0-flash for unknown model IDs", () => {
     const result = getGeminiModel("unknown-model");
     expect(result).toBeDefined();
-    expect(result).toBe(geminiModels["gemini-2.0-flash"]);
+    expect(result).toBe("gemini-2.0-flash");
   });
 
   it("handles empty string by returning default", () => {
     const result = getGeminiModel("");
     expect(result).toBeDefined();
-    expect(result).toBe(geminiModels["gemini-2.0-flash"]);
+    expect(result).toBe("gemini-2.0-flash");
   });
 });
 
@@ -131,13 +128,5 @@ describe("buildModelFallbackChain", () => {
     expect(buildModelFallbackChain("claude-opus-4-6", "claude-opus-4-6")).toEqual([
       "claude-opus-4-6",
     ]);
-  });
-});
-
-describe("openaiModels", () => {
-  it("contains expected OpenAI model keys", () => {
-    expect(Object.keys(openaiModels)).toContain("gpt-4");
-    expect(Object.keys(openaiModels)).toContain("gpt-4o");
-    expect(Object.keys(openaiModels)).toContain("gpt-4o-mini");
   });
 });
