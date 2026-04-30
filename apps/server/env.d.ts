@@ -1,6 +1,6 @@
-type LogLevel = "trace" | "debug" | "info" | "warning" | "error" | "fatal";
-
 declare global {
+  export type LogLevel = "trace" | "debug" | "info" | "warning" | "error" | "fatal";
+
   namespace NodeJS {
     interface ProcessEnv {
       readonly LOG_LEVEL: LogLevel;

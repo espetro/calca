@@ -6,7 +6,7 @@ import exportRoute from "./routes/export";
 import probeModelsRoute from "./routes/probe-models";
 import workflowRoute from "./routes/workflow";
 
-await createLogger(process.env.LOG_LEVEL);
+await createLogger(process.env.LOG_LEVEL as LogLevel);
 
 const logger = getLogger(["calca", "server"]);
 
@@ -20,4 +20,5 @@ const app = new Hono()
 logger.info("Server app initialized");
 
 export default app;
+
 export type AppRoutes = typeof app;
