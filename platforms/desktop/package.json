@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "watch": "electrobun dev --watch",
-    "dev:desktop": "bun run scripts/watch.ts",
+    "web-dev": "bun run --cwd ../../apps/web dev",
+    "electrobun-watch": "electrobun dev --watch",
+    "dev:desktop": "bun run --parallel web-dev electrobun-watch",
     "build:desktop": "bun run scripts/build.ts",
     "verify": "bun run scripts/verify.ts",
     "clean": "rm -rf build artifacts Resources/web"
