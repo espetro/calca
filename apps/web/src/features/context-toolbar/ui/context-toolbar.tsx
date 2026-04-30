@@ -1,11 +1,11 @@
 import { useAtomValue } from "jotai";
 
-import { ExportMenu } from "#/features/export";
-import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
-
-import { RemixButton } from "./ui/remix-button";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import { ExportMenu } from "#/features/export";
 import type { DesignIteration } from "#/shared/types";
+
+import { RemixButton } from "./remix-button";
 
 interface ContextToolbarProps {
   scale: number;
@@ -57,7 +57,7 @@ export function ContextToolbar({
       style={{ left: screenX, top: screenY - 56, transform: "translateX(-50%)" }}
     >
       <div
-        className="pointer-events-auto flex items-center gap-0.5 px-2 py-1.5 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)]"
+        className="pointer-events-auto flex items-center gap-0.5 px-1.5 py-1 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)]"
         onClick={(e) => e.stopPropagation()}
       >
         <RemixButton iteration={iteration} onRemix={onRemix} />
