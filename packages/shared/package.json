@@ -10,10 +10,11 @@
   "scripts": {
     "dev": "echo 'dev: not yet implemented'",
     "build": "echo 'build: not yet implemented'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "echo 'lint: not yet implemented'",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
     "validate": "echo 'validate: not yet implemented'"
   },
   "dependencies": {

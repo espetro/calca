@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 interface Point {
   x: number;
@@ -28,7 +30,9 @@ export function useCanvas() {
   }, []);
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isPanning.current) return;
+    if (!isPanning.current) {
+      return;
+    }
     const dx = e.clientX - lastMouse.current.x;
     const dy = e.clientY - lastMouse.current.y;
     lastMouse.current = { x: e.clientX, y: e.clientY };
@@ -58,11 +62,11 @@ export function useCanvas() {
         const newScale = Math.min(Math.max(prev.scale * zoomFactor, 0.1), 5);
         const scaleChange = newScale / prev.scale;
         return {
-          scale: newScale,
           offset: {
             x: mouseX - (mouseX - prev.offset.x) * scaleChange,
             y: mouseY - (mouseY - prev.offset.y) * scaleChange,
           },
+          scale: newScale,
         };
       });
     } else {
@@ -88,26 +92,22 @@ export function useCanvas() {
         el.addEventListener("wheel", wheelHandler, { passive: false });
       }
     },
-    [wheelHandler]
+    [wheelHandler],
   );
 
   // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (canvasElRef.current) {
-        canvasElRef.current.removeEventListener("wheel", wheelHandler);
-      }
-    };
-  }, [wheelHandler]);
+  useMountEffect(() => () => {
+    if (canvasElRef.current) {
+      canvasElRef.current.removeEventListener("wheel", wheelHandler);
+    }
+  });
 
   const screenToCanvas = useCallback(
-    (screenX: number, screenY: number, rect: DOMRect): Point => {
-      return {
-        x: (screenX - rect.left - state.offset.x) / state.scale,
-        y: (screenY - rect.top - state.offset.y) / state.scale,
-      };
-    },
-    [state.offset, state.scale]
+    (screenX: number, screenY: number, rect: DOMRect): Point => ({
+      x: (screenX - rect.left - state.offset.x) / state.scale,
+      y: (screenY - rect.top - state.offset.y) / state.scale,
+    }),
+    [state.offset, state.scale],
   );
 
   const resetView = useCallback(() => {
@@ -128,40 +128,45 @@ export function useCanvas() {
     }));
   }, []);
 
-  const zoomToFit = useCallback((bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
-    const padding = 80;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const contentW = bounds.maxX - bounds.minX;
-    const contentH = bounds.maxY - bounds.minY;
-    if (contentW <= 0 || contentH <= 0) return;
+  const zoomToFit = useCallback(
+    (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
+      const padding = 80;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const contentW = bounds.maxX - bounds.minX;
+      const contentH = bounds.maxY - bounds.minY;
+      if (contentW <= 0 || contentH <= 0) {
+        return;
+      }
 
-    const scaleX = (vw - padding * 2) / contentW;
-    const scaleY = (vh - padding * 2) / contentH;
-    const newScale = Math.min(scaleX, scaleY, 1);
+      const scaleX = (vw - padding * 2) / contentW;
+      const scaleY = (vh - padding * 2) / contentH;
+      const newScale = Math.min(scaleX, scaleY, 1);
 
-    const centerX = (bounds.minX + bounds.maxX) / 2;
-    const centerY = (bounds.minY + bounds.maxY) / 2;
+      const centerX = (bounds.minX + bounds.maxX) / 2;
+      const centerY = (bounds.minY + bounds.maxY) / 2;
 
-    setState({
-      scale: newScale,
-      offset: {
-        x: vw / 2 - centerX * newScale,
-        y: vh / 2 - centerY * newScale,
-      },
-    });
-  }, []);
+      setState({
+        offset: {
+          x: vw / 2 - centerX * newScale,
+          y: vh / 2 - centerY * newScale,
+        },
+        scale: newScale,
+      });
+    },
+    [],
+  );
 
   return {
-    offset: state.offset,
-    scale: state.scale,
     isPanning,
-    setCanvasRef,
+    offset: state.offset,
     onMouseDown,
     onMouseMove,
     onMouseUp,
-    screenToCanvas,
     resetView,
+    scale: state.scale,
+    screenToCanvas,
+    setCanvasRef,
     zoomIn,
     zoomOut,
     zoomToFit,

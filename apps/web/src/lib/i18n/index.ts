@@ -1,6 +1,19 @@
-import messages from './messages/en.json'
+import messages from "./messages/en.json";
 
 export const m = {
+  banner: {
+    addApiKey: () => messages.banner.addApiKey,
+  },
+  canvas: {
+    emptyTitle: () => messages.canvas.emptyTitle,
+    emptyDescription: () => messages.canvas.emptyDescription,
+  },
+  dialog: {
+    resetTitle: () => messages.dialog.resetTitle,
+    resetDescription: () => messages.dialog.resetDescription,
+    keepDesigning: () => messages.dialog.keepDesigning,
+    clearCanvasConfirm: () => messages.dialog.clearCanvasConfirm,
+  },
   onboarding: {
     welcomeTitle: () => messages.onboarding.welcomeTitle,
     welcomeDescription: () => messages.onboarding.welcomeDescription,
@@ -21,6 +34,11 @@ export const m = {
     getStarted: () => messages.onboarding.getStarted,
     privacyNote: () => messages.onboarding.privacyNote,
   },
+  toolbar: {
+    importDesign: () => messages.toolbar.importDesign,
+    exportDesign: () => messages.toolbar.exportDesign,
+    clearCanvas: () => messages.toolbar.clearCanvas,
+  },
   tour: {
     step1Title: () => messages.tour.step1Title,
     step1Desc: () => messages.tour.step1Desc,
@@ -40,22 +58,4 @@ export const m = {
     done: () => messages.tour.done,
     next: () => messages.tour.next,
   },
-  canvas: {
-    emptyTitle: () => messages.canvas.emptyTitle,
-    emptyDescription: () => messages.canvas.emptyDescription,
-  },
-  toolbar: {
-    importDesign: () => messages.toolbar.importDesign,
-    exportDesign: () => messages.toolbar.exportDesign,
-    clearCanvas: () => messages.toolbar.clearCanvas,
-  },
-  dialog: {
-    resetTitle: () => messages.dialog.resetTitle,
-    resetDescription: () => messages.dialog.resetDescription,
-    keepDesigning: () => messages.dialog.keepDesigning,
-    clearCanvasConfirm: () => messages.dialog.clearCanvasConfirm,
-  },
-  banner: {
-    addApiKey: () => messages.banner.addApiKey,
-  },
-}
+};

@@ -1,16 +1,19 @@
+import { getLogger } from "@app/logger";
+import { useAtom } from "jotai";
 import { useCallback, useRef } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
+
+const logger = getLogger(["calca", "web", "comments"]);
+
+import { trackCommentAdded } from "@app/analytics";
+
 import {
   commentDraftAtom,
   activeCommentAtom,
   activeCommentIterationIdAtom,
   commentCountAtom,
-} from "@/features/design/state/comment-atoms";
-import type {
-  Comment as CommentType,
-  CommentMessage,
-} from "@/shared/types";
+} from "#/features/design/state/comment-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import type { Comment as CommentType, CommentMessage } from "#/shared/types";
 
 interface RevisionJob {
   iterationId: string;
@@ -19,33 +22,29 @@ interface RevisionJob {
   thread: CommentMessage[];
 }
 
-interface RunPipelineForFrameFn {
-  (
-    iterId: string,
-    prompt: string,
-    style: string,
-    index: number,
-    critique: string | undefined,
-    signal: AbortSignal,
-    revisionOpts?: { revision: string; existingHtml: string }
-  ): Promise<{
-    html: string;
-    label: string;
-    width?: number;
-    height?: number;
-    critique?: string;
-    comment?: string;
-  }>;
-}
+type RunPipelineForFrameFn = (
+  iterId: string,
+  prompt: string,
+  style: string,
+  index: number,
+  critique: string | undefined,
+  signal: AbortSignal,
+  revisionOpts?: { revision: string; existingHtml: string },
+) => Promise<{
+  html: string;
+  label: string;
+  width?: number;
+  height?: number;
+  critique?: string;
+  comment?: string;
+}>;
 
-export const useCommentHandlers = (
-  runPipelineForFrame: RunPipelineForFrameFn
-) => {
+export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) => {
   const [groups, setGroups] = useAtom(groupsAtom);
   const [commentDraft, setCommentDraft] = useAtom(commentDraftAtom);
   const [activeComment, setActiveComment] = useAtom(activeCommentAtom);
   const [activeCommentIterationId, setActiveCommentIterationId] = useAtom(
-    activeCommentIterationIdAtom
+    activeCommentIterationIdAtom,
   );
   const [commentCount, setCommentCount] = useAtom(commentCountAtom);
 
@@ -58,22 +57,24 @@ export const useCommentHandlers = (
         prev.map((g) => ({
           ...g,
           iterations: g.iterations.map((iter) => {
-            if (iter.id !== iterId) return iter;
+            if (iter.id !== iterId) {
+              return iter;
+            }
             return {
               ...iter,
-              comments: iter.comments.map((c) =>
-                c.id === cId ? { ...c, ...update } : c
-              ),
+              comments: iter.comments.map((c) => (c.id === cId ? { ...c, ...update } : c)),
             };
           }),
-        }))
+        })),
       );
     },
-    [setGroups]
+    [setGroups],
   );
 
   const processRevisionQueue = useCallback(async () => {
-    if (isProcessingRevisionRef.current) return;
+    if (isProcessingRevisionRef.current) {
+      return;
+    }
     isProcessingRevisionRef.current = true;
 
     while (revisionQueueRef.current.length > 0) {
@@ -81,9 +82,7 @@ export const useCommentHandlers = (
       const { iterationId, commentId, text } = job;
 
       updateComment(iterationId, commentId, { status: "working" });
-      setActiveComment((prev) =>
-        prev?.id === commentId ? { ...prev, status: "working" } : prev
-      );
+      setActiveComment((prev) => (prev?.id === commentId ? { ...prev, status: "working" } : prev));
 
       let currentHtml = "";
       let currentPrompt = "";
@@ -94,7 +93,9 @@ export const useCommentHandlers = (
             currentHtml = iter.html;
             currentPrompt = iter.prompt || "";
             const comment = iter.comments.find((c) => c.id === commentId);
-            if (comment?.thread) latestThread = comment.thread;
+            if (comment?.thread) {
+              latestThread = comment.thread;
+            }
           }
         }
       }
@@ -108,69 +109,73 @@ export const useCommentHandlers = (
           0,
           undefined,
           controller.signal,
-          { revision: text, existingHtml: currentHtml }
+          { existingHtml: currentHtml, revision: text },
         );
 
         setGroups((prev) =>
           prev.map((g) => ({
             ...g,
             iterations: g.iterations.map((iter) => {
-              if (iter.id !== iterationId) return iter;
+              if (iter.id !== iterationId) {
+                return iter;
+              }
               return {
                 ...iter,
+                height: result.height || iter.height,
                 html: result.html || iter.html,
                 width: result.width || iter.width,
-                height: result.height || iter.height,
               };
             }),
-          }))
+          })),
         );
 
         const calcaResponse: CommentMessage = {
+          createdAt: Date.now(),
           id: `msg-${Date.now()}`,
           role: "calca",
           text: result.comment || "Done! I've updated the design.",
-          createdAt: Date.now(),
         };
         const doneThread = [...latestThread, calcaResponse];
         updateComment(iterationId, commentId, {
-          status: "done",
           aiResponse: calcaResponse.text,
+          status: "done",
           thread: doneThread,
         });
         setActiveComment((prev) =>
           prev?.id === commentId
             ? {
                 ...prev,
-                status: "done",
                 aiResponse: calcaResponse.text,
+                status: "done",
                 thread: doneThread,
               }
-            : prev
+            : prev,
         );
-      } catch (err) {
-        console.error("Revision failed:", err);
+      } catch (error) {
+        logger.error("Revision failed", {
+          error: error instanceof Error ? error.message : String(error),
+        });
         const errorResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
           role: "calca",
-          text: `Revision failed: ${err instanceof Error ? err.message : "Unknown error"}. Try again.`,
+          text: `Revision failed: ${error instanceof Error ? error.message : "Unknown error"}. Try again.`,
           createdAt: Date.now(),
         };
         const errorThread = [...latestThread, errorResponse];
         updateComment(iterationId, commentId, {
-          status: "done",
           aiResponse: errorResponse.text,
+          status: "done",
           thread: errorThread,
         });
         setActiveComment((prev) =>
           prev?.id === commentId
             ? {
                 ...prev,
-                status: "done",
                 aiResponse: errorResponse.text,
+                status: "done",
                 thread: errorThread,
               }
-            : prev
+            : prev,
         );
       }
 
@@ -182,24 +187,27 @@ export const useCommentHandlers = (
 
   const handleCommentSubmit = useCallback(
     (text: string) => {
-      if (!commentDraft) return;
+      if (!commentDraft) {
+        return;
+      }
       const nextCount = commentCount + 1;
       setCommentCount(nextCount);
+      trackCommentAdded(false, nextCount);
 
       const commentId = `comment-${Date.now()}`;
       const userMessage: CommentMessage = {
+        createdAt: Date.now(),
         id: `msg-${Date.now()}`,
         role: "user",
         text,
-        createdAt: Date.now(),
       };
       const newComment: CommentType = {
-        id: commentId,
-        position: commentDraft.position,
-        text,
-        number: nextCount,
         createdAt: Date.now(),
+        id: commentId,
+        number: nextCount,
+        position: commentDraft.position,
         status: "waiting",
+        text,
         thread: [userMessage],
       };
 
@@ -217,83 +225,77 @@ export const useCommentHandlers = (
             }
             return iter;
           }),
-        }))
+        })),
       );
 
       setCommentDraft(null);
 
       revisionQueueRef.current.push({
-        iterationId: iterId,
         commentId,
+        iterationId: iterId,
         text,
         thread: [userMessage],
       });
 
       processRevisionQueue();
     },
-    [
-      commentDraft,
-      commentCount,
-      processRevisionQueue,
-      setCommentCount,
-      setCommentDraft,
-      setGroups,
-    ]
+    [commentDraft, commentCount, processRevisionQueue, setCommentCount, setCommentDraft, setGroups],
   );
 
   const handleCommentReply = useCallback(
     (text: string) => {
-      if (!activeComment || !activeCommentIterationId) return;
+      if (!activeComment || !activeCommentIterationId) {
+        return;
+      }
 
       const commentId = activeComment.id;
       const iterId = activeCommentIterationId;
       const currentThread = activeComment.thread || [
         {
+          createdAt: activeComment.createdAt,
           id: "msg-0",
           role: "user" as const,
           text: activeComment.text,
-          createdAt: activeComment.createdAt,
         },
       ];
 
       const userMessage: CommentMessage = {
+        createdAt: Date.now(),
         id: `msg-${Date.now()}`,
         role: "user",
         text,
-        createdAt: Date.now(),
       };
       const updatedThread = [...currentThread, userMessage];
 
       updateComment(iterId, commentId, {
-        thread: updatedThread,
         status: "waiting",
+        thread: updatedThread,
       });
       setActiveComment((prev) =>
-        prev
-          ? { ...prev, thread: updatedThread, status: "waiting" }
-          : prev
+        prev ? { ...prev, status: "waiting", thread: updatedThread } : prev,
       );
 
       revisionQueueRef.current.push({
-        iterationId: iterId,
         commentId,
+        iterationId: iterId,
         text,
         thread: updatedThread,
       });
 
+      trackCommentAdded(true, commentCount + 1);
       processRevisionQueue();
     },
-    [activeComment, activeCommentIterationId, updateComment, processRevisionQueue, setActiveComment]
+    [activeComment, activeCommentIterationId, commentCount, processRevisionQueue, setActiveComment],
   );
 
   return {
-    handleCommentSubmit,
-    handleCommentReply,
-    commentDraft,
-    setCommentDraft,
     activeComment,
-    setActiveComment,
     activeCommentIterationId,
+    commentDraft,
+    handleCommentReply,
+    handleCommentSubmit,
+    setActiveComment,
     setActiveCommentIterationId,
+    setCommentDraft,
   };
 };

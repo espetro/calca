@@ -1,4 +1,4 @@
-import { type PipelineStatus, STAGE_CONFIG } from "@/shared/types";
+import { type PipelineStatus, STAGE_CONFIG } from "#/shared/types";
 
 interface PipelineStatusBarProps {
   status: PipelineStatus;
@@ -8,28 +8,31 @@ interface PipelineStatusBarProps {
   frameHeight: number;
 }
 
-export function PipelineStatusOverlay({ status, x, y, width, frameHeight }: PipelineStatusBarProps) {
+export function PipelineStatusOverlay({
+  status,
+  x,
+  y,
+  width,
+  frameHeight,
+}: PipelineStatusBarProps) {
   const config = STAGE_CONFIG[status.stage];
   const isDone = status.stage === "done";
   const isError = status.stage === "error";
   const isQueued = status.stage === "queued";
 
-  if (isDone) return null;
+  if (isDone) {
+    return null;
+  }
 
   const topOffset = y + frameHeight + 8;
 
   return (
-    <div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: topOffset, width }}
-    >
+    <div className="absolute pointer-events-none" style={{ left: x, top: topOffset, width }}>
       <div className="h-1 rounded-full bg-muted overflow-hidden">
         {!isQueued && (
           <div
             className={`h-full rounded-full transition-all duration-700 ease-out ${
-              isError
-                ? "bg-destructive"
-                : "bg-gradient-to-r from-primary to-secondary"
+              isError ? "bg-destructive" : "bg-gradient-to-r from-primary to-secondary"
             } ${status.stage === "layout" || status.stage === "images" ? "animate-pulse" : ""}`}
             style={{ width: `${Math.max(status.progress * 100, 5)}%` }}
           />

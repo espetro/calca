@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { deriveProviderFields, type DerivedProviderFields } from "../lib/derive-provider-fields";
+
+import { type DerivedProviderFields, deriveProviderFields } from "../lib/derive-provider-fields";
 import type { ProviderConfig } from "../types";
 
 interface SettingsLike {

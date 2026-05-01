@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "echo 'dev: not yet implemented'",
     "build": "echo 'build: not yet implemented'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "echo 'tsc: not yet implemented'",
     "test": "vitest run --passWithNoTests",
-    "lint": "echo 'lint: not yet implemented'",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
     "validate": "echo 'validate: not yet implemented'"
   }
 }

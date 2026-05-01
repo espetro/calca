@@ -2,5 +2,3 @@
 // Licensed under the Elastic License v2. See LICENSE for details.
 
 // Enterprise/Pro features public API
-
-export {};

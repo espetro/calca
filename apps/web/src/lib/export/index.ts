@@ -5,7 +5,11 @@
  * Import format: both `.otto` (legacy) and `.design` for backward compatibility.
  */
 
-import type { GenerationGroup } from "@/shared/types";
+import { getLogger } from "@app/logger";
+
+const logger = getLogger(["calca", "web", "export"]);
+
+import type { GenerationGroup } from "#/shared/types";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -62,7 +66,6 @@ export interface DeserializedCanvas {
  */
 export function serializeCanvasForExport(groups: GenerationGroup[]): SerializedCanvas {
   return {
-    version: 1,
     exportedAt: new Date().toISOString(),
     groups: groups.map((g) => ({
       id: g.id,
@@ -78,6 +81,7 @@ export function serializeCanvasForExport(groups: GenerationGroup[]): SerializedC
         position: iter.position,
       })),
     })),
+    version: 1,
   };
 }
 
@@ -101,9 +105,7 @@ export function generateExportFilename(): string {
  * Accepts both legacy `.otto` and new `.design` formats.
  * Returns the groups array or throws on invalid data.
  */
-export function deserializeCanvasFile(
-  data: unknown,
-): DeserializedCanvas {
+export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
   if (!data || typeof data !== "object") {
     throw new Error("Invalid file: not an object");
   }
@@ -115,7 +117,9 @@ export function deserializeCanvasFile(
 
   if (!obj.groups || !Array.isArray(obj.groups)) {
     throw new Error(
-      isLegacyOtto ? "Invalid .otto file: missing groups array" : "Invalid .design file: missing groups array",
+      isLegacyOtto
+        ? "Invalid .otto file: missing groups array"
+        : "Invalid .design file: missing groups array",
     );
   }
 
@@ -125,10 +129,8 @@ export function deserializeCanvasFile(
       const groupId = (g.id as string) || `imported-group-${now}-${groupIndex}`;
 
       return {
-        id: groupId,
-        prompt: (g.prompt as string) || "",
-        position: (g.position as { x: number; y: number }) || { x: 0, y: 0 },
         createdAt: (g.createdAt as number) || now,
+        id: groupId,
         iterations: ((g.iterations as Record<string, unknown>[]) || []).map(
           (iter: Record<string, unknown>, iterIndex: number) => ({
             id: (iter.id as string) || `imported-iter-${now}-${groupIndex}-${iterIndex}`,
@@ -143,6 +145,8 @@ export function deserializeCanvasFile(
             isRegenerating: false,
           }),
         ),
+        position: (g.position as { x: number; y: number }) || { x: 0, y: 0 },
+        prompt: (g.prompt as string) || "",
       };
     },
   );
@@ -165,10 +169,13 @@ export async function readCanvasFile(file: File): Promise<DeserializedCanvas> {
   try {
     const result = deserializeCanvasFile(parsed);
     return result;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     throw new Error(
-      isOttoFile ? `Failed to parse .otto file: ${message}` : `Failed to parse .design file: ${message}`,
+      isOttoFile
+        ? `Failed to parse .otto file: ${message}`
+        : `Failed to parse .design file: ${message}`,
+      { cause: error },
     );
   }
 }
@@ -203,25 +210,25 @@ export function exportCanvas(groups: GenerationGroup[]): void {
  * Calls `onFile` with the deserialized groups on successful read.
  * Shows an alert on error.
  */
-export function openImportDialog(
-  onFile: (groups: GenerationGroup[]) => void,
-): void {
+export function openImportDialog(onFile: (groups: GenerationGroup[]) => void): void {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = IMPORT_EXTENSIONS.join(",");
   input.onchange = (e) => {
     const file = (e.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
     readCanvasFile(file)
       .then(({ groups, isLegacyOtto }) => {
         if (isLegacyOtto) {
-          console.info("[export] Imported legacy .otto file");
+          logger.info("Imported legacy .otto file");
         }
         onFile(groups);
       })
-      .catch((err) => {
-        alert(err instanceof Error ? err.message : "Failed to import file");
+      .catch((error) => {
+        alert(error instanceof Error ? error.message : "Failed to import file");
       });
   };
   input.click();

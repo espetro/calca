@@ -1,0 +1,69 @@
+name: Desktop Build
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.10"
+      - run: bun install
+      - run: bun run typecheck
+      - run: bun test
+
+  build-desktop:
+    # needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: darwin
+          - os: windows-2025
+            platform: win32
+    runs-on: ${{ matrix.os }}
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.10"
+      - run: bun install
+      - run: bun run build:desktop
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calca-desktop-${{ matrix.platform }}
+          path: platforms/desktop/artifacts/
+
+  release:
+    needs: build-desktop
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.10"
+      - run: bun install
+      - run: bun run build:desktop
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: calca-desktop-*
+          merge-multiple: true
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*.dmg
+            artifacts/**/*.zip
+          generate_release_notes: true

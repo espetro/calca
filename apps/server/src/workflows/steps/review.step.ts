@@ -1,29 +1,35 @@
-import { createStep } from "@mastra/core/workflows";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ModelMessage } from "ai";
 import { buildReviewPrompt } from "@app/core/prompts/review";
+import { getLogger } from "@app/logger";
 import { validateReview } from "@app/shared";
+import { createStep } from "@mastra/core/workflows";
+import type { ModelMessage } from "ai";
+
 import { parseHtmlWithSize } from "../../lib/parse-html";
 import { stripBase64Images } from "../../lib/strip-base64";
 import { ReviewInputSchema, ReviewOutputSchema } from "../schemas/review.schema";
 
-const DEFAULT_MODEL = "claude-opus-4-6";
+const logger = getLogger(["calca", "server", "workflow", "review"]);
 
 export const reviewStep = createStep({
   id: "review",
   inputSchema: ReviewInputSchema,
   outputSchema: ReviewOutputSchema,
   execute: async ({ inputData }) => {
-    const { html, prompt, width, height, model, apiKey, baseURL, providerType } = inputData;
-    const useModel = model || DEFAULT_MODEL;
+    const { html, prompt, width, height, model, apiKey, baseURL, providerType, frameIndex } =
+      inputData;
+    const useModel = model;
+    const frameIdx = frameIndex ?? 0;
 
     const { stripped, restore } = stripBase64Images(html);
 
-    const messages: ModelMessage[] = [{
-      role: "user",
-      content: buildReviewPrompt(prompt || "", width, height, stripped),
-    }];
+    const messages: ModelMessage[] = [
+      {
+        role: "user",
+        content: buildReviewPrompt(prompt || "", width, height, stripped),
+      },
+    ];
 
     const { result } = await generateWithFallback({
       apiKey,
@@ -32,6 +38,8 @@ export const reviewStep = createStep({
       maxTokens: 16384,
       providerType: providerType as ProviderType | undefined,
       baseURL,
+      functionId: `review:${frameIdx + 1}`,
+      frameIndex: frameIdx,
     });
 
     const raw = result.text;
@@ -43,8 +51,8 @@ export const reviewStep = createStep({
         width: validated.width || width,
         height: validated.height || height,
       };
-    } catch (validationErr) {
-      console.warn("Review validation failed, returning parsed output:", validationErr);
+    } catch (error) {
+      logger.warn("Review validation failed, returning parsed output:", { error });
       const parsed = parseHtmlWithSize(raw);
       return {
         html: restore(parsed.html),

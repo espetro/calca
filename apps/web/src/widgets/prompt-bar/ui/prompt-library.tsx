@@ -13,35 +13,77 @@ interface PromptItem {
 
 const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
   {
-    name: "UI Components",
     icon: "◻",
+    name: "UI Components",
     prompts: [
-      { label: "Toast Notifications", text: "A set of toast notification components — success, error, warning, and info variants. Stacked layout with icons, message text, and dismiss buttons. Rounded corners, subtle shadows." },
-      { label: "Pricing Cards", text: "Three pricing tier cards side by side — Starter, Pro, Enterprise. Each with feature list, price, and CTA button. The middle card should be highlighted as the recommended option." },
-      { label: "Login Form", text: "A modern login form with email and password fields, 'Remember me' checkbox, forgot password link, and a primary sign-in button. Include social login options (Google, GitHub)." },
-      { label: "Settings Panel", text: "An account settings panel with profile section (avatar, name, email), notification toggles, theme selector (light/dark), and a danger zone with delete account button." },
-      { label: "Navigation Bar", text: "A responsive top navigation bar with logo, nav links (Home, Features, Pricing, Docs), search input, and a user avatar dropdown. Clean and minimal." },
-      { label: "Modal Dialog", text: "A confirmation modal dialog with a warning icon, title, description text, and two action buttons (Cancel and Confirm). Semi-transparent backdrop overlay." },
+      {
+        label: "Toast Notifications",
+        text: "A set of toast notification components — success, error, warning, and info variants. Stacked layout with icons, message text, and dismiss buttons. Rounded corners, subtle shadows.",
+      },
+      {
+        label: "Pricing Cards",
+        text: "Three pricing tier cards side by side — Starter, Pro, Enterprise. Each with feature list, price, and CTA button. The middle card should be highlighted as the recommended option.",
+      },
+      {
+        label: "Login Form",
+        text: "A modern login form with email and password fields, 'Remember me' checkbox, forgot password link, and a primary sign-in button. Include social login options (Google, GitHub).",
+      },
+      {
+        label: "Settings Panel",
+        text: "An account settings panel with profile section (avatar, name, email), notification toggles, theme selector (light/dark), and a danger zone with delete account button.",
+      },
+      {
+        label: "Navigation Bar",
+        text: "A responsive top navigation bar with logo, nav links (Home, Features, Pricing, Docs), search input, and a user avatar dropdown. Clean and minimal.",
+      },
+      {
+        label: "Modal Dialog",
+        text: "A confirmation modal dialog with a warning icon, title, description text, and two action buttons (Cancel and Confirm). Semi-transparent backdrop overlay.",
+      },
     ],
   },
   {
-    name: "Full Pages",
     icon: "▣",
+    name: "Full Pages",
     prompts: [
-      { label: "SaaS Hero Section", text: "A SaaS landing page hero section with a large headline, subheadline, email capture input with CTA button, and a product screenshot or abstract illustration area below. Trust badges at the bottom." },
-      { label: "Dashboard Layout", text: "An analytics dashboard with a sidebar nav, top stats row (4 metric cards), a large area chart, and a recent activity table below. Dark or light theme, clean data visualization." },
-      { label: "Pricing Page", text: "A full pricing page with a toggle for monthly/annual billing, three plan cards with feature comparison lists, an FAQ section below, and an enterprise CTA banner." },
-      { label: "Blog Post Layout", text: "A blog post page with article title, author avatar and byline, publish date, featured image, body text with headings and paragraphs, and a related posts section at the bottom." },
+      {
+        label: "SaaS Hero Section",
+        text: "A SaaS landing page hero section with a large headline, subheadline, email capture input with CTA button, and a product screenshot or abstract illustration area below. Trust badges at the bottom.",
+      },
+      {
+        label: "Dashboard Layout",
+        text: "An analytics dashboard with a sidebar nav, top stats row (4 metric cards), a large area chart, and a recent activity table below. Dark or light theme, clean data visualization.",
+      },
+      {
+        label: "Pricing Page",
+        text: "A full pricing page with a toggle for monthly/annual billing, three plan cards with feature comparison lists, an FAQ section below, and an enterprise CTA banner.",
+      },
+      {
+        label: "Blog Post Layout",
+        text: "A blog post page with article title, author avatar and byline, publish date, featured image, body text with headings and paragraphs, and a related posts section at the bottom.",
+      },
     ],
   },
   {
-    name: "Marketing",
     icon: "◈",
+    name: "Marketing",
     prompts: [
-      { label: "Social Media Card", text: "A social media announcement card (1200x630 ratio) for a product launch. Bold headline, product name, a brief tagline, and a gradient or solid color background. Eye-catching and shareable." },
-      { label: "Email Header", text: "An email header/hero section for a product newsletter. Company logo, bold announcement headline, short description, and a prominent CTA button. Works at 600px width." },
-      { label: "Banner Ad", text: "A web banner ad (728x90 leaderboard format) for a SaaS product. Product name, value proposition in one line, and a 'Try Free' CTA button. Clean, not cluttered." },
-      { label: "Feature Section", text: "A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above." },
+      {
+        label: "Social Media Card",
+        text: "A social media announcement card (1200x630 ratio) for a product launch. Bold headline, product name, a brief tagline, and a gradient or solid color background. Eye-catching and shareable.",
+      },
+      {
+        label: "Email Header",
+        text: "An email header/hero section for a product newsletter. Company logo, bold announcement headline, short description, and a prominent CTA button. Works at 600px width.",
+      },
+      {
+        label: "Banner Ad",
+        text: "A web banner ad (728x90 leaderboard format) for a SaaS product. Product name, value proposition in one line, and a 'Try Free' CTA button. Clean, not cluttered.",
+      },
+      {
+        label: "Feature Section",
+        text: "A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above.",
+      },
     ],
   },
 ];
@@ -49,7 +91,9 @@ const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
 export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
-  if (!open) return null;
+  if (!open) {
+    return null;
+  }
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -79,7 +123,14 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-black/5 transition-all"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -104,9 +155,7 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-medium text-gray-700 mb-1">
-                          {p.label}
-                        </div>
+                        <div className="text-[13px] font-medium text-gray-700 mb-1">{p.label}</div>
                         <div className="text-[11px] text-gray-400 leading-relaxed line-clamp-2">
                           {p.text}
                         </div>
@@ -115,7 +164,7 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                     <div className="flex items-center gap-1.5 mt-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
                       <button
                         onClick={() => handleUse(p.text)}
-                        className="text-[11px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-3 py-1.5 rounded-lg transition-all"
+                        className="text-[11px] font-medium text-white bg-primary/90 hover:bg-primary px-3 py-1.5 rounded-lg transition-all"
                       >
                         Use prompt →
                       </button>

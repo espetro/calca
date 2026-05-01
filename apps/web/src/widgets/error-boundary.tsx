@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
 import { getLogger } from "@app/logger";
+import React from "react";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
+  category?: string[];
 }
 
 interface ErrorBoundaryState {
@@ -14,19 +15,26 @@ interface ErrorBoundaryState {
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  private logger: ReturnType<typeof getLogger>;
+
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.logger = getLogger(props.category ?? ["calca", "web", "error-boundary"]);
+  }
+
   state: ErrorBoundaryState = {
-    hasError: false,
     error: null,
+    hasError: false,
   };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return { error, hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    getLogger(["calca", "web", "error-boundary"]).error("React error caught", {
-      error: error.message,
+    this.logger.error("React error caught", {
       componentStack: errorInfo.componentStack,
+      error: error.message,
     });
   }
 
@@ -60,7 +68,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             {this.state.error?.message ?? "An unexpected error occurred."}
           </p>
           <button
-            onClick={() => this.setState({ hasError: false, error: null })}
+            onClick={() => this.setState({ error: null, hasError: false })}
             className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again
@@ -77,7 +85,7 @@ export { ErrorBoundary };
 
 export function withErrorBoundary<P extends object>(
   WrappedComponent: React.ComponentType<P>,
-  fallback?: React.ReactNode
+  fallback?: React.ReactNode,
 ): React.ComponentType<P> {
   return function WithErrorBoundary(props: P) {
     return (

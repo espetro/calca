@@ -4,16 +4,23 @@
   "private": true,
   "license": "AGPL-3.0",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./app": "./src/app.ts"
+  },
   "scripts": {
     "dev": "bun --watch src/index.ts",
+    "start": "bun dist/index.js",
     "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "lint": "echo 'lint: not yet implemented'",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
     "validate": "echo 'validate: not yet implemented'"
   },
   "dependencies": {
     "@app/core": "workspace:*",
+    "@app/logger": "workspace:*",
     "@app/shared": "workspace:*",
     "@hono/node-server": "^1.19.14",
     "@openfeature/server-sdk": "^1.20.2",

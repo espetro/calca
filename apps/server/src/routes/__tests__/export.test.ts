@@ -1,28 +1,29 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Context } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@app/core/ai/client", () => ({
   generateWithFallback: vi.fn(),
 }));
 
 vi.mock("../../lib/html-to-svg", () => ({
-  htmlToSvg: vi.fn((html: string) => `<svg>${html}</svg>`),
+  default: vi.fn((html: string) => `<svg>${html}</svg>`),
 }));
 
 import { generateWithFallback } from "@app/core/ai/client";
-import { htmlToSvg } from "../../lib/html-to-svg";
+
+import htmlToSvg from "../../lib/html-to-svg";
 import { handleExport } from "../export";
 
 function createMockContext(body: unknown): Context {
   const json = vi.fn((data, status) => ({
-    status: status ?? 200,
     json: data,
+    status: status ?? 200,
   }));
   return {
+    json,
     req: {
       json: vi.fn().mockResolvedValue(body),
     },
-    json,
   } as unknown as Context;
 }
 
@@ -34,16 +35,16 @@ describe("handleExport", () => {
   describe("svg format", () => {
     it("converts html to svg", async () => {
       const ctx = createMockContext({
-        html: '<div width="100px">hello</div>',
         format: "svg",
+        html: '<div width="100px">hello</div>',
       });
 
       await handleExport(ctx);
 
       expect(htmlToSvg).toHaveBeenCalledOnce();
-      expect(ctx.json).toHaveBeenCalledWith(
-        { result: '<svg><div width="100px">hello</div></svg>' },
-      );
+      expect(ctx.json).toHaveBeenCalledWith({
+        result: '<svg><div width="100px">hello</div></svg>',
+      });
     });
   });
 
@@ -54,30 +55,28 @@ describe("handleExport", () => {
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: '<div style="background: blue">hello</div>',
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: '<div style="background: blue">hello</div>',
       });
 
       await handleExport(ctx);
 
       expect(generateWithFallback).toHaveBeenCalledOnce();
-      expect(ctx.json).toHaveBeenCalledWith(
-        { result: expect.stringContaining("bg-blue-500") },
-      );
+      expect(ctx.json).toHaveBeenCalledWith({ result: expect.stringContaining("bg-blue-500") });
     });
   });
 
   describe("react format", () => {
     it("uses AI to convert html to react component", async () => {
       (generateWithFallback as ReturnType<typeof vi.fn>).mockResolvedValue({
-        result: { text: 'export default function Design() { return <div /> }' },
+        result: { text: "export default function Design() { return <div /> }" },
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "react",
         apiKey: "sk-test",
+        format: "react",
+        html: "<div>hello</div>",
         model: "claude-sonnet-4-20250514",
       });
 
@@ -88,9 +87,7 @@ describe("handleExport", () => {
           model: "claude-sonnet-4-20250514",
         }),
       );
-      expect(ctx.json).toHaveBeenCalledWith(
-        { result: expect.stringContaining("Design") },
-      );
+      expect(ctx.json).toHaveBeenCalledWith({ result: expect.stringContaining("Design") });
     });
   });
 
@@ -112,7 +109,7 @@ describe("handleExport", () => {
     });
 
     it("returns 400 for invalid format", async () => {
-      const ctx = createMockContext({ html: "<div>hello</div>", format: "pdf" });
+      const ctx = createMockContext({ format: "pdf", html: "<div>hello</div>" });
 
       await handleExport(ctx);
 
@@ -122,12 +119,14 @@ describe("handleExport", () => {
 
   describe("error handling", () => {
     it("returns 500 on general error", async () => {
-      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("something broke"));
+      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(
+        new Error("something broke"),
+      );
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: "<div>hello</div>",
       });
 
       await handleExport(ctx);
@@ -136,12 +135,14 @@ describe("handleExport", () => {
     });
 
     it("returns 401 on auth error", async () => {
-      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Invalid API key provided"));
+      (generateWithFallback as ReturnType<typeof vi.fn>).mockRejectedValue(
+        new Error("Invalid API key provided"),
+      );
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "react",
         apiKey: "bad-key",
+        format: "react",
+        html: "<div>hello</div>",
       });
 
       await handleExport(ctx);
@@ -157,9 +158,9 @@ describe("handleExport", () => {
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: '<img src="data:image/png;base64,iVBOR..." />',
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: '<img src="data:image/png;base64,iVBOR..." />',
       });
 
       await handleExport(ctx);
@@ -176,16 +177,17 @@ describe("handleExport", () => {
     });
   });
 
-  describe("uses default model when none provided", () => {
-    it("falls back to claude-sonnet-4-20250514", async () => {
+  describe("passes model through when provided", () => {
+    it("uses the specified model", async () => {
       (generateWithFallback as ReturnType<typeof vi.fn>).mockResolvedValue({
         result: { text: "<div>ok</div>" },
       } as Awaited<ReturnType<typeof generateWithFallback>>);
 
       const ctx = createMockContext({
-        html: "<div>hello</div>",
-        format: "tailwind",
         apiKey: "sk-test",
+        format: "tailwind",
+        html: "<div>hello</div>",
+        model: "claude-sonnet-4-20250514",
       });
 
       await handleExport(ctx);

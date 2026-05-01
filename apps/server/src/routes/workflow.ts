@@ -1,16 +1,17 @@
 import { handleWorkflowStream } from "@mastra/ai-sdk";
 import { createUIMessageStreamResponse } from "ai";
+import { type Context, Hono } from "hono";
+
 import { mastra } from "../workflows/mastra";
-import { Hono, type Context } from "hono";
 
 export async function handleWorkflow(c: Context) {
   const body = await c.req.json();
 
   const stream = await handleWorkflowStream({
     mastra,
-    workflowId: "designPipeline",
     params: { inputData: body },
     version: "v6",
+    workflowId: "designPipeline",
   });
 
   return createUIMessageStreamResponse({ stream });

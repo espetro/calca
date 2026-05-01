@@ -1,5 +1,9 @@
+import { getLogger } from "@app/logger";
 import { atom } from "jotai";
-import type { GenerationGroup } from "@/shared/types";
+
+const logger = getLogger(["calca", "web", "design", "persist"]);
+
+import type { GenerationGroup } from "#/shared/types";
 
 const STORAGE_KEY = "calca-canvas-session";
 const IMG_DB_NAME = "calca-canvas-images";
@@ -22,8 +26,14 @@ async function saveImagesToIDB(images: Record<string, string>): Promise<void> {
     store.put(val, key);
   }
   return new Promise((resolve, reject) => {
-    tx.oncomplete = () => { db.close(); resolve(); };
-    tx.onerror = () => { db.close(); reject(tx.error); };
+    tx.oncomplete = () => {
+      db.close();
+      resolve();
+    };
+    tx.onerror = () => {
+      db.close();
+      reject(tx.error);
+    };
   });
 }
 
@@ -36,15 +46,26 @@ async function loadImagesFromIDB(): Promise<Record<string, string>> {
     const cursor = store.openCursor();
     cursor.onsuccess = () => {
       const c = cursor.result;
-      if (c) { result[c.key as string] = c.value; c.continue(); }
-      else { db.close(); resolve(result); }
+      if (c) {
+        result[c.key as string] = c.value;
+        c.continue();
+      } else {
+        db.close();
+        resolve(result);
+      }
     };
-    cursor.onerror = () => { db.close(); reject(cursor.error); };
+    cursor.onerror = () => {
+      db.close();
+      reject(cursor.error);
+    };
   });
 }
 
 // Regex `src="(data:image/...)"` → `[idb:key]` placeholder for IndexedDB offloading
-function extractBase64(groups: GenerationGroup[]): { stripped: GenerationGroup[]; images: Record<string, string> } {
+function extractBase64(groups: GenerationGroup[]): {
+  stripped: GenerationGroup[];
+  images: Record<string, string>;
+} {
   const images: Record<string, string> = {};
   let counter = 0;
   const stripped = groups.map((g) => ({
@@ -60,18 +81,21 @@ function extractBase64(groups: GenerationGroup[]): { stripped: GenerationGroup[]
         : it.html,
     })),
   }));
-  return { stripped, images };
+  return { images, stripped };
 }
 
-function restoreBase64(groups: GenerationGroup[], images: Record<string, string>): GenerationGroup[] {
+function restoreBase64(
+  groups: GenerationGroup[],
+  images: Record<string, string>,
+): GenerationGroup[] {
   return groups.map((g) => ({
     ...g,
     iterations: g.iterations.map((it) => ({
       ...it,
       html: it.html
-        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) => {
-            return images[key] ? `src="${images[key]}"` : 'src="[img-missing]"';
-          })
+        ? it.html.replace(/src="\[idb:([^\]]+)\]"/g, (_m, key) =>
+            images[key] ? `src="${images[key]}"` : 'src="[img-missing]"',
+          )
         : it.html,
     })),
   }));
@@ -80,21 +104,25 @@ function restoreBase64(groups: GenerationGroup[], images: Record<string, string>
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
 function debouncedPersist(groups: GenerationGroup[]): void {
-  if (saveTimer) clearTimeout(saveTimer);
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+  }
   saveTimer = setTimeout(() => {
     try {
-      const toSave = groups.filter((g) =>
-        g.iterations.some((it) => it.html && !it.isLoading)
-      );
+      const toSave = groups.filter((g) => g.iterations.some((it) => it.html && !it.isLoading));
       const { stripped, images } = extractBase64(toSave);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
       if (Object.keys(images).length > 0) {
-        saveImagesToIDB(images).catch((err) =>
-          console.warn("[persist] Failed to save images to IndexedDB:", err)
+        saveImagesToIDB(images).catch((error) =>
+          logger.debug("Failed to save images to IndexedDB", {
+            error: error instanceof Error ? error.message : String(error),
+          }),
         );
       }
-    } catch (err) {
-      console.warn("[persist] Failed to save canvas session:", err);
+    } catch (error) {
+      logger.debug("Failed to save canvas session", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }, 500);
 }
@@ -102,8 +130,15 @@ function debouncedPersist(groups: GenerationGroup[]): void {
 const _groupsBase = atom<GenerationGroup[]>([]);
 
 export const groupsAtom = atom(
-  (get: { (a: typeof _groupsBase): GenerationGroup[] }) => get(_groupsBase),
-  (_get: unknown, set: (a: typeof _groupsBase, v: GenerationGroup[] | ((p: GenerationGroup[]) => GenerationGroup[])) => void, update: GenerationGroup[] | ((prev: GenerationGroup[]) => GenerationGroup[])) => {
+  (get: (a: typeof _groupsBase) => GenerationGroup[]) => get(_groupsBase),
+  (
+    _get: unknown,
+    set: (
+      a: typeof _groupsBase,
+      v: GenerationGroup[] | ((p: GenerationGroup[]) => GenerationGroup[]),
+    ) => void,
+    update: GenerationGroup[] | ((prev: GenerationGroup[]) => GenerationGroup[]),
+  ) => {
     set(_groupsBase, (prev) => {
       const next = typeof update === "function" ? update(prev) : update;
       debouncedPersist(next);
@@ -112,21 +147,22 @@ export const groupsAtom = atom(
   },
 );
 
-export const resetSessionAtom = atom(null, (_get: unknown, set: (a: typeof groupsAtom, v: GenerationGroup[]) => void) => {
-  set(groupsAtom, []);
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {}
-});
+export const resetSessionAtom = atom(
+  null,
+  (_get: unknown, set: (a: typeof groupsAtom, v: GenerationGroup[]) => void) => {
+    set(groupsAtom, []);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {}
+  },
+);
 
 export async function hydrateGroups(setGroups: (g: GenerationGroup[]) => void): Promise<void> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as GenerationGroup[];
-      const valid = parsed.filter((g) =>
-        g.iterations.some((it) => it.html && !it.isLoading)
-      );
+      const valid = parsed.filter((g) => g.iterations.some((it) => it.html && !it.isLoading));
       if (valid.length > 0) {
         try {
           const images = await loadImagesFromIDB();

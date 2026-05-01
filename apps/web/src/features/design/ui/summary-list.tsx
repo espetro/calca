@@ -1,5 +1,6 @@
-import { useState } from "react";
 import { useAtom } from "jotai";
+import { useState } from "react";
+
 import { groupsAtom } from "../state/groups-atoms";
 import { SummaryDialog } from "./summary-dialog";
 
@@ -8,10 +9,8 @@ export function SummaryList() {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   const visibleGroups = groups.filter((group) => {
-    const hasCompletedIteration = group.iterations.some(
-      (it) => !it.isLoading && it.html
-    );
-    const hasSummary = !!group.summary;
+    const hasCompletedIteration = group.iterations.some((it) => !it.isLoading && it.html);
+    const hasSummary = Boolean(group.summary);
     return hasCompletedIteration || hasSummary;
   });
 
@@ -26,7 +25,7 @@ export function SummaryList() {
         data-tour="summary-list"
       >
         {visibleGroups.map((group) => {
-          const hasSummary = !!group.summary;
+          const hasSummary = Boolean(group.summary);
           const title = group.summary?.title ?? "Generating summary...";
 
           return (
@@ -53,10 +52,7 @@ export function SummaryList() {
       </div>
 
       {selectedGroupId && (
-        <SummaryDialog
-          groupId={selectedGroupId}
-          onClose={() => setSelectedGroupId(null)}
-        />
+        <SummaryDialog groupId={selectedGroupId} onClose={() => setSelectedGroupId(null)} />
       )}
     </>
   );

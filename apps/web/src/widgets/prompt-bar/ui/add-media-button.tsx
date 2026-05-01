@@ -1,5 +1,5 @@
-import { useRef } from "react";
 import { ImageIcon } from "lucide-react";
+import { useRef } from "react";
 
 interface AddMediaButtonProps {
   onFileSelect: (file: File) => void;
@@ -23,14 +23,16 @@ export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButto
   };
 
   return (
-    <label
+    <button
       onClick={handleClick}
       aria-label="Add media"
-      className={`flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm cursor-pointer hover:bg-white/15 transition-colors ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
+        disabled
+          ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"
+          : "bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200/50"
       }`}
     >
-      <ImageIcon className="w-4 h-4 text-gray-400" />
+      <ImageIcon className="w-3.5 h-3.5" />
       <input
         ref={fileInputRef}
         type="file"
@@ -39,6 +41,6 @@ export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButto
         disabled={disabled}
         className="hidden"
       />
-    </label>
+    </button>
   );
 }

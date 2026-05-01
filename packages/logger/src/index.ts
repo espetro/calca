@@ -1,74 +1,52 @@
 import {
-  configure,
-  type Logger as LogtapeLogger,
   type LogLevel,
-  getLogger as getLogtapeLogger,
+  type Logger as LogtapeLogger,
+  configure,
   getConsoleSink,
+  getLogger as getLogtapeLogger,
   isLogLevel,
 } from "@logtape/logtape";
 import { getPrettyFormatter } from "@logtape/pretty";
 
 const DEFAULT_LOG_LEVEL: LogLevel = "info";
 
-function toLogtapeLevel(level: string): LogLevel {
-  if (level === "warn") return "warning";
-  if (level === "silent") return "fatal";
-  if (isLogLevel(level)) return level;
-  return DEFAULT_LOG_LEVEL;
-}
-
-function getLogLevelFromEnv(env: Record<string, string | undefined>): LogLevel {
-  const envLevel = env.LOG_LEVEL?.toLowerCase();
-  const validLevels = ["debug", "info", "warn", "error", "silent"];
-
-  if (envLevel && validLevels.includes(envLevel)) {
-    return toLogtapeLevel(envLevel);
-  }
-
-  return DEFAULT_LOG_LEVEL;
-}
-
+// * Module-level flag to cache if the logger has been already configured
 let isConfigured = false;
 
-function getLogLevel(
-  level: string | undefined,
-  env: Record<string, string | undefined>,
-): LogLevel {
-  if (level !== undefined) {
-    return toLogtapeLevel(level);
+const getLogLevel = (level: LogLevel | undefined): LogLevel => {
+  if (level === undefined) {
+    return DEFAULT_LOG_LEVEL;
   }
-  return getLogLevelFromEnv(env);
-}
 
-export async function createLogger(
-  level: string | undefined = undefined,
-  env: Record<string, string | undefined> = process.env ?? {},
-): Promise<void> {
+  const parsed = level.trim().toLowerCase();
+
+  if (isLogLevel(parsed)) {
+    return parsed;
+  }
+
+  console.warn(`Unknown log level ${parsed}. Setting to ${DEFAULT_LOG_LEVEL}`);
+  return DEFAULT_LOG_LEVEL;
+};
+
+export async function createLogger(level?: LogLevel) {
   if (isConfigured) {
     return;
   }
 
-  const logLevel = getLogLevel(level, env);
+  const validLevel = getLogLevel(level);
+  console.log(`Log level set to ${validLevel}`);
 
-  const isBrowser =
-    typeof globalThis !== "undefined" && "window" in globalThis;
+  const isBrowser = typeof globalThis !== "undefined" && "window" in globalThis;
+  const formatter = isBrowser
+    ? undefined
+    : getPrettyFormatter({ level: "ABBR", timestamp: "time" });
 
   await configure({
-    sinks: {
-      console: getConsoleSink({
-        formatter: isBrowser
-          ? undefined
-          : getPrettyFormatter({
-              timestamp: "time",
-              level: "ABBR",
-            }),
-      }),
-    },
     filters: {},
     loggers: [
       {
         category: ["calca"],
-        lowestLevel: logLevel,
+        lowestLevel: validLevel,
         sinks: ["console"],
       },
       {
@@ -77,6 +55,11 @@ export async function createLogger(
         sinks: ["console"],
       },
     ],
+    sinks: {
+      console: getConsoleSink({
+        formatter,
+      }),
+    },
   });
 
   isConfigured = true;

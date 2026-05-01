@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { getClosestDalleSize, generateImages } from "./images";
+import { describe, expect, it } from "vitest";
+
+import { generateImages, getClosestDalleSize } from "./images";
 
 describe("getClosestDalleSize", () => {
   it("returns landscape size for wide aspect ratios (>= 1.3)", () => {
@@ -38,8 +39,8 @@ describe("generateImages", () => {
   });
 
   it("returns skipped result when no placeholders found in HTML", async () => {
-    const html = '<div>No placeholders here</div>';
-    const result = await generateImages({ html, geminiKey: "test" });
+    const html = "<div>No placeholders here</div>";
+    const result = await generateImages({ geminiKey: "test", html });
 
     expect(result.skipped).toBe(true);
     expect(result.reason).toBe("No placeholders found");
@@ -49,7 +50,7 @@ describe("generateImages", () => {
 
   it("parses placeholders with default source when no source specified", async () => {
     const html = '<div data-placeholder="test image" data-ph-w="200" data-ph-h="300"></div>';
-    const result = await generateImages({ html, geminiKey: "test-key" });
+    const result = await generateImages({ geminiKey: "test-key", html });
 
     expect(result).toBeDefined();
     expect(result.html).toBeDefined();
@@ -68,14 +69,16 @@ describe("generateImages", () => {
   });
 
   it("preserves HTML when placeholder has explicit source", async () => {
-    const html = '<div data-placeholder="test" data-ph-w="100" data-ph-h="100" data-img-source="unsplash"></div>';
+    const html =
+      '<div data-placeholder="test" data-ph-w="100" data-ph-h="100" data-img-source="unsplash"></div>';
     const result = await generateImages({ html, unsplashKey: "test-key" });
 
     expect(result).toBeDefined();
   });
 
   it("handles placeholder with custom query", async () => {
-    const html = '<div data-placeholder="coffee" data-ph-w="100" data-ph-h="100" data-img-query="espresso"></div>';
+    const html =
+      '<div data-placeholder="coffee" data-ph-w="100" data-ph-h="100" data-img-query="espresso"></div>';
     const result = await generateImages({ html, unsplashKey: "test-key" });
 
     expect(result).toBeDefined();
@@ -86,7 +89,7 @@ describe("generateImages", () => {
     const result = await generateImages({
       html,
       unsplashKey: "test",
-      viewport: { width: 800, height: 600 },
+      viewport: { height: 600, width: 800 },
     });
 
     expect(result).toBeDefined();

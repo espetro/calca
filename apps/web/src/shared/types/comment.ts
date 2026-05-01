@@ -9,7 +9,7 @@ export interface CommentMessage {
 
 export interface Comment {
   id: string;
-  position: import("./canvas").Point; // relative to the iteration
+  position: import("./canvas").Point; // Relative to the iteration
   text: string;
   number: number;
   resolved?: boolean;

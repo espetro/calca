@@ -1,8 +1,16 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+/// <reference types="vitest/globals" />
+import { JSDOM } from "jsdom";
+const jsdom = new JSDOM("<!DOCTYPE html><html><body></body></html>", { url: "http://localhost" });
+(global as unknown as { document: typeof document }).document = jsdom.window.document;
+(global as unknown as { window: typeof window }).window = jsdom.window as unknown as Window &
+  typeof globalThis;
+
+import { act } from "react";
 import React from "react";
-import { ErrorBoundary } from "./error-boundary";
-import { act } from "react-dom/test-utils";
 import { createRoot, type Root } from "react-dom/client";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+
+import { ErrorBoundary } from "./error-boundary";
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -29,14 +37,15 @@ function cleanup(): void {
   root = null;
 }
 
+const { mockLogger, mockGetLogger } = vi.hoisted(() => {
+  const mockLogger = { debug: vi.fn(), error: vi.fn(), info: vi.fn(), warn: vi.fn() };
+  const mockGetLogger = vi.fn(() => mockLogger);
+  return { mockLogger, mockGetLogger };
+});
+
 vi.mock("@app/logger", () => ({
   createLogger: vi.fn(),
-  getLogger: vi.fn(() => ({
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  })),
+  getLogger: mockGetLogger,
 }));
 
 beforeEach(() => {
@@ -53,7 +62,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <div data-testid="child">Child content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     const child = document.querySelector('[data-testid="child"]');
     expect(child).not.toBeNull();
@@ -68,7 +77,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(document.body.textContent).toContain("Something went wrong");
@@ -85,7 +94,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary fallback={customFallback}>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(document.querySelector('[data-testid="custom-fallback"]')).not.toBeNull();
@@ -100,7 +109,7 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(document.body.textContent).toContain("Something went wrong");
@@ -120,10 +129,6 @@ describe("ErrorBoundary", () => {
   });
 
   it("logs error via getLogger on componentDidCatch", async () => {
-    const errorLogger = { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() };
-    const { getLogger } = await import("@app/logger");
-    vi.mocked(getLogger).mockReturnValue(errorLogger as unknown as ReturnType<typeof getLogger>);
-
     function ThrowOnRender(): React.ReactElement {
       throw new Error("Logging test error");
     }
@@ -131,15 +136,15 @@ describe("ErrorBoundary", () => {
     render(
       <ErrorBoundary>
         <ThrowOnRender />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
-    expect(errorLogger.error).toHaveBeenCalledWith(
+    expect(mockLogger.error).toHaveBeenCalledWith(
       "React error caught",
       expect.objectContaining({
-        error: "Logging test error",
         componentStack: expect.any(String),
-      })
+        error: "Logging test error",
+      }),
     );
   });
 });

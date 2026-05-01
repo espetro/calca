@@ -9,15 +9,17 @@ export const ReviewSchema = z.string().transform((raw) => {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
   }
   const fenceMatch = cleaned.match(/```(?:html)?\n?([\s\S]*?)\n?```/);
-  if (fenceMatch) cleaned = fenceMatch[1];
+  if (fenceMatch) {
+    cleaned = fenceMatch[1];
+  }
   cleaned = cleaned.trim();
 
   const sizeMatch = cleaned.match(/<!--size:(\d+)x(\d+)-->/);
   let width: number | undefined;
   let height: number | undefined;
   if (sizeMatch) {
-    width = parseInt(sizeMatch[1], 10);
-    height = parseInt(sizeMatch[2], 10);
+    width = Number.parseInt(sizeMatch[1], 10);
+    height = Number.parseInt(sizeMatch[2], 10);
     cleaned = cleaned.replace(/<!--size:\d+x\d+-->\n?/, "").trim();
   }
 
@@ -27,15 +29,16 @@ export const ReviewSchema = z.string().transform((raw) => {
   if (htmlStart && htmlStart.index !== undefined && htmlStart.index > 0) {
     cleaned = cleaned.substring(htmlStart.index);
   }
-  const lastTagMatch = cleaned.match(
-    /([\s\S]*<\/(?:html|div|section|main|body)>)/i,
-  );
-  if (lastTagMatch) cleaned = lastTagMatch[1];
+  const lastTagMatch = cleaned.match(/([\s\S]*<\/(?:html|div|section|main|body)>)/i);
+  if (lastTagMatch) {
+    cleaned = lastTagMatch[1];
+  }
 
-  return { html: cleaned.trim(), width, height };
+  return { height, html: cleaned.trim(), width };
 });
 
 export const ReviewParsedSchema = z.object({
+  height: z.number().positive().optional(),
   html: z
     .string()
     .min(1)
@@ -43,7 +46,6 @@ export const ReviewParsedSchema = z.object({
       message: "Review output must contain a valid HTML tag",
     }),
   width: z.number().positive().optional(),
-  height: z.number().positive().optional(),
 });
 
 export const validateReview = (raw: string) => {

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Context } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock dependencies before importing the handler
 vi.mock("@mastra/ai-sdk", () => ({
@@ -16,6 +16,7 @@ vi.mock("../../workflows/mastra", () => ({
 
 import { handleWorkflowStream } from "@mastra/ai-sdk";
 import { createUIMessageStreamResponse } from "ai";
+
 import { handleWorkflow } from "../workflow";
 
 function createMockContext(body: unknown): Context {
@@ -45,16 +46,18 @@ describe("handleWorkflow", () => {
     expect(handleWorkflowStream).toHaveBeenCalledOnce();
     expect(handleWorkflowStream).toHaveBeenCalledWith({
       mastra: expect.anything(),
-      workflowId: "designPipeline",
       params: { inputData: { prompt: "a pricing card" } },
       version: "v6",
+      workflowId: "designPipeline",
     });
     expect(createUIMessageStreamResponse).toHaveBeenCalledWith({ stream: mockStream });
     expect(result).toBe(mockResponse);
   });
 
   it("propagates errors from handleWorkflowStream", async () => {
-    (handleWorkflowStream as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("workflow exploded"));
+    (handleWorkflowStream as ReturnType<typeof vi.fn>).mockRejectedValue(
+      new Error("workflow exploded"),
+    );
 
     const ctx = createMockContext({ prompt: "fail" });
 
@@ -63,7 +66,7 @@ describe("handleWorkflow", () => {
   });
 
   it("passes the full request body as inputData", async () => {
-    const body = { prompt: "hero section", conceptCount: 4, preset: "marketing" };
+    const body = { conceptCount: 4, preset: "marketing", prompt: "hero section" };
     const mockStream = {};
     const mockResponse = new Response(null, { status: 200 });
 

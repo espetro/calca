@@ -1,14 +1,15 @@
-import { describe, it, expect } from "vitest";
-import { deriveProviderFields, type DerivedProviderFields } from "./derive-provider-fields";
+import { describe, expect, it } from "vitest";
+
 import type { ProviderConfig } from "../types";
+import { type DerivedProviderFields, deriveProviderFields } from "./derive-provider-fields";
 
 const createProvider = (overrides: Partial<ProviderConfig> = {}): ProviderConfig => ({
-  id: "default",
+  apiKey: "",
   apiType: "anthropic",
   baseUrl: "",
-  apiKey: "",
-  models: [],
+  id: "default",
   lastTested: null,
+  models: [],
   ...overrides,
 });
 
@@ -16,10 +17,10 @@ describe("deriveProviderFields", () => {
   it("extracts fields from matching provider when model has provider prefix", () => {
     const providers: ProviderConfig[] = [
       createProvider({
-        id: "custom",
+        apiKey: "custom-key",
         apiType: "openai-compatible",
         baseUrl: "https://custom.api.com",
-        apiKey: "custom-key",
+        id: "custom",
       }),
     ];
 
@@ -27,15 +28,15 @@ describe("deriveProviderFields", () => {
 
     expect(result).toEqual({
       apiKey: "custom-key",
-      providerType: "openai-compatible",
       baseURL: "https://custom.api.com",
       model: "gpt-4",
+      providerType: "openai-compatible",
     });
   });
 
   it("returns modelId without prefix when provider matches", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "provider1", apiKey: "key1", baseUrl: "https://p1.com" }),
+      createProvider({ apiKey: "key1", baseUrl: "https://p1.com", id: "provider1" }),
     ];
 
     const result = deriveProviderFields(providers, "provider1/model-name");
@@ -45,22 +46,22 @@ describe("deriveProviderFields", () => {
 
   it("falls back to environment provider when prefix doesn't match any provider", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "env", isEnv: true, apiKey: "env-key", baseUrl: "https://env.com" }),
+      createProvider({ apiKey: "env-key", baseUrl: "https://env.com", id: "env", isEnv: true }),
     ];
 
     const result = deriveProviderFields(providers, "unknown/model");
 
     expect(result).toEqual({
       apiKey: "env-key",
-      providerType: "anthropic",
       baseURL: "https://env.com",
       model: "model",
+      providerType: "anthropic",
     });
   });
 
   it("falls back to provider with baseUrl when prefix doesn't match", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "with-url", baseUrl: "https://api.test.com", apiKey: "test-key" }),
+      createProvider({ apiKey: "test-key", baseUrl: "https://api.test.com", id: "with-url" }),
     ];
 
     const result = deriveProviderFields(providers, "unknown/model");
@@ -70,17 +71,15 @@ describe("deriveProviderFields", () => {
   });
 
   it("returns anthropic defaults when no matching provider and no prefix", () => {
-    const providers: ProviderConfig[] = [
-      createProvider({ id: "empty" }),
-    ];
+    const providers: ProviderConfig[] = [createProvider({ id: "empty" })];
 
     const result = deriveProviderFields(providers, "unknown-model");
 
     expect(result).toEqual({
       apiKey: "",
-      providerType: "anthropic",
       baseURL: "",
       model: "unknown-model",
+      providerType: "anthropic",
     });
   });
 
@@ -89,31 +88,31 @@ describe("deriveProviderFields", () => {
 
     expect(result).toEqual({
       apiKey: "",
-      providerType: "anthropic",
       baseURL: "",
       model: "any-model",
+      providerType: "anthropic",
     });
   });
 
   it("handles model without prefix by using environment provider", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "env", isEnv: true, apiKey: "env-key", baseUrl: "https://env.com" }),
+      createProvider({ apiKey: "env-key", baseUrl: "https://env.com", id: "env", isEnv: true }),
     ];
 
     const result = deriveProviderFields(providers, "claude-sonnet-4-5");
 
     expect(result).toEqual({
       apiKey: "env-key",
-      providerType: "anthropic",
       baseURL: "https://env.com",
       model: "claude-sonnet-4-5",
+      providerType: "anthropic",
     });
   });
 
   it("prefers explicit provider match over environment provider", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "env", isEnv: true, apiKey: "env-key", baseUrl: "https://env.com" }),
-      createProvider({ id: "explicit", apiKey: "explicit-key", baseUrl: "https://explicit.com" }),
+      createProvider({ apiKey: "env-key", baseUrl: "https://env.com", id: "env", isEnv: true }),
+      createProvider({ apiKey: "explicit-key", baseUrl: "https://explicit.com", id: "explicit" }),
     ];
 
     const result = deriveProviderFields(providers, "explicit/model");
@@ -124,7 +123,7 @@ describe("deriveProviderFields", () => {
 
   it("handles multiple slashes in model name (uses first segment as provider)", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "first", apiKey: "first-key", baseUrl: "https://first.com" }),
+      createProvider({ apiKey: "first-key", baseUrl: "https://first.com", id: "first" }),
     ];
 
     const result = deriveProviderFields(providers, "first/model/extra");
@@ -135,7 +134,7 @@ describe("deriveProviderFields", () => {
 
   it("handles model starting with slash (empty provider ID)", () => {
     const providers: ProviderConfig[] = [
-      createProvider({ id: "env", isEnv: true, apiKey: "env-key" }),
+      createProvider({ apiKey: "env-key", id: "env", isEnv: true }),
     ];
 
     const result = deriveProviderFields(providers, "/model-name");
@@ -146,10 +145,10 @@ describe("deriveProviderFields", () => {
   it("preserves providerType from matched provider", () => {
     const providers: ProviderConfig[] = [
       createProvider({
-        id: "openai",
-        apiType: "openai-compatible",
         apiKey: "key",
+        apiType: "openai-compatible",
         baseUrl: "https://openai.com",
+        id: "openai",
       }),
     ];
 
@@ -159,9 +158,7 @@ describe("deriveProviderFields", () => {
   });
 
   it("returns empty strings for missing credentials", () => {
-    const providers: ProviderConfig[] = [
-      createProvider({ id: "empty", apiKey: "", baseUrl: "" }),
-    ];
+    const providers: ProviderConfig[] = [createProvider({ apiKey: "", baseUrl: "", id: "empty" })];
 
     const result = deriveProviderFields(providers, "empty/model");
 

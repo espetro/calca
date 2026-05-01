@@ -1,22 +1,13 @@
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import workflowRoute from "./routes/workflow";
-import exportRoute from "./routes/export";
-import probeModelsRoute from "./routes/probe-models";
+import app, { AppRoutes } from "./app";
 
-const app = new Hono()
-  .use("*", cors({ origin: "*" }))
-  .get("/health", (c) => c.json({ status: "ok" }))
-  .route("/api/workflow", workflowRoute)
-  .route("/api/export", exportRoute)
-  .route("/api/probe-models", probeModelsRoute);
+const IDLE_TIMEOUT_IN_SECONDS = 0; // ! No timeout – we must set per-request timeout
 
 Bun.serve({
-  port: 3001,
   fetch: app.fetch,
+  idleTimeout: IDLE_TIMEOUT_IN_SECONDS,
+  port: 3001,
 });
 
 console.log("Server running on http://localhost:3001");
 
-export default app;
-export type AppRoutes = typeof app;
+export type { AppRoutes };

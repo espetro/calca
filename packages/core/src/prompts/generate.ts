@@ -14,12 +14,12 @@ export function buildVariationPrompt(
   prompt: string,
   style: string,
   systemPrompt?: string,
-  viewport?: ViewportDimensions
+  viewport?: ViewportDimensions,
 ): string {
-  const customInstructions = systemPrompt ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n` : "";
-  const aspectRatio = viewport
-    ? `${(viewport.width / viewport.height).toFixed(2)}:1`
-    : null;
+  const customInstructions = systemPrompt
+    ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n`
+    : "";
+  const aspectRatio = viewport ? `${(viewport.width / viewport.height).toFixed(2)}:1` : null;
   const viewportHint = viewport
     ? `\nVIEWPORT: The design will be displayed in a frame that is ${viewport.width}px wide and ${viewport.height}px tall (aspect ratio ~${aspectRatio}). Your design MUST match this aspect ratio. Set <!--size:WIDTHxHEIGHT--> to ${viewport.width}x${viewport.height}.\n`
     : "";

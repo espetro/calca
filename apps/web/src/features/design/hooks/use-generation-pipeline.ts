@@ -1,16 +1,18 @@
-import { useCallback, useMemo, useRef } from "react";
 import { useAtom, useAtomValue } from "jotai";
-import { groupsAtom } from "@/features/design/state/groups-atoms";
-import { canvasImagesAtom } from "@/features/design/state/images-atoms";
+import { useCallback, useMemo, useRef } from "react";
+
+import { useWorkflowStream } from "#/features/design/hooks/use-workflow-stream";
 import {
+  genStatusAtom,
   isGeneratingAtom,
   pipelineStagesAtom,
-  genStatusAtom,
-} from "@/features/design/state/generation-atoms";
-import { settingsAtom } from "@/features/settings/state/settings-atoms";
-import { deriveProviderFields } from "@/features/settings/lib/derive-provider-fields";
-import type { DesignIteration, GenerationGroup, Point } from "@/shared/types";
-import { useWorkflowStream } from "@/features/design/hooks/use-workflow-stream";
+} from "#/features/design/state/generation-atoms";
+import { groupsAtom } from "#/features/design/state/groups-atoms";
+import { canvasImagesAtom } from "#/features/design/state/images-atoms";
+import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
+import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import type { DesignIteration, GenerationGroup, Point } from "#/shared/types";
+
 import usePostRevision from "./api/use-post-revision";
 
 const H_GAP = 60;
@@ -72,7 +74,37 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
 
   const { startStream } = useWorkflowStream();
 
-  const { mutate: handleRevision } = usePostRevision();
+  const { mutateAsync: handleRevisionRaw } = usePostRevision();
+
+  const handleRevision = useCallback(
+    async (
+      _iterId: string,
+      prompt: string,
+      _style: string,
+      _index: number,
+      _critique: string | undefined,
+      signal: AbortSignal,
+      revisionOpts?: { revision: string; existingHtml: string },
+    ): Promise<{
+      html: string;
+      label: string;
+      width?: number;
+      height?: number;
+      critique?: string;
+      comment?: string;
+    }> => {
+      return handleRevisionRaw({
+        prompt,
+        signal,
+        options: revisionOpts
+          ? { revision: revisionOpts.revision, existingHtml: revisionOpts.existingHtml }
+          : undefined,
+        systemPrompt: settings.systemPrompt,
+        derived,
+      });
+    },
+    [handleRevisionRaw, settings.systemPrompt, derived],
+  );
 
   const handleGenerate = useCallback(
     async (prompt: string) => {
@@ -93,20 +125,20 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
       const groupId = `group-${Date.now()}`;
 
       await startStream({
-        prompt,
-        groupId,
-        positions,
-        conceptCount: iterationCount,
-        mode: settings.quickMode ? "quick" : "sequential",
-        model: derived.model,
         apiKey: derived.apiKey || undefined,
         baseURL: derived.baseURL || undefined,
-        providerType: derived.providerType || undefined,
-        geminiKey: settings.geminiKey || undefined,
-        unsplashKey: settings.unsplashKey || undefined,
-        openaiKey: settings.openaiKey || undefined,
-        systemPrompt: settings.systemPrompt || undefined,
+        conceptCount: iterationCount,
         contextImages,
+        geminiKey: settings.geminiKey || undefined,
+        groupId,
+        mode: settings.quickMode ? "quick" : "sequential",
+        model: derived.model,
+        openaiKey: settings.openaiKey || undefined,
+        positions,
+        prompt,
+        providerType: derived.providerType || undefined,
+        systemPrompt: settings.systemPrompt || undefined,
+        unsplashKey: settings.unsplashKey || undefined,
       });
 
       abortRef.current = null;
@@ -128,22 +160,22 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
           : undefined;
 
       await startStream({
-        prompt: sourceIteration.prompt || remixPrompt,
-        groupId,
-        positions,
-        conceptCount: 1,
-        mode: "quick",
-        model: derived.model,
         apiKey: derived.apiKey || undefined,
         baseURL: derived.baseURL || undefined,
-        providerType: derived.providerType || undefined,
-        geminiKey: settings.geminiKey || undefined,
-        unsplashKey: settings.unsplashKey || undefined,
-        openaiKey: settings.openaiKey || undefined,
-        systemPrompt: settings.systemPrompt || undefined,
+        conceptCount: 1,
         contextImages,
-        revision: remixPrompt,
         existingHtml: sourceIteration.html,
+        geminiKey: settings.geminiKey || undefined,
+        groupId,
+        mode: "quick",
+        model: derived.model,
+        openaiKey: settings.openaiKey || undefined,
+        positions,
+        prompt: sourceIteration.prompt || remixPrompt,
+        providerType: derived.providerType || undefined,
+        revision: remixPrompt,
+        systemPrompt: settings.systemPrompt || undefined,
+        unsplashKey: settings.unsplashKey || undefined,
       });
 
       abortRef.current = null;
@@ -152,12 +184,12 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
   );
 
   return {
+    abortRef,
+    genStatus,
     handleGenerate,
     handleRemix,
     handleRevision,
     isGenerating,
-    genStatus,
     pipelineStages,
-    abortRef,
   };
 };

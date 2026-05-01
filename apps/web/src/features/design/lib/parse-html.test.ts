@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import { parseHtmlWithSize } from "./parse-html";
 
 describe("parseHtmlWithSize", () => {
@@ -57,7 +58,8 @@ describe("parseHtmlWithSize", () => {
   });
 
   it("handles complex HTML with multiple tags", () => {
-    const input = "<!--size:1200x800--><html><head><style>body{}</style></head><body><div>Content</div></body></html>";
+    const input =
+      "<!--size:1200x800--><html><head><style>body{}</style></head><body><div>Content</div></body></html>";
     const result = parseHtmlWithSize(input);
     expect(result.width).toBe(1200);
     expect(result.height).toBe(800);

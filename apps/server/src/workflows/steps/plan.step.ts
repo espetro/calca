@@ -1,11 +1,13 @@
-import { createStep } from "@mastra/core/workflows";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ModelMessage } from "ai";
 import { buildPlanPrompt } from "@app/core/prompts/plan";
+import { getLogger } from "@app/logger";
+import { createStep } from "@mastra/core/workflows";
+import type { ModelMessage } from "ai";
+
 import { PlanInputSchema, PlanOutputSchema } from "../schemas/plan.schema";
 
-const DEFAULT_MODEL = "claude-opus-4-6";
+const logger = getLogger(["calca", "server", "workflow", "plan"]);
 
 const VARIATION_STYLES = [
   { name: "Minimal", direction: "Clean lines, generous whitespace, restrained color palette" },
@@ -19,7 +21,7 @@ export const planStep = createStep({
   outputSchema: PlanOutputSchema,
   execute: async ({ inputData }) => {
     const { prompt, model, apiKey, baseURL, providerType } = inputData;
-    const useModel = model || DEFAULT_MODEL;
+    const useModel = model;
 
     const messages: ModelMessage[] = [
       {
@@ -36,6 +38,7 @@ export const planStep = createStep({
         maxTokens: 2048,
         providerType: providerType as ProviderType | undefined,
         baseURL,
+        functionId: "plan",
       });
 
       const raw = result.text;
@@ -75,7 +78,7 @@ export const planStep = createStep({
         concepts,
       };
     } catch (error) {
-      console.warn("Plan generation failed, using fallback:", error);
+      logger.warn("Plan generation failed, using fallback:", { error });
       return {
         count: VARIATION_STYLES.length,
         concepts: VARIATION_STYLES,

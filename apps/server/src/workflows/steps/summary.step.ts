@@ -1,13 +1,15 @@
-import { createStep } from "@mastra/core/workflows";
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import type { ModelMessage } from "ai";
 import { buildSummaryPrompt } from "@app/core/prompts/summary";
+import { getLogger } from "@app/logger";
 import { validateSummary } from "@app/shared";
+import { createStep } from "@mastra/core/workflows";
+import type { ModelMessage } from "ai";
+
 import { stripBase64Images } from "../../lib/strip-base64";
 import { SummaryInputSchema, SummaryOutputSchema } from "../schemas/summary.schema";
 
-const DEFAULT_MODEL = "claude-opus-4-6";
+const logger = getLogger(["calca", "server", "workflow", "summary"]);
 
 export const summaryStep = createStep({
   id: "summary",
@@ -15,30 +17,33 @@ export const summaryStep = createStep({
   outputSchema: SummaryOutputSchema,
   execute: async ({ inputData }) => {
     const { html, prompt, labels, model, apiKey, baseURL, providerType } = inputData;
-    
+
     const { stripped } = stripBase64Images(html);
-    
-    const messages: ModelMessage[] = [{
-      role: "user",
-      content: buildSummaryPrompt(prompt, stripped, labels ?? []),
-    }];
-    
+
+    const messages: ModelMessage[] = [
+      {
+        role: "user",
+        content: buildSummaryPrompt(prompt, stripped, labels ?? []),
+      },
+    ];
+
     const { result } = await generateWithFallback({
       apiKey,
-      model: model ?? DEFAULT_MODEL,
+      model: model,
       messages,
       maxTokens: 512,
       providerType: providerType as ProviderType | undefined,
       baseURL,
+      functionId: "summary",
     });
-    
+
     const raw = result.text;
     try {
       const parsed = JSON.parse(raw);
       const validated = validateSummary(parsed);
       return { summary: JSON.stringify(validated) };
-    } catch (validationErr) {
-      console.warn("Summary validation failed:", validationErr);
+    } catch (error) {
+      logger.warn("Summary validation failed:", { error });
       return { summary: raw };
     }
   },

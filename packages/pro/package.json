@@ -2,18 +2,19 @@
   "name": "@app/pro",
   "version": "0.3.0",
   "private": true,
-  "type": "module",
-  "license": "LicenseRef-ELv2",
   "description": "Calca Enterprise/Pro features — Elastic License v2",
+  "license": "LicenseRef-ELv2",
+  "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "scripts": {
     "dev": "echo 'dev: not yet implemented'",
     "build": "echo 'build: not yet implemented'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "lint": "echo 'lint: not yet implemented'",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
     "validate": "echo 'validate: not yet implemented'"
   },
   "dependencies": {},

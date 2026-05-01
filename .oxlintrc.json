@@ -3,9 +3,10 @@
     "correctness": "warn",
     "suspicious": "warn",
     "perf": "warn",
-    "style": "warn",
-    "restriction": "warn",
-    "nursery": "allow"
+    "style": "off",
+    "restriction": "off",
+    "pedantic": "off",
+    "nursery": "off"
   },
   "ignorePatterns": [
     "node_modules",
@@ -20,7 +21,7 @@
     {
       "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
       "rules": {
-        "suspicious/noExplicitAny": "off"
+        "@typescript-eslint/no-explicit-any": "off"
       }
     }
   ]

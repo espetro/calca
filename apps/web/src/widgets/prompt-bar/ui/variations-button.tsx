@@ -1,15 +1,16 @@
-import { useViewportSize } from "../hooks/use-viewport-size";
-import { useWindowEvent } from "../hooks/use-window-event";
 import { Dices, Minus, Plus } from "lucide-react";
-import { useRef, useState, useLayoutEffect } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+
+import { useViewportSize } from "@mantine/hooks";
+import { useWindowEvent } from "@mantine/hooks";
 
 const VARIATION_COLORS: Record<number, { bg: string; color: string }> = {
   1: { bg: "transparent", color: "" },
-  2: { bg: "rgba(255,16,106,0.20)", color: "#FF106A" },
-  3: { bg: "rgba(255,16,106,0.40)", color: "#FF106A" },
-  4: { bg: "rgba(255,16,106,0.65)", color: "#fff" },
-  5: { bg: "#FF106A", color: "#fff" },
+  2: { bg: "var(--mode-variations-bg-subtle)", color: "var(--mode-variations-fg)" },
+  3: { bg: "var(--mode-variations-bg-subtle)", color: "var(--mode-variations-fg)" },
+  4: { bg: "var(--mode-variations-bg)", color: "var(--mode-variations-fg)" },
+  5: { bg: "var(--mode-variations-bg)", color: "var(--mode-variations-fg)" },
 };
 
 interface VariationsButtonProps {
@@ -18,6 +19,7 @@ interface VariationsButtonProps {
   showVariations: boolean;
   onToggle: () => void;
   disabled?: boolean;
+  dataTour?: string;
 }
 
 export function VariationsButton({
@@ -26,6 +28,7 @@ export function VariationsButton({
   showVariations,
   onToggle,
   disabled = false,
+  dataTour,
 }: VariationsButtonProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -33,7 +36,9 @@ export function VariationsButton({
   const { height: viewportHeight } = useViewportSize();
 
   useLayoutEffect(() => {
-    if (!showVariations || !containerRef.current) return;
+    if (!showVariations || !containerRef.current) {
+      return;
+    }
 
     const buttonRect = containerRef.current.getBoundingClientRect();
 
@@ -71,6 +76,7 @@ export function VariationsButton({
         type="button"
         onClick={onToggle}
         disabled={disabled}
+        data-tour={dataTour}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
           disabled
             ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"
@@ -82,11 +88,11 @@ export function VariationsButton({
           !disabled && conceptCount !== 1
             ? {
                 backgroundColor: VARIATION_COLORS[conceptCount]?.bg,
-                color: VARIATION_COLORS[conceptCount]?.color,
                 border:
                   conceptCount === 2 || conceptCount === 3
-                    ? "1px solid rgba(255,16,106,0.4)"
+                    ? "1px solid var(--mode-variations-fg)"
                     : undefined,
+                color: VARIATION_COLORS[conceptCount]?.color,
               }
             : undefined
         }

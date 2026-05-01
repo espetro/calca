@@ -1,12 +1,12 @@
 export function buildSummaryPrompt(
   prompt: string,
   strippedHtml: string,
-  iterationLabels: string[]
+  iterationLabels: string[],
 ): string {
   return `You are a design critic. Analyze this HTML/CSS design generated for the prompt: "${prompt}".
 
 Design iterations in this group:
-${iterationLabels.map((label, i) => `${i + 1}. ${label}`).join('\n')}
+${iterationLabels.map((label, i) => `${i + 1}. ${label}`).join("\n")}
 
 HTML/CSS of the final design (base64 images removed):
 ${strippedHtml}

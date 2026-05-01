@@ -1,23 +1,24 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Context } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@app/core/ai/probe", () => ({
   probeModels: vi.fn(),
 }));
 
 import { probeModels } from "@app/core/ai/probe";
+
 import { handleProbeModels } from "../probe-models";
 
 function createMockContext(body: unknown): Context {
   const json = vi.fn((data, status) => ({
-    status: status ?? 200,
     json: data,
+    status: status ?? 200,
   }));
   return {
+    json,
     req: {
       json: vi.fn().mockResolvedValue(body),
     },
-    json,
   } as unknown as Context;
 }
 
@@ -59,18 +60,25 @@ describe("handleProbeModels", () => {
 
     const ctx = createMockContext({
       apiKey: "sk-test",
-      providerType: "openai-compatible",
       baseURL: "http://localhost:1234/v1",
+      providerType: "openai-compatible",
     });
     await handleProbeModels(ctx);
 
-    expect(probeModels).toHaveBeenCalledWith("sk-test", "http://localhost:1234/v1", "openai-compatible");
+    expect(probeModels).toHaveBeenCalledWith(
+      "sk-test",
+      "http://localhost:1234/v1",
+      "openai-compatible",
+    );
   });
 
   it("allows missing apiKey for non-anthropic providers", async () => {
     (probeModels as ReturnType<typeof vi.fn>).mockResolvedValue({ "local-model": true });
 
-    const ctx = createMockContext({ providerType: "openai-compatible", baseURL: "http://localhost:1234/v1" });
+    const ctx = createMockContext({
+      baseURL: "http://localhost:1234/v1",
+      providerType: "openai-compatible",
+    });
     await handleProbeModels(ctx);
 
     expect(probeModels).toHaveBeenCalledWith("", "http://localhost:1234/v1", "openai-compatible");

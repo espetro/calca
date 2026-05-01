@@ -1,100 +1,91 @@
-import { generateText } from 'ai';
-import { getClaudeModel } from './providers';
-import type { ProviderType } from './providers';
+import { getLogger } from "@app/logger";
+import { CallSettings, generateText, LanguageModel } from "ai";
 
-const MODELS = [
-  'claude-opus-4-6',
-  'claude-sonnet-4-5',
-  'claude-opus-4',
-  'claude-sonnet-4',
-];
+import { getClaudeModel } from "./providers";
+import type { ProviderType } from "./providers";
 
-function isNotFoundError(msg: string): boolean {
-  return (
-    msg.includes('not_found') ||
-    msg.includes('404') ||
-    msg.includes('Could not resolve') ||
-    msg.includes('does not exist')
-  );
-}
+const logger = getLogger(["calca", "core", "ai", "probe"]);
 
 export interface ModelInfo {
   id: string;
   available: boolean;
 }
 
-export async function probeModels(
+const probeModel = async (model: LanguageModel, settings: CallSettings) =>
+  await generateText({
+    ...settings,
+    model,
+    maxOutputTokens: 1,
+    messages: [{ content: "hi", role: "user" }],
+  });
+
+const probeAnthropicModels = async (
   apiKey: string,
-  baseURL?: string,
-  providerType?: ProviderType,
-): Promise<Record<string, boolean>> {
-  // For OpenAI-compatible providers, fetch models from the /models endpoint
-  if (providerType === 'openai-compatible') {
-    return probeOpenAICompatibleModels(apiKey, baseURL);
-  }
-
-  // Default: Anthropic-style probing (also used when providerType is undefined for backward compat)
-  return probeAnthropicModels(apiKey);
-}
-
-async function probeAnthropicModels(apiKey: string): Promise<Record<string, boolean>> {
-  const headers: Record<string, string> = { 'x-anthropic-key': apiKey };
+  preferredModel?: string,
+  fallbackModel?: string,
+) => {
+  const headers = { "x-anthropic-key": apiKey };
   const available: Record<string, boolean> = {};
 
-  for (const model of MODELS) {
-    try {
-      await generateText({
-        model: getClaudeModel(model),
-        maxOutputTokens: 1,
-        messages: [{ role: 'user', content: 'hi' }],
-        headers,
-      });
-      available[model] = true;
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.log(`Probe ${model}:`, msg);
+  const modelsToProbe = [preferredModel, fallbackModel].filter(Boolean) as string[];
 
-      // Only mark unavailable for definitive "not found" errors
-      if (isNotFoundError(msg)) {
-        available[model] = false;
-      } else {
-        // Rate limit, overloaded, timeout, or any other error — assume available
-        available[model] = true;
-      }
+  if (modelsToProbe.length === 0) {
+    return {};
+  }
+
+  for (const model of modelsToProbe) {
+    try {
+      await probeModel(getClaudeModel(model), { headers });
+      available[model] = true;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      logger.debug(`Probe ${model}: ${msg}`);
+      available[model] = true;
     }
   }
 
   return available;
-}
+};
+
+export const probeModels = async (
+  apiKey: string,
+  baseURL?: string,
+  providerType?: ProviderType,
+  preferredModel?: string,
+  fallbackModel?: string,
+) =>
+  providerType === "openai-compatible"
+    ? probeOpenAICompatibleModels(apiKey, baseURL)
+    : probeAnthropicModels(apiKey, preferredModel, fallbackModel);
 
 async function probeOpenAICompatibleModels(
   apiKey: string,
   baseURL?: string,
 ): Promise<Record<string, boolean>> {
-  const baseUrl = baseURL?.replace(/\/+$/, '') ?? '';
+  const baseUrl = baseURL?.replace(/\/+$/, "") ?? "";
 
   try {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     if (apiKey) {
       headers.Authorization = `Bearer ${apiKey}`;
     }
     const response = await fetch(`${baseUrl}/models`, {
-      method: 'GET',
       headers,
+      method: "GET",
     });
 
     if (!response.ok) {
       if (response.status === 404) {
-        console.log('OpenAI-compatible /models endpoint returned 404');
+        logger.warn("OpenAI-compatible /models endpoint returned 404");
         return {};
       }
-      console.log(`OpenAI-compatible /models returned status ${response.status}`);
+      logger.info(`OpenAI-compatible /models returned status ${response.status}`);
       return {};
     }
 
-    const data = (await response.json()) as { data?: Array<{ id: string }> };
+    const data = (await response.json()) as { data?: { id: string }[] };
     const models = data.data ?? [];
     const available: Record<string, boolean> = {};
 
@@ -103,9 +94,9 @@ async function probeOpenAICompatibleModels(
     }
 
     return available;
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.log('OpenAI-compatible probe error:', msg);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    logger.error(`OpenAI-compatible probe error: ${msg}`);
     return {};
   }
 }

@@ -1,17 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { migrateSettings, type LegacySettings, type MigratedSettings } from "./migrate-settings";
+import { describe, expect, it } from "vitest";
+
+import { type LegacySettings, type MigratedSettings, migrateSettings } from "./migrate-settings";
 
 describe("migrateSettings", () => {
   it("returns null when settings already migrated (has providers array)", () => {
     const settings = {
       providers: [
         {
-          id: "default",
+          apiKey: "test-key",
           apiType: "anthropic" as const,
           baseUrl: "https://api.anthropic.com",
-          apiKey: "test-key",
-          models: [],
+          id: "default",
           lastTested: null,
+          models: [],
         },
       ],
     };
@@ -39,9 +40,9 @@ describe("migrateSettings", () => {
   it("migrates legacy settings with apiKey to new format", () => {
     const legacy: LegacySettings = {
       apiKey: "test-api-key",
-      providerType: "anthropic",
       baseURL: "https://api.anthropic.com",
       model: "claude-sonnet-4-5",
+      providerType: "anthropic",
     };
 
     const result = migrateSettings(legacy);
@@ -49,12 +50,12 @@ describe("migrateSettings", () => {
     expect(result).not.toBeNull();
     expect(result?.providers).toHaveLength(1);
     expect(result?.providers[0]).toEqual({
-      id: "default",
+      apiKey: "test-api-key",
       apiType: "anthropic",
       baseUrl: "https://api.anthropic.com",
-      apiKey: "test-api-key",
-      models: [],
+      id: "default",
       lastTested: null,
+      models: [],
     });
     expect(result?.model).toBe("default/claude-sonnet-4-5");
   });
@@ -131,8 +132,8 @@ describe("migrateSettings", () => {
 
   it("returns empty providers when no credentials provided", () => {
     const legacy: LegacySettings = {
-      providerType: "anthropic",
       model: "claude-3",
+      providerType: "anthropic",
     };
 
     const result = migrateSettings(legacy);
@@ -171,8 +172,8 @@ describe("migrateSettings", () => {
 
   it("returns empty providers when providers array is empty (treated as not migrated)", () => {
     const settings = {
-      providers: [],
       model: "test",
+      providers: [],
     };
 
     const result = migrateSettings(settings);

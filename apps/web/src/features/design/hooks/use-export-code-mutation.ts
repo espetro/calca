@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { legacyApiClient } from "@/lib/services/api";
+
+import { apiClient } from "#/lib/api-client";
 
 const MUTATION_KEY = ["/api/export"] as const;
 
@@ -13,18 +14,16 @@ interface ExportCodeProps {
 }
 
 const exportCode = async (params: ExportCodeProps) => {
-  return await legacyApiClient<{ result: string }>("/api/export", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(params),
+  const response = await apiClient.api.export.$post({
+    json: params,
   });
+  return await response.json();
 };
 
-const useExportCodeMutation = () => {
-  return useMutation({
+const useExportCodeMutation = () =>
+  useMutation({
     mutationKey: MUTATION_KEY,
     mutationFn: exportCode,
   });
-};
 
 export default useExportCodeMutation;

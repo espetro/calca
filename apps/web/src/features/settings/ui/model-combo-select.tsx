@@ -13,14 +13,19 @@ export default function ModelComboSelect({
   providers,
   onChange,
 }: ModelComboSelectProps) {
-  const hasModels = providers.some(p => p.models.length > 0);
-  
-  const selectedProviderAndModel = value.split("/");
+  const hasModels = providers.some((p) => p.models.length > 0);
+
+  const normalizedValue = value.includes("/")
+    ? value
+    : (providers.find((p) => p.models.some((m) => m.id === value))?.id ?? "") +
+      (value ? `/${value}` : "");
+
+  const selectedProviderAndModel = normalizedValue.split("/");
   const selectedProviderId = selectedProviderAndModel[0];
   const selectedModelId = selectedProviderAndModel[1];
-  
-  const isValidSelection = providers.some(p => 
-    p.models.some(m => `${p.id}/${m.id}` === value)
+
+  const isValidSelection = providers.some((p) =>
+    p.models.some((m) => `${p.id}/${m.id}` === normalizedValue || m.id === value),
   );
 
   return (
@@ -28,9 +33,9 @@ export default function ModelComboSelect({
       <label className="text-[12px] font-medium text-gray-500 uppercase tracking-wider mb-2 block">
         {label}
       </label>
-      
+
       <select
-        value={value}
+        value={normalizedValue}
         onChange={(e) => onChange(e.target.value)}
         className="text-[13px] text-gray-800 bg-white/70 backdrop-blur-sm rounded-xl px-4 py-3 outline-none border border-white/50 focus:border-blue-300/60 focus:bg-white/90 transition-all w-full"
         disabled={!hasModels}
@@ -41,14 +46,11 @@ export default function ModelComboSelect({
           </option>
         ) : (
           providers
-            .filter(p => p.models.length > 0)
-            .map(provider => (
+            .filter((p) => p.models.length > 0)
+            .map((provider) => (
               <optgroup key={provider.id} label={provider.id}>
-                {provider.models.map(model => (
-                  <option
-                    key={`${provider.id}/${model.id}`}
-                    value={`${provider.id}/${model.id}`}
-                  >
+                {provider.models.map((model) => (
+                  <option key={`${provider.id}/${model.id}`} value={`${provider.id}/${model.id}`}>
                     {`${provider.id}/${model.displayName || model.id}`}
                   </option>
                 ))}
@@ -56,10 +58,10 @@ export default function ModelComboSelect({
             ))
         )}
       </select>
-      
-      {!isValidSelection && value && (
+
+      {!isValidSelection && normalizedValue && (
         <p className="text-[11px] text-amber-500 mt-1.5">
-          Current selection ({value}) not found in any provider.
+          Current selection ({normalizedValue}) not found in any provider.
         </p>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const ReviewInputSchema = z.object({
   html: z.string(),
@@ -9,6 +9,7 @@ export const ReviewInputSchema = z.object({
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
   providerType: z.string().optional(),
+  frameIndex: z.number().optional(),
 });
 
 export const ReviewOutputSchema = z.object({

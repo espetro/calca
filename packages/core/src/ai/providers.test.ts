@@ -1,14 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import {
+  buildModelFallbackChain,
   getAIProvider,
-  type ProviderType,
   getClaudeModel,
-  getGeminiModel,
   getGeminiImageModel,
-  MODEL_FALLBACK_CHAIN,
-  claudeModels,
-  geminiModels,
-  openaiModels,
+  getGeminiModel,
+  type ProviderType,
 } from "./providers";
 
 describe("getAIProvider", () => {
@@ -71,7 +69,7 @@ describe("getClaudeModel", () => {
   it("returns default fallback for unknown model IDs", () => {
     const result = getClaudeModel("unknown-model");
     expect(result).toBeDefined();
-    expect(result).toBe(claudeModels["claude-opus-4-6"]);
+    expect(result).toBe("claude-opus-4-6");
   });
 
   it("returns claude-sonnet-4-5 for legacy ID when available", () => {
@@ -88,13 +86,13 @@ describe("getGeminiModel", () => {
   it("returns default gemini-2.0-flash for unknown model IDs", () => {
     const result = getGeminiModel("unknown-model");
     expect(result).toBeDefined();
-    expect(result).toBe(geminiModels["gemini-2.0-flash"]);
+    expect(result).toBe("gemini-2.0-flash");
   });
 
   it("handles empty string by returning default", () => {
     const result = getGeminiModel("");
     expect(result).toBeDefined();
-    expect(result).toBe(geminiModels["gemini-2.0-flash"]);
+    expect(result).toBe("gemini-2.0-flash");
   });
 });
 
@@ -110,25 +108,25 @@ describe("getGeminiImageModel", () => {
   });
 });
 
-describe("MODEL_FALLBACK_CHAIN", () => {
-  it("contains expected fallback models in order", () => {
-    expect(MODEL_FALLBACK_CHAIN).toEqual([
+describe("buildModelFallbackChain", () => {
+  it("returns [preferredModel] when no fallbackModel", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6")).toEqual(["claude-opus-4-6"]);
+  });
+
+  it("returns [preferredModel] when fallbackModel is undefined", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6", undefined)).toEqual(["claude-opus-4-6"]);
+  });
+
+  it("returns [preferredModel, fallbackModel] when fallbackModel is different", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6", "claude-sonnet-4-5")).toEqual([
       "claude-opus-4-6",
       "claude-sonnet-4-5",
-      "claude-opus-4",
-      "claude-sonnet-4",
     ]);
   });
 
-  it("has at least one fallback model", () => {
-    expect(MODEL_FALLBACK_CHAIN.length).toBeGreaterThan(0);
-  });
-});
-
-describe("openaiModels", () => {
-  it("contains expected OpenAI model keys", () => {
-    expect(Object.keys(openaiModels)).toContain("gpt-4");
-    expect(Object.keys(openaiModels)).toContain("gpt-4o");
-    expect(Object.keys(openaiModels)).toContain("gpt-4o-mini");
+  it("does NOT duplicate preferredModel when fallbackModel equals preferredModel", () => {
+    expect(buildModelFallbackChain("claude-opus-4-6", "claude-opus-4-6")).toEqual([
+      "claude-opus-4-6",
+    ]);
   });
 });

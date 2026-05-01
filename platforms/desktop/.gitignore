@@ -1,0 +1,13 @@
+// Electrobun native libraries (downloaded by CLI)
+*.dylib
+*.dll
+*.so
+
+// Electrobun build output
+dist-macos-*/
+.cache/
+build/
+artifacts/
+node_modules/
+Resources/
+.turbo/

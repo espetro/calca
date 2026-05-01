@@ -1,5 +1,6 @@
 import { atom } from "jotai";
-import type { Point, Comment } from "@/shared/types";
+
+import type { Comment, Point } from "#/shared/types";
 
 export const commentDraftAtom = atom<{
   iterationId: string;

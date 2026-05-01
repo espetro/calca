@@ -23,6 +23,8 @@ export interface SelectedImage {
   name?: string;
 }
 
+export type Theme = "light" | "dark" | "system";
+
 export interface Settings {
   apiKey: string;
   geminiKey: string;
@@ -31,6 +33,7 @@ export interface Settings {
   providerType: ProviderType | undefined;
   baseURL: string;
   model: string;
+  fallbackModel?: string;
   systemPrompt: string;
   systemPromptPreset: string;
   conceptCount: number;
@@ -44,11 +47,22 @@ export interface Settings {
   /** @deprecated Use quickMode instead */
   critiqueMode: boolean;
   selectedImages: SelectedImage[];
+  theme: Theme;
+  onboardingCompleted: boolean;
+  analyticsEnabled: boolean;
 }
 
-export const FALLBACK_MODELS: ModelInfo[] = [
-  { id: "claude-opus-4-6", displayName: "claude-opus-4-6", description: "" },
-  { id: "claude-sonnet-4-5", displayName: "claude-sonnet-4-5", description: "" },
-  { id: "claude-opus-4", displayName: "claude-opus-4", description: "" },
-  { id: "claude-sonnet-4", displayName: "claude-sonnet-4", description: "" },
+export const MODELS: { id: string; label: string }[] = [
+  { id: "claude-sonnet-4-20250514", label: "Sonnet 4.5" },
+  { id: "claude-sonnet-4", label: "Sonnet 4" },
+  { id: "claude-opus-4", label: "Opus 4" },
+  { id: "claude-opus-4-5-20250918", label: "Opus 4.5" },
+  { id: "claude-opus-4-6", label: "Opus 4.6" },
+  { id: "claude-sonnet-4-5", label: "Sonnet 4.5" },
+  { id: "gpt-4o", label: "GPT-4o" },
+  { id: "gpt-4-turbo", label: "GPT-4 Turbo" },
+  { id: "gpt-4", label: "GPT-4" },
+  { id: "gpt-4o-mini", label: "GPT-4o Mini" },
+  { id: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
+  { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
 ];

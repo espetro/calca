@@ -1,4 +1,4 @@
-import type { ProviderConfig, ModelInfo, ProviderType } from "../types";
+import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
 
 export interface LegacySettings {
   apiKey?: string;
@@ -38,29 +38,29 @@ export const migrateSettings = (settings: unknown): MigratedSettings | null => {
 
     const apiKey = typeof s.apiKey === "string" ? s.apiKey : "";
     const baseURL = typeof s.baseURL === "string" ? s.baseURL : "";
-    const providerType = s.providerType === "anthropic" || s.providerType === "openai-compatible"
-      ? s.providerType
-      : "anthropic";
+    const providerType =
+      s.providerType === "anthropic" || s.providerType === "openai-compatible"
+        ? s.providerType
+        : "anthropic";
     const model = typeof s.model === "string" ? s.model : "";
     const ideateModel = typeof s.ideateModel === "string" ? s.ideateModel : undefined;
 
-    const hasCredentials = !!apiKey || !!baseURL;
+    const hasCredentials = Boolean(apiKey) || Boolean(baseURL);
 
     if (!hasCredentials) {
       return { providers: [] };
     }
 
     const defaultProvider: ProviderConfig = {
-      id: "default",
+      apiKey,
       apiType: providerType,
       baseUrl: baseURL,
-      apiKey,
-      models: [],
+      id: "default",
       lastTested: null,
+      models: [],
     };
 
-    const prefixModel = (m: string): string =>
-      m.includes("/") ? m : `default/${m}`;
+    const prefixModel = (m: string): string => (m.includes("/") ? m : `default/${m}`);
 
     const result: MigratedSettings = {
       providers: [defaultProvider],

@@ -1,21 +1,21 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const PlanInputSchema = z.object({
-  prompt: z.string(),
-  model: z.string().optional(),
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
+  model: z.string().optional(),
+  prompt: z.string(),
   providerType: z.string().optional(),
 });
 
 export const ConceptSchema = z.object({
-  name: z.string(),
   direction: z.string(),
+  name: z.string(),
 });
 
 export const PlanOutputSchema = z.object({
-  count: z.number(),
   concepts: z.array(ConceptSchema),
+  count: z.number(),
 });
 
 export type PlanInput = z.infer<typeof PlanInputSchema>;

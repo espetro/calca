@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const LayoutInputSchema = z.object({
   prompt: z.string(),
@@ -12,6 +12,7 @@ export const LayoutInputSchema = z.object({
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
   providerType: z.string().optional(),
+  frameIndex: z.number().optional(),
 });
 
 export const LayoutOutputSchema = z.object({

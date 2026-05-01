@@ -1,48 +1,12 @@
-import { useState, useCallback, useEffect, useRef } from "react";
-import type { CanvasImage } from "@/shared/types";
+import { getLogger } from "@app/logger";
+import { useCallback, useMemo, useRef } from "react";
+import useDb from "use-db";
 
-const DB_NAME = "calca-canvas-images";
-const STORE_NAME = "ref-images";
-const DB_VERSION = 2; // bump from v1 used by groups hook
+const logger = getLogger(["calca", "web", "design", "persist"]);
+
+import type { CanvasImage } from "#/shared/types";
+
 const MAX_IMAGES = 20;
-
-/** @deprecated Use {@link useIndexedDB} */
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains("images")) {
-        db.createObjectStore("images"); // existing store from groups hook
-      }
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-/** @deprecated Use {@link useIndexedDB} */
-function dbGet<T>(db: IDBDatabase, key: string): Promise<T | undefined> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, "readonly");
-    const req = tx.objectStore(STORE_NAME).get(key);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-/** @deprecated Use {@link useIndexedDB} */
-function dbPut(db: IDBDatabase, key: string, value: unknown): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const req = tx.objectStore(STORE_NAME).put(value, key);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
 
 /** Compress an image dataUrl to JPEG at reduced quality/size for storage */
 function compressForStorage(dataUrl: string, maxWidth: number = 800): Promise<string> {
@@ -57,7 +21,7 @@ function compressForStorage(dataUrl: string, maxWidth: number = 800): Promise<st
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       resolve(canvas.toDataURL("image/jpeg", 0.6));
     };
-    img.onerror = () => resolve(dataUrl); // fallback to original
+    img.onerror = () => resolve(dataUrl); // Fallback to original
     img.src = dataUrl;
   });
 }
@@ -73,71 +37,82 @@ interface StoredImage {
 }
 
 export function usePersistedImages() {
-  const [images, setImagesRaw] = useState<CanvasImage[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [storedImages, setStoredImages] = useDb<StoredImage[]>("canvas-images", {
+    defaultValue: [],
+  });
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load from IndexedDB on mount
-  useEffect(() => {
-    (async () => {
-      try {
-        const db = await openDB();
-        const stored = await dbGet<StoredImage[]>(db, "canvas-images");
-        if (stored && stored.length > 0) {
-          setImagesRaw(
-            stored.map((s) => ({
-              id: s.id,
-              dataUrl: s.compressedDataUrl,
-              name: s.name,
-              width: s.width,
-              height: s.height,
-              position: s.position,
-              thumbnail: s.thumbnail,
+  // Transform StoredImage[] to CanvasImage[] - computed from storedImages
+  const images = useMemo<CanvasImage[]>(
+    () =>
+      storedImages.map((s) => ({
+        dataUrl: s.compressedDataUrl,
+        height: s.height,
+        id: s.id,
+        name: s.name,
+        position: s.position,
+        thumbnail: s.thumbnail,
+        width: s.width,
+      })),
+    [storedImages],
+  );
+
+  // Track loaded state - if storedImages has values beyond default, it's loaded
+  // useDb uses useSyncExternalStore so data is available synchronously
+  const loaded = storedImages.length > 0;
+
+  // Debounced save to IndexedDB via useDb
+  const persistImages = useCallback(
+    async (newImages: CanvasImage[]) => {
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+      }
+      saveTimer.current = setTimeout(async () => {
+        try {
+          // Compress images for storage (max 800px wide, JPEG 60%)
+          const toStore: StoredImage[] = await Promise.all(
+            newImages.slice(0, MAX_IMAGES).map(async (img) => ({
+              compressedDataUrl: await compressForStorage(img.dataUrl),
+              height: img.height,
+              id: img.id,
+              name: img.name,
+              position: img.position,
+              thumbnail: img.thumbnail,
+              width: img.width,
             })),
           );
+          setStoredImages(toStore);
+        } catch (error) {
+          logger.debug("Failed to save canvas images", {
+            error: error instanceof Error ? error.message : String(error),
+          });
         }
-      } catch (err) {
-        console.warn("[persist-images] Failed to load:", err);
-      }
-      setLoaded(true);
-    })();
-  }, []);
-
-  // Debounced save to IndexedDB
-  const persistImages = useCallback(async (newImages: CanvasImage[]) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      try {
-        const db = await openDB();
-        // Compress images for storage (max 800px wide, JPEG 60%)
-        const stored: StoredImage[] = await Promise.all(
-          newImages.slice(0, MAX_IMAGES).map(async (img) => ({
-            id: img.id,
-            compressedDataUrl: await compressForStorage(img.dataUrl),
-            name: img.name,
-            width: img.width,
-            height: img.height,
-            position: img.position,
-            thumbnail: img.thumbnail,
-          })),
-        );
-        await dbPut(db, "canvas-images", stored);
-      } catch (err) {
-        console.warn("[persist-images] Failed to save:", err);
-      }
-    }, 500);
-  }, []);
+      }, 500);
+    },
+    [setStoredImages],
+  );
 
   const setImages = useCallback(
     (updater: CanvasImage[] | ((prev: CanvasImage[]) => CanvasImage[])) => {
-      setImagesRaw((prev) => {
-        const next = typeof updater === "function" ? updater(prev) : updater;
+      // Compute next images from current storedImages to maintain consistency
+      setStoredImages((prev: StoredImage[]) => {
+        const currentCanvasImages = prev.map((s) => ({
+          dataUrl: s.compressedDataUrl,
+          height: s.height,
+          id: s.id,
+          name: s.name,
+          position: s.position,
+          thumbnail: s.thumbnail,
+          width: s.width,
+        }));
+        const next =
+          typeof updater === "function" ? updater(currentCanvasImages) : updater;
         persistImages(next);
-        return next;
+        return prev; // Return same - persistImages handles async update separately
       });
     },
-    [persistImages],
+    [persistImages, setStoredImages],
   );
 
-  return { images, setImages, loaded };
+  return { images, loaded, setImages };
 }
