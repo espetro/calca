@@ -37,10 +37,15 @@ const main = async () => {
   await cp(webDir, resourcesDir, { recursive: true, force: true });
 
   logger.info("==> Building Electrobun app...");
-  const electrobunPaths = [
+  const basePaths = [
     path.resolve(DESKTOP_DIR, "node_modules", ".bin", "electrobun"),
     path.resolve(REPO_ROOT, "node_modules", ".bin", "electrobun"),
   ];
+  // On Windows, Bun installs binaries as .cmd or .exe wrappers
+  const extensions = process.platform === "win32" ? ["", ".cmd", ".exe", ".ps1"] : [""];
+  const electrobunPaths = basePaths.flatMap((p) =>
+    extensions.map((ext) => p + ext),
+  );
   const electrobunBin = electrobunPaths.find((p) => existsSync(p)) ?? null;
   if (!electrobunBin) {
     throw new Error(
