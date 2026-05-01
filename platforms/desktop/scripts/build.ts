@@ -5,7 +5,6 @@ import { cp, mkdir } from "fs/promises";
 import { resolve } from "path";
 
 import { getLogger } from "@logtape/logtape";
-import { $, path } from "zx";
 
 import { initLogger } from "../src/logger";
 
@@ -16,30 +15,42 @@ await initLogger({ logDir, prefix: "build" });
 const logger = getLogger(["calca", "build"]);
 
 const SCRIPT_DIR = import.meta.dirname;
-const REPO_ROOT = path.resolve(SCRIPT_DIR, "..", "..", "..");
-const DESKTOP_DIR = path.resolve(REPO_ROOT, "platforms", "desktop");
+const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..", "..");
+const DESKTOP_DIR = resolve(REPO_ROOT, "platforms", "desktop");
 
-// zx template literals on Windows interpret backslashes as escape sequences.
-// Convert to forward slashes for safe interpolation in shell commands.
-const posix = (p: string) => p.replace(/\\/g, "/");
+async function run(
+  cmd: string[],
+  opts?: { cwd?: string; allowFail?: boolean },
+): Promise<number> {
+  const proc = Bun.spawn(cmd, {
+    cwd: opts?.cwd,
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  const exitCode = await proc.exited;
+  if (exitCode !== 0 && !opts?.allowFail) {
+    throw new Error(`${cmd.join(" ")} exited with code ${exitCode}`);
+  }
+  return exitCode;
+}
 
 const main = async () => {
   logger.info("==> Cleaning desktop build artifacts...");
-  await $`bun run --cwd ${posix(DESKTOP_DIR)} clean`.nothrow();
+  await run(["bun", "run", "--cwd", DESKTOP_DIR, "clean"], { allowFail: true });
 
   logger.info("==> Building web app...");
-  await $`bun run --cwd ${posix(REPO_ROOT)} --filter=@app/web build`;
+  await run(["bun", "run", "--cwd", REPO_ROOT, "--filter=@app/web", "build"]);
 
   logger.info("==> Copying web build to desktop Resources...");
-  const webDir = path.resolve(REPO_ROOT, "apps", "web", "dist");
-  const resourcesDir = path.resolve(DESKTOP_DIR, "Resources", "web");
+  const webDir = resolve(REPO_ROOT, "apps", "web", "dist");
+  const resourcesDir = resolve(DESKTOP_DIR, "Resources", "web");
   await mkdir(resourcesDir, { recursive: true });
   await cp(webDir, resourcesDir, { recursive: true, force: true });
 
   logger.info("==> Building Electrobun app...");
   const basePaths = [
-    path.resolve(DESKTOP_DIR, "node_modules", ".bin", "electrobun"),
-    path.resolve(REPO_ROOT, "node_modules", ".bin", "electrobun"),
+    resolve(DESKTOP_DIR, "node_modules", ".bin", "electrobun"),
+    resolve(REPO_ROOT, "node_modules", ".bin", "electrobun"),
   ];
   // On Windows, Bun installs binaries as .cmd or .exe wrappers
   const extensions = process.platform === "win32" ? ["", ".cmd", ".exe", ".ps1"] : [""];
@@ -52,7 +63,7 @@ const main = async () => {
       `electrobun binary not found. Searched: ${electrobunPaths.join(", ")}`,
     );
   }
-  await $({ cwd: DESKTOP_DIR })`${electrobunBin} build --env=stable`;
+  await run([electrobunBin, "build", "--env=stable"], { cwd: DESKTOP_DIR });
 
   logger.info("==> Done! Artifacts in platforms/desktop/artifacts/");
 };
