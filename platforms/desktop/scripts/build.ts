@@ -1,6 +1,7 @@
 // oxlint-disable unicorn/require-module-specifiers
 
 import { existsSync } from "fs";
+import { cp, mkdir } from "fs/promises";
 import { resolve } from "path";
 
 import { getLogger } from "@logtape/logtape";
@@ -18,16 +19,22 @@ const SCRIPT_DIR = import.meta.dirname;
 const REPO_ROOT = path.resolve(SCRIPT_DIR, "..", "..", "..");
 const DESKTOP_DIR = path.resolve(REPO_ROOT, "platforms", "desktop");
 
+// zx template literals on Windows interpret backslashes as escape sequences.
+// Convert to forward slashes for safe interpolation in shell commands.
+const posix = (p: string) => p.replace(/\\/g, "/");
+
 const main = async () => {
   logger.info("==> Cleaning desktop build artifacts...");
-  await $`bun run --cwd ${DESKTOP_DIR} clean`.nothrow();
+  await $`bun run --cwd ${posix(DESKTOP_DIR)} clean`.nothrow();
 
   logger.info("==> Building web app...");
-  await $`bun run --cwd ${REPO_ROOT} --filter=@app/web build`;
+  await $`bun run --cwd ${posix(REPO_ROOT)} --filter=@app/web build`;
 
   logger.info("==> Copying web build to desktop Resources...");
-  await $`mkdir -p ${DESKTOP_DIR}/Resources/web`;
-  await $`cp -r ${REPO_ROOT}/apps/web/dist/* ${DESKTOP_DIR}/Resources/web/`;
+  const webDir = path.resolve(REPO_ROOT, "apps", "web", "dist");
+  const resourcesDir = path.resolve(DESKTOP_DIR, "Resources", "web");
+  await mkdir(resourcesDir, { recursive: true });
+  await cp(webDir, resourcesDir, { recursive: true, force: true });
 
   logger.info("==> Building Electrobun app...");
   const electrobunPaths = [
