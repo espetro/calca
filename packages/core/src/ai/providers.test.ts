@@ -66,10 +66,10 @@ describe("getClaudeModel", () => {
     expect(result).toBeDefined();
   });
 
-  it("returns default fallback for unknown model IDs", () => {
+  it("returns the input modelId for unknown model IDs", () => {
     const result = getClaudeModel("unknown-model");
     expect(result).toBeDefined();
-    expect(result).toBe("claude-opus-4-6");
+    expect(result).toBe("unknown-model");
   });
 
   it("returns claude-sonnet-4-5 for legacy ID when available", () => {
@@ -83,16 +83,16 @@ describe("getGeminiModel", () => {
     expect(getGeminiModel("gemini-2.0-flash")).toBeDefined();
   });
 
-  it("returns default gemini-2.0-flash for unknown model IDs", () => {
+  it("returns the input modelId for unknown model IDs", () => {
     const result = getGeminiModel("unknown-model");
     expect(result).toBeDefined();
-    expect(result).toBe("gemini-2.0-flash");
+    expect(result).toBe("unknown-model");
   });
 
-  it("handles empty string by returning default", () => {
+  it("handles empty string by returning empty string", () => {
     const result = getGeminiModel("");
     expect(result).toBeDefined();
-    expect(result).toBe("gemini-2.0-flash");
+    expect(result).toBe("");
   });
 });
 
