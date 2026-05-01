@@ -1,3 +1,4 @@
+import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import type {
@@ -187,25 +188,7 @@ setTimeout(reportHeight, 2000);
         {iteration.isLoading ? (
           <div className="w-full h-full flex flex-col items-center justify-center gap-4">
             <div className="relative w-10 h-10">
-              <svg className="w-10 h-10 animate-spin" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="16" stroke="#e5e7eb" strokeWidth="3" />
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="16"
-                  stroke="url(#spinner-gradient)"
-                  strokeWidth="3"
-                  strokeDasharray="80"
-                  strokeDashoffset="60"
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="spinner-gradient" x1="0" y1="0" x2="40" y2="40">
-                    <stop offset="0%" stopColor="#8b5cf6" />
-                    <stop offset="100%" stopColor="#3b82f6" />
-                  </linearGradient>
-                </defs>
-              </svg>
+              <Loader className="w-10 h-10 animate-spin" />
             </div>
             <span className="text-[12px] font-medium text-gray-400">Generating...</span>
           </div>

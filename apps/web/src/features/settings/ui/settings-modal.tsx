@@ -3,8 +3,8 @@ import { useState } from "react";
 import type { Settings } from "#/features/settings/types";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
-import { ModelInfo, ProviderConfig, ProviderType } from "../types";
-import ProviderConfigForm from "./provider-config-form";
+import { ModelInfo, ProviderConfig } from "../types";
+import ProviderConfigForm, { TestProvider } from "./provider-config-form";
 import ProviderList from "./provider-list";
 interface SettingsModalProps {
   settings: Settings;
@@ -80,12 +80,7 @@ export function SettingsModal({
   };
 
   // Adapter for ProviderConfigForm's testProvider signature
-  const testProviderAdapter = (
-    id: string,
-    apiType: ProviderType,
-    baseUrl: string,
-    apiKey: string,
-  ) => {
+  const testProviderAdapter = ({ id, apiType, baseUrl, apiKey }: TestProvider) => {
     return testProvider({ id, apiType, baseUrl, apiKey }).then(
       (result: { models: ModelInfo[]; error?: string }) => {
         if (result.error) {

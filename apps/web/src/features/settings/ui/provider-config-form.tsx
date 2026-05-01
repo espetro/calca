@@ -2,16 +2,33 @@ import { useCallback, useState } from "react";
 
 import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
 
+export interface TestProvider {
+  id: string;
+  apiType: ProviderType;
+  baseUrl: string;
+  apiKey: string;
+}
+
+const API_TYPES = [
+  {
+    description: "Claude Opus 4.6, Sonnet 4.5, Opus 4, or Sonnet 4",
+    icon: "🤖",
+    id: "anthropic" as const,
+    label: "Anthropic",
+  },
+  {
+    description: "GPT-4, GPT-4o, GPT-3.5 Turbo, or custom endpoints",
+    icon: "🚀",
+    id: "openai-compatible" as const,
+    label: "OpenAI-Compatible",
+  },
+];
+
 interface ProviderConfigFormProps {
   onSave: (provider: ProviderConfig) => void;
   onCancel: () => void;
   existingIds: string[];
-  testProvider: (
-    id: string,
-    apiType: ProviderType,
-    baseUrl: string,
-    apiKey: string,
-  ) => Promise<{ models: ModelInfo[] }>;
+  testProvider: (_: TestProvider) => Promise<{ models: ModelInfo[] }>;
 }
 
 export default function ProviderConfigForm({
@@ -61,7 +78,7 @@ export default function ProviderConfigForm({
     setTestError(null);
 
     try {
-      const result = await testProvider(id, apiType, baseUrl, apiKey);
+      const result = await testProvider({ id, apiType, baseUrl, apiKey });
       setTestResult(result);
       setTestError(null);
     } catch (error) {
@@ -117,20 +134,7 @@ export default function ProviderConfigForm({
           API Type
         </label>
         <div className="space-y-2">
-          {[
-            {
-              description: "Claude Opus 4.6, Sonnet 4.5, Opus 4, or Sonnet 4",
-              icon: "🤖",
-              id: "anthropic" as const,
-              label: "Anthropic",
-            },
-            {
-              description: "GPT-4, GPT-4o, GPT-3.5 Turbo, or custom endpoints",
-              icon: "🚀",
-              id: "openai-compatible" as const,
-              label: "OpenAI-Compatible",
-            },
-          ].map((provider) => (
+          {API_TYPES.map((provider) => (
             <button
               key={provider.id}
               onClick={() => setApiType(provider.id)}
