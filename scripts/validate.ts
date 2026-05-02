@@ -1,16 +1,21 @@
 /**
  * * Runs all validation steps and just shows a simple ✅ (OK), ⚠️ (WARN), or ❌ (FAIL) for each validation check.
  */
-import { $, ProcessOutput } from "zx";
+import { $ } from "bun";
 
 interface Stage {
   display: string;
   cmd: string;
-  onError?: (_: ProcessOutput) => string | null;
+  onError?: (_: $.ShellError) => string | null;
 }
 
-const warnOnError = ({ stdout, stderr }: ProcessOutput): string | null => {
-  const output = stdout + stderr;
+interface StageOutput {
+  line: string;
+  ok: boolean;
+}
+
+const warnOnError = ({ stdout, stderr }: $.ShellError): string | null => {
+  const output = stdout.toString("utf-8") + stderr.toString("utf-8");
   const lintResults = [...output.matchAll(/Found (\d+) warnings? and (\d+) errors?/g)];
 
   if (lintResults.length > 0) {
@@ -32,12 +37,12 @@ const stages: Stage[] = [
   { display: "Test", cmd: "test" },
 ];
 
-const runStage = async ({ display, cmd, onError }: Stage): Promise<{ line: string; ok: boolean }> => {
+const runStage = async ({ display, cmd, onError }: Stage): Promise<StageOutput> => {
   try {
     await $`bunx turbo ${cmd}`.quiet();
     return { line: `Running ${display}... ✅`, ok: true };
   } catch (error) {
-    if (error instanceof ProcessOutput && onError) {
+    if (error instanceof $.ShellError && onError) {
       const warningLine = onError(error);
       if (warningLine) {
         return { line: `Running ${display}... ${warningLine}`, ok: true };

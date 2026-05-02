@@ -1,11 +1,20 @@
 // oxlint-disable unicorn/require-module-specifiers
 
-import { $, path } from "zx";
+import * as path from "path";
+
+import { $ } from "bun";
 
 const HOST = "127.0.0.1";
 const PORT = parseInt(process.env.CALCA_PORT ?? "3847", 10);
 const HEALTH_URL = `http://${HOST}:${PORT}/health`;
-const BUILD_DIR = path.resolve(import.meta.dirname, "..", "..", "desktop", "build", "stable-macos-arm64");
+const BUILD_DIR = path.resolve(
+  import.meta.dirname,
+  "..",
+  "..",
+  "desktop",
+  "build",
+  "stable-macos-arm64",
+);
 const ARTIFACTS_DIR = path.resolve(import.meta.dirname, "..", "..", "desktop", "artifacts");
 
 interface Metrics {
@@ -15,24 +24,28 @@ interface Metrics {
   errors: string[];
 }
 
+const checkDir = async (dir: string) => {
+  const { stdout } = await $`ls "${dir}" 2>/dev/null`;
+  const names = stdout
+    .toString()
+    .split("\n")
+    .filter((n) => n.endsWith(".app"));
+
+  return await Promise.all(
+    names
+      .filter((_) => _.trim())
+      .map(async (name) => {
+        const absPath = path.join(dir, name.trim());
+        const { mtime } = await Bun.file(absPath).stat();
+        return { absPath, mtime };
+      }),
+  );
+};
 async function findLatestApp(): Promise<string> {
   const searchDirs = [BUILD_DIR, ARTIFACTS_DIR];
-  const found: { absPath: string; mtime: Date }[] = [];
 
-  for (const dir of searchDirs) {
-    try {
-      const { stdout } = await $`ls "${dir}" 2>/dev/null`;
-      const names = stdout.toString().split("\n").filter((n) => n.endsWith(".app"));
-      for (const name of names) {
-        if (!name.trim()) continue;
-        const absPath = path.join(dir, name.trim());
-        try {
-          const { mtime } = Bun.file(absPath).stat();
-          found.push({ absPath, mtime });
-        } catch {}
-      }
-    } catch {}
-  }
+  const results = await Promise.all(searchDirs.flatMap(checkDir));
+  const found = results.flat();
 
   if (found.length === 0) {
     throw new Error(`No .app bundles found in build/ or artifacts/`);
@@ -193,7 +206,12 @@ Options:
   } catch (e) {
     const totalElapsed = Date.now() - startTime;
     const errors = [`Health check failed: ${e}`];
-    const metrics: Metrics = { startupTimeMs: totalElapsed, healthResponse: null, passed: false, errors };
+    const metrics: Metrics = {
+      startupTimeMs: totalElapsed,
+      healthResponse: null,
+      passed: false,
+      errors,
+    };
     printReport(metrics, warnThreshold, failThreshold);
     console.error("❌ App failed to start within timeout.");
     await killApp();
