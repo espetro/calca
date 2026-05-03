@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Button } from "#/shared/components/ui/button";
+import { X } from "lucide-react";
 
 interface PromptLibraryProps {
   open: boolean;
@@ -119,22 +121,9 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
             <span className="text-base">💡</span>
             <h2 className="text-[15px] font-semibold text-gray-800">Prompt Library</h2>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-black/5 transition-all"
-          >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="w-4 h-4" />
+          </Button>
         </div>
 
         {/* Content */}
@@ -162,18 +151,20 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 mt-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
-                      <button
+                      <Button
+                        variant="default"
+                        size="sm"
                         onClick={() => handleUse(p.text)}
-                        className="text-[11px] font-medium text-white bg-primary/90 hover:bg-primary px-3 py-1.5 rounded-lg transition-all"
                       >
                         Use prompt →
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleCopy(p.text)}
-                        className="text-[11px] font-medium text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg hover:bg-black/5 transition-all"
                       >
                         {copied === p.text ? "Copied ✓" : "Copy"}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ))}

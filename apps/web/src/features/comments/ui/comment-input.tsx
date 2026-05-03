@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 
+import { Button } from "#/shared/components/ui/button";
+import { Textarea } from "#/shared/components/ui/textarea";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 interface CommentInputProps {
@@ -42,7 +44,7 @@ export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps
         <div className="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-2 px-1">
           Revision comment
         </div>
-        <textarea
+        <Textarea
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -60,19 +62,23 @@ export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps
           rows={3}
         />
         <div className="flex items-center justify-between mt-2.5 px-0.5">
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onCancel}
             className="text-[12px] text-gray-400 hover:text-gray-600 px-2.5 py-1.5 rounded-lg hover:bg-black/5 transition-all"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
             onClick={handleSubmit}
             disabled={!text.trim()}
             className="text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 disabled:opacity-30 px-4 py-1.5 rounded-xl transition-all shadow-sm backdrop-blur-sm"
           >
             Revise ↵
-          </button>
+          </Button>
         </div>
       </div>
     </div>

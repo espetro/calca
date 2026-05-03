@@ -1,5 +1,9 @@
 import { useCallback, useState } from "react";
 
+import { Button } from "#/shared/components/ui/button";
+import { Input } from "#/shared/components/ui/input";
+import { Check } from "lucide-react";
+
 import type { ModelInfo, ProviderConfig, ProviderType } from "../types";
 
 export interface TestProvider {
@@ -115,7 +119,7 @@ export default function ProviderConfigForm({
         <label className="text-[12px] font-medium text-gray-500 uppercase tracking-wider mb-2 block">
           Provider ID
         </label>
-        <input
+        <Input
           type="text"
           value={id}
           onChange={(e) => setId(e.target.value)}
@@ -135,8 +139,9 @@ export default function ProviderConfigForm({
         </label>
         <div className="space-y-2">
           {API_TYPES.map((provider) => (
-            <button
+            <Button
               key={provider.id}
+              variant="ghost"
               onClick={() => setApiType(provider.id)}
               className={`w-full flex items-center justify-between px-5 py-3.5 rounded-xl text-left transition-all ${
                 apiType === provider.id
@@ -153,19 +158,9 @@ export default function ProviderConfigForm({
                 </div>
               </div>
               {apiType === provider.id && (
-                <svg
-                  className="w-4 h-4 text-blue-500 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <Check className="w-4 h-4 text-blue-500 shrink-0" />
               )}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -176,7 +171,7 @@ export default function ProviderConfigForm({
           <label className="text-[12px] font-medium text-gray-500 uppercase tracking-wider mb-2 block">
             Base URL
           </label>
-          <input
+          <Input
             type="text"
             value={baseUrl}
             onChange={(e) => setBaseUrl(e.target.value)}
@@ -192,25 +187,28 @@ export default function ProviderConfigForm({
           API Key
         </label>
         <div className="flex gap-2">
-          <input
+          <Input
             type={showKey ? "text" : "password"}
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="sk-ant-..."
             className="flex-1 text-[13px] text-gray-800 placeholder-gray-400/50 bg-white/70 backdrop-blur-sm rounded-xl px-5 py-3.5 outline-none border border-white/50 focus:border-blue-300/60 focus:bg-white/90 transition-all font-mono"
           />
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setShowKey(!showKey)}
             className="text-[12px] font-medium text-gray-600 bg-white/60 hover:bg-white/80 px-4 py-2.5 rounded-xl transition-all border border-white/50"
           >
             {showKey ? "Hide" : "Show"}
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Test Button */}
       <div className="flex gap-2">
-        <button
+        <Button
+          variant="default"
           onClick={handleTest}
           disabled={!isValidId(id) || isTesting}
           className={`text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-4 py-2.5 rounded-xl transition-all ${
@@ -218,7 +216,7 @@ export default function ProviderConfigForm({
           }`}
         >
           {isTesting ? "Testing..." : "Test Provider"}
-        </button>
+        </Button>
         {testResult && (
           <span className="text-[12px] font-medium text-green-600 bg-green-50/80 px-3 py-2.5 rounded-xl">
             Found {testResult.models.length} models
@@ -233,7 +231,8 @@ export default function ProviderConfigForm({
 
       {/* Action Buttons */}
       <div className="flex gap-2 pt-4">
-        <button
+        <Button
+          variant="default"
           onClick={handleSave}
           disabled={!testResult || testError !== null}
           className={`text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-4 py-2.5 rounded-xl transition-all ${
@@ -241,13 +240,14 @@ export default function ProviderConfigForm({
           }`}
         >
           Save Provider
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="outline"
           onClick={handleCancel}
           className="text-[12px] font-medium text-gray-600 bg-white/60 hover:bg-white/80 px-4 py-2.5 rounded-xl transition-all border border-white/50"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

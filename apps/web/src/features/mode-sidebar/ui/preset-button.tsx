@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useCallback, useMemo, useRef } from "react";
 
+import { Button } from "#/shared/components/ui/button";
 import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
 import { useClickOutside } from "@mantine/hooks";
@@ -67,8 +68,10 @@ export function PresetButton() {
 
   return (
     <div className="relative">
-      <button
+      <Button
         ref={buttonRef}
+        variant="ghost"
+        size="icon"
         onClick={handleToggle}
         aria-label="Designer Preset"
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
@@ -78,7 +81,7 @@ export function PresetButton() {
         }`}
       >
         <CurrentIcon className="w-5 h-5" />
-      </button>
+      </Button>
 
       {isOpen && (
         <div
@@ -94,8 +97,9 @@ export function PresetButton() {
             {SYSTEM_PROMPT_PRESETS.map((preset) => {
               const PresetIcon = getPresetIcon(preset.icon);
               return (
-                <button
+                <Button
                   key={preset.id}
+                  variant="ghost"
                   onClick={() => handlePresetClick(preset.id)}
                   className={`flex items-center gap-2 text-left text-[12px] font-medium px-3 py-2 rounded-lg transition-all ${
                     settings.systemPromptPreset === preset.id
@@ -105,7 +109,7 @@ export function PresetButton() {
                 >
                   <PresetIcon className="w-4 h-4 shrink-0" />
                   {preset.label}
-                </button>
+                </Button>
               );
             })}
           </div>

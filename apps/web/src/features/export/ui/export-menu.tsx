@@ -9,6 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/shared/components/ui/dropdown-menu";
+import { Separator } from "#/shared/components/ui/separator";
+import { Button } from "#/shared/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/shared/components/ui/tooltip";
 
 type ExportFormat = "svg" | "tailwind" | "react" | "png" | "jpg" | "copy-image";
@@ -253,10 +255,14 @@ export function ExportMenu({
               onMouseLeave={handleMouseLeave}
               onClick={(e) => e.preventDefault()}
             >
-              <button className="w-8 h-8 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 hover:bg-foreground/10 transition-all">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-8 h-8 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 transition-all"
+              >
                 <Download className="w-4 h-4" />
                 <ChevronDown className="w-3 h-3 ml-[-2px]" />
-              </button>
+              </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="top">Export</TooltipContent>
@@ -287,7 +293,7 @@ export function ExportMenu({
               )}
             </DropdownMenuItem>
           ))}
-          <div className="my-1 border-t border-gray-200/30" />
+          <Separator className="my-1" />
           <div className="px-2.5 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
             Code
           </div>
@@ -324,24 +330,30 @@ export function ExportMenu({
               {ALL_FORMATS.find((f) => f.id === preview.format)?.label} Export
             </span>
             <div className="flex items-center gap-1">
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleCopy}
-                className="text-[11px] font-medium text-gray-500 hover:text-gray-700 px-2.5 py-1 rounded-lg hover:bg-black/5 transition-all"
+                className="text-[11px] font-medium text-gray-500 hover:text-gray-700"
               >
                 Copy
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
                 onClick={handleDownload}
-                className="text-[11px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-2.5 py-1 rounded-lg transition-all"
+                className="text-[11px] font-medium bg-blue-500/90 hover:bg-blue-500"
               >
                 Download
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setPreview(null)}
-                className="text-gray-400 hover:text-gray-600 px-1.5 py-1 rounded-lg hover:bg-black/5 ml-1 transition-all"
+                className="text-gray-400 hover:text-gray-600 ml-1"
               >
                 ✕
-              </button>
+              </Button>
             </div>
           </div>
           <pre className="p-4 text-[12px] leading-relaxed text-gray-700 font-mono overflow-auto max-h-[320px] whitespace-pre-wrap break-all">

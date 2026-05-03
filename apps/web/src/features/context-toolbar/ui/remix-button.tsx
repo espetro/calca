@@ -12,6 +12,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "#/shared/components/ui/tooltip";
+import { Button } from "#/shared/components/ui/button";
+import { Input } from "#/shared/components/ui/input";
+import { Separator } from "#/shared/components/ui/separator";
 import type { DesignIteration } from "#/shared/types";
 
 const REMIX_PRESETS = [
@@ -74,13 +77,15 @@ export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
             onMouseLeave={handleMouseLeave}
             onClick={(e) => e.preventDefault()}
           >
-            <button
-              className="w-8 h-8 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 hover:bg-foreground/10 transition-all"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-8 h-8 rounded-xl"
               data-tour="remix-button"
             >
               <Shuffle className="w-4 h-4" />
               <ChevronDown className="w-3 h-3 ml-[-2px]" />
-            </button>
+            </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
         <TooltipContent side="top">Remix</TooltipContent>
@@ -106,12 +111,12 @@ export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
             {preset.label}
           </DropdownMenuItem>
         ))}
-        <div className="my-1.5 border-t border-gray-200/30" />
+        <Separator className="my-1.5" />
         <div className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
           Custom
         </div>
         <div className="flex gap-1.5 px-1.5 pb-1">
-          <input
+          <Input
             type="text"
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
@@ -121,15 +126,16 @@ export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
               }
             }}
             placeholder="Try it with..."
-            className="flex-1 px-3 py-2 rounded-lg text-[13px] bg-black/5 outline-none placeholder-gray-400"
+            className="flex-1 text-[13px] bg-black/5 outline-none placeholder-gray-400"
           />
-          <button
+          <Button
             onClick={() => customPrompt.trim() && handleRemix(customPrompt.trim())}
             disabled={!customPrompt.trim()}
-            className="px-3 py-2 rounded-lg text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 disabled:opacity-40 transition-all"
+            size="sm"
+            className="text-[12px] font-medium"
           >
             Go
-          </button>
+          </Button>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

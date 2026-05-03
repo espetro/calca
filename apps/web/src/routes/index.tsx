@@ -42,6 +42,7 @@ const SettingsModal = lazy(() =>
 );
 import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
+import { Button } from "#/shared/components/ui/button";
 import { exportCanvas, openImportDialog } from "#/lib/export";
 import { m } from "#/lib/i18n";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
@@ -245,22 +246,22 @@ export default function Home() {
             </h3>
             <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setShowResetConfirm(false)}
-                className="text-[13px] font-medium text-gray-600 hover:text-gray-800 px-5 py-2.5 rounded-xl hover:bg-black/5 transition-all"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="destructive"
                 onClick={() => {
                   resetSession();
                   canvas.resetView();
                   setShowResetConfirm(false);
                 }}
-                className="text-[13px] font-medium text-white bg-red-500/90 hover:bg-red-500 px-5 py-2.5 rounded-xl transition-all"
               >
                 Clear Canvas
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -303,13 +304,14 @@ export default function Home() {
 
       {(!isOwnKey || !settings.model) && !showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
-          <button
+          <Button
+            variant="secondary"
+            className="flex items-center gap-2 bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-amber-700 hover:bg-amber-500/20 shadow-sm"
             onClick={() => setShowSettings(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-[12px] font-medium text-amber-700 hover:bg-amber-500/20 transition-all shadow-sm"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             {m.banner.addApiKey()}
-          </button>
+          </Button>
         </div>
       )}
     </div>

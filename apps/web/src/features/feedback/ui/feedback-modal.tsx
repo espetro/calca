@@ -230,8 +230,9 @@ export function FeedbackModal() {
                 {/* Type selector tabs */}
                 <div className="flex rounded-lg border border-border bg-muted/30 p-0.5 gap-0.5">
                   {TAB_CONFIG.map((tab) => (
-                    <button
+                    <Button
                       key={tab.id}
+                      variant="ghost"
                       onClick={() => setType(tab.id)}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-medium transition-all ${
                         formData.type === tab.id
@@ -241,7 +242,7 @@ export function FeedbackModal() {
                     >
                       {tab.icon}
                       {tab.label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
 
@@ -277,7 +278,7 @@ export function FeedbackModal() {
                     Description
                     <span className="text-destructive ml-0.5">*</span>
                   </Label>
-                  <textarea
+                  <Textarea
                     id="feedback-description"
                     value={formData.description}
                     onChange={(e) => updateField("description", e.target.value)}
@@ -285,7 +286,6 @@ export function FeedbackModal() {
                     maxLength={5000}
                     rows={5}
                     aria-invalid={!!validationErrors.description}
-                    className="w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 resize-none"
                   />
                   <div className="flex justify-between">
                     {validationErrors.description ? (

@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import { useState } from "react";
 
+import { Button } from "#/shared/components/ui/button";
 import { groupsAtom } from "../state/groups-atoms";
 import { SummaryDialog } from "./summary-dialog";
 
@@ -29,7 +30,8 @@ export function SummaryList() {
           const title = group.summary?.title ?? "Generating summary...";
 
           return (
-            <button
+            <Button
+              variant="ghost"
               key={group.id}
               onClick={() => setSelectedGroupId(group.id)}
               className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left hover:bg-black/5 rounded-xl transition-colors"
@@ -46,7 +48,7 @@ export function SummaryList() {
               >
                 {title}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>

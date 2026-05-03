@@ -1,5 +1,6 @@
 import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
 
+import { Button } from "#/shared/components/ui/button";
 import { Label } from "#/shared/components/ui/label";
 import {
   Select,
@@ -33,18 +34,19 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
         </h3>
         <div className="flex gap-2 p-1 bg-muted rounded-xl">
           {THEME_OPTIONS.map((option) => (
-            <button
+            <Button
               key={option.value}
+              variant={settings.theme === option.value ? "secondary" : "ghost"}
               onClick={() => onUpdate({ theme: option.value })}
-              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-[13px] font-medium ${
                 settings.theme === option.value
-                  ? "bg-background text-foreground shadow-sm border border-border"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
+                  ? "shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {option.icon}
               {option.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

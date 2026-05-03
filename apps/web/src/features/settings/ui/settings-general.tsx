@@ -57,14 +57,16 @@ function ApiKeyInput({
           placeholder={placeholder}
           className="pr-10"
         />
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           type="button"
           onClick={() => setShow(!show)}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={show ? "Hide API key" : "Show API key"}
         >
           {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-        </button>
+        </Button>
       </div>
       {error && <p className="text-[11px] text-red-500">{error}</p>}
     </div>
@@ -142,14 +144,16 @@ function AddProviderForm({
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           New Provider
         </Label>
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           type="button"
           onClick={onCancel}
           className="text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Cancel"
         >
           <X className="size-4" />
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-2">
@@ -238,13 +242,15 @@ function AddProviderForm({
         <Button size="sm" type="button" onClick={handleSave} disabled={!canSave}>
           Save
         </Button>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={onCancel}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -464,14 +470,16 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
                     </Badge>
                   </div>
                   {!provider.isEnv && (
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       type="button"
                       onClick={() => handleRemoveProvider(provider.id)}
                       className="text-muted-foreground hover:text-red-500 transition-colors"
                       aria-label={`Remove ${provider.id}`}
                     >
                       <X className="size-4" />
-                    </button>
+                    </Button>
                   )}
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
