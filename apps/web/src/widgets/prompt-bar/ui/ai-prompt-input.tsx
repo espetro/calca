@@ -91,7 +91,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
         disabled={disabled}
         rows={1}
         aria-label="Prompt"
-        className={`flex-1 px-0 py-2 text-[15px] text-gray-800 placeholder-gray-400/70 bg-transparent outline-none resize-none leading-[22px] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${className}`}
+        className={`flex-1 px-0 py-2 text-[15px] text-gray-800 placeholder-gray-400/70 bg-transparent outline-none resize-none leading-[22px] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-0 shadow-none focus-visible:border-0 ${className}`}
         style={{ maxHeight: 22 * 6 }}
       />
     );

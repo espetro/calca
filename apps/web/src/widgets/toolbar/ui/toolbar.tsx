@@ -46,7 +46,8 @@ export function Toolbar({
       className="fixed top-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-toolbar-bg-transparent border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)] max-w-[calc(100vw-2rem)]"
     >
       <div className="flex items-center gap-1.5 overflow-x-auto">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setSettingsOpen(true)}
           data-tour="toolbar-settings"
           className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10 transition-all"
@@ -57,7 +58,7 @@ export function Toolbar({
           />
           <span>{modelLabel}</span>
           <Settings className="w-3.5 h-3.5 opacity-60" />
-        </button>
+        </Button>
 
         <Separator orientation="vertical" className="h-5 mx-1" />
       </div>

@@ -1,5 +1,6 @@
 import { Dices, Minus, Plus } from "lucide-react";
 
+import { Button } from "#/shared/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -37,8 +38,8 @@ export function VariationsButton({
       if (open && !showVariations) onToggle();
     }}>
       <PopoverTrigger asChild>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           disabled={disabled}
           data-tour={dataTour}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
@@ -67,7 +68,7 @@ export function VariationsButton({
           {conceptCount !== 1 && (
             <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px]">{conceptCount}</span>
           )}
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
@@ -79,25 +80,27 @@ export function VariationsButton({
           Variations per prompt
         </div>
         <div className="flex items-center justify-between">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => onConceptCountChange(Math.max(1, conceptCount - 1))}
             disabled={conceptCount <= 1}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <Minus className="w-4 h-4 text-gray-600" />
-          </button>
+          </Button>
           <span className="text-lg font-semibold text-gray-800 min-w-[40px] text-center">
             {conceptCount}
           </span>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => onConceptCountChange(Math.min(5, conceptCount + 1))}
             disabled={conceptCount >= 5}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <Plus className="w-4 h-4 text-gray-600" />
-          </button>
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

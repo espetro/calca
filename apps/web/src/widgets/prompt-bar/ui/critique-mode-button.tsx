@@ -1,5 +1,6 @@
 import { RefreshCw, Zap } from "lucide-react";
 
+import { Button } from "#/shared/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -27,8 +28,8 @@ export function CritiqueModeButton({
       if (open && !showCritiqueMode) onToggle();
     }}>
       <PopoverTrigger asChild>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           data-tour={dataTour}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
           style={
@@ -40,7 +41,7 @@ export function CritiqueModeButton({
         >
           {quickMode ? <Zap className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
           <span>{quickMode ? "Quick" : "Critique"}</span>
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         align="end"
@@ -52,13 +53,13 @@ export function CritiqueModeButton({
           Generation mode
         </div>
         <div className="space-y-2">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             onClick={() => {
               onQuickModeChange(false);
               onToggle();
             }}
-            className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
+            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
               !quickMode ? "border" : "bg-background/40"
             }`}
             style={
@@ -101,14 +102,14 @@ export function CritiqueModeButton({
                 from the previous one.
               </div>
             </div>
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => {
               onQuickModeChange(true);
               onToggle();
             }}
-            className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
+            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
               quickMode ? "border" : "bg-background/40"
             }`}
             style={
@@ -141,7 +142,7 @@ export function CritiqueModeButton({
                 Generate all designs in parallel without critique. Faster but less refined.
               </div>
             </div>
-          </button>
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
