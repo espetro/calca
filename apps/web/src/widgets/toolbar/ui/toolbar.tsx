@@ -1,10 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { Menu, Settings } from "lucide-react";
+import { useState } from "react";
 
 import type { ProviderConfig } from "#/features/settings/types";
 import { MODELS } from "#/features/settings/types";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
-
-import ToolButton from "./tool-button";
+import { Button } from "#/shared/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "#/shared/components/ui/dropdown-menu";
+import { Separator } from "#/shared/components/ui/separator";
 
 interface ToolbarProps {
   isOwnKey: boolean;
@@ -30,23 +38,7 @@ export function Toolbar({
   const displayModel = provider?.models.find((m) => m.id === modelId)?.displayName || modelId;
   const modelLabel =
     MODELS.find((m) => m.id === modelId)?.label || displayModel || model || "Sonnet 4.5";
-  const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // oxlint-disable no-restricted-syntax -- Conditional click-outside listener for menu state. Cannot use useMountEffect.
-  useEffect(() => {
-    if (!menuOpen) {
-      return;
-    }
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [menuOpen]);
 
   return (
     <div
@@ -64,102 +56,58 @@ export function Toolbar({
             className={`w-1.5 h-1.5 rounded-full ${isOwnKey ? "bg-emerald-400" : "bg-amber-400"}`}
           />
           <span>{modelLabel}</span>
-          <svg
-            className="w-3.5 h-3.5 opacity-60"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
+          <Settings className="w-3.5 h-3.5 opacity-60" />
         </button>
 
-        <div className="w-px h-5 bg-foreground/15 mx-1" />
+        <Separator orientation="vertical" className="h-5 mx-1" />
       </div>
 
-      <div className="relative shrink-0" ref={menuRef}>
-        <ToolButton onClick={() => setMenuOpen(!menuOpen)} title="Menu" dataTour="export-menu">
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-8 h-8 rounded-xl text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
+            data-tour="export-menu"
+            title="Menu"
           >
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="18" x2="20" y2="18" />
-          </svg>
-        </ToolButton>
-
-        {menuOpen && (
-          <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-foreground/90 backdrop-blur-2xl border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.3)] py-1 overflow-hidden">
-            <MenuItem
-              icon="📥"
-              label="Import .design"
-              onClick={() => {
-                onImport();
-                setMenuOpen(false);
-              }}
-            />
-            {hasFrames && (
-              <>
-                <MenuItem
-                  icon="📤"
-                  label="Export .design"
-                  onClick={() => {
-                    onExport();
-                    setMenuOpen(false);
-                  }}
-                />
-                <div className="h-px bg-foreground/10 my-1" />
-                <MenuItem
-                  icon="🗑"
-                  label="Clear Canvas"
-                  onClick={() => {
-                    onNewSession();
-                    setMenuOpen(false);
-                  }}
-                  danger
-                />
-              </>
-            )}
-          </div>
-        )}
-      </div>
+            <Menu className="w-4 h-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="w-48 rounded-xl bg-foreground/90 backdrop-blur-2xl border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.3)]"
+        >
+          <DropdownMenuItem
+            onClick={onImport}
+            className="text-background/70 hover:bg-background/10 hover:text-background text-[12px] focus:bg-background/10 focus:text-background"
+          >
+            <span className="text-sm">📥</span>
+            Import .design
+          </DropdownMenuItem>
+          {hasFrames && (
+            <>
+              <DropdownMenuItem
+                onClick={onExport}
+                className="text-background/70 hover:bg-background/10 hover:text-background text-[12px] focus:bg-background/10 focus:text-background"
+              >
+                <span className="text-sm">📤</span>
+                Export .design
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-foreground/10" />
+              <DropdownMenuItem
+                onClick={onNewSession}
+                className="text-destructive hover:bg-destructive/10 text-[12px] focus:bg-destructive/10 focus:text-destructive"
+              >
+                <span className="text-sm">🗑</span>
+                Clear Canvas
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </div>
-  );
-}
-
-function MenuItem({
-  icon,
-  label,
-  onClick,
-  danger,
-}: {
-  icon: string;
-  label: string;
-  onClick: () => void;
-  danger?: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-2.5 px-3 py-2 text-[12px] font-medium transition-colors ${
-        danger
-          ? "text-destructive hover:bg-destructive/10"
-          : "text-background/70 hover:bg-background/10 hover:text-background"
-      }`}
-    >
-      <span className="text-sm">{icon}</span>
-      {label}
-    </button>
   );
 }
