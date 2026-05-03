@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Locate, LocateFixed, Navigation } from "lucide-react";
 import { useViewportSize } from "@mantine/hooks";
 
-import ToolButton from "#/widgets/toolbar/ui/tool-button";
+import { Button } from "#/shared/components/ui/button";
 
 export interface CompassProps {
   offset: { x: number; y: number };
@@ -27,7 +27,13 @@ const Compass = ({ offset, onResetView }: CompassProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ToolButton onClick={onResetView} title="Reset view">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onResetView}
+        title="Reset view"
+        className="w-8 h-8 rounded-xl text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
+      >
         <span className="relative w-4 h-4 flex items-center justify-center">
           <Navigation
             className={`absolute w-4 h-4 transition-all duration-200 ${
@@ -46,7 +52,7 @@ const Compass = ({ offset, onResetView }: CompassProps) => {
             }`}
           />
         </span>
-      </ToolButton>
+      </Button>
     </div>
   );
 };

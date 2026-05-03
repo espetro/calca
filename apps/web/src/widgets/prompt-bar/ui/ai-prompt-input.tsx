@@ -1,5 +1,7 @@
 import { forwardRef, useEffect, useRef } from "react";
 
+import { Textarea } from "#/shared/components/ui/textarea";
+
 interface PromptInputContainerProps {
   children: React.ReactNode;
   isGenerating?: boolean;
@@ -80,7 +82,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
     }, [value]);
 
     return (
-      <textarea
+      <Textarea
         ref={ref || textareaRef}
         value={value}
         onChange={onChange}
@@ -89,7 +91,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
         disabled={disabled}
         rows={1}
         aria-label="Prompt"
-        className={`flex-1 px-0 py-2 text-[15px] text-gray-800 placeholder-gray-400/70 bg-transparent outline-none resize-none leading-[22px] ${className}`}
+        className={`flex-1 px-0 py-2 text-[15px] text-gray-800 placeholder-gray-400/70 bg-transparent outline-none resize-none leading-[22px] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${className}`}
         style={{ maxHeight: 22 * 6 }}
       />
     );

@@ -1,3 +1,4 @@
+import { Progress } from "#/shared/components/ui/progress";
 import { type PipelineStatus, STAGE_CONFIG } from "#/shared/types";
 
 interface PipelineStatusBarProps {
@@ -28,16 +29,16 @@ export function PipelineStatusOverlay({
 
   return (
     <div className="absolute pointer-events-none" style={{ left: x, top: topOffset, width }}>
-      <div className="h-1 rounded-full bg-muted overflow-hidden">
-        {!isQueued && (
-          <div
-            className={`h-full rounded-full transition-all duration-700 ease-out ${
-              isError ? "bg-destructive" : "bg-gradient-to-r from-primary to-secondary"
-            } ${status.stage === "layout" || status.stage === "images" ? "animate-pulse" : ""}`}
-            style={{ width: `${Math.max(status.progress * 100, 5)}%` }}
-          />
-        )}
-      </div>
+      {!isQueued && (
+        <Progress
+          value={Math.max(status.progress * 100, 5)}
+          className={`h-1 ${
+            isError
+              ? "[&_[data-slot=progress-indicator]]:bg-destructive"
+              : "[&_[data-slot=progress-indicator]]:bg-gradient-to-r [&_[data-slot=progress-indicator]]:from-primary [&_[data-slot=progress-indicator]]:to-secondary"
+          } ${status.stage === "layout" || status.stage === "images" ? "[&_[data-slot=progress-indicator]]:animate-pulse" : ""}`}
+        />
+      )}
       <div className="flex items-center justify-between mt-1.5">
         <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
           {config.icon} {config.label}

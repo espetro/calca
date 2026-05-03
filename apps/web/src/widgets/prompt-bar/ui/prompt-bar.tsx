@@ -1,8 +1,9 @@
 import { useAtom } from "jotai";
-import { ArrowRight } from "lucide-react";
+import { AlertTriangle, ArrowRight, Loader2, X } from "lucide-react";
 import { ComponentProps, useCallback, useRef, useState } from "react";
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { Button } from "#/shared/components/ui/button";
 
 import { usePromptHistory } from "../hooks/use-prompt-history";
 import { AddMediaButton } from "./add-media-button";
@@ -23,14 +24,16 @@ interface SubmitButtonProps extends ComponentProps<"button"> {
 
 const SubmitButton = ({ onSubmit, className, ...props }: SubmitButtonProps) => {
   return (
-    <button
+    <Button
       {...props}
+      variant="ghost"
+      size="icon"
       onClick={onSubmit}
-      className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0 ${className}`}
+      className={`w-8 h-8 rounded-full bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0 ${className}`}
       title="Send (Enter)"
     >
       <ArrowRight />
-    </button>
+    </Button>
   );
 };
 
@@ -47,7 +50,9 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour
   );
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={() => setIsIdeating(!isIdeating)}
       disabled={isGenerating}
       data-tour={dataTour}
@@ -68,7 +73,7 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour
       title={isIdeating ? "Ideate mode" : "Build mode"}
     >
       {isIdeating ? "◈ Ideate" : "✦ Build"}
-    </button>
+    </Button>
   );
 };
 
@@ -219,47 +224,20 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
             /* Compact status bar */
             <div className="flex items-center justify-between gap-3 w-full">
               <div className="flex items-center gap-2 min-w-0">
-                <svg
-                  className="w-4 h-4 animate-spin shrink-0 text-gray-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    opacity="0.2"
-                  />
-                  <path
-                    d="M12 2a10 10 0 0 1 10 10"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <Loader2 className="w-4 h-4 animate-spin shrink-0 text-gray-400" />
                 <span className="text-[13px] text-gray-500 font-medium truncate">
                   {genStatus || "Generating..."}
                 </span>
               </div>
-              <button
+              <Button
+                variant="destructive"
+                size="icon"
                 onClick={onCancel}
-                className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/80 backdrop-blur-sm text-white hover:bg-red-600 transition-all shrink-0"
+                className="w-8 h-8 rounded-lg bg-red-500/80 backdrop-blur-sm text-white hover:bg-red-600 transition-all shrink-0"
                 title="Cancel (Esc)"
               >
-                <svg
-                  className="w-3.5 h-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
+                <X className="w-3.5 h-3.5" />
+              </Button>
             </div>
           ) : (
             /* Full input bar */
@@ -276,18 +254,7 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                 {error && <div className="text-xs text-red-400 mt-1 mb-1">{error}</div>}
                 {showVisionWarning && (
                   <div className="text-xs text-amber-400/90 mt-1 mb-1 flex items-center gap-1.5">
-                    <svg
-                      className="w-3.5 h-3.5 shrink-0"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    >
-                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                      <line x1="12" y1="9" x2="12" y2="13" />
-                      <line x1="12" y1="17" x2="12.01" y2="17" />
-                    </svg>
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                     This model may not support image input
                   </div>
                 )}

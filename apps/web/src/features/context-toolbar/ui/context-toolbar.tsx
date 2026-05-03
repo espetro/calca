@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { ExportMenu } from "#/features/export";
+import { Separator } from "#/shared/components/ui/separator";
 import type { DesignIteration } from "#/shared/types";
 
 import { RemixButton } from "./remix-button";
@@ -61,7 +62,7 @@ export function ContextToolbar({
         onClick={(e) => e.stopPropagation()}
       >
         <RemixButton iteration={iteration} onRemix={onRemix} />
-        <div className="w-px h-4 bg-gray-200/50" />
+        <Separator orientation="vertical" className="h-4" />
         <ExportMenu
           html={iteration.html ?? ""}
           label={iteration.label ?? "Design"}

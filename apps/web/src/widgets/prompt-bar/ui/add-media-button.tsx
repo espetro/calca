@@ -1,6 +1,8 @@
 import { ImageIcon } from "lucide-react";
 import { useRef } from "react";
 
+import { Button } from "#/shared/components/ui/button";
+
 interface AddMediaButtonProps {
   onFileSelect: (file: File) => void;
   disabled?: boolean;
@@ -23,8 +25,11 @@ export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButto
   };
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleClick}
+      disabled={disabled}
       aria-label="Add media"
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
         disabled
@@ -41,6 +46,6 @@ export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButto
         disabled={disabled}
         className="hidden"
       />
-    </button>
+    </Button>
   );
 }
