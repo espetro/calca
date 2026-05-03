@@ -46,7 +46,7 @@
     },
     "apps/server": {
       "name": "@app/server",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "dependencies": {
         "@app/core": "workspace:*",
         "@app/logger": "workspace:*",
@@ -66,7 +66,7 @@
     },
     "apps/web": {
       "name": "@app/web",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "dependencies": {
         "@ai-sdk/anthropic": "^3.0.68",
         "@ai-sdk/google": "^3.0.61",
@@ -133,7 +133,7 @@
     },
     "packages/core": {
       "name": "@app/core",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "dependencies": {
         "@ai-sdk/anthropic": "^3.0.68",
         "@ai-sdk/google": "^3.0.61",
@@ -181,7 +181,7 @@
     },
     "platforms/desktop": {
       "name": "@app/electrobun",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "dependencies": {
         "@app/server": "workspace:*",
         "@logtape/file": "^2.0.5",
