@@ -20,13 +20,13 @@ The v2 rebuild is a **documentation-first, incremental refactoring** of the work
 
 ## 2. Target Users
 
-| Persona | Description | Primary Need |
-|---------|-------------|--------------|
-| **Frontend Developers** | Engineers who need UI mockups before coding | Rapid visual prototyping, component design exploration |
-| **Product Managers** | Non-technical stakeholders defining product requirements | Visual communication of feature ideas, landing page concepts |
-| **Marketers** | Teams creating social ads, banners, email headers | Quick marketing asset generation without design team dependency |
-| **Startup Founders** | Solo entrepreneurs building MVPs | Affordable design iteration without hiring designers |
-| **Design-curious Individuals** | Anyone exploring visual design ideas | Low-barrier entry to design creation ("vibe designing") |
+| Persona                        | Description                                              | Primary Need                                                    |
+| ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------- |
+| **Frontend Developers**        | Engineers who need UI mockups before coding              | Rapid visual prototyping, component design exploration          |
+| **Product Managers**           | Non-technical stakeholders defining product requirements | Visual communication of feature ideas, landing page concepts    |
+| **Marketers**                  | Teams creating social ads, banners, email headers        | Quick marketing asset generation without design team dependency |
+| **Startup Founders**           | Solo entrepreneurs building MVPs                         | Affordable design iteration without hiring designers            |
+| **Design-curious Individuals** | Anyone exploring visual design ideas                     | Low-barrier entry to design creation via natural language       |
 
 ---
 
@@ -35,14 +35,17 @@ The v2 rebuild is a **documentation-first, incremental refactoring** of the work
 The MVP delivers a fully functional AI design tool with server-side persistence and desktop capabilities.
 
 ### Feature 1: Canvas (CARRY + REDESIGN)
+
 **Status**: CARRY (core), REDESIGN (state management)
 
 **What it is**: Infinite canvas with pan/zoom/scroll (Figma-style) that hosts generated design frames.
 
 **User Story**:
+
 > As a user, I want to pan, zoom, and scroll an infinite canvas (Figma-style), so I can organize and view many design variations spatially.
 
 **Functional Requirements**:
+
 - CSS transform-based pan/zoom with `translate()` + `scale()`
 - Wheel events: Ctrl/Cmd+scroll for zoom, plain scroll for pan
 - Zoom clamp: 0.1x to 5x
@@ -52,6 +55,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Drag-to-reposition frames
 
 **Technical Implementation**:
+
 - Keep CSS transforms with native wheel events (proven, performant)
 - Replace 20+ useState hooks with Zustand stores:
   - `useCanvasStore` — pan/zoom, viewport, zoom-to-fit
@@ -60,6 +64,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
   - `useCommentStore` — comments, threads, queue
 
 **Performance**:
+
 - CSS transforms with `will-change: transform`
 - 60fps smooth zoom
 - Virtualization for 50+ frames (lazy load off-screen frames)
@@ -67,14 +72,17 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 2: AI Generation Pipeline (CARRY + REDESIGN)
+
 **Status**: CARRY (core), REDESIGN (abstraction)
 
 **What it is**: Multi-stage AI pipeline that generates polished HTML/CSS designs from natural language prompts.
 
 **User Story**:
+
 > As a user, I want to type a natural language description of a design and receive multiple visual variations, so I can explore different creative directions without manual design work.
 
 **Functional Requirements**:
+
 - Accept natural language prompt from user
 - Call `/api/plan` to determine concept count (2-6) and visual style directions
 - For each concept, execute a 4-stage pipeline:
@@ -87,6 +95,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Support context images (dragged onto canvas) as visual reference
 
 **Technical Implementation**:
+
 - Extract pipeline logic to `packages/core`:
   - `prompts/` — All prompt templates as composable functions
   - `parsers/` — HTML parsing, size extraction, cleanup
@@ -97,6 +106,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Pipeline status overlay showing progress per frame
 
 **Performance**:
+
 - Streaming layout generation with keepalive pings (every 5s) to avoid Vercel function timeouts
 - Debounced state persistence (500ms)
 - Image compression for storage (max 1024px for API, 800px for database, 128px thumbnails)
@@ -104,14 +114,17 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 3: Projects Management (CARRY + REDESIGN)
+
 **Status**: CARRY (core), REDESIGN (persistence)
 
 **What it is**: CRUD operations for saving, loading, and managing design projects with SQLite persistence.
 
 **User Story**:
+
 > As a user, I want to save my canvas state and load it later, so I don't lose work when I close the browser tab.
 
 **Functional Requirements**:
+
 - Create new project (sets canvas to initial state)
 - Rename project
 - Delete project
@@ -120,6 +133,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Project list view showing all saved projects
 
 **Technical Implementation**:
+
 - SQLite database with Drizzle ORM
 - Schema:
   - `projects` — id, name, createdAt, updatedAt
@@ -135,6 +149,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
   - `POST /api/projects/:id/preview` — Get canvas state for preview
 
 **Performance**:
+
 - Query optimization with indexes on foreign keys
 - Pagination for project lists (10 items per page)
 - Lazy loading of designs (load only visible frames)
@@ -142,20 +157,24 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 4: Pipeline (CARRY + REDESIGN)
+
 **Status**: CARRY (core), REDESIGN (abstraction)
 
 **What it is**: Multi-model pipeline architecture (Claude layout → image generation → visual QA) extracted to shared package.
 
 **User Story**:
+
 > As a user, I want AI-generated images automatically composited into my designs (via Claude, Gemini, or Unsplash), so designs look polished with real photography rather than placeholder boxes.
 
 **Functional Requirements**:
+
 - Multi-model image generation with fallback chain (Unsplash → DALL-E → Gemini)
 - Batch processing (3 images at a time)
 - Visual QA review with auto-fixes
 - Sequential critique loop (each variation learns from the previous)
 
 **Technical Implementation**:
+
 - Extract to `packages/core`:
   - `pipeline/layout` — Claude API call with streaming, prompt templates
   - `pipeline/images` — Multi-source image generation with fallback chain
@@ -167,6 +186,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Cache generated images in SQLite (deduplicate by prompt + image ID)
 
 **Performance**:
+
 - Parallel image generation (batch of 3)
 - Streaming responses for layout generation
 - Image compression for storage and API responses
@@ -174,14 +194,17 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 5: Export (CARRY)
+
 **Status**: CARRY (core)
 
 **What it is**: Multi-format export including SVG, PNG, JPG, Tailwind CSS, React components.
 
 **User Story**:
+
 > As a user, I want to export designs as SVG, PNG, JPG, Tailwind CSS, or React components, so I can use the output in my development workflow.
 
 **Functional Requirements**:
+
 - Export single design as SVG, PNG, JPG
 - Export single design as Tailwind CSS
 - Export single design as React component
@@ -189,12 +212,14 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Copy as image to clipboard
 
 **Technical Implementation**:
+
 - SVG via foreignObject wrapping
 - PNG/JPG via html-to-image / html2canvas-pro
 - Tailwind/React via Claude API call (`/api/export`)
 - JSON export of canvas state with all designs, positions, comments
 
 **Performance**:
+
 - Client-side rendering for SVG/PNG/JPG (no server round-trip)
 - AI-powered code export with streaming response
 - Defer large exports (show progress indicator)
@@ -202,14 +227,17 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 6: Settings (CARRY + REDESIGN)
+
 **Status**: CARRY (core), REDESIGN (server-side)
 
 **What it is**: BYOK API key management with model selection and design presets.
 
 **User Story**:
+
 > As a user, I want to provide my own Anthropic, Gemini, Unsplash, and OpenAI API keys, so I control costs and am not locked into a hosted pricing model.
 
 **Functional Requirements**:
+
 - Enter/modify API keys for:
   - Anthropic (Claude)
   - Gemini
@@ -222,12 +250,14 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Toggle zoom controls visibility
 
 **Technical Implementation**:
+
 - Settings stored in SQLite database (server-side)
 - API keys encrypted at rest (using Node crypto module)
 - Client fetches settings on load, sends session token (not API keys) with requests
 - Settings sync across devices (if desktop shell supports cloud storage later)
 
 **Security**:
+
 - API keys never sent from client (stored in server, fetched by client)
 - HTTPS only (server-side API keys)
 - No caching of API keys in browser (fetch on demand)
@@ -235,14 +265,17 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 7: Desktop Shell (CARRY)
+
 **Status**: CARRY (core)
 
 **What it is**: Electrobun wrapper that launches the Calca web app with a native desktop frame.
 
 **User Story**:
+
 > As a user, I want Calca to run as a desktop application, so I have a native-like experience with native menus and hotkeys.
 
 **Functional Requirements**:
+
 - Launch Calca web app with custom window frame
 - Native menus (File, Edit, View, Help)
 - Native keyboard shortcuts (Ctrl+S for save, Ctrl+N for new project)
@@ -250,6 +283,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Auto-update check on launch
 
 **Technical Implementation**:
+
 - Electrobun desktop shell using existing Next.js app
 - Custom window chrome (CSS-based, Electron-compatible)
 - Native menu integration via electron-builder
@@ -257,6 +291,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Desktop-specific hotkey registration (global hotkeys)
 
 **Performance**:
+
 - Fast startup (< 2 seconds)
 - Low memory footprint (< 100MB baseline)
 - Smooth window animations (CSS transforms)
@@ -264,20 +299,24 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 ---
 
 ### Feature 8: Shared Package (NEW)
+
 **Status**: NEW (core)
 
 **What it is**: Modular architecture with shared packages for contracts, schemas, types, and AI logic.
 
 **User Story**:
+
 > As a developer, I want well-typed shared packages that define contracts between frontend, backend, and desktop, so I can work on different parts of the codebase without stepping on each other.
 
 **Functional Requirements**:
+
 - Define shared TypeScript types and interfaces
 - Establish contracts between frontend, backend, and desktop
 - Provide AI-agnostic logic for prompt templates, parsers, providers
 - Enable testing of AI logic without frontend/backend dependencies
 
 **Technical Implementation**:
+
 - `packages/shared` — Shared types, interfaces, contracts
   - `types.ts` — DesignIteration, GenerationGroup, Comment, Project, Settings
   - `contracts.ts` — API request/response shapes, error types
@@ -290,6 +329,7 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 - Frontend, backend, and desktop import from shared packages
 
 **Architecture**:
+
 - Bun workspace monorepo (simpler than Turborepo for v2)
 - TypeScript strict mode with no type errors across packages
 - ESLint configured per package with shared rules
@@ -301,42 +341,50 @@ The MVP delivers a fully functional AI design tool with server-side persistence 
 Features for subsequent releases after the MVP is stable.
 
 ### P1-1: Multi-User Collaboration
+
 - Real-time collaboration with WebSocket
 - Cursor tracking for multiple users
 - Conflict resolution for concurrent edits
 
 ### P1-2: Component Library Management
+
 - Save and reuse generated components
 - Component library with versioning
 - Drag-and-drop component palette
 
 ### P1-3: Design System Enforcement
+
 - Shared color palettes, typography scales, design tokens
 - Auto-apply tokens to generated designs
 - Token export (Tailwind config, CSS variables)
 
 ### P1-4: Enhanced Canvas
+
 - React Flow canvas (upgrade path from CSS transforms)
 - Minimap navigation
 - Nested frames and containers
 
 ### P1-5: Advanced Export Formats
+
 - Figma plugin export
 - Vanilla CSS export
 - Vue SFC export
 - Sketch import/export
 
 ### P1-6: Cloud Sync
+
 - Optional cloud storage for projects
 - Team workspaces
 - Collaboration permissions
 
 ### P1-7: Mobile Optimization
+
 - Touch gestures for canvas
 - Responsive design for smaller screens
 - Progressive Web App (PWA) support
 
 ### P1-8: Accessibility
+
 - WCAG 2.1 AA compliance
 - Screen reader support
 - Keyboard-only navigation
@@ -345,23 +393,23 @@ Features for subsequent releases after the MVP is stable.
 
 ## 5. Technical Stack
 
-| Layer | Technology | Version | Rationale |
-|-------|-----------|---------|-----------|
-| **Runtime** | Bun | latest | Fast, minimal, great TypeScript support |
-| **Monorepo** | Bun Workspaces | latest | Simpler than Turborepo for v2, incremental adoption |
-| **Frontend** | Next.js | 16.x | App Router, great DX, already working |
-| **UI** | React | 19.x | Latest, improved hooks, automatic batching |
-| **Styling** | Tailwind CSS | 4.x | Latest, improved JIT, CSS variables |
-| **Language** | TypeScript | 5.x | Type safety, better DX |
-| **Canvas** | CSS Transforms + @use-gesture/react | latest | Proven, performant, lightweight |
-| **State** | Zustand | latest | Simple, scalable, TypeScript-first |
-| **Database** | SQLite + Drizzle ORM | latest | Server-side persistence, type-safe queries |
-| **AI - Layout & QA** | Anthropic SDK (Claude) | 0.74.x | Proven quality, streaming support |
-| **AI - Images** | Google GenAI SDK (Gemini) | 1.41.x | Free tier, good image generation |
-| **Desktop** | Electrobun | latest | Modern, fast, Bun-native |
-| **HTML-to-Image** | html-to-image / html2canvas-pro | latest | Reliable format conversion |
-| **Linting** | ESLint | latest | Strict TypeScript + React rules |
-| **Testing** | Vitest | latest | Fast, Jest-compatible |
+| Layer                | Technology                          | Version | Rationale                                           |
+| -------------------- | ----------------------------------- | ------- | --------------------------------------------------- |
+| **Runtime**          | Bun                                 | latest  | Fast, minimal, great TypeScript support             |
+| **Monorepo**         | Bun Workspaces                      | latest  | Simpler than Turborepo for v2, incremental adoption |
+| **Frontend**         | Next.js                             | 16.x    | App Router, great DX, already working               |
+| **UI**               | React                               | 19.x    | Latest, improved hooks, automatic batching          |
+| **Styling**          | Tailwind CSS                        | 4.x     | Latest, improved JIT, CSS variables                 |
+| **Language**         | TypeScript                          | 5.x     | Type safety, better DX                              |
+| **Canvas**           | CSS Transforms + @use-gesture/react | latest  | Proven, performant, lightweight                     |
+| **State**            | Zustand                             | latest  | Simple, scalable, TypeScript-first                  |
+| **Database**         | SQLite + Drizzle ORM                | latest  | Server-side persistence, type-safe queries          |
+| **AI - Layout & QA** | Anthropic SDK (Claude)              | 0.74.x  | Proven quality, streaming support                   |
+| **AI - Images**      | Google GenAI SDK (Gemini)           | 1.41.x  | Free tier, good image generation                    |
+| **Desktop**          | Electrobun                          | latest  | Modern, fast, Bun-native                            |
+| **HTML-to-Image**    | html-to-image / html2canvas-pro     | latest  | Reliable format conversion                          |
+| **Linting**          | ESLint                              | latest  | Strict TypeScript + React rules                     |
+| **Testing**          | Vitest                              | latest  | Fast, Jest-compatible                               |
 
 ---
 
@@ -466,6 +514,7 @@ calca/
 ### 6.2 File Contracts
 
 **`packages/shared/src/types.ts`**:
+
 ```typescript
 // Core types shared across frontend, backend, desktop
 export interface DesignIteration {
@@ -494,7 +543,7 @@ export interface Comment {
   position: { x: number; y: number };
   text: string;
   number: number;
-  status: 'waiting' | 'working' | 'done';
+  status: "waiting" | "working" | "done";
   thread?: CommentThread;
   createdAt: Date;
 }
@@ -507,7 +556,7 @@ export interface CommentThread {
 export interface CommentMessage {
   id: string;
   text: string;
-  role: 'user' | 'ai';
+  role: "user" | "ai";
   createdAt: Date;
 }
 
@@ -523,8 +572,12 @@ export interface Settings {
   apiKeyGemini: string | null;
   apiKeyUnsplash: string | null;
   apiKeyOpenAI: string | null;
-  model: 'opus-4-20250514' | 'sonnet-4-20250514' | 'opus-4-20250514-20240920' | 'sonnet-4-20250514-20240920';
-  systemPromptPreset: 'ui-ux' | 'marketing' | 'brand';
+  model:
+    | "opus-4-20250514"
+    | "sonnet-4-20250514"
+    | "opus-4-20250514-20240920"
+    | "sonnet-4-20250514-20240920";
+  systemPromptPreset: "ui-ux" | "marketing" | "brand";
   conceptCount: number;
   quickMode: boolean;
   showZoomControls: boolean;
@@ -540,6 +593,7 @@ export interface Project {
 ```
 
 **`packages/shared/src/contracts.ts`**:
+
 ```typescript
 // API request/response shapes
 export interface PlanRequest {
@@ -597,7 +651,7 @@ export interface PipelineCritiqueResponse {
 
 export interface ExportRequest {
   html: string;
-  format: 'svg' | 'png' | 'jpg' | 'tailwind' | 'react';
+  format: "svg" | "png" | "jpg" | "tailwind" | "react";
 }
 
 export interface ExportResponse {
@@ -608,34 +662,35 @@ export interface ExportResponse {
 export type ApiError = AuthError | RateLimitError | TimeoutError | ValidationError;
 
 export interface AuthError extends Error {
-  type: 'auth';
+  type: "auth";
   message: string;
 }
 
 export interface RateLimitError extends Error {
-  type: 'rate_limit';
+  type: "rate_limit";
   message: string;
   retryAfter?: number;
 }
 
 export interface TimeoutError extends Error {
-  type: 'timeout';
+  type: "timeout";
   message: string;
   retryAfter?: number;
 }
 
 export interface ValidationError extends Error {
-  type: 'validation';
+  type: "validation";
   message: string;
   field?: string;
 }
 ```
 
 **`packages/core/src/pipeline/layout.ts`**:
+
 ```typescript
 // AI-agnostic layout generation logic
-import type { PipelineLayoutRequest, PipelineLayoutResponse } from '../../shared/contracts.ts';
-import type { LLMProvider } from '../providers/llm-provider.ts';
+import type { PipelineLayoutRequest, PipelineLayoutResponse } from "../../shared/contracts.ts";
+import type { LLMProvider } from "../providers/llm-provider.ts";
 
 export interface LayoutPipelineConfig {
   provider: LLMProvider;
@@ -664,12 +719,15 @@ export class LayoutPipeline {
 
 Concept ID: ${request.conceptId}
 
-${request.sizeHints ? `Size hints: ${JSON.stringify(request.sizeHints)}` : ''}
+${request.sizeHints ? `Size hints: ${JSON.stringify(request.sizeHints)}` : ""}
 
 Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image: id:preferred-source-->`;
   }
 
-  private parseResponse(response: string): { html: string; sizeHints: Record<string, { width: number; height: number }> } {
+  private parseResponse(response: string): {
+    html: string;
+    sizeHints: Record<string, { width: number; height: number }>;
+  } {
     // Extract HTML and size hints from AI response
     // This is implementation-specific (e.g., regex or parser)
     const htmlMatch = response.match(/<html[^>]*>([\s\S]*?)<\/html>/i);
@@ -681,9 +739,9 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
     const sizeMatch = html.match(/<!--size:(.+?)-->/g);
     if (sizeMatch) {
       sizeMatch.forEach((match) => {
-        const matchWithoutTag = match.replace(/<!--size:|-->?/g, '');
-        const [id, size] = matchWithoutTag.split(':');
-        const [width, height] = size.split('x').map(Number);
+        const matchWithoutTag = match.replace(/<!--size:|-->?/g, "");
+        const [id, size] = matchWithoutTag.split(":");
+        const [width, height] = size.split("x").map(Number);
         sizeHints[id] = { width, height };
       });
     }
@@ -698,6 +756,7 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
 ## 7. Non-Functional Requirements
 
 ### NFR-1: Performance
+
 - Canvas pan/zoom must feel smooth (CSS transforms with `will-change: transform`)
 - Streaming layout generation with keepalive pings (every 5s) to avoid Vercel function timeouts
 - Debounced state persistence (500ms)
@@ -705,6 +764,7 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
 - Database queries < 100ms for project lists, < 500ms for project loading
 
 ### NFR-2: Scalability
+
 - Client-side architecture for frontend (Next.js SPA)
 - API routes are stateless proxies to AI providers
 - Max function duration: 300s for pipeline routes, 30s for plan/critique
@@ -712,6 +772,7 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
 - Monorepo build time < 30s for full project
 
 ### NFR-3: Security
+
 - API keys stored server-side in database (encrypted at rest)
 - HTTPS only (server-side API keys)
 - HTML rendered in sandboxed iframes (origin isolation)
@@ -719,6 +780,7 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
 - Rate limiting for AI provider calls
 
 ### NFR-4: Usability
+
 - Zero-config start (no account, no database required for web)
 - Guided onboarding for new users
 - Prompt library for quick starts
@@ -727,6 +789,7 @@ Generate HTML/CSS with inline styles. Use placeholder divs for images: <!--image
 - Error messages with actionable guidance
 
 ### NFR-5: Compatibility
+
 - Modern browsers only (ES modules, CSS transforms, IndexedDB, Clipboard API)
 - No mobile-optimized UI (desktop-first)
 - Self-contained HTML/CSS output (system font stack, no external dependencies for generated designs)
@@ -756,6 +819,7 @@ The following are explicitly **not** part of Calca v2 MVP:
 ## 9. Implementation Phases
 
 ### Phase 1: Foundation (Week 1)
+
 1. Set up Bun workspace monorepo structure
 2. Create shared packages (types, contracts, schemas)
 3. Extract AI logic to `packages/core` (prompts, parsers, providers)
@@ -763,6 +827,7 @@ The following are explicitly **not** part of Calca v2 MVP:
 5. Write basic API routes using shared packages
 
 ### Phase 2: Frontend Refactor (Week 2)
+
 1. Refactor canvas state to Zustand stores
 2. Extract components from `page.tsx` to separate files
 3. Implement settings UI with server-side API integration
@@ -770,6 +835,7 @@ The following are explicitly **not** part of Calca v2 MVP:
 5. Test canvas performance with 50+ frames
 
 ### Phase 3: Backend Integration (Week 3)
+
 1. Implement database queries and migrations
 2. Add error handling and retry logic to API routes
 3. Implement project CRUD operations
@@ -777,6 +843,7 @@ The following are explicitly **not** part of Calca v2 MVP:
 5. Test end-to-end generation flow
 
 ### Phase 4: Desktop Shell (Week 4)
+
 1. Implement window chrome and native menus
 2. Add desktop-specific hotkeys
 3. Implement system tray integration
@@ -784,6 +851,7 @@ The following are explicitly **not** part of Calca v2 MVP:
 5. Optimize startup time and memory footprint
 
 ### Phase 5: Testing & Polish (Week 5)
+
 1. Manual testing of all MVP features
 2. Performance optimization (virtualization, caching)
 3. Error handling improvements
@@ -837,6 +905,6 @@ The MVP is successful when:
 
 ---
 
-*Document Version*: 1.0
-*Last Updated*: 2026-04-05
-*Author*: Sisyphus Project Management
+_Document Version_: 1.0
+_Last Updated_: 2026-04-05
+_Author_: Sisyphus Project Management
