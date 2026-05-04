@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "#/shared/components/ui/button";
 import { Separator } from "#/shared/components/ui/separator";
@@ -12,7 +12,7 @@ interface CommentThreadProps {
   onReply: (text: string) => void;
 }
 
-export function CommentThread({ comment, onClose, onReply }: CommentThreadProps) {
+const CommentThread = ({ comment, onClose, onReply }: CommentThreadProps) => {
   const [replyText, setReplyText] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
@@ -152,4 +152,6 @@ export function CommentThread({ comment, onClose, onReply }: CommentThreadProps)
       </div>
     </div>
   );
-}
+};
+
+export default CommentThread;

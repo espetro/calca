@@ -10,7 +10,7 @@ interface CommentInputProps {
   onCancel: () => void;
 }
 
-export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps) {
+const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -83,4 +83,6 @@ export function CommentInput({ position, onSubmit, onCancel }: CommentInputProps
       </div>
     </div>
   );
-}
+};
+
+export default CommentInput;
