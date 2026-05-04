@@ -1,101 +1,39 @@
 # Calca
 
-An open-source AI design tool. Describe what you want, get multiple design variations on an infinite canvas, then click to refine.
+An AI design tool that transforms natural language prompts into polished HTML/CSS variations on an infinite canvas.
 
-**Vibe designing.**
+**Design with words.**
 
-<img width="320" height="180" alt="rrcover 2" src="https://github.com/user-attachments/assets/813cd160-ae56-4ee7-b519-b9d1e0a8f133" />
+[![GitHub stars](https://img.shields.io/github/stars/espetro/calca?style=flat)](https://github.com/espetro/calca/stargazers) ![macOS](https://img.shields.io/badge/platform-macOS-lightgrey) ![Windows](https://img.shields.io/badge/platform-Windows-blue) ![AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue) ![ELv2](https://img.shields.io/badge/license-ELv2-red)
+
+[Download latest release](https://github.com/espetro/calca/releases)
+
+![App screenshot, featuring the prompt bar with a generated design](./docs/assets/screenshot.png)
 
 ## Features
 
-- 🎨 **Infinite Canvas** — Pan, zoom, and scroll like Figma
-- ✨ **AI Design Generation** — Describe a design, get multiple polished HTML/CSS variations with smart sizing
-- 🔄 **Sequential Critique Loop** — Each concept improves on the last. Frame 1 generates, AI reviews it, then uses those learnings to make Frame 2 better. Like a real designer iterating.
-- 🎭 **Multi-Model Pipeline** — Claude handles layout, Gemini generates images, then Claude does a visual QA pass. Three models, one polished result.
-- 🎯 **Design Presets** — Built-in system prompts for UI/UX Design, Marketing Websites, and Brand/Ad Design. Switch modes instantly in Dev Settings.
-- 📐 **Adaptive Frames** — Frame dimensions match the design type (wide for navbars, tall for pages, compact for cards)
-- 💬 **Click-to-Comment** — Figma-style comment pins with AI response threads. Color-coded by status (waiting → working → done).
-- 🔑 **Bring Your Own Key** — Enter your Anthropic and Gemini API keys in Settings
-- 🧠 **Model Selection** — Claude Opus 4.6, Sonnet 4.5, Opus 4, or Sonnet 4
-- 📚 **Prompt Library** — Pre-built prompts for UI components, full pages, and marketing assets
-- 📦 **Export** — Export to Figma, Tailwind CSS, or React components
-- ⌨️ **Keyboard Shortcuts** — V (select), C (comment), Space+drag (pan), Ctrl+scroll (zoom)
-- 💾 **Persistent Sessions** — API keys, model preference, and settings saved to localStorage
+- 🎨 **Infinite Canvas** — Pan, zoom, and organize like Figma
+- ✨ **AI Design Generation** — Describe a design, get polished HTML/CSS variations
+- 🔄 **Iterative Refinement** — Each concept learns from the last via sequential AI critique
+- 🎭 **Multi-Model Pipeline** — Claude for layout + QA, Gemini for images
+- 📦 **Export** — Figma, Tailwind CSS, React components
 
-## Use Cases
+## Contributing
 
-- UI components (buttons, cards, navs, modals, forms)
-- Full page designs (landing pages, dashboards, app screens)
-- Marketing assets (social ads, display banners, email headers)
-- Brand materials (Instagram posts, Facebook ads, Twitter cards)
+Calca is open-source (see License info below).
 
-## Getting Started
+If you're interested in contributing to Calca, please read our [contributing doc](CONTRIBUTING.md).
 
-```bash
-# Clone the repo
-git clone https://github.com/joaquindev/calca.git
-cd calca
-
-# Install dependencies
-npm install
-
-# Run dev server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) and enter your Anthropic API key in Settings (gear icon on the toolbar).
-
-For the multi-model pipeline (image generation + visual QA), also add your Gemini API key in Settings.
-
-## Environment Variables
-
-| Variable            | Required | Description                                                              |
-| ------------------- | -------- | ------------------------------------------------------------------------ |
-| `ANTHROPIC_API_KEY` | No       | Fallback API key for demo mode. Users can enter their own key in the UI. |
-| `NEXT_PUBLIC_GA_ID` | No       | Google Analytics measurement ID. Only loads if set.                      |
-
-## Tech Stack
-
-- **Framework:** Next.js 16 (App Router)
-- **Styling:** Tailwind CSS v4
-- **Canvas:** CSS transforms + @use-gesture/react
-- **AI:** Claude (Anthropic) for layout + QA, Gemini (Google) for image generation
-- **Design Rendering:** iframe isolation with auto-measurement
-
-## Demo Prompts
-
-Try these to get started:
-
-- "A pricing card with 3 tiers: Starter, Pro, and Enterprise"
-- "A dark mode login form with social sign-in buttons"
-- "A responsive navigation bar with logo, links, search, and user avatar"
-- "A hero section for a SaaS landing page"
-- "An analytics dashboard with metric cards, chart, and activity table"
-- "A Facebook ad for a coffee brand — bold, minimal, dark background"
-- "An Instagram story promoting a weekend brunch special — warm, inviting colors"
-
-## How It Works
-
-1. **You describe** — Type what you want in the prompt bar
-2. **Claude designs** — Generates HTML/CSS layout with proper typography, spacing, and hierarchy
-3. **Gemini creates** — Generates images for any visual elements (if Gemini key provided)
-4. **Claude reviews** — Screenshots the result and auto-fixes issues
-5. **Each frame learns** — The next concept uses critique from the previous one to improve
-
-## License
-
-This project uses a dual-license open-core model:
-
-- **Core** (`apps/*`, `packages/core`, `packages/shared`, etc.): [AGPL-3.0](LICENSE) — free, open-source software
-- **Enterprise/Pro** (`packages/pro/`): [Elastic License v2](packages/pro/LICENSE) — proprietary with usage restrictions
-
-See [LICENSE](LICENSE) and [packages/pro/LICENSE](packages/pro/LICENSE) for full terms.
-
-Calca was originally forked from [DesignBuddy Canvas](https://github.com/stratuslabs/designbuddy-canvas) (MIT-licensed). See [NOTICE](NOTICE) for attribution.
+- [Ideas and Feedback](https://github.com/espetro/calca/discussions/5)
+- [Roadmap](https://github.com/users/espetro/projects/6)
 
 ## Built With
 
-- [Claude](https://anthropic.com) by Anthropic
-- [Gemini](https://ai.google.dev) by Google
-- [Next.js](https://nextjs.org)
-- [Tailwind CSS](https://tailwindcss.com)
+[Vite](https://vitejs.dev) · [Turbo](https://turbo.build) · [Hono](https://hono.dev) · [TanStack Router](https://tanstack.com/router) · [AI SDK](https://sdk.vercel.ai)
+
+## License
+
+Core: [AGPL-3.0](LICENSE)
+Pro: [Elastic License v2](packages/pro/LICENSE)
+
+Based on DesignBuddy Canvas (MIT-licensed)

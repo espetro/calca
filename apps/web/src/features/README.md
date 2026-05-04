@@ -6,7 +6,7 @@ This project uses [Feature-Sliced Design](https://feature-sliced.design/) to org
 
 ```
 src/
-├── app/              # App Router pages & layouts (Next.js)
+├── app/              # TanStack Router pages & layouts (Vite)
 ├── widgets/          # Composite UI blocks composed from features
 │   ├── toolbar/      #   Top toolbar
 │   └── prompt-bar/   #   Bottom prompt input
@@ -46,15 +46,4 @@ features/{feature}/
 - `features/` must NOT import from other `features/` (use shared/ for cross-feature code)
 - `shared/` must NOT import from any other layer
 
-## Migration Progress
 
-- [x] Stage 1: File structure created
-- [x] Stage 1.2: Move types to src/shared/types/
-- [x] Stage 1.3: Move hooks to feature slices
-- [x] Stage 1.4: Move components to feature slices
-- [x] Stage 1.5: Extract API logic to feature slices
-- [x] Stage 1.6: Clean up old directories and update imports
-
-## AI Client
-
-AI client code lives in `packages/core/`, not in `apps/web/src/shared/ai/`. The `shared/ai/` directory is a stub being removed in a cleanup task.
