@@ -1,14 +1,13 @@
 "use client";
 
 import { getLogger } from "@app/logger";
-import React from "react";
-
 import { AlertTriangle } from "lucide-react";
+import { Component, ComponentType, ErrorInfo, PropsWithChildren, ReactNode } from "react";
+
 import { Button } from "#/shared/components/ui/button";
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+interface ErrorBoundaryProps extends PropsWithChildren {
+  fallback?: ReactNode;
   category?: string[];
 }
 
@@ -17,7 +16,7 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   private logger: ReturnType<typeof getLogger>;
 
   constructor(props: ErrorBoundaryProps) {
@@ -34,14 +33,14 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     return { error, hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.logger.error("React error caught", {
       componentStack: errorInfo.componentStack,
       error: error.message,
     });
   }
 
-  render(): React.ReactNode {
+  render(): ReactNode {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -55,11 +54,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
           <p className="max-w-sm text-sm text-muted-foreground">
             {this.state.error?.message ?? "An unexpected error occurred."}
           </p>
-          <Button
-            onClick={() => this.setState({ error: null, hasError: false })}
-          >
-            Try again
-          </Button>
+          <Button onClick={() => this.setState({ error: null, hasError: false })}>Try again</Button>
         </div>
       );
     }
@@ -71,9 +66,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 export { ErrorBoundary };
 
 export function withErrorBoundary<P extends object>(
-  WrappedComponent: React.ComponentType<P>,
-  fallback?: React.ReactNode,
-): React.ComponentType<P> {
+  WrappedComponent: ComponentType<P>,
+  fallback?: ReactNode,
+): ComponentType<P> {
   return function WithErrorBoundary(props: P) {
     return (
       <ErrorBoundary fallback={fallback}>
