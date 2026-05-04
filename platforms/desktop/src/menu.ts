@@ -40,7 +40,14 @@ export function setupApplicationMenu(): void {
     {
       label: "Edit",
       submenu: [
-        //
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { type: "separator" },
+        { role: "selectAll" },
         { role: "find" },
       ],
     },

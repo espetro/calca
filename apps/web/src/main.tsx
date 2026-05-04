@@ -12,7 +12,9 @@ import { routeTree } from "./routeTree.gen";
 await createLogger(import.meta.env.LOG_LEVEL);
 // initAnalytics();
 
-document.addEventListener("contextmenu", (e) => e.preventDefault());
+if (!window.electronAPI) {
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+}
 
 const router = createRouter({ routeTree });
 const store = createStore();
