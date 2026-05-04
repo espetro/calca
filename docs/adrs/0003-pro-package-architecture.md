@@ -1,4 +1,4 @@
-# ADR-0014: Pro Package Architecture
+# Pro Package Architecture
 
 ## Metadata
 
@@ -46,9 +46,9 @@ packages/pro/
 
 ### License Boundary Rules
 
-- AGPL core code must NEVER statically import from this package
-- This package may import from AGPL core (`packages/shared/`, `packages/core/`) but not vice versa
-- Every file includes the ELv2 header with copyright notice
+- AGPL core code must NEVER statically `import` from `packages/pro/`
+- `packages/pro/` may import from AGPL core (`packages/shared/`, `packages/core/`) but not vice versa
+- Every file in `packages/pro/` includes the ELv2 header with copyright notice
 - Package follows standard ES module exports via barrel file
 
 ### Cross-App Consumption
@@ -58,6 +58,7 @@ The single `packages/pro/` package is imported by both `apps/web/` and `platform
 ### Conditional Build Support
 
 The package structure supports conditional builds through:
+
 - Dynamic imports in consuming applications
 - Feature flags for runtime behavior
 - Separate bundle configuration for enterprise vs core builds
@@ -82,6 +83,6 @@ The package structure supports conditional builds through:
 
 ## More Information
 
-* Dual licensing model: `AGENTS.md` (Licensing section)
-* Feature-Sliced Design: `docs/prd-v2.md` (Architecture decisions)
+* Dual licensing model: `AGENTS.md` (Licensing & Open-Core Architecture section)
+* Architecture decisions: `docs/PRD.md`
 * Import rules and examples: `packages/pro/README.md`

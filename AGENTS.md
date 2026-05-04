@@ -270,7 +270,7 @@ Every AI design concept has three components:
 
 ### Pipeline Stages
 
-See [PRD v2 — Pipeline](docs/prd-v2.md) for full details.
+See [PRD — Pipeline](docs/PRD.md) for full details.
 
 1. **Plan** — Determine concept count and visual directions
 2. **Layout** — Generate HTML/CSS with sizing hints
@@ -280,15 +280,13 @@ See [PRD v2 — Pipeline](docs/prd-v2.md) for full details.
 
 ### Design Presets
 
-Three built-in presets: `ui-ux`, `marketing`, `brand` — see [PRD v2 — Presets](docs/prd-v2.md)
+Three built-in presets: `ui-ux`, `marketing`, `brand`
 
 ---
 
 ## References
 
-- **PRD v2**: [docs/prd-v2.md](docs/prd-v2.md) — Complete feature requirements
-- **PRD v2 Delta**: [docs/prd-v2-delta.md](docs/prd-v2-delta.md) — Incremental changes from v1
+- **PRD**: [docs/PRD.md](docs/PRD.md) — Product vision, positioning, and key features
 - **POC Learnings**: [docs/poc-learnings.md](docs/poc-learnings.md) — Architecture decisions from prototyping
-- **MADRs**: [docs/decisions/](docs/decisions/) — Architecture Decision Records (numbered `NNNN-description.md`)
-- **Roadmap**: [docs/roadmap/README.md](docs/roadmap/README.md) — Planned features and milestones
+- **ADRs**: [docs/adrs/](docs/adrs/) — Architecture Decision Records (numbered `NNNN-description.md`)
 - **Sisyphus Plans**: [.sisyphus/plans/](.sisyphus/plans/) — Implementation planning
