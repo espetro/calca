@@ -1,0 +1,22 @@
+# Astro build output
+.astro/
+dist/
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.production
+
+# TypeScript declaration files (but keep vite-env.d.ts)
+!src/vite-env.d.ts
+
+# macOS
+.DS_Store
