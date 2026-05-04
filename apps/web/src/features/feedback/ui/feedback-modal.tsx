@@ -1,5 +1,5 @@
 import { captureEvent, FEEDBACK_RATE_LIMITED, FEEDBACK_SUBMITTED } from "@app/analytics";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import {
   Bug,
   CheckCircle2,
@@ -22,6 +22,7 @@ import {
 import { Input } from "#/shared/components/ui/input";
 import { Label } from "#/shared/components/ui/label";
 import { Switch } from "#/shared/components/ui/switch";
+import { Textarea } from "#/shared/components/ui/textarea";
 
 import { submitFeedback } from "../api";
 import { canSubmitFeedback, recordSubmission } from "../lib/rate-limiter";
