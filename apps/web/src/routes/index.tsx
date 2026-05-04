@@ -6,13 +6,6 @@ import { lazy, Suspense, useCallback, useState } from "react";
 import { useCanvas } from "#/features/canvas";
 import { CanvasHUD } from "#/features/canvas-hud";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
-
-const CommentInput = lazy(() =>
-  import("#/features/comments").then((m) => ({ default: m.CommentInput }))
-);
-const CommentThread = lazy(() =>
-  import("#/features/comments").then((m) => ({ default: m.CommentThread }))
-);
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
 import {
   showGitHashAtom,
@@ -23,35 +16,34 @@ import {
 import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
 import { SummaryList } from "#/features/design/ui/summary-list";
-const FeedbackModal = lazy(() =>
-  import("#/features/feedback").then((m) => ({ default: m.FeedbackModal }))
-);
-import {
-  showTutorialAtom,
-  showWelcomeAtom,
-} from "#/features/onboarding";
-
-const TutorialTour = lazy(() =>
-  import("#/features/onboarding").then((m) => ({ default: m.TutorialTour }))
-);
-const WelcomeModal = lazy(() =>
-  import("#/features/onboarding").then((m) => ({ default: m.WelcomeModal }))
-);
-const SettingsModal = lazy(() =>
-  import("#/features/settings").then((m) => ({ default: m.SettingsModal }))
-);
+import { ModeSidebar } from "#/features/mode-sidebar";
+import { showTutorialAtom, showWelcomeAtom } from "#/features/onboarding";
 import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
-import { Button } from "#/shared/components/ui/button";
 import { exportCanvas, openImportDialog } from "#/lib/export";
 import { m } from "#/lib/i18n";
+import { Button } from "#/shared/components/ui/button";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 import { CanvasArea } from "#/widgets/canvas-area";
 import { ErrorBoundary } from "#/widgets/error-boundary";
 import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
 import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
 import { Toolbar } from "#/widgets/toolbar";
-import { ModeSidebar } from "#/features/mode-sidebar";
+
+const CommentInput = lazy(() => import("#/features/comments/ui/comment-input"));
+const CommentThread = lazy(() => import("#/features/comments/ui/comment-thread"));
+const FeedbackModal = lazy(() =>
+  import("#/features/feedback").then((m) => ({ default: m.FeedbackModal })),
+);
+const TutorialTour = lazy(() =>
+  import("#/features/onboarding").then((m) => ({ default: m.TutorialTour })),
+);
+const WelcomeModal = lazy(() =>
+  import("#/features/onboarding").then((m) => ({ default: m.WelcomeModal })),
+);
+const SettingsModal = lazy(() =>
+  import("#/features/settings").then((m) => ({ default: m.SettingsModal })),
+);
 
 export default function Home() {
   const canvas = useCanvas();
@@ -144,10 +136,7 @@ export default function Home() {
         hasFrames={groups.length > 0}
       />
 
-      <ModeSidebar
-        mode={toolMode}
-        onModeChange={setToolMode}
-      />
+      <ModeSidebar mode={toolMode} onModeChange={setToolMode} />
 
       <CanvasHUD
         scale={canvas.scale}
@@ -246,10 +235,7 @@ export default function Home() {
             </h3>
             <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
-              <Button
-                variant="ghost"
-                onClick={() => setShowResetConfirm(false)}
-              >
+              <Button variant="ghost" onClick={() => setShowResetConfirm(false)}>
                 Cancel
               </Button>
               <Button
