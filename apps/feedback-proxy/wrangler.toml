@@ -1,0 +1,9 @@
+name = "feedback-proxy"
+main = "src/index.ts"
+compatibility_date = "2026-04-29"
+minify = true
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "placeholder-kv-id"
+preview_id = "placeholder-preview-id"

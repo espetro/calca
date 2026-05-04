@@ -1,0 +1,3 @@
+GITHUB_TOKEN=ghp_xxx
+GITHUB_REPO=owner/repo
+ALLOWED_ORIGIN=https://calca.localhost
