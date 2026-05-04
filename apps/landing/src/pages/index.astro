@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import Hero from '../components/Hero';
+import Screenshot from '../components/Screenshot';
+import Features from '../components/Features';
+import Footer from '../components/Footer';
+---
+
+<Layout>
+  <Header client:load />
+  <Hero client:load />
+  <Screenshot />
+  <Features client:load />
+  <Footer />
+</Layout>
