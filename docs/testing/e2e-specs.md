@@ -59,10 +59,9 @@ export default class ProfileSteps {
 - Step files: `e2e/steps/<feature-name>.ts` (matching the spec)
 - Group generic cross-feature steps in `common.ts`
 
-## agent-browser refs
+## Best practices
 
-Refs (`@e1`, `@e2`) are ephemeral — they reset on navigation or DOM mutation.
-Always call `snapshot()` immediately before each interaction, never cache refs across steps.
+- Refs (`@e1`, `@e2`) are ephemeral — they reset on navigation or DOM mutation. Always call `snapshot()` immediately before each interaction, never cache refs across steps.
 
 ## Running tests
 
