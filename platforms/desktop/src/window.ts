@@ -59,6 +59,11 @@ export function createWindow(url: string): void {
       { label: "Copy", role: "copy" },
       { label: "Paste", role: "paste" },
       { type: "separator" },
+      { label: "Export as PNG" },
+      { label: "Export as JPG" },
+      { label: "Export as SVG" },
+      { label: "Copy as Image" },
+      { type: "separator" },
       { label: "Select All", role: "selectAll" },
     ]);
   });
