@@ -30,6 +30,7 @@ export function CritiqueModeButton({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
+          size="sm"
           data-tour={dataTour}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
           style={
@@ -59,7 +60,7 @@ export function CritiqueModeButton({
               onQuickModeChange(false);
               onToggle();
             }}
-            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
+            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left whitespace-normal transition-all hover:bg-background/60 ${
               !quickMode ? "border" : "bg-background/40"
             }`}
             style={
@@ -87,7 +88,7 @@ export function CritiqueModeButton({
             >
               <RefreshCw className="w-4 h-4" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 whitespace-normal">
               <div
                 className="text-[12px] font-semibold"
                 style={{ color: "var(--mode-critique-fg)" }}
@@ -109,7 +110,7 @@ export function CritiqueModeButton({
               onQuickModeChange(true);
               onToggle();
             }}
-            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left transition-all hover:bg-background/60 ${
+            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left whitespace-normal transition-all hover:bg-background/60 ${
               quickMode ? "border" : "bg-background/40"
             }`}
             style={
@@ -128,7 +129,7 @@ export function CritiqueModeButton({
             >
               <Zap className="w-4 h-4" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 whitespace-normal">
               <div
                 className="text-[12px] font-semibold"
                 style={{ color: "var(--mode-quick-fg)" }}
