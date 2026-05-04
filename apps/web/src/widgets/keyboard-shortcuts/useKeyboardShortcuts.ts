@@ -145,6 +145,32 @@ export const useKeyboardShortcuts = () => {
         }
       }
 
+      // Cmd/Ctrl + D — duplicate selected frames (offset by 20px from original position)
+      if ((e.metaKey || e.ctrlKey) && e.key === "d" && selectedIdsRef.current.size > 0) {
+        e.preventDefault();
+        const clipboardData = copyFrames(selectedIdsRef.current, groups, images);
+        if (clipboardData) {
+          const screenCenterX = window.innerWidth / 2;
+          const screenCenterY = window.innerHeight / 2;
+          // Offset from viewport center by (20, 20)
+          const viewportCenter = {
+            x: (screenCenterX - canvasOffset.x) / canvasScale + 20,
+            y: (screenCenterY - canvasOffset.y) / canvasScale + 20,
+          };
+          const { groups: newGroups, images: newImages } = pasteFrames(clipboardData, viewportCenter);
+          setGroups((prev) => [...prev, ...newGroups]);
+          setCanvasImages((prev) => [...prev, ...newImages]);
+          // Select the newly duplicated frames
+          const newIds = new Set<string>();
+          for (const g of newGroups) {
+            for (const iter of g.iterations) {
+              newIds.add(iter.id);
+            }
+          }
+          setSelectedIds(newIds);
+        }
+      }
+
       // Cmd/Ctrl + Z — undo (wired via native Edit menu roles; no local undo system exists)
       // Cmd/Ctrl + Shift + Z — redo (wired via native Edit menu roles)
     };

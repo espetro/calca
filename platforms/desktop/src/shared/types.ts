@@ -12,6 +12,7 @@ export type ContextMenuAction =
 export interface ContextMenuParams {
   selectedCount: number;
   hasClipboardContent: boolean;
+  totalFrames: number;
 }
 
 export interface ContextMenuResult {
