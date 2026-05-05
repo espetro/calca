@@ -5,7 +5,6 @@
 ### Patch Changes
 
 - Fix Windows desktop build path corruption and update provider tests
-
   - Replace zx shell commands with Bun.spawn to prevent Windows backslash escaping issues
   - Add Windows binary extension search (.cmd, .exe, .ps1) for electrobun
   - Fix provider test expectations to match pass-through behavior
@@ -43,7 +42,6 @@
 ### Minor Changes
 
 - ### Features
-
   - **AI Pipeline**: Added generate, stream, probe, and fallback utilities for AI providers
   - **Multi-Provider Support**: Added provider abstraction with support for Anthropic, Google, and OpenAI-compatible providers
   - **Pipeline Stages**: Implemented layout, images, review, critique, plan, and summary stages
@@ -51,9 +49,7 @@
   - **Zod Validation**: Integrated Zod validation with graceful fallback in layout, review, and critique stages
 
   ### Fixes
-
   - Fixed provider type to 'openai-compatible' when base URL is set
 
   ### Tests
-
   - Added unit tests for parsers, providers, and settings lib

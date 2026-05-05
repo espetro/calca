@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { copyFrames, pasteFrames } from "./frame-clipboard";
 
 const POINT = (x: number, y: number) => ({ x, y });

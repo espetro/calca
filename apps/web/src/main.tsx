@@ -5,8 +5,8 @@ import { createStore, Provider } from "jotai";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
-import { canvasOffsetAtom, canvasScaleAtom } from "#/features/canvas/state/canvas-atoms";
 import { copyFrames, pasteFrames } from "#/features/canvas/lib/frame-clipboard";
+import { canvasOffsetAtom, canvasScaleAtom } from "#/features/canvas/state/canvas-atoms";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom } from "#/features/design/state/images-atoms";

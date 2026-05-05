@@ -1,11 +1,8 @@
 import { useSetAtom } from "jotai";
-import { useState } from "react";
 import { RotateCcw } from "lucide-react";
+import { useState } from "react";
 
-import { resetToFactoryAtom } from "../state/settings-atoms";
 import { Button } from "#/shared/components/ui/button";
-import { Label } from "#/shared/components/ui/label";
-import { Separator } from "#/shared/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "#/shared/components/ui/dialog";
+import { Label } from "#/shared/components/ui/label";
+import { Separator } from "#/shared/components/ui/separator";
+
+import { resetToFactoryAtom } from "../state/settings-atoms";
 
 export function SettingsReset() {
   const [isResetting, setIsResetting] = useState(false);

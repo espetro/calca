@@ -1,3 +1,4 @@
+import { useClickOutside } from "@mantine/hooks";
 import { useAtom } from "jotai";
 import {
   Layout,
@@ -12,7 +13,6 @@ import { useCallback, useMemo, useRef } from "react";
 
 import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
-import { useClickOutside } from "@mantine/hooks";
 
 import { sidebarDialogAtom } from "../state/dialog-atom";
 

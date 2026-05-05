@@ -44,7 +44,13 @@ interface PromptBarProps extends ActionButtonProps {
   onCancel?: () => void;
 }
 
-export function PromptBar({ onSubmit, onRemix, isGenerating, genStatus, onCancel }: PromptBarProps) {
+export function PromptBar({
+  onSubmit,
+  onRemix,
+  isGenerating,
+  genStatus,
+  onCancel,
+}: PromptBarProps) {
   const [value, setValue] = useState("");
   const [showCritiqueMode, setShowCritiqueMode] = useState(false);
   const [showVariations, setShowVariations] = useState(false);
@@ -245,8 +251,13 @@ export function PromptBar({ onSubmit, onRemix, isGenerating, genStatus, onCancel
                 {remixTarget && (
                   <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200/60 rounded-full px-2.5 py-1 text-[12px] text-blue-700 shrink-0">
                     <Shuffle className="w-3 h-3 shrink-0" />
-                    <span>Remixing <span className="font-medium">{remixTarget.label ?? "design"}</span></span>
-                    <button onClick={() => setRemixTarget(null)} className="ml-0.5 hover:text-blue-900">
+                    <span>
+                      Remixing <span className="font-medium">{remixTarget.label ?? "design"}</span>
+                    </span>
+                    <button
+                      onClick={() => setRemixTarget(null)}
+                      className="ml-0.5 hover:text-blue-900"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </div>

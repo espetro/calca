@@ -1,13 +1,12 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-
-import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import { type RefCallback, useCallback, useRef } from "react";
 import { useMemo } from "react";
 
 import { PipelineStatusOverlay } from "#/features/canvas";
-import { ContextToolbar } from "#/features/context-toolbar";
 import type { useCanvas } from "#/features/canvas/hooks/use-canvas";
+import { ContextToolbar } from "#/features/context-toolbar";
 import { DesignCard, DEFAULT_FRAME_WIDTH as FRAME_WIDTH } from "#/features/design";
+import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import {
   activeCommentAtom,
   activeCommentIterationIdAtom,

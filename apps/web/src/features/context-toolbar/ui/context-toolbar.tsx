@@ -3,7 +3,11 @@ import { useAtomValue } from "jotai";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { ExportMenu } from "#/features/export";
-import { NavigationMenu, NavigationMenuList, NavigationMenuViewport } from "#/shared/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuViewport,
+} from "#/shared/components/ui/navigation-menu";
 import type { DesignIteration } from "#/shared/types";
 
 import { RemixButton } from "./remix-button";

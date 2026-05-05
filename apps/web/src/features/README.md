@@ -45,5 +45,3 @@ features/{feature}/
 - `features/` may import from `shared/`
 - `features/` must NOT import from other `features/` (use shared/ for cross-feature code)
 - `shared/` must NOT import from any other layer
-
-

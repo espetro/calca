@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Locate, LocateFixed, Navigation } from "lucide-react";
 import { useViewportSize } from "@mantine/hooks";
+import { Locate, LocateFixed, Navigation } from "lucide-react";
+import { useState } from "react";
 
 import ToolButton from "#/widgets/toolbar/ui/tool-button";
 
@@ -23,10 +23,7 @@ const Compass = ({ offset, onResetView }: CompassProps) => {
   const showNavigation = !isCentred && !isHovered;
 
   return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <ToolButton onClick={onResetView} title="Reset view">
         <span className="relative w-4 h-4 flex items-center justify-center">
           <Navigation

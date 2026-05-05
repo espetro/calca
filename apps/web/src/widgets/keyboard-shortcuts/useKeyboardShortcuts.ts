@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRef } from "react";
 
-import { canvasOffsetAtom, canvasScaleAtom } from "#/features/canvas/state/canvas-atoms";
 import { copyFrames, cutFrames, pasteFrames } from "#/features/canvas/lib/frame-clipboard";
+import { canvasOffsetAtom, canvasScaleAtom } from "#/features/canvas/state/canvas-atoms";
 import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import { commentDraftAtom } from "#/features/design/state/comment-atoms";
 import {
@@ -132,11 +132,11 @@ export const useKeyboardShortcuts = () => {
       // Cmd/Ctrl + X — cut selected frames
       if ((e.metaKey || e.ctrlKey) && e.key === "x" && selectedIdsRef.current.size > 0) {
         e.preventDefault();
-        const { clipboardData, groups: updatedGroups, images: updatedImages } = cutFrames(
-          selectedIdsRef.current,
-          groups,
-          images,
-        );
+        const {
+          clipboardData,
+          groups: updatedGroups,
+          images: updatedImages,
+        } = cutFrames(selectedIdsRef.current, groups, images);
         if (clipboardData) {
           setClipboard(clipboardData);
           setGroups(updatedGroups);
@@ -157,7 +157,10 @@ export const useKeyboardShortcuts = () => {
             x: (screenCenterX - canvasOffset.x) / canvasScale + 20,
             y: (screenCenterY - canvasOffset.y) / canvasScale + 20,
           };
-          const { groups: newGroups, images: newImages } = pasteFrames(clipboardData, viewportCenter);
+          const { groups: newGroups, images: newImages } = pasteFrames(
+            clipboardData,
+            viewportCenter,
+          );
           setGroups((prev) => [...prev, ...newGroups]);
           setCanvasImages((prev) => [...prev, ...newImages]);
           // Select the newly duplicated frames

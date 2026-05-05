@@ -29,10 +29,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-tanstack': ['@tanstack/react-router', '@tanstack/react-query'],
-          'vendor-ai': ['ai', '@ai-sdk/anthropic', '@ai-sdk/google'],
-          'vendor-jotai': ['jotai'],
+          "vendor-react": ["react", "react-dom"],
+          "vendor-tanstack": ["@tanstack/react-router", "@tanstack/react-query"],
+          "vendor-ai": ["ai", "@ai-sdk/anthropic", "@ai-sdk/google"],
+          "vendor-jotai": ["jotai"],
         },
       },
     },

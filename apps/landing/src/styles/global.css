@@ -47,7 +47,9 @@
   --destructive-foreground: hsl(0 0% 100%);
   --glow: hsl(205 74% 43% / 0.15);
   --glow-secondary: hsl(280 60% 50% / 0.1);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   --radius: 0.75rem;
 }
 

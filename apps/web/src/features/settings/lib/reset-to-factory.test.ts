@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+
 import { resetToFactory } from "./reset-to-factory";
 
 const ORIGINAL_LOCAL_STORAGE = globalThis.localStorage;
@@ -9,12 +10,20 @@ const NOOP_MOCK = vi.fn();
 const makeMockStorage = (initialEntries: Record<string, string> = {}) => {
   let store = { ...initialEntries };
   return {
-    get length() { return Object.keys(store).length; },
+    get length() {
+      return Object.keys(store).length;
+    },
     key: (i: number) => Object.keys(store)[i] ?? null,
     getItem: (k: string) => store[k] ?? null,
-    setItem: (k: string, v: string) => { store[k] = v; },
-    removeItem: (k: string) => { delete store[k]; },
-    clear: () => { store = {}; },
+    setItem: (k: string, v: string) => {
+      store[k] = v;
+    },
+    removeItem: (k: string) => {
+      delete store[k];
+    },
+    clear: () => {
+      store = {};
+    },
   };
 };
 
@@ -39,14 +48,17 @@ describe("resetToFactory", () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(globalThis, "localStorage", { value: ORIGINAL_LOCAL_STORAGE, writable: true });
+    Object.defineProperty(globalThis, "localStorage", {
+      value: ORIGINAL_LOCAL_STORAGE,
+      writable: true,
+    });
     Object.defineProperty(globalThis, "indexedDB", { value: ORIGINAL_INDEXED_DB, writable: true });
   });
 
   it("clears all calca-* localStorage keys, preserves others", async () => {
     const storage = makeMockStorage({
       "calca-settings": '{"apiKey":"test"}',
-      "calca-canvas-session": '[]',
+      "calca-canvas-session": "[]",
       "calca:session_start": '"2024-01-01"',
       "calca:last_session_end": '"2024-01-02"',
       "other-key": "keep-me",
@@ -81,7 +93,9 @@ describe("resetToFactory", () => {
       value: {
         length: 0,
         key: () => null,
-        getItem: () => { throw new Error("localStorage unavailable"); },
+        getItem: () => {
+          throw new Error("localStorage unavailable");
+        },
         setItem: NOOP_MOCK,
         removeItem: NOOP_MOCK,
         clear: NOOP_MOCK,
@@ -99,7 +113,7 @@ describe("resetToFactory", () => {
   });
 
   it("returns true when all operations succeed", async () => {
-    const storage = makeMockStorage({ "calca-settings": "x", "other": "y" });
+    const storage = makeMockStorage({ "calca-settings": "x", other: "y" });
     Object.defineProperty(globalThis, "localStorage", { value: storage, writable: true });
     Object.defineProperty(globalThis, "indexedDB", {
       value: {

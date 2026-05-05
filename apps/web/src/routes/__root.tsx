@@ -12,10 +12,11 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
+
 import { TooltipProvider } from "#/shared/components/ui/tooltip";
 
 const ReactQueryDevtools = lazy(() =>
-  import("@tanstack/react-query-devtools").then((m) => ({ default: m.ReactQueryDevtools }))
+  import("@tanstack/react-query-devtools").then((m) => ({ default: m.ReactQueryDevtools })),
 );
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";

@@ -105,8 +105,7 @@ export function usePersistedImages() {
           thumbnail: s.thumbnail,
           width: s.width,
         }));
-        const next =
-          typeof updater === "function" ? updater(currentCanvasImages) : updater;
+        const next = typeof updater === "function" ? updater(currentCanvasImages) : updater;
         persistImages(next);
         return prev; // Return same - persistImages handles async update separately
       });
