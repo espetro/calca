@@ -1,3 +1,30 @@
+# ==============================================================================
+# Apple Developer ID Code Signing & Notarization Setup
+# ==============================================================================
+#
+# REQUIRED GITHUB SECRETS (add these in GitHub → Settings → Secrets → Actions):
+#   MACOS_CERTIFICATE_BASE64     - Base64-encoded .p12 certificate (export from Keychain)
+#   MACOS_CERTIFICATE_PASSWORD   - Password used when exporting the .p12
+#   APPLE_API_ISSUER             - App Store Connect API issuer UUID
+#   APPLE_API_KEY_ID             - App Store Connect API key ID
+#   APPLE_API_KEY_P8_BASE64      - Base64-encoded .p8 API key file
+#   APPLE_DEVELOPER_ID           - Full certificate name (see commands below)
+#
+# CERTIFICATE SETUP (local machine):
+#   1. Open Keychain Access → My Certificates
+#   2. Find your "Developer ID Application" certificate
+#   3. security find-identity -v -p codesigning  # lists all signing identities
+#   4. Export the .p12: Right-click cert → Export → .p12 format
+#   5. base64 -i certificate.p12 | pbcopy  # paste into MACOS_CERTIFICATE_BASE64
+#
+# APPLE API KEY SETUP:
+#   1. Go to appstoreconnect.apple.com → Users & Access → Integrations
+#   2. Create new API key with "App Manager" role minimum
+#   3. Note the Key ID and Issuer ID for the secrets
+#   4. Download the .p8 file and base64 encode it for APPLE_API_KEY_P8_BASE64
+#
+# ==============================================================================
+
 name: Desktop Build
 on:
   push:
@@ -39,7 +66,25 @@ jobs:
         with:
           bun-version: "1.2.10"
       - run: bun install
+      - name: Import Apple Developer ID Certificate
+        if: matrix.platform == 'darwin'
+        uses: apple-actions/import-codesign-certs@v6
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+      - name: Decode App Store Connect API Key
+        if: matrix.platform == 'darwin'
+        run: |
+          echo "${{ secrets.APPLE_API_KEY_P8_BASE64 }}" | base64 --decode > /tmp/api_key.p8
       - run: bun run build:desktop
+        env:
+          ELECTROBUN_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+          ELECTROBUN_APPLEAPIISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          ELECTROBUN_APPLEAPIKEY: ${{ secrets.APPLE_API_KEY_ID }}
+          ELECTROBUN_APPLEAPIKEYPATH: /tmp/api_key.p8
+      - name: Cleanup API key
+        if: matrix.platform == 'darwin'
+        run: rm -f /tmp/api_key.p8
       - uses: actions/upload-artifact@v4
         with:
           name: calca-desktop-${{ matrix.platform }}
