@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-import type { PipelineStatus, ToolMode } from "#/shared/types";
+import type { DesignIteration, PipelineStatus, ToolMode } from "#/shared/types";
 
 export const showResetConfirmAtom = atom<boolean>(false);
 
@@ -28,3 +28,5 @@ export const rubberBandAtom = atom<{
 } | null>(null);
 
 export const draggingImageIdAtom = atom<string | null>(null);
+
+export const remixTargetAtom = atom<DesignIteration | null>(null);

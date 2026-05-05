@@ -1,9 +1,8 @@
+import { useViewportSize } from "@mantine/hooks";
+import { useWindowEvent } from "@mantine/hooks";
 import { RefreshCw, Zap } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-
-import { useViewportSize } from "@mantine/hooks";
-import { useWindowEvent } from "@mantine/hooks";
 
 interface CritiqueModeButtonProps {
   quickMode: boolean;
@@ -50,13 +49,8 @@ export function CritiqueModeButton({
       onToggle();
     }
   };
-  const handleEscape = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      onToggle();
-    }
-  };
+
   useWindowEvent("mousedown", handleClickOutside);
-  useWindowEvent("keydown", handleEscape);
 
   return (
     <div className="relative shrink-0 z-[60]" ref={containerRef}>
