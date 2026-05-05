@@ -15,6 +15,7 @@
     "build:desktop": "bun run --cwd platforms/desktop build:desktop",
     "clean": "turbo clean",
     "dev": "turbo dev",
+    "dev:landing": "bun run --cwd apps/landing dev:landing",
     "dev:desktop": "bun run --cwd platforms/desktop dev:desktop",
     "start": "turbo start",
     "format": "turbo format",
