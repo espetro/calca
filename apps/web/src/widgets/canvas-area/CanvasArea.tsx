@@ -540,8 +540,6 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
 
       {selectedIds.size === 1 && (
         <ContextToolbar
-          scale={canvas.scale}
-          offset={canvas.offset}
           onRemix={onRemix}
           apiKey={derived.apiKey || undefined}
           model={derived.model}
