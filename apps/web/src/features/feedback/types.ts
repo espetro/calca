@@ -4,7 +4,7 @@ export interface FeedbackFormData {
   type: FeedbackType;
   title: string;
   description: string;
-  email?: string;
+  email: string;
   includeSystemInfo: boolean;
 }
 
