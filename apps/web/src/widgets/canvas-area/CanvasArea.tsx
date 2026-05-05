@@ -1,4 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+
+import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import { type RefCallback, useCallback, useRef } from "react";
 import { useMemo } from "react";
 
@@ -47,6 +49,7 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
   const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
   const pipelineStages = useAtomValue(pipelineStagesAtom);
   const settings = useAtomValue(settingsAtom);
+  const clipboard = useAtomValue(clipboardAtom);
   const derived = useMemo(
     () => deriveProviderFields(settings.providers, settings.model),
     [settings.providers, settings.model],
@@ -401,6 +404,17 @@ export const CanvasArea = ({ canvas, onRemix }: CanvasAreaProps) => {
         const files = [...e.dataTransfer.files].filter((f) => f.type.startsWith("image/"));
         if (files.length > 0) {
           processImageFiles(files, e.clientX, e.clientY);
+        }
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        const rpc = window.__electrobun?.rpc?.request;
+        if (rpc && typeof rpc.contextMenu__show === "function") {
+          void rpc.contextMenu__show({
+            selectedCount: selectedIds.size,
+            hasClipboardContent: clipboard !== null,
+            totalFrames: groups.length,
+          });
         }
       }}
     >

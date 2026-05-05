@@ -17,7 +17,7 @@ import { routeTree } from "./routeTree.gen";
 await createLogger(import.meta.env.LOG_LEVEL);
 // initAnalytics();
 
-if (!window.electronAPI) {
+if (!window.__electrobun) {
   document.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 

@@ -21,5 +21,11 @@ interface ImportMeta {
 }
 
 interface Window {
-  electronAPI?: unknown;
+  __electrobun?: {
+    receiveMessageFromBun?: (msg: unknown) => void;
+    rpc?: {
+      request?: Record<string, (...args: unknown[]) => Promise<unknown>>;
+      send?: Record<string, (...args: unknown[]) => void>;
+    };
+  };
 }
