@@ -11,7 +11,7 @@ export const DESKTOP_DIR = resolve(REPO_ROOT, "platforms", "desktop");
 export const loadArtifactDependencies = async (source: string, logger: Logger) => {
   logger.info("==> Copying Tailwind CSS browser bundle...");
   const tailwindSource = resolve(
-    DESKTOP_DIR,
+    REPO_ROOT,
     "node_modules",
     "@tailwindcss",
     "browser",

@@ -5,11 +5,12 @@ export interface Props {
   ogImage?: string;
 }
 
-const { 
+const {
   title = "Calca — AI Design Tool with Infinite Canvas",
   description = "Describe your vision in plain English. Get multiple polished HTML/CSS design variations on an infinite canvas — no design skills required.",
   ogImage = "/calca/screenshot.png"
 } = Astro.props;
+import '../styles/global.css';
 ---
 
 <!DOCTYPE html>
@@ -41,8 +42,6 @@ const {
   <link rel="icon" type="image/svg+xml" href="/calca/favicon.ico" />
   
   <title>{title}</title>
-  
-  <link rel="stylesheet" href="/calca/src/styles/global.css" />
   
   <script is:inline>
     // Theme initialization - must run before page renders
