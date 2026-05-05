@@ -2,7 +2,7 @@ import { optIn, optOut } from "@app/analytics";
 import type { ProviderType } from "@app/core/ai/providers";
 import { useSetAtom } from "jotai";
 import { Eye, EyeOff, Plus, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { showTutorialAtom } from "#/features/onboarding/state/onboarding-atoms";
 import { Badge } from "#/shared/components/ui/badge";
@@ -275,6 +275,35 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
     () => settings.providers.find((p) => p.id === selectedProviderId),
     [settings.providers, selectedProviderId],
   );
+
+  const probeModels = useProbeModels();
+  const probedProvidersRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!selectedProvider) return;
+    if (selectedProvider.models.length > 0) return;
+    if (probedProvidersRef.current.has(selectedProvider.id)) return;
+    if (!selectedProvider.baseUrl) return;
+
+    probedProvidersRef.current.add(selectedProvider.id);
+
+    probeModels.mutate(
+      {
+        apiKey: selectedProvider.apiKey,
+        baseURL: selectedProvider.baseUrl,
+        providerType: selectedProvider.apiType,
+      },
+      {
+        onSuccess: (result) => {
+          if (result.models.length === 0) return;
+          const updatedProviders = settings.providers.map((p) =>
+            p.id === selectedProvider.id ? { ...p, models: result.models } : p,
+          );
+          onUpdate({ providers: updatedProviders });
+        },
+      },
+    );
+  }, [selectedProvider]);
 
   const handleProviderChange = (providerId: string) => {
     const provider = settings.providers.find((p) => p.id === providerId);

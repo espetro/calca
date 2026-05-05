@@ -1,5 +1,5 @@
 import { captureEvent, FEEDBACK_RATE_LIMITED, FEEDBACK_SUBMITTED } from "@app/analytics";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import {
   Bug,
   CheckCircle2,
@@ -10,6 +10,7 @@ import {
   Send,
   X,
 } from "lucide-react";
+import MailChecker from "mailchecker";
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "#/shared/components/ui/button";
@@ -60,6 +61,7 @@ export function FeedbackModal() {
   const [validationErrors, setValidationErrors] = useState<{
     title?: string;
     description?: string;
+    email?: string;
   }>({});
 
   const reset = useCallback(() => {
@@ -78,7 +80,7 @@ export function FeedbackModal() {
   }, [open, reset]);
 
   const validate = (): boolean => {
-    const errors: { title?: string; description?: string } = {};
+    const errors: { title?: string; description?: string; email?: string } = {};
     if (!formData.title.trim()) {
       errors.title = "Title is required";
     } else if (formData.title.length > 200) {
@@ -88,6 +90,13 @@ export function FeedbackModal() {
       errors.description = "Description is required";
     } else if (formData.description.length > 5000) {
       errors.description = "Description must be 5000 characters or less";
+    }
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    } else if (!MailChecker.isValid(formData.email)) {
+      errors.email = "Disposable email addresses are not allowed";
     }
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -134,7 +143,7 @@ export function FeedbackModal() {
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (field === "title" || field === "description") {
+    if (field === "title" || field === "description" || field === "email") {
       setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
@@ -303,17 +312,25 @@ export function FeedbackModal() {
 
                 {/* Email */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="feedback-email">Email (optional)</Label>
+                  <Label htmlFor="feedback-email">
+                    Email
+                    <span className="text-destructive ml-0.5">*</span>
+                  </Label>
                   <Input
                     id="feedback-email"
                     type="email"
-                    value={formData.email || ""}
-                    onChange={(e) => updateField("email", e.target.value || undefined)}
+                    value={formData.email}
+                    onChange={(e) => updateField("email", e.target.value)}
                     placeholder="your@email.com"
+                    aria-invalid={!!validationErrors.email}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    We&apos;ll only use this to follow up on your feedback.
-                  </p>
+                  <div className="flex justify-between">
+                    {validationErrors.email ? (
+                      <span className="text-xs text-destructive">{validationErrors.email}</span>
+                    ) : (
+                      <span />
+                    )}
+                  </div>
                 </div>
 
                 {/* System info */}

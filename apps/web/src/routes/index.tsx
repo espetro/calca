@@ -8,10 +8,10 @@ import { CanvasHUD } from "#/features/canvas-hud";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
 
 const CommentInput = lazy(() =>
-  import("#/features/comments").then((m) => ({ default: m.CommentInput }))
+  import("#/features/comments").then((m) => ({ default: m.CommentInput })),
 );
 const CommentThread = lazy(() =>
-  import("#/features/comments").then((m) => ({ default: m.CommentThread }))
+  import("#/features/comments").then((m) => ({ default: m.CommentThread })),
 );
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
 import {
@@ -22,24 +22,22 @@ import {
 } from "#/features/design/state/generation-atoms";
 import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
-import { SummaryList } from "#/features/design/ui/summary-list";
+import { showTutorialAtom, showWelcomeAtom } from "#/features/onboarding";
+
 const FeedbackModal = lazy(() =>
-  import("#/features/feedback").then((m) => ({ default: m.FeedbackModal }))
+  import("#/features/feedback").then((m) => ({ default: m.FeedbackModal })),
 );
-import {
-  showTutorialAtom,
-  showWelcomeAtom,
-} from "#/features/onboarding";
 
 const TutorialTour = lazy(() =>
-  import("#/features/onboarding").then((m) => ({ default: m.TutorialTour }))
+  import("#/features/onboarding").then((m) => ({ default: m.TutorialTour })),
 );
 const WelcomeModal = lazy(() =>
-  import("#/features/onboarding").then((m) => ({ default: m.WelcomeModal }))
+  import("#/features/onboarding").then((m) => ({ default: m.WelcomeModal })),
 );
 const SettingsModal = lazy(() =>
-  import("#/features/settings").then((m) => ({ default: m.SettingsModal }))
+  import("#/features/settings").then((m) => ({ default: m.SettingsModal })),
 );
+import { ModeSidebar } from "#/features/mode-sidebar";
 import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { exportCanvas, openImportDialog } from "#/lib/export";
@@ -50,7 +48,6 @@ import { ErrorBoundary } from "#/widgets/error-boundary";
 import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
 import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
 import { Toolbar } from "#/widgets/toolbar";
-import { ModeSidebar } from "#/features/mode-sidebar";
 
 export default function Home() {
   const canvas = useCanvas();
@@ -143,10 +140,7 @@ export default function Home() {
         hasFrames={groups.length > 0}
       />
 
-      <ModeSidebar
-        mode={toolMode}
-        onModeChange={setToolMode}
-      />
+      <ModeSidebar mode={toolMode} onModeChange={setToolMode} />
 
       <CanvasHUD
         scale={canvas.scale}
@@ -158,14 +152,15 @@ export default function Home() {
 
       <PromptBar
         onSubmit={pipeline.handleGenerate}
+        onRemix={pipeline.handleRemix}
         isGenerating={pipeline.isGenerating}
         genStatus={pipeline.genStatus}
         onCancel={() => pipeline.abortRef.current?.abort()}
       />
 
-      <ErrorBoundary category={["calca", "web", "features", "design"]}>
+      {/* <ErrorBoundary category={["calca", "web", "features", "design"]}>
         <SummaryList />
-      </ErrorBoundary>
+      </ErrorBoundary> */}
 
       {showGitHash && (
         <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">

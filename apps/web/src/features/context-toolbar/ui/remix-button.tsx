@@ -1,17 +1,12 @@
-import { useRef, useState } from "react";
-import { ChevronDown, Shuffle } from "lucide-react";
+import { useSetAtom } from "jotai";
+import { PenLine, Shuffle } from "lucide-react";
 
+import { remixTargetAtom } from "#/features/design/state/generation-atoms";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "#/shared/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "#/shared/components/ui/tooltip";
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+} from "#/shared/components/ui/navigation-menu";
 import type { DesignIteration } from "#/shared/types";
 
 const REMIX_PRESETS = [
@@ -43,96 +38,44 @@ interface RemixButtonProps {
 }
 
 export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
-  const [open, setOpen] = useState(false);
-  const [customPrompt, setCustomPrompt] = useState("");
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => setOpen(false), 150);
-  };
-
-  const handleRemix = (prompt: string) => {
-    setOpen(false);
-    setCustomPrompt("");
-    onRemix(iteration, prompt);
-  };
+  const setRemixTarget = useSetAtom(remixTargetAtom);
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger
-            asChild
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={(e) => e.preventDefault()}
-          >
-            <button
-              className="w-8 h-8 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 hover:bg-foreground/10 transition-all"
-              data-tour="remix-button"
-            >
-              <Shuffle className="w-4 h-4" />
-              <ChevronDown className="w-3 h-3 ml-[-2px]" />
-            </button>
-          </DropdownMenuTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="top">Remix</TooltipContent>
-      </Tooltip>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger
+        className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-gray-600 hover:bg-gray-100/80 hover:text-gray-800 transition-all duration-200 rounded-xl group"
+        data-tour="remix-button"
+      >
+        <Shuffle className="w-4 h-4" />
+        <span>Remix</span>
+      </NavigationMenuTrigger>
 
-      <DropdownMenuContent
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        align="start"
-        side="bottom"
-        sideOffset={4}
-        className="min-w-[260px] bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1.5 rounded-xl"
+      <NavigationMenuContent
+        className="w-[240px] md:w-[240px] bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1.5 rounded-xl flex flex-col"
+        onPointerDown={(e) => e.stopPropagation()}
       >
         <div className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
           Quick remix
         </div>
         {REMIX_PRESETS.map((preset) => (
-          <DropdownMenuItem
+          <button
             key={preset.label}
-            onClick={() => handleRemix(preset.prompt)}
-            className="rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer"
+            onClick={() => onRemix(iteration, preset.prompt)}
+            className="w-full rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer text-left px-2 py-1.5"
           >
             {preset.label}
-          </DropdownMenuItem>
+          </button>
         ))}
         <div className="my-1.5 border-t border-gray-200/30" />
-        <div className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-          Custom
-        </div>
-        <div className="flex gap-1.5 px-1.5 pb-1">
-          <input
-            type="text"
-            value={customPrompt}
-            onChange={(e) => setCustomPrompt(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && customPrompt.trim()) {
-                handleRemix(customPrompt.trim());
-              }
-            }}
-            placeholder="Try it with..."
-            className="flex-1 px-3 py-2 rounded-lg text-[13px] bg-black/5 outline-none placeholder-gray-400"
-          />
-          <button
-            onClick={() => customPrompt.trim() && handleRemix(customPrompt.trim())}
-            disabled={!customPrompt.trim()}
-            className="px-3 py-2 rounded-lg text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 disabled:opacity-40 transition-all"
-          >
-            Go
-          </button>
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <button
+          onClick={() => setRemixTarget(iteration)}
+          className="w-full rounded-lg text-[13px] text-gray-500 hover:bg-black/5 cursor-pointer text-left px-2 py-1.5 flex items-center gap-1.5"
+        >
+          <PenLine className="w-3.5 h-3.5" />
+          <span>Custom…</span>
+        </button>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
   );
 }
 

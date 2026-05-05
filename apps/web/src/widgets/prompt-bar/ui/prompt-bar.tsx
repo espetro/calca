@@ -1,10 +1,13 @@
 import { useAtom } from "jotai";
-import { ArrowRight } from "lucide-react";
-import { ComponentProps, useCallback, useRef, useState } from "react";
+import { ArrowRight, Shuffle, X } from "lucide-react";
+import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 
+import { remixTargetAtom } from "#/features/design/state/generation-atoms";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import type { DesignIteration } from "#/shared/types";
 
 import { usePromptHistory } from "../hooks/use-prompt-history";
+import ActionButton, { ActionButtonProps } from "./action-button";
 import { AddMediaButton } from "./add-media-button";
 import {
   PromptInputBody,
@@ -34,51 +37,14 @@ const SubmitButton = ({ onSubmit, className, ...props }: SubmitButtonProps) => {
   );
 };
 
-interface ActionButtonProps {
-  isGenerating: boolean;
-}
-
-const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour?: string }) => {
-  const [{ isIdeating }, setSettings] = useAtom(settingsAtom);
-
-  const setIsIdeating = useCallback(
-    (_: boolean) => setSettings((prev) => ({ ...prev, isIdeating: _ })),
-    [setSettings],
-  );
-
-  return (
-    <button
-      onClick={() => setIsIdeating(!isIdeating)}
-      disabled={isGenerating}
-      data-tour={dataTour}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
-      style={
-        isIdeating
-          ? {
-              background: "var(--mode-ideate-bg)",
-              border: "1px solid var(--mode-ideate-icon-bg)",
-              color: "var(--mode-ideate-fg)",
-            }
-          : {
-              background: "var(--mode-ideate-bg-subtle)",
-              color: "var(--mode-ideate-fg)",
-              opacity: 0.7,
-            }
-      }
-      title={isIdeating ? "Ideate mode" : "Build mode"}
-    >
-      {isIdeating ? "◈ Ideate" : "✦ Build"}
-    </button>
-  );
-};
-
 interface PromptBarProps extends ActionButtonProps {
   genStatus?: string;
   onSubmit: (prompt: string) => void;
+  onRemix?: (iteration: DesignIteration, prompt: string) => void;
   onCancel?: () => void;
 }
 
-export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: PromptBarProps) {
+export function PromptBar({ onSubmit, onRemix, isGenerating, genStatus, onCancel }: PromptBarProps) {
   const [value, setValue] = useState("");
   const [showCritiqueMode, setShowCritiqueMode] = useState(false);
   const [showVariations, setShowVariations] = useState(false);
@@ -105,7 +71,12 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
     });
   };
 
+  const [remixTarget, setRemixTarget] = useAtom(remixTargetAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
+
+  useEffect(() => {
+    if (remixTarget) inputRef.current?.focus();
+  }, [remixTarget]);
 
   const addImage = useCallback(
     (image: { id: string; src: string; name?: string }) => {
@@ -145,8 +116,13 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
     }
 
     addToHistory(trimmed);
-    onSubmit(trimmed);
-  }, [value, isGenerating, addToHistory, onSubmit]);
+    if (remixTarget && onRemix) {
+      onRemix(remixTarget, trimmed);
+      setRemixTarget(null);
+    } else {
+      onSubmit(trimmed);
+    }
+  }, [value, isGenerating, addToHistory, onSubmit, onRemix, remixTarget, setRemixTarget]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -265,6 +241,16 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
             /* Full input bar */
             <>
               <PromptInputHeader>
+                {/* Remix mode chip */}
+                {remixTarget && (
+                  <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200/60 rounded-full px-2.5 py-1 text-[12px] text-blue-700 shrink-0">
+                    <Shuffle className="w-3 h-3 shrink-0" />
+                    <span>Remixing <span className="font-medium">{remixTarget.label ?? "design"}</span></span>
+                    <button onClick={() => setRemixTarget(null)} className="ml-0.5 hover:text-blue-900">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
                 {/* Image pills */}
                 {settings.selectedImages?.length > 0 && (
                   <div className="flex items-center gap-2 mb-2">
@@ -302,12 +288,12 @@ export function PromptBar({ onSubmit, isGenerating, genStatus, onCancel }: Promp
                     resetHistoryIndex();
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Describe a design..."
+                  placeholder={remixTarget ? "Describe changes to make…" : "Describe a design..."}
                   disabled={isGenerating}
                 />
               </PromptInputBody>
 
-              <PromptInputFooter>
+              <PromptInputFooter className="pt-2">
                 <div className="flex items-center gap-2">
                   <AddMediaButton onFileSelect={handleImageSelect} disabled={isGenerating} />
                   <VariationsButton

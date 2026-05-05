@@ -1,6 +1,9 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRef } from "react";
 
+import { canvasOffsetAtom, canvasScaleAtom } from "#/features/canvas/state/canvas-atoms";
+import { copyFrames, cutFrames, pasteFrames } from "#/features/canvas/lib/frame-clipboard";
+import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import { commentDraftAtom } from "#/features/design/state/comment-atoms";
 import {
   selectedIdsAtom,
@@ -27,6 +30,13 @@ export const useKeyboardShortcuts = () => {
   const setGroups = useSetAtom(groupsAtom);
   const setCanvasImages = useSetAtom(canvasImagesAtom);
   const setFeedbackOpen = useSetAtom(feedbackModalOpenAtom);
+  const setClipboard = useSetAtom(clipboardAtom);
+
+  const groups = useAtomValue(groupsAtom);
+  const images = useAtomValue(canvasImagesAtom);
+  const canvasOffset = useAtomValue(canvasOffsetAtom);
+  const canvasScale = useAtomValue(canvasScaleAtom);
+  const clipboard = useAtomValue(clipboardAtom);
 
   // Ref keeps the latest selectedIds without triggering effect re-runs
   const selectedIdsRef = useRef<Set<string>>(new Set());
@@ -83,6 +93,86 @@ export const useKeyboardShortcuts = () => {
         setCanvasImages((prev) => prev.filter((img) => !selectedIdsRef.current.has(img.id)));
         setSelectedIds(new Set());
       }
+
+      // Cmd/Ctrl + A — select all frames
+      if ((e.metaKey || e.ctrlKey) && e.key === "a") {
+        e.preventDefault();
+        const allIds = new Set<string>();
+        for (const g of groups) {
+          for (const iter of g.iterations) {
+            allIds.add(iter.id);
+          }
+        }
+        setSelectedIds(allIds);
+      }
+
+      // Cmd/Ctrl + C — copy selected frames
+      if ((e.metaKey || e.ctrlKey) && e.key === "c" && selectedIdsRef.current.size > 0) {
+        e.preventDefault();
+        const data = copyFrames(selectedIdsRef.current, groups, images);
+        if (data) {
+          setClipboard(data);
+        }
+      }
+
+      // Cmd/Ctrl + V — paste from clipboard at viewport center
+      if ((e.metaKey || e.ctrlKey) && e.key === "v" && clipboard) {
+        e.preventDefault();
+        const screenCenterX = window.innerWidth / 2;
+        const screenCenterY = window.innerHeight / 2;
+        const viewportCenter = {
+          x: (screenCenterX - canvasOffset.x) / canvasScale,
+          y: (screenCenterY - canvasOffset.y) / canvasScale,
+        };
+        const { groups: newGroups, images: newImages } = pasteFrames(clipboard, viewportCenter);
+        setGroups((prev) => [...prev, ...newGroups]);
+        setCanvasImages((prev) => [...prev, ...newImages]);
+      }
+
+      // Cmd/Ctrl + X — cut selected frames
+      if ((e.metaKey || e.ctrlKey) && e.key === "x" && selectedIdsRef.current.size > 0) {
+        e.preventDefault();
+        const { clipboardData, groups: updatedGroups, images: updatedImages } = cutFrames(
+          selectedIdsRef.current,
+          groups,
+          images,
+        );
+        if (clipboardData) {
+          setClipboard(clipboardData);
+          setGroups(updatedGroups);
+          setCanvasImages(updatedImages);
+          setSelectedIds(new Set());
+        }
+      }
+
+      // Cmd/Ctrl + D — duplicate selected frames (offset by 20px from original position)
+      if ((e.metaKey || e.ctrlKey) && e.key === "d" && selectedIdsRef.current.size > 0) {
+        e.preventDefault();
+        const clipboardData = copyFrames(selectedIdsRef.current, groups, images);
+        if (clipboardData) {
+          const screenCenterX = window.innerWidth / 2;
+          const screenCenterY = window.innerHeight / 2;
+          // Offset from viewport center by (20, 20)
+          const viewportCenter = {
+            x: (screenCenterX - canvasOffset.x) / canvasScale + 20,
+            y: (screenCenterY - canvasOffset.y) / canvasScale + 20,
+          };
+          const { groups: newGroups, images: newImages } = pasteFrames(clipboardData, viewportCenter);
+          setGroups((prev) => [...prev, ...newGroups]);
+          setCanvasImages((prev) => [...prev, ...newImages]);
+          // Select the newly duplicated frames
+          const newIds = new Set<string>();
+          for (const g of newGroups) {
+            for (const iter of g.iterations) {
+              newIds.add(iter.id);
+            }
+          }
+          setSelectedIds(newIds);
+        }
+      }
+
+      // Cmd/Ctrl + Z — undo (wired via native Edit menu roles; no local undo system exists)
+      // Cmd/Ctrl + Shift + Z — redo (wired via native Edit menu roles)
     };
 
     const onKeyUp = (e: KeyboardEvent) => {

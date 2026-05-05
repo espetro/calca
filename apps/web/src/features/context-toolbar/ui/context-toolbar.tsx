@@ -3,13 +3,12 @@ import { useAtomValue } from "jotai";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { ExportMenu } from "#/features/export";
+import { NavigationMenu, NavigationMenuList, NavigationMenuViewport } from "#/shared/components/ui/navigation-menu";
 import type { DesignIteration } from "#/shared/types";
 
 import { RemixButton } from "./remix-button";
 
 interface ContextToolbarProps {
-  scale: number;
-  offset: { x: number; y: number };
   onRemix: (iteration: DesignIteration, remixPrompt: string) => void;
   apiKey?: string;
   model?: string;
@@ -18,8 +17,6 @@ interface ContextToolbarProps {
 }
 
 export function ContextToolbar({
-  scale,
-  offset,
   onRemix,
   apiKey,
   model,
@@ -33,6 +30,7 @@ export function ContextToolbar({
     return null;
   }
 
+  // TODO extract item selection logic to parent component
   const selectedId = [...selectedIds][0]!;
   let iteration: DesignIteration | undefined;
   for (const group of groups) {
@@ -47,31 +45,24 @@ export function ContextToolbar({
     return null;
   }
 
-  const screenX = iteration.position.x * scale + offset.x;
-  const screenY = iteration.position.y * scale + offset.y;
-  const scaledWidth = (iteration.width ?? 480) * scale;
-
   return (
-    <div
-      className="absolute pointer-events-none z-50"
-      style={{ left: screenX, top: screenY - 56, transform: "translateX(-50%)" }}
-    >
-      <div
-        className="pointer-events-auto flex items-center gap-0.5 px-1.5 py-1 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <RemixButton iteration={iteration} onRemix={onRemix} />
-        <div className="w-px h-4 bg-gray-200/50" />
-        <ExportMenu
-          html={iteration.html ?? ""}
-          label={iteration.label ?? "Design"}
-          width={scaledWidth}
-          apiKey={apiKey}
-          model={model}
-          providerType={providerType}
-          baseURL={baseURL}
-        />
-      </div>
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50">
+      <NavigationMenu>
+        <NavigationMenuList className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-xl shadow-sm px-1.5 py-1 flex items-center gap-1">
+          <RemixButton iteration={iteration} onRemix={onRemix} />
+          <div className="w-px h-4 bg-gray-200/50" />
+          <ExportMenu
+            html={iteration.html ?? ""}
+            label={iteration.label ?? "Design"}
+            width={iteration.width ?? 480}
+            apiKey={apiKey}
+            model={model}
+            providerType={providerType}
+            baseURL={baseURL}
+          />
+        </NavigationMenuList>
+        <NavigationMenuViewport className="mt-2 bg-white/80 backdrop-blur-xl border border-gray-200/60 shadow-lg rounded-xl" />
+      </NavigationMenu>
     </div>
   );
 }

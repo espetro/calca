@@ -31,6 +31,7 @@ const createEnvProvider = (): ProviderConfig | null => {
 
 const createDefaultSettings = (): Settings => {
   const envProvider = createEnvProvider();
+  const envModel = import.meta.env.VITE_AI_MODEL;
 
   return {
     apiKey: DEFAULT_API_KEY,
@@ -39,11 +40,16 @@ const createDefaultSettings = (): Settings => {
     openaiKey: "",
     providerType: envProvider ? ("openai-compatible" as ProviderType) : undefined,
     baseURL: DEFAULT_BASE_URL,
-    model: envProvider ? `${ENV_PROVIDER_ID}/` : "",
+    model:
+      envProvider && envModel
+        ? `${ENV_PROVIDER_ID}/${envModel}`
+        : envProvider
+          ? `${ENV_PROVIDER_ID}/`
+          : "",
     systemPrompt: "",
     systemPromptPreset: "custom",
-    conceptCount: 4,
-    quickMode: false,
+    conceptCount: 1,
+    quickMode: true,
     showZoomControls: false,
     providers: envProvider ? [envProvider] : [],
     ideateModel: undefined,
