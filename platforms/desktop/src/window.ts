@@ -7,7 +7,7 @@ import type { CalcaRPCSchema, ContextMenuParams } from "./shared/types";
 import { updaterHandlers } from "./updater";
 
 type ContextMenuItem =
-  | { label: string; role?: string; action?: string; enabled?: boolean }
+  | { label: string; role?: string; action?: string; accelerator?: string; enabled?: boolean }
   | { type: "separator" };
 
 const log = getLogger(["calca", "desktop", "window"]);
@@ -28,8 +28,9 @@ function buildContextMenuItems(params: ContextMenuParams): ContextMenuItem[] {
   items.push({ label: "Cut", role: "cut", enabled: hasSelection });
   items.push({ label: "Copy", role: "copy", enabled: hasSelection });
   if (selectedCount === 1) {
-    items.push({ label: "Duplicate", action: "duplicate-frame", enabled: true });
+    items.push({ label: "Duplicate", action: "duplicate-frame", accelerator: "d", enabled: true });
   }
+  items.push({ label: "Delete", role: "delete", accelerator: "Backspace", enabled: hasSelection });
   items.push({ label: "Paste", role: "paste", enabled: hasClipboardContent });
   items.push({ type: "separator" });
   items.push({ label: "Export as PNG", enabled: hasSelection });
@@ -101,6 +102,9 @@ export function createWindow(url: string): void {
     const action = (event as { action?: string }).action;
     if (action === "duplicate-frame" && mainWindow) {
       mainWindow.evaluate("window.__duplicate?.()");
+    }
+    if (action === "delete-frame" && mainWindow) {
+      mainWindow.evaluate("window.__deleteSelectedFrames?.()");
     }
   });
 

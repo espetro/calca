@@ -66,3 +66,19 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   }
   store.set(selectedIdsAtom, newIds);
 };
+
+(window as unknown as { __deleteSelectedFrames: () => void }).__deleteSelectedFrames = () => {
+  const selectedIds = store.get(selectedIdsAtom);
+  if (!selectedIds || selectedIds.size === 0) return;
+
+  store.set(groupsAtom, (prev) =>
+    prev
+      .map((g) => ({
+        ...g,
+        iterations: g.iterations.filter((iter) => !selectedIds.has(iter.id)),
+      }))
+      .filter((g) => g.iterations.length > 0),
+  );
+  store.set(canvasImagesAtom, (prev) => prev.filter((img) => !selectedIds.has(img.id)));
+  store.set(selectedIdsAtom, new Set());
+};
