@@ -88,7 +88,10 @@ export function createWindow(url: string): void {
 
   // Fallback: native can't read Jotai state, so all items are grayed out.
   // The web layer wires up contextMenu__show RPC to pass real state.
-  mainWindow.on("context-menu", () => {
+  mainWindow.on("context-menu", (event: unknown) => {
+    if (event && typeof event === "object" && "preventDefault" in event) {
+      (event as { preventDefault: () => void }).preventDefault();
+    }
     ContextMenu.showContextMenu(
       buildContextMenuItems({
         selectedCount: 0,
