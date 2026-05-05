@@ -21,6 +21,8 @@ const config: ElectrobunConfig = {
     artifactFolder: "artifacts",
     mac: {
       icons: "calca.iconset",
+      codesign: true,
+      notarize: true,
       bundleCEF: !isBuild,
       chromiumFlags: isBuild ? undefined : cefFlags,
     },
