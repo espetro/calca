@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["@cloudflare/workers-types"],
+    "lib": ["ESNext", "ESNext.Iterator"],
+    "types": ["@cloudflare/workers-types", "@types/node"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler"

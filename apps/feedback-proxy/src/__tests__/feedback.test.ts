@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { app } from "../index.js";
+import app from "../app.js";
 
 const mockOctokitInstance = {
   rest: {
@@ -74,20 +74,23 @@ describe("POST /feedback", () => {
       data: { number: 1, html_url: "https://github.com/owner/repo/issues/1" },
     } as any);
 
-    for (let i = 0; i < 5; i++) {
-      await app.request("/feedback", {
-        method: "POST",
-        body: JSON.stringify({
-          type: "feedback",
-          title: `Feedback ${i}`,
-          description: `Description ${i}`,
-        }),
-        headers: {
-          "content-type": "application/json",
-          "x-forwarded-for": "192.168.1.1",
-        },
-      });
-    }
+    await Promise.all(
+      [1, 2, 3, 4, 5].map(
+        async (i) =>
+          await app.request("/feedback", {
+            method: "POST",
+            body: JSON.stringify({
+              type: "feedback",
+              title: `Feedback ${i}`,
+              description: `Description ${i}`,
+            }),
+            headers: {
+              "content-type": "application/json",
+              "x-forwarded-for": "192.168.1.1",
+            },
+          }),
+      ),
+    );
 
     const res = await app.request("/feedback", {
       method: "POST",
