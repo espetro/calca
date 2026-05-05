@@ -7,6 +7,7 @@
     "web-dev": "bun run --cwd ../../apps/web dev",
     "electrobun-watch": "electrobun dev --watch",
     "dev:desktop": "bun run --parallel web-dev electrobun-watch",
+    "prebuild:desktop": "rm -rf build artifacts Resources/web",
     "build:desktop": "bun run scripts/build.ts",
     "verify": "bun run scripts/verify.ts",
     "clean": "rm -rf build artifacts Resources/web"
@@ -15,7 +16,7 @@
     "@app/server": "workspace:*",
     "@logtape/file": "^2.0.5",
     "@logtape/logtape": "^2.0.5",
-    "electrobun": "1.16.0"
+    "electrobun": "^1.18.1"
   },
   "devDependencies": {
     "@tailwindcss/browser": "^4.1.18",

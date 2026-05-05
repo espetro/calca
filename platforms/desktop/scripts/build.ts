@@ -1,97 +1,62 @@
-// oxlint-disable unicorn/require-module-specifiers
-
 import { existsSync } from "fs";
-import { copyFile, cp, mkdir, readFile, writeFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import { resolve } from "path";
 
 import { getLogger } from "@logtape/logtape";
 
 import { initLogger } from "../src/logger";
+import { DESKTOP_DIR, SCRIPT_DIR, loadArtifactDependencies, REPO_ROOT } from "./utils";
 
-const logDir = resolve(import.meta.dirname, "..", "logs");
-
-await initLogger({ logDir, prefix: "build" });
-
-const logger = getLogger(["calca", "build"]);
-
-const SCRIPT_DIR = import.meta.dirname;
-const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..", "..");
-const DESKTOP_DIR = resolve(REPO_ROOT, "platforms", "desktop");
-
-const loadArtifactDependencies = async (source: string) => {
-  logger.info("==> Copying Tailwind CSS browser bundle...");
-  const tailwindSource = resolve(
-    DESKTOP_DIR,
-    "node_modules",
-    "@tailwindcss",
-    "browser",
-    "dist",
-    "index.global.js",
-  );
-
-  const tailwindTarget = resolve(source, "tailwindcss.js");
-  await copyFile(tailwindSource, tailwindTarget);
-
-  logger.info("==> Injecting desktop mode flag into index.html...");
-  const indexPath = resolve(source, "index.html");
-  const html = await readFile(indexPath, "utf8");
-
-  const updated = html.replace(
-    "<head>",
-    "<head>\n  <script>window.__CALCA_DESKTOP__ = true;</script>",
-  );
-  await writeFile(indexPath, updated, "utf8");
-};
-
-interface RunOptions {
-  cwd?: string;
-  allowFail?: boolean;
+// Bun's --cwd flag resolves .env from the target directory, not the project root.
+// Load root .env manually so ELECTROBUN_* signing vars are available to child processes.
+const rootEnvPath = resolve(REPO_ROOT, ".env");
+if (existsSync(rootEnvPath)) {
+  const envContent = await readFile(rootEnvPath, "utf8");
+  for (const line of envContent.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIndex = trimmed.indexOf("=");
+    if (eqIndex === -1) continue;
+    const key = trimmed.slice(0, eqIndex).trim();
+    let value = trimmed.slice(eqIndex + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (!process.env[key]) {
+      process.env[key] = value;
+    }
+  }
 }
 
-const run = async (cmd: string[], opts?: RunOptions) => {
-  const proc = Bun.spawn(cmd, {
-    cwd: opts?.cwd,
+const logDir = resolve(SCRIPT_DIR, "..", "logs");
+await initLogger({ logDir, prefix: "build" });
+const logger = getLogger(["calca", "build"]);
+
+const main = async () => {
+  logger.info("==> Building web app...");
+  const webBuild = Bun.spawn(["bun", "run", "--cwd", REPO_ROOT, "--filter=@app/web", "build"], {
+    env: process.env,
     stdout: "inherit",
     stderr: "inherit",
   });
-  const exitCode = await proc.exited;
-  if (exitCode !== 0 && !opts?.allowFail) {
-    throw new Error(`${cmd.join(" ")} exited with code ${exitCode}`);
-  }
-  return exitCode;
-};
-
-const main = async () => {
-  logger.info("==> Cleaning desktop build artifacts...");
-  await run(["bun", "run", "--cwd", DESKTOP_DIR, "clean"], { allowFail: true });
-
-  logger.info("==> Building web app...");
-  await run(["bun", "run", "--cwd", REPO_ROOT, "--filter=@app/web", "build"]);
+  const webExit = await webBuild.exited;
+  if (webExit !== 0) throw new Error(`Web build exited with code ${webExit}`);
 
   const webDir = resolve(REPO_ROOT, "apps", "web", "dist");
-  await loadArtifactDependencies(webDir);
-
-  logger.info("==> Copying web build to desktop Resources...");
-  const resourcesDir = resolve(DESKTOP_DIR, "Resources", "web");
-  await mkdir(resourcesDir, { recursive: true });
-  await cp(webDir, resourcesDir, { recursive: true, force: true });
+  await loadArtifactDependencies(webDir, logger);
 
   logger.info("==> Building Electrobun app...");
-  const basePaths = [
-    resolve(DESKTOP_DIR, "node_modules", ".bin", "electrobun"),
-    resolve(REPO_ROOT, "node_modules", ".bin", "electrobun"),
-  ];
-
-  // * On Windows, Bun installs binaries as .cmd or .exe wrappers
-  const extensions = process.platform === "win32" ? ["", ".cmd", ".exe", ".ps1"] : [""];
-  const electrobunPaths = basePaths.flatMap((p) => extensions.map((ext) => p + ext));
-  const electrobunBin = electrobunPaths.find((p) => existsSync(p)) ?? null;
-
-  if (!electrobunBin) {
-    throw new Error(`electrobun binary not found. Searched: ${electrobunPaths.join(", ")}`);
-  }
-
-  await run([electrobunBin, "build", "--env=stable"], { cwd: DESKTOP_DIR });
+  const build = Bun.spawn(["electrobun", "build", "--env=stable"], {
+    cwd: DESKTOP_DIR,
+    env: process.env,
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  const buildExit = await build.exited;
+  if (buildExit !== 0) throw new Error(`Electrobun build exited with code ${buildExit}`);
 
   logger.info("==> Done! Artifacts in platforms/desktop/artifacts/");
 };
