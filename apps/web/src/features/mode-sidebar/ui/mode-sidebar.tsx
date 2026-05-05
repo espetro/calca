@@ -1,11 +1,7 @@
 import { MousePointer, Pencil, SquareDashedMousePointer } from "lucide-react";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "#/shared/components/ui/tooltip";
 import type { ToolMode } from "#/shared/types";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "#/shared/components/ui/tooltip";
 
 import ModeButton from "./mode-buttons";
 import { PresetButton } from "./preset-button";
@@ -36,6 +32,7 @@ export function ModeSidebar({ mode, onModeChange }: ModeSidebarProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <ModeButton
+            disabled
             active={mode === "draw-area"}
             onClick={() => onModeChange("draw-area")}
             title=""
@@ -50,6 +47,7 @@ export function ModeSidebar({ mode, onModeChange }: ModeSidebarProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <ModeButton
+            disabled
             active={mode === "edit-component"}
             onClick={() => onModeChange("edit-component")}
             title=""

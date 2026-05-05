@@ -1,15 +1,15 @@
-import { PropsWithChildren } from "react";
+import { ComponentProps, PropsWithChildren } from "react";
 
 export type ModeType = "select" | "frame" | "component";
 
-export interface ModeButtonProps extends PropsWithChildren {
+export interface ModeButtonProps extends PropsWithChildren, ComponentProps<"button"> {
   active: boolean;
   title: string;
   color: ModeType;
   onClick: () => void;
 }
 
-const ModeButton = ({ active, title, children, color, onClick }: ModeButtonProps) => {
+const ModeButton = ({ active, title, children, color, onClick, ...props }: ModeButtonProps) => {
   const activeStyles = {
     component: {
       background: "var(--tool-component-bg)",
@@ -30,6 +30,7 @@ const ModeButton = ({ active, title, children, color, onClick }: ModeButtonProps
 
   return (
     <button
+      {...props}
       onClick={onClick}
       title={title}
       className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
