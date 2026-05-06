@@ -82,6 +82,7 @@ jobs:
           ELECTROBUN_APPLEAPIISSUER: ${{ secrets.APPLE_API_ISSUER }}
           ELECTROBUN_APPLEAPIKEY: ${{ secrets.APPLE_API_KEY_ID }}
           ELECTROBUN_APPLEAPIKEYPATH: /tmp/api_key.p8
+          VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
       - name: Cleanup API key
         if: matrix.platform == 'darwin'
         run: rm -f /tmp/api_key.p8
