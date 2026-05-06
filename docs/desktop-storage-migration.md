@@ -47,7 +47,7 @@ API keys stored in macOS Keychain:
 
 ## Migration Script
 
-Runs once on first desktop launch, triggered by `version.json` migration flag:
+Runs once on first desktop launch, triggered by `.migrated` flag:
 
 1. Check `~/Library/Application Support/Calca/.migrated` flag
 2. If not migrated:

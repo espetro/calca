@@ -253,7 +253,7 @@ Uses **@changesets/cli** with unified versioning (all 11 workspace packages in `
 **Workflow:**
 1. `bunx changeset` — describe change and bump type
 2. `bunx changeset version` — bumps all workspace packages
-3. Manually update: root `package.json`, root `CHANGELOG.md`, `apps/Resources/version.json`
+3. Manually update: root `package.json`, root `CHANGELOG.md`
 4. Commit and tag: `git commit -m "chore: release vX.Y.Z" && git tag vX.Y.Z && git push --tags`
 
 Desktop builds via GitHub Actions on `v*` tags.

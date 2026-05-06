@@ -6,13 +6,13 @@ The Calca desktop app checks for updates on startup by comparing the local versi
 
 ## Version Source
 
-- **Local**: `apps/Resources/version.json` → `{"version": "0.3.0"}`
+- **Local**: `platforms/desktop/package.json` → imported by `src/version.ts`
 - **Remote**: GitHub Releases API `GET /repos/{owner}/{repo}/releases/latest`
 - **Comparison**: Parse semver from both, update available if remote > local
 
 ## Update Check Flow
 
-1. App starts → `platforms/desktop/src/index.ts` reads `version.json`
+1. App starts → version read from `platforms/desktop/package.json` via `src/version.ts`
 2. Fetch `https://api.github.com/repos/{owner}/{repo}/releases/latest`
 3. Parse release tag (`v0.3.0` → `0.3.0`) and compare semver
 4. If newer: set `globalThis.__CALCA_UPDATE_AVAILABLE__ = true` and store new version
