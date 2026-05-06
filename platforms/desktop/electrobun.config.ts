@@ -5,6 +5,8 @@ import { version } from "./package.json";
 // CEF is only needed in dev mode for debugging; exclude from release builds to reduce package size
 const isBuild = process.argv.some((arg) => arg === "build");
 
+const isCI = process.env.CI === "true";
+
 const cefFlags = {
   "remote-debugging-address": "127.0.0.1",
   "remote-debugging-port": process.env.ELECTROBUN_CDP_PORT ?? "9333",
@@ -22,7 +24,7 @@ const config: ElectrobunConfig = {
     mac: {
       icons: "calca.iconset",
       codesign: true,
-      notarize: true,
+      notarize: isCI,
       bundleCEF: !isBuild,
       chromiumFlags: isBuild ? undefined : cefFlags,
     },
