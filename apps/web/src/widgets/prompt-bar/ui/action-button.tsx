@@ -2,12 +2,14 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { Button } from "#/shared/components/ui/button";
 
 export interface ActionButtonProps {
   isGenerating: boolean;
+  dataTour?: string;
 }
 
-const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour?: string }) => {
+const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps) => {
   const [{ isIdeating }, setSettings] = useAtom(settingsAtom);
 
   const setIsIdeating = useCallback(
@@ -16,7 +18,9 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour
   );
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={() => setIsIdeating(!isIdeating)}
       disabled={isGenerating}
       data-tour={dataTour}
@@ -37,7 +41,7 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps & { dataTour
       title={isIdeating ? "Ideate mode" : "Build mode"}
     >
       {isIdeating ? "◈ Ideate" : "✦ Build"}
-    </button>
+    </Button>
   );
 };
 

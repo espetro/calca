@@ -52,7 +52,7 @@ function getSystemInfoPreview(): string {
   ].join("\n");
 }
 
-export function FeedbackModal() {
+function FeedbackModal() {
   const [open, setOpen] = useAtom(feedbackModalOpenAtom);
   const [formData, setFormData] = useAtom(feedbackFormDataAtom);
   const [status, setStatus] = useAtom(feedbackSubmitStatusAtom);
@@ -383,3 +383,5 @@ export function FeedbackModal() {
     </Dialog>
   );
 }
+
+export default FeedbackModal;
