@@ -5,6 +5,7 @@ import { lazy, Suspense, useCallback, useState } from "react";
 
 import { useCanvas } from "#/features/canvas";
 import { CanvasHUD } from "#/features/canvas-hud";
+import OnboardingBanner from "#/features/canvas-hud/ui/onboarding-banner";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
 import {
@@ -17,9 +18,9 @@ import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/s
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
 import { SummaryList } from "#/features/design/ui/summary-list";
 import { ModeSidebar } from "#/features/mode-sidebar";
-import { showTutorialAtom, showWelcomeAtom } from "#/features/onboarding";
-import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
+import { showTutorialAtom } from "#/features/onboarding";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
+import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, openImportDialog } from "#/lib/export";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
@@ -36,19 +37,12 @@ const FeedbackModal = lazy(() => import("#/features/feedback/ui/feedback-modal")
 const TutorialTour = lazy(() =>
   import("#/features/onboarding").then((m) => ({ default: m.TutorialTour })),
 );
-const WelcomeModal = lazy(() =>
-  import("#/features/onboarding").then((m) => ({ default: m.WelcomeModal })),
-);
-const SettingsModal = lazy(() =>
-  import("#/features/settings").then((m) => ({ default: m.SettingsModal })),
-);
 
 export default function Home() {
   const canvas = useCanvas();
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
   const loaded = useAtomValue(loadedAtom);
-  const probeModels = useProbeModels();
 
   useKeyboardShortcuts();
 
@@ -65,7 +59,6 @@ export default function Home() {
 
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
   const [showSettings, setShowSettings] = useState(false);
-  const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
   const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
@@ -99,7 +92,7 @@ export default function Home() {
         if (parsed.onboardingCompleted === true) return;
       } catch {}
     }
-    setShowWelcome(true);
+    setShowSettings(true);
   });
 
   const pipeline = useGenerationPipeline(canvas);
@@ -200,20 +193,7 @@ export default function Home() {
       {showSettings && (
         <ErrorBoundary category={["calca", "web", "features", "settings"]}>
           <Suspense fallback={null}>
-            <SettingsModal
-              settings={settings}
-              onUpdate={(update) => setSettings((prev) => ({ ...prev, ...update }))}
-              onClose={() => setShowSettings(false)}
-              isOwnKey={isOwnKey}
-              providers={settings.providers}
-              testProvider={(config) =>
-                probeModels.mutateAsync({
-                  apiKey: config.apiKey,
-                  providerType: config.apiType,
-                  baseURL: config.baseUrl,
-                })
-              }
-            />
+            <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
           </Suspense>
         </ErrorBoundary>
       )}
@@ -254,24 +234,6 @@ export default function Home() {
 
       <ErrorBoundary category={["calca", "web", "features", "onboarding"]}>
         <Suspense fallback={null}>
-          {showWelcome && (
-            <WelcomeModal
-              open={showWelcome}
-              onTakeTour={() => {
-                setShowWelcome(false);
-                setShowTutorial(true);
-              }}
-              onSkip={() => {
-                if (!settings.model) {
-                  setShowSettings(true);
-                  return;
-                }
-                setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
-                setShowWelcome(false);
-              }}
-            />
-          )}
-
           {showTutorial && (
             <TutorialTour
               onComplete={() => {
@@ -287,17 +249,8 @@ export default function Home() {
         </Suspense>
       </ErrorBoundary>
 
-      {(!isOwnKey || !settings.model) && !showWelcome && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
-          <Button
-            variant="secondary"
-            className="flex items-center gap-2 bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-amber-700 hover:bg-amber-500/20 shadow-sm"
-            onClick={() => setShowSettings(true)}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            {m.banner.addApiKey()}
-          </Button>
-        </div>
+      {(!isOwnKey || !settings.model) && (
+        <OnboardingBanner onClick={() => setShowSettings(true)} />
       )}
     </div>
   );
