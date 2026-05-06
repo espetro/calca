@@ -2,7 +2,21 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.3/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [],
+  "fixed": [
+    [
+      "@app/web",
+      "@app/server",
+      "@app/landing",
+      "@app/cli",
+      "@app/feedback-proxy",
+      "@app/electrobun",
+      "@app/core",
+      "@app/shared",
+      "@app/pro",
+      "@app/analytics",
+      "@app/logger"
+    ]
+  ],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
