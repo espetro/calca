@@ -1,5 +1,5 @@
 import { createLogger } from "@app/logger";
-// import { initAnalytics } from "@app/analytics";
+import { initAnalytics } from "@app/analytics";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { createStore, Provider } from "jotai";
 import { StrictMode } from "react";
@@ -15,7 +15,7 @@ import { feedbackModalOpenAtom } from "#/features/feedback/store";
 import { routeTree } from "./routeTree.gen";
 
 await createLogger(import.meta.env.LOG_LEVEL);
-// initAnalytics();
+initAnalytics();
 
 if (!window.__electrobun) {
   document.addEventListener("contextmenu", (e) => e.preventDefault());
