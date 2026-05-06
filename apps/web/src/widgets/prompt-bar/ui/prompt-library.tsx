@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Button } from "#/shared/components/ui/button";
 import { X } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "#/shared/components/ui/button";
 
 interface PromptLibraryProps {
   open: boolean;
@@ -151,18 +152,10 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 mt-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleUse(p.text)}
-                      >
+                      <Button variant="default" size="sm" onClick={() => handleUse(p.text)}>
                         Use prompt →
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleCopy(p.text)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => handleCopy(p.text)}>
                         {copied === p.text ? "Copied ✓" : "Copy"}
                       </Button>
                     </div>

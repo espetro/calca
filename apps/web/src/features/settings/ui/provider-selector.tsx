@@ -1,7 +1,7 @@
+import type { ProviderType } from "@app/core/ai/providers";
 import { Check } from "lucide-react";
 
 import { Button } from "#/shared/components/ui/button";
-import type { ProviderType } from "@app/core/ai/providers";
 
 interface ProviderSelectorProps {
   providerType: ProviderType | undefined;

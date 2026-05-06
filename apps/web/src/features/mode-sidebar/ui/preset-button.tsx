@@ -11,9 +11,9 @@ import {
 } from "lucide-react";
 import { useCallback, useMemo, useRef } from "react";
 
-import { Button } from "#/shared/components/ui/button";
 import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
+import { Button } from "#/shared/components/ui/button";
 
 import { sidebarDialogAtom } from "../state/dialog-atom";
 

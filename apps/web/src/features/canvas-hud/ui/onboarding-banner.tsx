@@ -1,6 +1,6 @@
 import { m } from "#/lib/i18n";
-import { Button } from "#/shared/components/ui/button";
 import { cn } from "#/lib/utils";
+import { Button } from "#/shared/components/ui/button";
 
 interface OnboardingBannerProps {
   onClick?: () => void;
@@ -17,7 +17,7 @@ const OnboardingBanner = ({ onClick }: OnboardingBannerProps) => {
           "border border-chart-1/20",
           "text-chart-1",
           "hover:bg-chart-1/20",
-          "shadow-sm"
+          "shadow-sm",
         )}
         onClick={onClick}
       >

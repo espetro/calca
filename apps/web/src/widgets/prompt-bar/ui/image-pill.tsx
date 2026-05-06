@@ -1,8 +1,7 @@
 import { X } from "lucide-react";
 
-import { Button } from "#/shared/components/ui/button";
-
 import type { SelectedImage } from "#/features/settings/types";
+import { Button } from "#/shared/components/ui/button";
 
 interface ImagePillProps {
   image: SelectedImage;

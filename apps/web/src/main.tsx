@@ -1,5 +1,5 @@
-import { createLogger } from "@app/logger";
 import { initAnalytics } from "@app/analytics";
+import { createLogger } from "@app/logger";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { createStore, Provider } from "jotai";
 import { StrictMode } from "react";

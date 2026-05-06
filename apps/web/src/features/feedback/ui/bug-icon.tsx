@@ -2,6 +2,7 @@ import { useSetAtom } from "jotai";
 import { Bug } from "lucide-react";
 
 import { Button } from "#/shared/components/ui/button";
+
 import { feedbackModalOpenAtom } from "../store";
 
 export function BugIcon() {

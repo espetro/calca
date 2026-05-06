@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   init: vi.fn(),
@@ -44,7 +44,7 @@ describe("posthog-client", () => {
       expect(mocks.init).toHaveBeenCalledTimes(1);
       const [apiKey, config] = mocks.init.mock.calls[0]!;
       expect(apiKey).toBe("test-api-key");
-      expect(config.api_host).toBe("https://eu.posthog.com");
+      expect(config.api_host).toBe("https://us.i.posthog.com");
       expect(config.disable_external_dependency_loading).toBe(true);
       expect(config.persistence).toBe("localStorage");
     });

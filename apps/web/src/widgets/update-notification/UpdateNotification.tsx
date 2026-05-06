@@ -1,7 +1,8 @@
+import { Moon, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+
 import { Button } from "#/shared/components/ui/button";
-import { Moon, X } from "lucide-react";
 
 type UpdaterState =
   | { state: "idle" }
