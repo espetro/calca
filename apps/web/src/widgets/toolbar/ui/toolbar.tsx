@@ -2,7 +2,6 @@ import { Menu, Settings } from "lucide-react";
 import { useState } from "react";
 
 import type { ProviderConfig } from "#/features/settings/types";
-import { MODELS } from "#/features/settings/types";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { Button } from "#/shared/components/ui/button";
 import {
@@ -13,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "#/shared/components/ui/dropdown-menu";
 import { Separator } from "#/shared/components/ui/separator";
+
+const NO_MODEL_SELECTED = "No model selected";
 
 interface ToolbarProps {
   isOwnKey: boolean;
@@ -34,10 +35,9 @@ export function Toolbar({
   hasFrames,
 }: ToolbarProps) {
   const [providerId, modelId] = model.includes("/") ? model.split("/") : [null, model];
-  const provider = providerId ? providers.find((p) => p.id === providerId) : undefined;
-  const displayModel = provider?.models.find((m) => m.id === modelId)?.displayName || modelId;
-  const modelLabel =
-    MODELS.find((m) => m.id === modelId)?.label || displayModel || model || "Sonnet 4.5";
+  const provider = providerId ? providers.find((_) => _.id === providerId) : undefined;
+  const displayModel = provider?.models.find((_) => _.id === modelId)?.displayName || modelId;
+  const modelLabel = displayModel || model || NO_MODEL_SELECTED;
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
