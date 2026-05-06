@@ -9,8 +9,7 @@ export interface FeedbackFormData {
 }
 
 export interface FeedbackSubmitResult {
-  issueUrl: string;
-  issueNumber: number;
+  commentUrl: string;
 }
 
 export type FeedbackSubmitStatus = "idle" | "submitting" | "success" | "error" | "rate_limited";

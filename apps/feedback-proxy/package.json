@@ -11,7 +11,8 @@
     "build": "bun build src/index.ts",
     "deploy": "wrangler deploy",
     "deploy:dry": "wrangler deploy --dry-run",
-    "typecheck": "bunx tsc --noEmit --project tsconfig.json"
+    "typecheck": "bunx tsc --noEmit --project tsconfig.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "hono": "^4.0.0",

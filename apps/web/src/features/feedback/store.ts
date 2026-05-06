@@ -18,6 +18,4 @@ export const feedbackSubmitStatusAtom = atom<FeedbackSubmitStatus>("idle");
 
 export const feedbackSubmitErrorAtom = atom<string | null>(null);
 
-export const feedbackSubmitResultAtom = atom<{ issueUrl: string; issueNumber: number } | null>(
-  null,
-);
+export const feedbackSubmitResultAtom = atom<{ commentUrl: string } | null>(null);

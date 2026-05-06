@@ -176,19 +176,19 @@ function FeedbackModal() {
                 <div className="space-y-1">
                   <p className="text-base font-medium text-foreground">Thank you!</p>
                   <p className="text-sm text-muted-foreground">
-                    Your feedback has been submitted as issue #{result.issueNumber}.
+                    Your feedback has been posted to the discussion.
                   </p>
                 </div>
                 <a
-                  href={result.issueUrl}
+                  href={result.commentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
                 >
-                  View on GitHub
+                  View on GitHub Discussions
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
-                <p className="text-xs text-muted-foreground">Powered by GitHub</p>
+                <p className="text-xs text-muted-foreground">Powered by GitHub Discussions</p>
                 <Button variant="outline" onClick={() => setOpen(false)}>
                   Close
                 </Button>
