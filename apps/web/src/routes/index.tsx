@@ -6,13 +6,6 @@ import { lazy, Suspense, useCallback, useState } from "react";
 import { useCanvas } from "#/features/canvas";
 import { CanvasHUD } from "#/features/canvas-hud";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
-
-const CommentInput = lazy(() =>
-  import("#/features/comments").then((m) => ({ default: m.CommentInput })),
-);
-const CommentThread = lazy(() =>
-  import("#/features/comments").then((m) => ({ default: m.CommentThread })),
-);
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
 import {
   showGitHashAtom,
@@ -22,12 +15,24 @@ import {
 } from "#/features/design/state/generation-atoms";
 import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
+import { SummaryList } from "#/features/design/ui/summary-list";
+import { ModeSidebar } from "#/features/mode-sidebar";
 import { showTutorialAtom, showWelcomeAtom } from "#/features/onboarding";
+import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
+import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
+import { exportCanvas, openImportDialog } from "#/lib/export";
+import { m } from "#/lib/i18n";
+import { Button } from "#/shared/components/ui/button";
+import { useMountEffect } from "#/shared/utils/use-mount-effect";
+import { CanvasArea } from "#/widgets/canvas-area";
+import { ErrorBoundary } from "#/widgets/error-boundary";
+import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
+import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
+import { Toolbar } from "#/widgets/toolbar";
 
-const FeedbackModal = lazy(() =>
-  import("#/features/feedback").then((m) => ({ default: m.FeedbackModal })),
-);
-
+const CommentInput = lazy(() => import("#/features/comments/ui/comment-input"));
+const CommentThread = lazy(() => import("#/features/comments/ui/comment-thread"));
+const FeedbackModal = lazy(() => import("#/features/feedback/ui/feedback-modal"));
 const TutorialTour = lazy(() =>
   import("#/features/onboarding").then((m) => ({ default: m.TutorialTour })),
 );
@@ -37,17 +42,6 @@ const WelcomeModal = lazy(() =>
 const SettingsModal = lazy(() =>
   import("#/features/settings").then((m) => ({ default: m.SettingsModal })),
 );
-import { ModeSidebar } from "#/features/mode-sidebar";
-import { useProbeModels } from "#/features/settings/hooks/use-probe-models";
-import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
-import { exportCanvas, openImportDialog } from "#/lib/export";
-import { m } from "#/lib/i18n";
-import { useMountEffect } from "#/shared/utils/use-mount-effect";
-import { CanvasArea } from "#/widgets/canvas-area";
-import { ErrorBoundary } from "#/widgets/error-boundary";
-import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
-import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
-import { Toolbar } from "#/widgets/toolbar";
 
 export default function Home() {
   const canvas = useCanvas();
@@ -240,22 +234,19 @@ export default function Home() {
             </h3>
             <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
-              <button
-                onClick={() => setShowResetConfirm(false)}
-                className="text-[13px] font-medium text-gray-600 hover:text-gray-800 px-5 py-2.5 rounded-xl hover:bg-black/5 transition-all"
-              >
+              <Button variant="ghost" onClick={() => setShowResetConfirm(false)}>
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="destructive"
                 onClick={() => {
                   resetSession();
                   canvas.resetView();
                   setShowResetConfirm(false);
                 }}
-                className="text-[13px] font-medium text-white bg-red-500/90 hover:bg-red-500 px-5 py-2.5 rounded-xl transition-all"
               >
                 Clear Canvas
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -298,13 +289,14 @@ export default function Home() {
 
       {(!isOwnKey || !settings.model) && !showWelcome && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
-          <button
+          <Button
+            variant="secondary"
+            className="flex items-center gap-2 bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-amber-700 hover:bg-amber-500/20 shadow-sm"
             onClick={() => setShowSettings(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 backdrop-blur-xl border border-amber-300/30 text-[12px] font-medium text-amber-700 hover:bg-amber-500/20 transition-all shadow-sm"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             {m.banner.addApiKey()}
-          </button>
+          </Button>
         </div>
       )}
     </div>

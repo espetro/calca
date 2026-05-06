@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "#/shared/components/ui/button";
+import { Moon, X } from "lucide-react";
 
 type UpdaterState =
   | { state: "idle" }
@@ -162,17 +164,7 @@ function UpdateBar({ state, onDismiss, onDownload, onApply }: UpdateBarProps): R
       {isDownloading ? (
         <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
       ) : (
-        <svg
-          className="w-4 h-4 opacity-80"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
+        <Moon className="w-4 h-4 opacity-80" />
       )}
 
       <span className="tabular-nums">
@@ -192,42 +184,27 @@ function UpdateBar({ state, onDismiss, onDownload, onApply }: UpdateBarProps): R
 
       <div className="flex items-center gap-2 ml-2">
         {isAvailable && (
-          <button
-            onClick={onDownload}
-            className="px-3 py-1 rounded-md text-xs font-semibold transition-colors bg-primary text-primary-foreground hover:bg-primary/90"
-          >
+          <Button variant="default" size="sm" onClick={onDownload}>
             Download
-          </button>
+          </Button>
         )}
 
         {isReady && (
-          <button
-            onClick={onApply}
-            className="px-3 py-1 rounded-md text-xs font-semibold transition-colors bg-accent text-accent-foreground hover:bg-accent/90"
-          >
+          <Button variant="secondary" size="sm" onClick={onApply}>
             Restart &amp; Install
-          </button>
+          </Button>
         )}
 
         {isAvailable && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onDismiss}
             aria-label="Dismiss update notification"
-            className="p-1 rounded-md opacity-60 hover:opacity-100 hover:bg-foreground/10 transition-colors"
+            className="opacity-60 hover:opacity-100"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+            <X className="w-4 h-4" />
+          </Button>
         )}
       </div>
     </div>

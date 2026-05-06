@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 
+import { Button } from "#/shared/components/ui/button";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
 import { groupsAtom } from "../state/groups-atoms";
@@ -44,12 +45,9 @@ export function SummaryDialog({ groupId, onClose }: SummaryDialogProps) {
 
         <p className="text-[13px] text-gray-500 leading-relaxed">{rationale}</p>
 
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 bg-black/5 hover:bg-black/10 rounded-xl text-[13px] font-medium text-gray-600 transition-all"
-        >
+        <Button variant="outline" onClick={onClose} className="mt-4">
           Close
-        </button>
+        </Button>
       </div>
     </div>
   );

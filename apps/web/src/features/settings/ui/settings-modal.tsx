@@ -1,5 +1,10 @@
 import { useState } from "react";
 
+import { Button } from "#/shared/components/ui/button";
+import { Input } from "#/shared/components/ui/input";
+import { Separator } from "#/shared/components/ui/separator";
+import { X } from "lucide-react";
+
 import type { Settings } from "#/features/settings/types";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 
@@ -99,22 +104,14 @@ export function SettingsModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200/30">
           <h2 className="text-[17px] font-semibold text-gray-800">Settings</h2>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-black/5 transition-all"
+            aria-label="Close settings"
           >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
 
         <div className="p-6 space-y-8">
@@ -153,21 +150,14 @@ export function SettingsModal({
             <div className="space-y-4">
               <ProviderList providers={settings.providers} onRemove={handleRemoveProvider} />
 
-              {settings.providers.length === 0 ? (
-                <button
-                  onClick={() => setShowAddProvider(true)}
-                  className="text-[12px] font-medium text-blue-500 hover:text-blue-600 px-4 py-2.5 rounded-xl transition-all border border-blue-300/40 bg-blue-50/30"
-                >
-                  Add Provider
-                </button>
-              ) : (
-                <button
-                  onClick={() => setShowAddProvider(true)}
-                  className="text-[12px] font-medium text-blue-500 hover:text-blue-600 px-4 py-2.5 rounded-xl transition-all border border-blue-300/40 bg-blue-50/30"
-                >
-                  Add Provider
-                </button>
-              )}
+              <Button
+                variant="ghost"
+                size="default"
+                onClick={() => setShowAddProvider(true)}
+                className="text-[12px] font-medium text-blue-500 hover:text-blue-600 px-4 py-2.5 rounded-xl transition-all border border-blue-300/40 bg-blue-50/30"
+              >
+                Add Provider
+              </Button>
 
               {showAddProvider && (
                 <div className="bg-white/40 rounded-xl p-4 border border-white/50">
@@ -265,7 +255,7 @@ export function SettingsModal({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200/30 flex items-center justify-between">
+        <div className="flex items-center justify-between p-6">
           <span className="text-[11px] text-gray-500">
             {settings.model.split("/")[1] || settings.model}
             {settings.ideateModel &&
@@ -273,7 +263,8 @@ export function SettingsModal({
             {(settings.unsplashKey || settings.openaiKey || settings.geminiKey) &&
               ` · 🖼️ ${[settings.unsplashKey && "Unsplash", settings.openaiKey && "DALL·E", settings.geminiKey && "Gemini"].filter(Boolean).join(", ")}`}
           </span>
-          <button
+          <Button
+            variant="ghost"
             onClick={() => {
               // Auto-save keys if changed
               const updates: Partial<Settings> = {};
@@ -287,8 +278,9 @@ export function SettingsModal({
             className="text-[13px] font-medium text-gray-600 hover:text-gray-800 px-4 py-2 rounded-xl hover:bg-black/5 transition-all"
           >
             Done
-          </button>
+          </Button>
         </div>
+        <Separator />
       </div>
     </div>
   );
@@ -341,7 +333,7 @@ function ImageKeyField({
       </div>
       <p className="text-[10px] text-gray-400 mb-2">{desc}</p>
       <div className="flex gap-1.5">
-        <input
+        <Input
           type="password"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -349,21 +341,25 @@ function ImageKeyField({
           className="flex-1 text-[12px] text-gray-800 placeholder-gray-300 bg-white/60 rounded-lg px-3 py-2 outline-none border border-gray-200/40 focus:border-blue-300/50 transition-all font-mono"
         />
         {isChanged && value.trim() && (
-          <button
+          <Button
+            variant="default"
+            size="sm"
             onClick={onSave}
             className="text-[11px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 px-3 py-1.5 rounded-lg transition-all shrink-0"
           >
             Save
-          </button>
+          </Button>
         )}
       </div>
       {isSaved && (
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onRemove}
           className="mt-1.5 text-[10px] text-gray-400 hover:text-red-500 transition-colors"
         >
           Remove key
-        </button>
+        </Button>
       )}
     </div>
   );

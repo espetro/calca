@@ -1,7 +1,8 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { type PropsWithChildren, forwardRef, useEffect, useRef } from "react";
 
-interface PromptInputContainerProps {
-  children: React.ReactNode;
+import { Textarea } from "#/shared/components/ui/textarea";
+
+interface PromptInputContainerProps extends PropsWithChildren {
   isGenerating?: boolean;
   className?: string;
 }
@@ -22,8 +23,7 @@ export const PromptInputContainer = ({
   </div>
 );
 
-interface PromptInputHeaderProps {
-  children: React.ReactNode;
+interface PromptInputHeaderProps extends PropsWithChildren {
   className?: string;
 }
 
@@ -31,8 +31,7 @@ export const PromptInputHeader = ({ children, className = "" }: PromptInputHeade
   <div className={`flex items-center gap-2 mb-2 ${className}`}>{children}</div>
 );
 
-interface PromptInputBodyProps {
-  children: React.ReactNode;
+interface PromptInputBodyProps extends PropsWithChildren {
   className?: string;
 }
 
@@ -40,13 +39,12 @@ export const PromptInputBody = ({ children, className = "" }: PromptInputBodyPro
   <div className={`flex items-center gap-2 ${className}`}>{children}</div>
 );
 
-interface PromptInputFooterProps {
-  children: React.ReactNode;
+interface PromptInputFooterProps extends PropsWithChildren {
   className?: string;
 }
 
 export const PromptInputFooter = ({ children, className = "" }: PromptInputFooterProps) => (
-  <div className={`flex items-center justify-between gap-2 ${className}`}>{children}</div>
+  <div className={`flex items-center justify-between gap-2 mt-2 ${className}`}>{children}</div>
 );
 
 interface PromptInputTextareaProps {
@@ -80,7 +78,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
     }, [value]);
 
     return (
-      <textarea
+      <Textarea
         ref={ref || textareaRef}
         value={value}
         onChange={onChange}
@@ -89,7 +87,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
         disabled={disabled}
         rows={1}
         aria-label="Prompt"
-        className={`flex-1 px-0 py-2 text-[15px] text-gray-800 placeholder-gray-400/70 bg-transparent outline-none resize-none leading-[22px] ${className}`}
+        className={`flex-1 px-0 py-2 text-[15px] text-gray-800 placeholder-gray-400/70 bg-transparent outline-none resize-none leading-[22px] border-0 [field-sizing:fixed] focus-visible:ring-0 focus-visible:ring-offset-0 min-h-0 shadow-none focus-visible:border-0 ${className}`}
         style={{ maxHeight: 22 * 6 }}
       />
     );

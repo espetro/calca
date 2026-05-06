@@ -5,6 +5,8 @@ import { Ref, useCallback, useRef } from "react";
 
 import { Settings } from "#/features/settings";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
+import { Button } from "#/shared/components/ui/button";
+import { Textarea } from "#/shared/components/ui/textarea";
 
 import { sidebarDialogAtom } from "../state/dialog-atom";
 
@@ -32,7 +34,7 @@ const SystemPromptDialog = ({ systemPrompt, ref }: SystemPromptDialogProps) => {
         <span className="text-sm font-semibold text-gray-800">System Prompt</span>
       </div>
 
-      <textarea
+      <Textarea
         value={systemPrompt}
         onChange={handleChange}
         placeholder='Add custom instructions for the AI designer...\n\ne.g. "You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy..."'
@@ -65,8 +67,10 @@ export function SystemPromptButton() {
 
   return (
     <div className="relative">
-      <button
+      <Button
         ref={buttonRef}
+        variant="ghost"
+        size="icon"
         onClick={handleToggle}
         aria-label="System Prompt"
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
@@ -76,7 +80,7 @@ export function SystemPromptButton() {
         }`}
       >
         <MessageSquare className="w-5 h-5" />
-      </button>
+      </Button>
 
       {isOpen && <SystemPromptDialog ref={panelRef} systemPrompt={systemPrompt} />}
     </div>

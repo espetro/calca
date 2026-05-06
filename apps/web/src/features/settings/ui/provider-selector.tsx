@@ -1,3 +1,6 @@
+import { Check } from "lucide-react";
+
+import { Button } from "#/shared/components/ui/button";
 import type { ProviderType } from "@app/core/ai/providers";
 
 interface ProviderSelectorProps {
@@ -29,10 +32,11 @@ export default function ProviderSelector({
   return (
     <div className="space-y-2">
       {providers.map((provider) => (
-        <button
+        <Button
           key={provider.id}
-          onClick={() => !disabled && onProviderChange(provider.id)}
+          variant="ghost"
           disabled={disabled}
+          onClick={() => onProviderChange(provider.id)}
           className={`w-full flex items-center justify-between px-5 py-3.5 rounded-xl text-left transition-all ${
             disabled
               ? "opacity-35 cursor-not-allowed bg-gray-100/30 border border-transparent"
@@ -50,19 +54,9 @@ export default function ProviderSelector({
             </div>
           </div>
           {providerType === provider.id && !disabled && (
-            <svg
-              className="w-4 h-4 text-blue-500 shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+            <Check className="w-4 h-4 text-blue-500 shrink-0" />
           )}
-        </button>
+        </Button>
       ))}
     </div>
   );

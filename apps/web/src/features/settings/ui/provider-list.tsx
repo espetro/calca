@@ -1,3 +1,5 @@
+import { Button } from "#/shared/components/ui/button";
+import { Key } from "lucide-react";
 import type { ProviderConfig } from "#/features/settings/types";
 
 interface ProviderListProps {
@@ -42,9 +44,7 @@ export default function ProviderList({ providers, onRemove }: ProviderListProps)
                         : "Never tested"}
                     </span>
                     <span className="text-[11px] text-teal-600 flex items-center gap-1">
-                      <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M8 1a4.5 4.5 0 0 0-4.5 4.5V7H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-.5V5.5A4.5 4.5 0 0 0 8 1zm3 6H5V5.5a3 3 0 1 1 6 0V7z" />
-                      </svg>
+                      <Key className="w-3 h-3" />
                       From environment
                     </span>
                   </div>
@@ -95,12 +95,14 @@ export default function ProviderList({ providers, onRemove }: ProviderListProps)
               </div>
             </div>
 
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => onRemove(provider.id)}
               className="text-[11px] text-red-500 hover:text-red-600 ml-3 px-2 py-1 rounded transition-colors"
             >
               Remove
-            </button>
+            </Button>
           </div>
         </div>
       ))}

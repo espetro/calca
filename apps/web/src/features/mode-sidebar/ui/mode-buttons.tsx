@@ -1,5 +1,7 @@
 import { ComponentProps, PropsWithChildren } from "react";
 
+import { Button } from "#/shared/components/ui/button";
+
 export type ModeType = "select" | "frame" | "component";
 
 export interface ModeButtonProps extends PropsWithChildren, ComponentProps<"button"> {
@@ -29,17 +31,17 @@ const ModeButton = ({ active, title, children, color, onClick, ...props }: ModeB
   };
 
   return (
-    <button
+    <Button
       {...props}
+      variant="ghost"
+      size="icon"
       onClick={onClick}
       title={title}
-      className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
-        active ? "" : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
-      }`}
+      className={`w-8 h-8 ${active ? "" : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"}`}
       style={active ? activeStyles[color] : undefined}
     >
       {children}
-    </button>
+    </Button>
   );
 };
 

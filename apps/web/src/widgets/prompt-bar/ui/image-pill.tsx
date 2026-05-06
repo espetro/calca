@@ -1,5 +1,7 @@
 import { X } from "lucide-react";
 
+import { Button } from "#/shared/components/ui/button";
+
 import type { SelectedImage } from "#/features/settings/types";
 
 interface ImagePillProps {
@@ -14,14 +16,16 @@ export function ImagePill({ image, onRemove }: ImagePillProps) {
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm">
       <img src={image.src} alt={filename} className="w-8 h-8 rounded-full object-cover" />
       <span className="text-xs font-medium text-gray-700 truncate max-w-[100px]">{filename}</span>
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => onRemove(image.id)}
-        className="ml-1 p-1 rounded hover:bg-white/20 transition-colors"
+        className="ml-1 p-1 h-auto w-auto rounded hover:bg-white/20 transition-colors"
         title="Remove image"
         aria-label="Remove image"
       >
         <X className="w-3.5 h-3.5 text-gray-500" />
-      </button>
+      </Button>
     </div>
   );
 }
