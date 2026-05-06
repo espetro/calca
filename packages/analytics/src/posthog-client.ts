@@ -26,7 +26,7 @@ function initAnalytics(key?: string): void {
   }
 
   posthog.init(apiKey, {
-    api_host: "https://eu.posthog.com",
+    api_host: "https://us.i.posthog.com",
     disable_external_dependency_loading: true,
     persistence: "localStorage",
     bootstrap: {
