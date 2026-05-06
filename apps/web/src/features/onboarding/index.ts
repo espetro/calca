@@ -2,4 +2,6 @@
 // Licensed under the AGPL-3.0. See packages/shared/LICENSE for details.
 
 export { TutorialTour } from "./ui/tutorial-tour";
+export { WelcomeModal } from "./ui/welcome-modal";
 export { showTutorialAtom, tutorialStepAtom } from "./state/onboarding-atoms";
+export { showWelcomeAtom } from "./state/onboarding-atoms";

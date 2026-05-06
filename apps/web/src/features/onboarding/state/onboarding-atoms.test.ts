@@ -1,10 +1,14 @@
 import { getDefaultStore } from "jotai";
 import { describe, expect, it } from "vitest";
 
-import { showTutorialAtom, tutorialStepAtom } from "./onboarding-atoms";
+import { showTutorialAtom, showWelcomeAtom, tutorialStepAtom } from "./onboarding-atoms";
 
 describe("onboarding atoms", () => {
   const store = getDefaultStore();
+
+  it("showWelcomeAtom defaults to false", () => {
+    expect(store.get(showWelcomeAtom)).toBe(false);
+  });
 
   it("showTutorialAtom defaults to false", () => {
     expect(store.get(showTutorialAtom)).toBe(false);
@@ -12,6 +16,13 @@ describe("onboarding atoms", () => {
 
   it("tutorialStepAtom defaults to 0", () => {
     expect(store.get(tutorialStepAtom)).toBe(0);
+  });
+
+  it("showWelcomeAtom can be toggled", () => {
+    store.set(showWelcomeAtom, true);
+    expect(store.get(showWelcomeAtom)).toBe(true);
+    store.set(showWelcomeAtom, false);
+    expect(store.get(showWelcomeAtom)).toBe(false);
   });
 
   it("showTutorialAtom can be toggled", () => {

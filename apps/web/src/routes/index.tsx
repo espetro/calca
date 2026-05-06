@@ -18,7 +18,7 @@ import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/s
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
 import { SummaryList } from "#/features/design/ui/summary-list";
 import { ModeSidebar } from "#/features/mode-sidebar";
-import { showTutorialAtom } from "#/features/onboarding";
+import { showTutorialAtom, showWelcomeAtom, WelcomeModal } from "#/features/onboarding";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, openImportDialog } from "#/lib/export";
@@ -59,6 +59,7 @@ export default function Home() {
 
   const [showResetConfirm, setShowResetConfirm] = useAtom(showResetConfirmAtom);
   const [showSettings, setShowSettings] = useState(false);
+  const [showWelcome, setShowWelcome] = useAtom(showWelcomeAtom);
   const [showTutorial, setShowTutorial] = useAtom(showTutorialAtom);
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
@@ -92,7 +93,7 @@ export default function Home() {
         if (parsed.onboardingCompleted === true) return;
       } catch {}
     }
-    setShowSettings(true);
+    setShowWelcome(true);
   });
 
   const pipeline = useGenerationPipeline(canvas);
@@ -234,6 +235,20 @@ export default function Home() {
 
       <ErrorBoundary category={["calca", "web", "features", "onboarding"]}>
         <Suspense fallback={null}>
+          {showWelcome && (
+            <WelcomeModal
+              open={showWelcome}
+              onTakeTour={() => {
+                setShowWelcome(false);
+                setShowTutorial(true);
+              }}
+              onSkip={() => {
+                setSettings((prev) => ({ ...prev, onboardingCompleted: true }));
+                setShowWelcome(false);
+              }}
+            />
+          )}
+
           {showTutorial && (
             <TutorialTour
               onComplete={() => {
@@ -249,7 +264,7 @@ export default function Home() {
         </Suspense>
       </ErrorBoundary>
 
-      {(!isOwnKey || !settings.model) && (
+      {(!isOwnKey || !settings.model) && !showWelcome && (
         <OnboardingBanner onClick={() => setShowSettings(true)} />
       )}
     </div>
