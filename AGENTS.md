@@ -244,6 +244,20 @@ These defaults are wired into `use-settings.ts` via `NEXT_PUBLIC_*` variables so
 Specs are written in Gauge Markdown and run via agent-browser.
 See [docs/testing/e2e-specs.md](docs/testing/e2e-specs.md) for conventions, built-in steps, and how to add new ones.
 
+---
+
+## Release Process
+
+Uses **@changesets/cli** with unified versioning (all 11 workspace packages in `fixed` array). Changesets only manages workspace packages — root and Electrobun version files need manual sync.
+
+**Workflow:**
+1. `bunx changeset` — describe change and bump type
+2. `bunx changeset version` — bumps all workspace packages
+3. Manually update: root `package.json`, root `CHANGELOG.md`, `apps/Resources/version.json`
+4. Commit and tag: `git commit -m "chore: release vX.Y.Z" && git tag vX.Y.Z && git push --tags`
+
+Desktop builds via GitHub Actions on `v*` tags.
+
 ## Package-Specific Guides
 
 Dive deeper into the area you're working on:
