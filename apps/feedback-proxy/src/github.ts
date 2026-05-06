@@ -2,20 +2,40 @@ import { Octokit } from "octokit";
 
 import { FeedbackRequest } from "./types.js";
 
+const DISCUSSION_NODE_ID = "D_kwDORsE6rc4AmJhK";
+
+const ADD_DISCUSSION_COMMENT_MUTATION = `
+  mutation AddComment($discussionId: ID!, $body: String!) {
+    addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
+      comment {
+        url
+      }
+    }
+  }
+`;
+
+interface AddDiscussionCommentResponse {
+  addDiscussionComment: {
+    comment: {
+      url: string;
+    };
+  };
+}
+
 /**
- * Creates a GitHub issue from feedback data using the provided token and repo.
+ * Posts a comment to GitHub Discussion #5 from feedback data using the provided token.
  *
- * @param params - The parameters for creating the issue
+ * @param params - The parameters for posting the comment
  * @param params.token - GitHub personal access token
- * @param params.repo - GitHub repository in "owner/repo" format
+ * @param params.repo - GitHub repository in "owner/repo" format (unused but kept for error handling)
  * @param params.data - The validated feedback request data
- * @returns Either a successful result with issue URL and number, or an error
+ * @returns Either a successful result with comment URL, or an error
  */
-export async function createIssue(params: {
+export async function postDiscussionComment(params: {
   token: string;
   repo: string;
   data: FeedbackRequest;
-}): Promise<{ ok: true; issueUrl: string; issueNumber: number } | { ok: false; error: string }> {
+}): Promise<{ ok: true; commentUrl: string } | { ok: false; error: string }> {
   const { token, repo, data } = params;
 
   const [owner, repoName] = repo.split("/");
@@ -44,22 +64,15 @@ export async function createIssue(params: {
   ].join("\n");
 
   try {
-    const response = await octokit.rest.issues.create({
-      owner,
-      repo: repoName,
-      title: `[${data.type.toUpperCase()}] ${data.title}`,
+    const result = await octokit.graphql<AddDiscussionCommentResponse>(ADD_DISCUSSION_COMMENT_MUTATION, {
+      discussionId: DISCUSSION_NODE_ID,
       body: bodyMarkdown,
-      labels: ["user-feedback", data.type],
     });
 
-    const responseData = response.data;
-    return {
-      ok: true,
-      issueUrl: responseData.html_url,
-      issueNumber: responseData.number,
-    };
+    const commentUrl = result.addDiscussionComment.comment.url;
+    return { ok: true, commentUrl };
   } catch (err) {
     console.error("[feedback-proxy] GitHub API error:", err);
-    return { ok: false, error: "Failed to create GitHub issue. Please try again." };
+    return { ok: false, error: "Failed to post discussion comment. Please try again." };
   }
 }

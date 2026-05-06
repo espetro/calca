@@ -2,7 +2,7 @@ import { Hono } from "hono";
 
 import { createRateLimiter } from "./rate-limiter.js";
 import { validateFeedback } from "./validate.js";
-import { createIssue } from "./github.js";
+import { postDiscussionComment } from "./github.js";
 import type { Env, FeedbackResponse } from "./types.js";
 
 type Bindings = Env;
@@ -57,7 +57,7 @@ app.post("/feedback", async (c) => {
   const { data } = validation;
 
   // Create GitHub issue
-  const result = await createIssue({
+    const result = await postDiscussionComment({
     token: c.env.GITHUB_TOKEN,
     repo: c.env.GITHUB_REPO,
     data,
@@ -68,8 +68,7 @@ app.post("/feedback", async (c) => {
   }
 
   const feedbackResponse: FeedbackResponse = {
-    issueUrl: result.issueUrl,
-    issueNumber: result.issueNumber,
+    commentUrl: result.commentUrl,
   };
   return c.json(feedbackResponse, 201);
 });

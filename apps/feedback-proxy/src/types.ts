@@ -9,8 +9,7 @@ export interface FeedbackRequest {
 }
 
 export interface FeedbackResponse {
-  issueUrl: string;
-  issueNumber: number;
+  commentUrl: string;
 }
 
 export interface Env {
