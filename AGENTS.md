@@ -200,6 +200,8 @@ bun test
 bun run typecheck
 ```
 
+> **Backpressure:** Run `bun run validate` (from repo root or any package dir) to check typecheck, lint, format, and tests. Use as gate before marking implementation tasks complete.
+
 ### Portless (Named Dev URLs)
 
 Dev servers use [portless](https://github.com/vercel-labs/portless) for stable `.localhost` URLs instead of port numbers. First run auto-starts the HTTPS proxy on port 443 and generates a local CA (run `npx portless trust` if you see certificate warnings).

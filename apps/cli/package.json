@@ -11,6 +11,6 @@
     "test": "vitest run --passWithNoTests",
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
-    "validate": "echo 'validate: not yet implemented'"
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   }
 }

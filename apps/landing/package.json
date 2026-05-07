@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "test": "vitest run --passWithNoTests",
     "lint": "oxlint --fix .",
-    "format": "oxfmt --write ."
+    "format": "oxfmt --write .",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",

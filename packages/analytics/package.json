@@ -11,7 +11,8 @@
     "build": "echo 'build: not yet implemented'",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "clean": "echo 'clean: not yet implemented'"
+    "clean": "echo 'clean: not yet implemented'",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "posthog-js": "^1.371.0"

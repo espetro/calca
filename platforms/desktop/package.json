@@ -10,7 +10,8 @@
     "prebuild:desktop": "rm -rf build artifacts Resources/web",
     "build:desktop": "bun run scripts/build.ts",
     "verify": "bun run scripts/verify.ts",
-    "clean": "rm -rf build artifacts Resources/web"
+    "clean": "rm -rf build artifacts Resources/web",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "@app/server": "workspace:*",

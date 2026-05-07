@@ -15,7 +15,8 @@
     "test": "vitest",
     "lint": "oxlint --fix --react-plugin .",
     "format": "oxfmt --write .",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.68",

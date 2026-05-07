@@ -15,7 +15,7 @@
     "test:watch": "vitest",
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
-    "validate": "echo 'validate: not yet implemented'"
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "zod": "^3.24.0"

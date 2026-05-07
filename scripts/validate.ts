@@ -37,9 +37,15 @@ const stages: Stage[] = [
   { display: "Test", cmd: "test" },
 ];
 
-const runStage = async ({ display, cmd, onError }: Stage): Promise<StageOutput> => {
+const runStage = async (
+  { display, cmd, onError }: Stage,
+  filter?: string,
+): Promise<StageOutput> => {
   try {
-    await $`bunx turbo ${cmd}`.quiet();
+    const turboCmd = filter
+      ? $`bunx turbo ${cmd} --filter=${filter}`.quiet()
+      : $`bunx turbo ${cmd}`.quiet();
+    await turboCmd;
     return { line: `Running ${display}... ✅`, ok: true };
   } catch (error) {
     if (error instanceof $.ShellError && onError) {
@@ -53,7 +59,20 @@ const runStage = async ({ display, cmd, onError }: Stage): Promise<StageOutput> 
 };
 
 const main = async () => {
-  const results = await Promise.all(stages.map(runStage));
+  const argv = process.argv;
+  const cwdIndex = argv.indexOf("--cwd");
+  let filter: string | undefined;
+
+  if (cwdIndex !== -1 && argv[cwdIndex + 1]) {
+    const cwdArg = argv[cwdIndex + 1]!;
+    const cwdPath = cwdArg.startsWith("/")
+      ? cwdArg
+      : `${process.cwd()}/${cwdArg}`;
+    const pkgJson: { name: string } = await Bun.file(`${cwdPath}/package.json`).json();
+    filter = pkgJson.name;
+  }
+
+  const results = await Promise.all(stages.map((stage) => runStage(stage, filter)));
 
   for (const { line } of results) {
     console.log(line);

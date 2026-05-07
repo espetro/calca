@@ -12,7 +12,8 @@
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "@logtape/logtape": "^2.0.5",

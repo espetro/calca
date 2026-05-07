@@ -12,7 +12,8 @@
     "deploy": "wrangler deploy",
     "deploy:dry": "wrangler deploy --dry-run",
     "typecheck": "bunx tsc --noEmit --project tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "hono": "^4.0.0",

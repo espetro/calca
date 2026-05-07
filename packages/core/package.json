@@ -26,7 +26,8 @@
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run",
-    "clean": "echo 'clean: not yet implemented'"
+    "clean": "echo 'clean: not yet implemented'",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.68",
