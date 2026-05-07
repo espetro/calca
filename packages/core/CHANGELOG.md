@@ -1,5 +1,23 @@
 # @app/core
 
+## 0.6.0
+
+### Minor Changes
+
+- feat: add onboarding tour and settings enhancements
+
+  - Wire SettingsTourView and add ?tour query param for guided setup
+  - Extend tutorial tour with settings configuration steps
+  - Create SettingsTourView visual replica component
+  - Add currentTourStepIdAtom for tour step tracking
+  - Add data-tour attributes to settings UI elements
+  - Extract SettingsContent from SettingsDialog
+
+### Patch Changes
+
+- Updated dependencies
+  - @app/logger@0.6.0
+
 ## 0.3.1
 
 ### Patch Changes
@@ -42,6 +60,7 @@
 ### Minor Changes
 
 - ### Features
+
   - **AI Pipeline**: Added generate, stream, probe, and fallback utilities for AI providers
   - **Multi-Provider Support**: Added provider abstraction with support for Anthropic, Google, and OpenAI-compatible providers
   - **Pipeline Stages**: Implemented layout, images, review, critique, plan, and summary stages
@@ -49,7 +68,9 @@
   - **Zod Validation**: Integrated Zod validation with graceful fallback in layout, review, and critique stages
 
   ### Fixes
+
   - Fixed provider type to 'openai-compatible' when base URL is set
 
   ### Tests
+
   - Added unit tests for parsers, providers, and settings lib

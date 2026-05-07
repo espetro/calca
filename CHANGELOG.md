@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-05-07
+
+### Added
+
+- **Onboarding Tour** — Wire SettingsTourView and add ?tour query param for guided setup
+- **Settings Tour Steps** — Extend tutorial tour with settings configuration steps
+- **Settings UI Components** — Add data-tour attributes to settings UI elements for tour integration
+
+### Changed
+
+- **SettingsDialog** — Extract SettingsContent from SettingsDialog for better component composition
+- **Tour Tracking** — Add currentTourStepIdAtom for centralized tour step state management
+
 ## [0.5.0] - 2026-05-06
 
 ### Added
