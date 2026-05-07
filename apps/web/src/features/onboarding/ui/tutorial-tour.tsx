@@ -2,35 +2,50 @@
 // Licensed under the AGPL-3.0. See packages/shared/LICENSE for details.
 
 import { Tour, TourCard, TourOverlay, TourProvider, TourStep } from "@tour-kit/react";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
 
-import { showTutorialAtom } from "../state/onboarding-atoms";
+import { currentTourStepIdAtom, showTutorialAtom } from "../state/onboarding-atoms";
 
 export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boolean }) {
   const { onComplete } = props;
   const setShowTutorial = useSetAtom(showTutorialAtom);
+  const [, setCurrentTourStepId] = useAtom(currentTourStepIdAtom);
   const centerRef = useRef<HTMLElement>(null);
   // Ref to guard against multiple completions
   const completedRef = useRef(false);
+
+  const handleStepChange = useCallback(
+    (step: { id: string }, _index: number) => {
+      setCurrentTourStepId(step.id);
+    },
+    [setCurrentTourStepId],
+  );
 
   const handleComplete = useCallback(() => {
     // Prevent the function from running more than once
     if (completedRef.current) return;
     completedRef.current = true;
 
-    console.debug("TutorialTour: Completing tour");
     setShowTutorial(false);
+    setCurrentTourStepId(null);
     onComplete?.();
-  }, [setShowTutorial, onComplete]);
+  }, [setShowTutorial, setCurrentTourStepId, onComplete]);
 
   const handleSkip = useCallback(() => {
     setShowTutorial(false);
-  }, [setShowTutorial]);
+    setCurrentTourStepId(null);
+  }, [setShowTutorial, setCurrentTourStepId]);
 
   return (
     <TourProvider>
-      <Tour id="tutorial" autoStart onComplete={handleComplete} onSkip={handleSkip}>
+      <Tour
+        id="tutorial"
+        autoStart
+        onComplete={handleComplete}
+        onSkip={handleSkip}
+        onStepChange={handleStepChange}
+      >
         <TourStep
           id="prompt-bar"
           target='[data-tour="prompt-action-mode"]'
@@ -50,6 +65,36 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
           showClose
           showProgress
           placement="bottom"
+        />
+        <TourStep
+          id="provider-setup"
+          target='[data-tour="settings-provider"]'
+          title="AI Provider"
+          content="Select your AI provider from the dropdown. If you don't see any providers, you'll need to add one first."
+          showNavigation
+          showClose
+          showProgress
+          placement="bottom"
+        />
+        <TourStep
+          id="add-provider"
+          target='[data-tour="settings-add-provider"]'
+          title="Add a Provider"
+          content="Click here to add a new AI provider. You'll need to provide the provider's base URL and API key."
+          showNavigation
+          showClose
+          showProgress
+          placement="bottom"
+        />
+        <TourStep
+          id="unsplash-key"
+          target='[data-tour="settings-unsplash-key"]'
+          title="Unsplash API Key"
+          content="Add your Unsplash API key here to enable image generation in your designs."
+          showNavigation
+          showClose
+          showProgress
+          placement="top"
         />
         <TourStep
           id="all-set"
