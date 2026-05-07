@@ -3,5 +3,10 @@
 
 export { TutorialTour } from "./ui/tutorial-tour";
 export { WelcomeModal } from "./ui/welcome-modal";
-export { showTutorialAtom, tutorialStepAtom } from "./state/onboarding-atoms";
+export { SettingsTourView } from "./ui/settings-tour-view";
+export {
+  showTutorialAtom,
+  tutorialStepAtom,
+  currentTourStepIdAtom,
+} from "./state/onboarding-atoms";
 export { showWelcomeAtom } from "./state/onboarding-atoms";
