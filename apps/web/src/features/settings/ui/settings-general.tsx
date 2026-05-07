@@ -35,17 +35,18 @@ function ApiKeyInput({
   onChange,
   placeholder,
   error,
+  ...rest
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
   error?: string | null;
-}) {
+} & Record<string, unknown>) {
   const [show, setShow] = useState(false);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" {...rest}>
       <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         {label}
       </Label>
@@ -430,7 +431,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           onValueChange={handleProviderChange}
           disabled={settings.providers.length === 0}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full" data-tour="settings-provider">
             <SelectValue
               placeholder={
                 settings.providers.length === 0 ? "No providers configured" : "Select a provider"
@@ -531,6 +532,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           type="button"
           onClick={() => setShowAddProvider(true)}
           className="w-full"
+          data-tour="settings-add-provider"
         >
           <Plus className="size-4 mr-2" />
           Add Provider
@@ -573,6 +575,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           onChange={handleUnsplashKeyChange}
           placeholder="Access key..."
           error={apiKeyErrors.unsplash}
+          data-tour="settings-unsplash-key"
         />
 
         <ApiKeyInput
