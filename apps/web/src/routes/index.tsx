@@ -1,7 +1,7 @@
 import { trackExportComplete } from "@app/analytics";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { lazy, Suspense, useCallback, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 
 import { useCanvas } from "#/features/canvas";
 import { CanvasHUD } from "#/features/canvas-hud";
@@ -18,7 +18,13 @@ import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/s
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
 import { SummaryList } from "#/features/design/ui/summary-list";
 import { ModeSidebar } from "#/features/mode-sidebar";
-import { showTutorialAtom, showWelcomeAtom, WelcomeModal } from "#/features/onboarding";
+import {
+  showTutorialAtom,
+  showWelcomeAtom,
+  WelcomeModal,
+  SettingsTourView,
+  currentTourStepIdAtom,
+} from "#/features/onboarding";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, openImportDialog } from "#/lib/export";
@@ -64,6 +70,11 @@ export default function Home() {
   const [showGitHash, setShowGitHash] = useAtom(showGitHashAtom);
   const [showLibrary, setShowLibrary] = useAtom(showLibraryAtom);
   const [toolMode, setToolMode] = useAtom(toolModeAtom);
+  const currentTourStepId = useAtomValue(currentTourStepIdAtom);
+  const isSettingsTourStep =
+    currentTourStepId === "provider-setup" ||
+    currentTourStepId === "add-provider" ||
+    currentTourStepId === "unsplash-key";
 
   useMountEffect(() => {
     setShowGitHash(new URLSearchParams(window.location.search).has("devMode"));
@@ -95,6 +106,18 @@ export default function Home() {
     }
     setShowWelcome(true);
   });
+
+  useMountEffect(() => {
+    if (new URLSearchParams(window.location.search).has("tour")) {
+      setShowTutorial(true);
+    }
+  });
+
+  useEffect(() => {
+    if (isSettingsTourStep && showSettings) {
+      setShowSettings(false);
+    }
+  }, [isSettingsTourStep, showSettings, setShowSettings]);
 
   const pipeline = useGenerationPipeline(canvas);
   const commentHandlers = useCommentHandlers(pipeline.handleRevision);
@@ -190,6 +213,8 @@ export default function Home() {
           pipeline.handleGenerate(prompt);
         }}
       />
+
+      {isSettingsTourStep && <SettingsTourView />}
 
       {showSettings && (
         <ErrorBoundary category={["calca", "web", "features", "settings"]}>
