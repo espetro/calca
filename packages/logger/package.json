@@ -13,6 +13,7 @@
     "format": "oxfmt --write .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "clean": "rm -rf dist",
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {

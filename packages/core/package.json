@@ -26,7 +26,7 @@
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run",
-    "clean": "echo 'clean: not yet implemented'",
+    "clean": "rm -rf dist",
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {

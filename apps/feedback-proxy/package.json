@@ -13,6 +13,7 @@
     "deploy:dry": "wrangler deploy --dry-run",
     "typecheck": "bunx tsc --noEmit --project tsconfig.json",
     "test": "vitest run",
+    "clean": "rm -rf dist",
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
