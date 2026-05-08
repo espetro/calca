@@ -33,6 +33,9 @@ jobs:
         run: bun install
 
       - name: Build landing page
+        env:
+          VITE_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ secrets.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN }}
+          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
         run: bun run --cwd apps/landing build
 
       - name: Upload artifact
