@@ -1,12 +1,10 @@
 import posthog from "posthog-js";
 import { useEffect } from "react";
 
-const POSTHOG_KEY = import.meta.env["VITE_PUBLIC_POSTHOG_PROJECT_TOKEN"] as
-  | string
-  | undefined;
-const POSTHOG_HOST = import.meta.env["VITE_PUBLIC_POSTHOG_HOST"] as
-  | string
-  | undefined;
+type PostHogInitOptions = Parameters<typeof posthog.init>[1];
+
+const POSTHOG_KEY = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
+const POSTHOG_HOST = import.meta.env.VITE_PUBLIC_POSTHOG_HOST;
 
 export default function PostHogInit() {
   useEffect(() => {
@@ -27,8 +25,8 @@ export default function PostHogInit() {
       loaded: (ph) => {
         ph.set_config({ debug: false });
       },
-      cookieless: "on_reject" as const,
-    });
+      cookieless_mode: "on_reject",
+    } satisfies PostHogInitOptions);
 
     posthog.capture("$pageview", {
       $current_url: window.location.href,

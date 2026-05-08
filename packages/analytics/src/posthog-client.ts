@@ -2,6 +2,8 @@ import { posthog } from "posthog-js";
 
 import type { AnalyticsEventProperties } from "./types";
 
+type PostHogInitOptions = Parameters<typeof posthog.init>[1];
+
 const ANALYTICS_ENABLED_KEY = "calca:analytics_enabled";
 const POSTHOG_KEY = import.meta.env["VITE_POSTHOG_KEY"] as string | undefined;
 
@@ -35,8 +37,8 @@ function initAnalytics(key?: string): void {
     loaded: (ph) => {
       ph.set_config({ debug: false });
     },
-    cookieless: "on_reject" as const,
-  } as Parameters<typeof posthog.init>[1]);
+    cookieless_mode: "on_reject",
+  } satisfies PostHogInitOptions);
 
   isEnabled = true;
 }
