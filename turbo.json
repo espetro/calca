@@ -41,7 +41,7 @@
     },
     "test": {
       "dependsOn": [
-        "^build"
+        "^clean"
       ],
       "outputs": [
         "coverage/**"
