@@ -1,4 +1,6 @@
 ---
+import PostHogInit from '../components/PostHogInit';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -61,6 +63,7 @@ import '../styles/global.css';
   </script>
 </head>
 <body class="bg-background text-foreground antialiased">
+  <PostHogInit client:load />
   <slot />
 </body>
 </html>
