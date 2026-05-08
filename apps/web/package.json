@@ -12,7 +12,7 @@
     "build": "vite build",
     "start": "vite preview",
     "typecheck": "bunx tsc --noEmit",
-    "test": "vitest",
+    "test": "vitest run",
     "lint": "oxlint --fix --react-plugin .",
     "format": "oxfmt --write .",
     "clean": "rm -rf dist",
