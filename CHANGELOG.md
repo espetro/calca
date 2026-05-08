@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-05-08
+
+### Added
+
+- **Landing Analytics** — Added PostHog analytics to the landing page with pageview tracking; initialized via React component with cookieless mode
+- **CI Landing Secrets** — Injected PostHog env vars into landing page build step for CI deployment
+
 ## [0.6.0] - 2026-05-07
 
 ### Added

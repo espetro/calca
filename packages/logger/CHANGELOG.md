@@ -1,5 +1,11 @@
 # @app/logger
 
+## 0.6.1
+
+### Patch Changes
+
+- Add PostHog analytics to landing page with pageview tracking
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @app/electrobun
 
+## 0.6.1
+
+### Patch Changes
+
+- Add PostHog analytics to landing page with pageview tracking
+- Updated dependencies
+  - @app/server@0.6.1
+
 ## 0.6.0
 
 ### Minor Changes
