@@ -1,4 +1,3 @@
-import React from "react";
 import { FaGithub } from "react-icons/fa";
 
 export default function Footer() {
@@ -7,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto w-[95%] max-w-[1000px] px-4 py-10">
         <nav className="flex flex-row flex-wrap justify-center gap-4">
           <a
-            href="/calca/"
+            href="/"
             className="text-sm underline-offset-4 transition-colors hover:text-primary hover:underline"
           >
             Home

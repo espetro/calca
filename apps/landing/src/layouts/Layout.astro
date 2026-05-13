@@ -1,5 +1,5 @@
 ---
-import PostHogInit from '../components/PostHogInit';
+import PostHogInit from "../components/PostHogInit";
 
 export interface Props {
   title?: string;
@@ -10,60 +10,70 @@ export interface Props {
 const {
   title = "Calca — AI Design Tool with Infinite Canvas",
   description = "Describe your vision in plain English. Get multiple polished HTML/CSS design variations on an infinite canvas — no design skills required.",
-  ogImage = "/calca/screenshot.png"
+  ogImage = "/screenshot.png",
 } = Astro.props;
-import '../styles/global.css';
+import "../styles/global.css";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content={description} />
-  <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#f5f7fa" media="(prefers-color-scheme: light)" />
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:image" content={ogImage} />
-  <meta property="og:url" content="https://espetro.github.io/calca/" />
-  <meta property="og:type" content="website" />
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content={ogImage} />
-  
-  <!-- Canonical -->
-  <link rel="canonical" href="https://espetro.github.io/calca/" />
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/calca/favicon.ico" />
-  
-  <title>{title}</title>
-  
-  <script is:inline>
-    // Theme initialization - must run before page renders
-    (function() {
-      const stored = localStorage.getItem('theme');
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = stored === 'dark' || (!stored && systemDark);
-      
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
-</head>
-<body class="bg-background text-foreground antialiased">
-  <PostHogInit client:load />
-  <slot />
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta
+      name="theme-color"
+      content="#0a0a0f"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#f5f7fa"
+      media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content="https://calca.illo.fyi" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://calca.illo.fyi" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+
+    <title>{title}</title>
+
+    <script is:inline>
+      // Theme initialization - must run before page renders
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const systemDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        const isDark = stored === "dark" || (!stored && systemDark);
+
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+          document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-background text-foreground antialiased">
+    <PostHogInit client:load />
+    <slot />
+  </body>
 </html>

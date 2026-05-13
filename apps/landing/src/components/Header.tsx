@@ -35,10 +35,10 @@ export default function Header() {
     <header className="mx-auto mt-3 flex w-full max-w-[1065px] items-center justify-between px-3 py-2">
       <div className="flex items-center gap-2">
         <a
-          href="/calca/"
+          href="/"
           className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
         >
-          <img src="/calca/icon.png" alt="Calca" className="h-6 w-6" />
+          <img src="/icon.png" alt="Calca" className="h-6 w-6" />
           <span className="hidden sm:inline">Calca</span>
         </a>
       </div>
