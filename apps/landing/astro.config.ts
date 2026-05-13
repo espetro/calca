@@ -7,8 +7,8 @@ import { version } from "./package.json";
 export default defineConfig({
   integrations: [react()],
   output: "static",
-  site: "https://espetro.github.io",
-  base: "/calca",
+  site: "https://calca.illo.fyi",
+  base: "/",
   trailingSlash: "always",
   build: {
     format: "directory",
