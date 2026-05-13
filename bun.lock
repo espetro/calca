@@ -27,11 +27,11 @@
     },
     "apps/cli": {
       "name": "@app/cli",
-      "version": "0.6.0",
+      "version": "0.6.1",
     },
     "apps/feedback-proxy": {
       "name": "@app/feedback-proxy",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "hono": "^4.0.0",
         "octokit": "^4.1.0",
@@ -47,7 +47,7 @@
     },
     "apps/landing": {
       "name": "@app/landing",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "@astrojs/check": "^0.9.9",
         "@astrojs/react": "^4.2.0",
@@ -67,7 +67,7 @@
     },
     "apps/server": {
       "name": "@app/server",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "@app/core": "workspace:*",
         "@app/logger": "workspace:*",
@@ -87,7 +87,7 @@
     },
     "apps/web": {
       "name": "@app/web",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "@ai-sdk/anthropic": "^3.0.68",
         "@ai-sdk/google": "^3.0.61",
@@ -147,7 +147,7 @@
     },
     "packages/analytics": {
       "name": "@app/analytics",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "posthog-js": "^1.371.0",
       },
@@ -158,7 +158,7 @@
     },
     "packages/core": {
       "name": "@app/core",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "@ai-sdk/anthropic": "^3.0.68",
         "@ai-sdk/google": "^3.0.61",
@@ -176,7 +176,7 @@
     },
     "packages/logger": {
       "name": "@app/logger",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "@logtape/logtape": "^2.0.5",
         "@logtape/pretty": "^2.0.5",
@@ -189,14 +189,14 @@
     },
     "packages/pro": {
       "name": "@app/pro",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "devDependencies": {
         "typescript": "^6.0.3",
       },
     },
     "packages/shared": {
       "name": "@app/shared",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "zod": "^3.24.0",
       },
@@ -206,7 +206,7 @@
     },
     "platforms/desktop": {
       "name": "@app/electrobun",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
         "@app/server": "workspace:*",
         "@logtape/file": "^2.0.5",
