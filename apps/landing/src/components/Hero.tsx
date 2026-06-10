@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaApple, FaWindows, FaGithub } from "react-icons/fa";
+import { FaApple, FaWindows, FaGithub, FaHeart } from "react-icons/fa";
 
 const VERSION = import.meta.env.VITE_APP_VERSION;
 
@@ -55,6 +55,16 @@ export default function Hero() {
         >
           <FaGithub className="h-5 w-5" />
           Star On Github
+        </a>
+
+        <a
+          href="https://buy.polar.sh/polar_cl_Mv1gdlG7bw3I70EC9IHtfeSHJj4PEKvA7JAUz23CFhj"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-medium text-card-foreground transition-all hover:bg-secondary"
+        >
+          <FaHeart className="h-5 w-5" />
+          Back This Project
         </a>
       </div>
 
