@@ -6,7 +6,8 @@ An AI design tool that transforms natural language prompts into polished HTML/CS
 
 [![GitHub stars](https://img.shields.io/github/stars/espetro/calca?style=flat)](https://github.com/espetro/calca/stargazers) ![macOS](https://img.shields.io/badge/platform-macOS-lightgrey) ![Windows](https://img.shields.io/badge/platform-Windows-blue) ![AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue) ![ELv2](https://img.shields.io/badge/license-ELv2-red)
 
-[Download latest release](https://github.com/espetro/calca/releases)
+[![Latest Release](https://img.shields.io/github/v/release/espetro/calca?style=flat&label=latest)](https://github.com/espetro/calca/releases/latest)
+[![Back this project](https://img.shields.io/badge/back_this_project-%E2%9D%A4-ff69b4)](https://buy.polar.sh/polar_cl_Mv1gdlG7bw3I70EC9IHtfeSHJj4PEKvA7JAUz23CFhj)
 
 ![App screenshot, featuring the prompt bar with a generated design](./docs/assets/screenshot.png)
 
