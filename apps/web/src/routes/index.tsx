@@ -1,20 +1,39 @@
 import { trackExportComplete } from "@app/analytics";
+import {
+  CanvasArea,
+  CanvasProvider,
+  groupsAtom,
+  hydrateGroups,
+  resetSessionAtom,
+  useCanvas,
+} from "@app/canvas";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
-import { useCanvas } from "#/features/canvas";
 import { CanvasHUD } from "#/features/canvas-hud";
 import OnboardingBanner from "#/features/canvas-hud/ui/onboarding-banner";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
+import { ContextToolbar } from "#/features/context-toolbar";
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
+import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import {
+  activeCommentAtom,
+  activeCommentIterationIdAtom,
+  commentDraftAtom,
+  draggingIdAtom,
+} from "#/features/design/state/comment-atoms";
+import {
+  draggingImageIdAtom,
+  pipelineStagesAtom,
+  rubberBandAtom,
+  selectedIdsAtom,
   showGitHashAtom,
   showLibraryAtom,
   showResetConfirmAtom,
+  spaceHeldAtom,
   toolModeAtom,
 } from "#/features/design/state/generation-atoms";
-import { groupsAtom, hydrateGroups, resetSessionAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom, hydrateImages } from "#/features/design/state/images-atoms";
 import { SummaryList } from "#/features/design/ui/summary-list";
 import { ModeSidebar } from "#/features/mode-sidebar";
@@ -25,13 +44,13 @@ import {
   SettingsTourView,
   currentTourStepIdAtom,
 } from "#/features/onboarding";
+import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, openImportDialog } from "#/lib/export";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
-import { CanvasArea } from "#/widgets/canvas-area";
 import { ErrorBoundary } from "#/widgets/error-boundary";
 import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
 import { PromptBar, PromptLibrary } from "#/widgets/prompt-bar";
@@ -45,6 +64,14 @@ const TutorialTour = lazy(() =>
 );
 
 export default function Home() {
+  return (
+    <CanvasProvider>
+      <HomeInner />
+    </CanvasProvider>
+  );
+}
+
+function HomeInner() {
   const canvas = useCanvas();
   const [settings, setSettings] = useAtom(settingsAtom);
   const isOwnKey = useAtomValue(isOwnKeyAtom);
@@ -55,6 +82,95 @@ export default function Home() {
   const [groups, setGroups] = useAtom(groupsAtom);
   const resetSession = useSetAtom(resetSessionAtom);
   const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
+
+  const [selectedIds, setSelectedIds] = useAtom(selectedIdsAtom);
+  const [rubberBand, setRubberBand] = useAtom(rubberBandAtom);
+  const [draggingId, setDraggingId] = useAtom(draggingIdAtom);
+  const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
+  const spaceHeld = useAtomValue(spaceHeldAtom);
+  const pipelineStages = useAtomValue(pipelineStagesAtom);
+  const clipboard = useAtomValue(clipboardAtom);
+  const setCommentDraft = useSetAtom(commentDraftAtom);
+  const setActiveComment = useSetAtom(activeCommentAtom);
+  const setActiveCommentIterationId = useSetAtom(activeCommentIterationIdAtom);
+
+  const derived = useMemo(
+    () => deriveProviderFields(settings.providers, settings.model),
+    [settings.providers, settings.model],
+  );
+
+  const handleImageDrop = useCallback(
+    (files: File[], dropX?: number, dropY?: number) => {
+      files.forEach((file, idx) => {
+        if (!file.type.startsWith("image/")) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target?.result as string;
+          const img = new Image();
+          img.onload = () => {
+            const maxDim = 1024;
+            const apiScale = Math.min(maxDim / Math.max(img.width, img.height), 1);
+            const apiCanvas = document.createElement("canvas");
+            apiCanvas.width = img.width * apiScale;
+            apiCanvas.height = img.height * apiScale;
+            const apiCtx = apiCanvas.getContext("2d")!;
+            apiCtx.drawImage(img, 0, 0, apiCanvas.width, apiCanvas.height);
+            const compressedDataUrl = apiCanvas.toDataURL("image/jpeg", 0.7);
+
+            const thumbScale = Math.min(128 / img.width, 128 / img.height, 1);
+            const thumbCanvas = document.createElement("canvas");
+            thumbCanvas.width = img.width * thumbScale;
+            thumbCanvas.height = img.height * thumbScale;
+            const thumbCtx = thumbCanvas.getContext("2d")!;
+            thumbCtx.drawImage(img, 0, 0, thumbCanvas.width, thumbCanvas.height);
+            const thumbnail = thumbCanvas.toDataURL("image/jpeg", 0.7);
+
+            const cx =
+              dropX !== undefined ? (dropX - canvas.offset.x) / canvas.scale : 100 + idx * 220;
+            const cy = dropY !== undefined ? (dropY - canvas.offset.y) / canvas.scale : 100;
+
+            const displayScale = Math.min(200 / img.width, 1);
+
+            setCanvasImages((prev) => [
+              ...prev,
+              {
+                dataUrl: compressedDataUrl,
+                height: img.height * displayScale,
+                id: `img-${Date.now()}-${idx}`,
+                name: file.name,
+                position: { x: cx, y: cy },
+                thumbnail,
+                width: img.width * displayScale,
+              },
+            ]);
+          };
+          img.src = dataUrl;
+        };
+        reader.readAsDataURL(file);
+      });
+    },
+    [canvas.offset.x, canvas.offset.y, canvas.scale, setCanvasImages],
+  );
+
+  const handleContextMenu = useCallback(
+    (e: React.MouseEvent) => {
+      const rpc = (
+        window as unknown as {
+          __electrobun?: { rpc?: { request?: Record<string, (args: unknown) => void> } };
+        }
+      ).__electrobun?.rpc?.request;
+      if (rpc && typeof rpc.contextMenu__show === "function") {
+        rpc.contextMenu__show({
+          selectedCount: selectedIds.size,
+          hasClipboardContent: clipboard !== null,
+          totalFrames: groups.length,
+        });
+      }
+    },
+    [selectedIds, clipboard, groups],
+  );
 
   useMountEffect(() => {
     hydrateGroups(setGroups);
@@ -138,7 +254,44 @@ export default function Home() {
   return (
     <div className="h-screen w-screen overflow-hidden relative select-none">
       <ErrorBoundary category={["calca", "web", "features", "canvas"]}>
-        <CanvasArea canvas={canvas} onRemix={pipeline.handleRemix} />
+        <CanvasArea
+          canvas={canvas}
+          groups={groups}
+          onGroupsChange={setGroups}
+          canvasImages={canvasImages}
+          onCanvasImagesChange={setCanvasImages}
+          selectedIds={selectedIds}
+          onSelectedIdsChange={setSelectedIds}
+          toolMode={toolMode}
+          spaceHeld={spaceHeld}
+          rubberBand={rubberBand}
+          setRubberBand={setRubberBand}
+          draggingId={draggingId}
+          setDraggingId={setDraggingId}
+          draggingImageId={draggingImageId}
+          setDraggingImageId={setDraggingImageId}
+          pipelineStages={pipelineStages}
+          onAddComment={setCommentDraft}
+          onClickComment={(comment, iterationId) => {
+            setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
+            setActiveCommentIterationId(comment ? iterationId : null);
+          }}
+          onImageDrop={handleImageDrop}
+          onContextMenu={handleContextMenu}
+          emptyTitle={m.canvas.emptyTitle()}
+          emptyDescription={m.canvas.emptyDescription()}
+          toolbar={
+            selectedIds.size === 1 ? (
+              <ContextToolbar
+                onRemix={pipeline.handleRemix}
+                apiKey={derived.apiKey || undefined}
+                model={derived.model}
+                providerType={derived.providerType || undefined}
+                baseURL={derived.baseURL || undefined}
+              />
+            ) : null
+          }
+        />
       </ErrorBoundary>
 
       <Toolbar
@@ -168,10 +321,6 @@ export default function Home() {
         genStatus={pipeline.genStatus}
         onCancel={() => pipeline.abortRef.current?.abort()}
       />
-
-      {/* <ErrorBoundary category={["calca", "web", "features", "design"]}>
-        <SummaryList />
-      </ErrorBoundary> */}
 
       {showGitHash && (
         <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">

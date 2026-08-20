@@ -1,3 +1,4 @@
+import { groupsAtom } from "@app/canvas";
 import { getLogger } from "@app/logger";
 import { useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
@@ -17,7 +18,6 @@ import {
   pipelineStagesAtom,
   genStatusAtom,
 } from "#/features/design/state/generation-atoms";
-import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { apiClient } from "#/lib/api-client";
 import type { GenerationGroup, PipelineStage, Point } from "#/shared/types";
 
