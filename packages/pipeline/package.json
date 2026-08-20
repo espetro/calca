@@ -1,0 +1,35 @@
+{
+  "name": "@calca/pipeline",
+  "version": "0.6.1",
+  "private": true,
+  "license": "AGPL-3.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo 'build: not yet implemented'",
+    "typecheck": "bunx tsc --noEmit",
+    "test": "vitest run",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "clean": "rm -rf dist",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.0",
+    "@ai-sdk/openai": "^4.0.0",
+    "@opentelemetry/api": "^1.9.0",
+    "ai": "^7.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.4"
+  },
+  "peerDependencies": {
+    "@app/core": "workspace:*",
+    "@app/logger": "workspace:*",
+    "@app/shared": "workspace:*"
+  }
+}
