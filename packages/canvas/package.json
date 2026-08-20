@@ -1,0 +1,47 @@
+{
+  "name": "@app/canvas",
+  "version": "0.6.1",
+  "license": "MIT",
+  "bin": {
+    "calca-canvas-mcp": "./bin/mcp-server.ts"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo 'build: not yet implemented'",
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "test": "vitest run",
+    "mcp": "bun run ./bin/mcp-server.ts",
+    "clean": "rm -rf dist",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
+  },
+  "dependencies": {
+    "@app/shared": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@xyflow/react": "^12.11.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "@types/node": "^26.1.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "jotai": "^2.19.1",
+    "lucide-react": "^1.8.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.4"
+  },
+  "peerDependencies": {
+    "jotai": "^2.19.1",
+    "lucide-react": "^1.8.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}
