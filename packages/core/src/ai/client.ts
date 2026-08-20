@@ -1,12 +1,9 @@
-import { createHash } from "crypto";
-
 import { getLogger } from "@app/logger";
 import { generateText, type ModelMessage, streamText } from "ai";
 import type { FinishReason, LanguageModelUsage } from "ai";
 
 import { buildModelFallbackChain, getAIProvider, getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
-import { createTelemetryCallbacks } from "./telemetry";
 
 const CACHE_MAX_ENTRIES = 100;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -41,18 +38,23 @@ function isExpired(entry: CacheEntry): boolean {
   return Date.now() - entry.timestamp > CACHE_TTL_MS;
 }
 
+async function sha256hex(data: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(data));
+  return [...new Uint8Array(buf)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 16);
+}
+
 // Generate cache key from system prompt + provider type + model + user messages hash
-function generateCacheKey(
+async function generateCacheKey(
   systemPrompt: string | undefined,
   providerType: ProviderType,
   model: string,
   userMessages: string,
-): string {
-  const systemHash = createHash("sha256")
-    .update(systemPrompt || "")
-    .digest("hex")
-    .substring(0, 16);
-  const messagesHash = createHash("sha256").update(userMessages).digest("hex").substring(0, 16);
+): Promise<string> {
+  const systemHash = await sha256hex(systemPrompt || "");
+  const messagesHash = await sha256hex(userMessages);
   return `${systemHash}:${providerType}:${model}:${messagesHash}`;
 }
 
@@ -70,6 +72,7 @@ export interface GenerateOptions {
   systemPrompt?: string;
   functionId?: string;
   frameIndex?: number;
+  onFinish?: (event: { usage: LanguageModelUsage; text?: string; finishReason?: string }) => void;
 }
 
 function buildHeaders(
@@ -170,7 +173,7 @@ export async function generateWithFallback(
   // Check cache if enabled
   if (options.enableCaching && options.systemPrompt !== undefined) {
     const userContent = messagesToText(options.messages);
-    const cacheKey = generateCacheKey(
+    const cacheKey = await generateCacheKey(
       options.systemPrompt,
       providerType,
       preferredModel,
@@ -180,6 +183,11 @@ export async function generateWithFallback(
 
     if (cached && !isExpired(cached)) {
       cacheLogger.info(`[Cache] HIT for key: ${cacheKey.substring(0, 24)}...`);
+      options.onFinish?.({
+        usage: cached.result.usage,
+        text: cached.result.text,
+        finishReason: cached.result.finishReason,
+      });
       return {
         result: {
           text: cached.result.text,
@@ -202,11 +210,6 @@ export async function generateWithFallback(
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
   let lastError: unknown;
 
-  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "generateWithFallback"], {
-    functionId: options.functionId ?? "generateWithFallback",
-    frameIndex: options.frameIndex,
-  });
-
   for (let i = 0; i < fallbacks.length; i++) {
     const modelId = fallbacks[i];
 
@@ -224,44 +227,13 @@ export async function generateWithFallback(
         maxOutputTokens: options.maxTokens,
         temperature: options.temperature,
         ...(providerType === "anthropic" ? { headers: cacheHeaders } : {}),
-        experimental_onStart: ({ model: m }) => {
-          try {
-            telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages });
-          } catch {
-            /* ignore telemetry errors */
-          }
-        },
-        onStepFinish: (event) => {
-          try {
-            telemetry.onFinish({
-              modelId,
-              usage: event.usage,
-              finishReason: event.finishReason,
-              durationMs: Date.now(),
-            });
-          } catch {
-            /* ignore telemetry errors */
-          }
-        },
-        onFinish: (event) => {
-          try {
-            telemetry.onFinish({
-              modelId,
-              usage: event.totalUsage,
-              finishReason: event.finishReason ?? "unknown",
-              durationMs: Date.now(),
-            });
-          } catch {
-            /* ignore telemetry errors */
-          }
-        },
       });
 
       // Store in cache on successful response
       if (options.enableCaching && options.systemPrompt !== undefined) {
         evictIfNeeded();
         const userContent = messagesToText(options.messages);
-        const cacheKey = generateCacheKey(
+        const cacheKey = await generateCacheKey(
           options.systemPrompt,
           providerType,
           preferredModel,
@@ -277,18 +249,16 @@ export async function generateWithFallback(
         });
       }
 
+      options.onFinish?.({
+        usage: result.usage,
+        text: result.text,
+        finishReason: result.finishReason ?? "unknown",
+      });
+
       return { result, usedModel: modelId };
     } catch (err: unknown) {
       if (isModelNotFoundError(err)) {
         lastError = err;
-        try {
-          telemetry.onError({
-            modelId,
-            error: err instanceof Error ? err : new Error(String(err)),
-          });
-        } catch {
-          /* ignore telemetry errors */
-        }
         continue;
       }
       throw err;
@@ -310,7 +280,9 @@ function messagesToText(messages: ModelMessage[]): string {
     .join("|");
 }
 
-export function streamAnthropic(options: GenerateOptions): ReturnType<typeof streamText> {
+export async function streamAnthropic(
+  options: GenerateOptions,
+): Promise<ReturnType<typeof streamText>> {
   if (!options.model) {
     throw new Error("No model specified. Configure a model in Settings.");
   }
@@ -325,7 +297,12 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
   // Check cache if enabled
   if (options.enableCaching && options.systemPrompt !== undefined) {
     const userContent = messagesToText(options.messages);
-    const cacheKey = generateCacheKey(options.systemPrompt, providerType, modelId, userContent);
+    const cacheKey = await generateCacheKey(
+      options.systemPrompt,
+      providerType,
+      modelId,
+      userContent,
+    );
     const cached = promptCache.get(cacheKey);
 
     if (cached && !isExpired(cached)) {
@@ -344,47 +321,12 @@ export function streamAnthropic(options: GenerateOptions): ReturnType<typeof str
   const cacheHeaders = addCacheControlHeaders(headers, options.enableCaching);
   const cachedMessages = addCacheControlToMessages(options.messages, options.enableCaching);
 
-  const telemetry = createTelemetryCallbacks(["calca", "core", "ai", "streamAnthropic"], {
-    functionId: options.functionId ?? "streamAnthropic",
-    frameIndex: options.frameIndex,
-  });
-
   return streamText({
     model,
     messages: cachedMessages,
     maxOutputTokens: options.maxTokens,
     temperature: options.temperature,
     ...(providerType === "anthropic" ? { headers: cacheHeaders } : {}),
-    experimental_onStart: ({ model: m }) => {
-      try {
-        telemetry.onStart({ modelId: m.modelId, prompt: cachedMessages });
-      } catch {
-        /* ignore telemetry errors */
-      }
-    },
-    onStepFinish: (event) => {
-      try {
-        telemetry.onFinish({
-          modelId,
-          usage: event.usage,
-          finishReason: event.finishReason,
-          durationMs: Date.now(),
-        });
-      } catch {
-        /* ignore telemetry errors */
-      }
-    },
-    onFinish: (event) => {
-      try {
-        telemetry.onFinish({
-          modelId,
-          usage: event.totalUsage,
-          finishReason: event.finishReason ?? "unknown",
-          durationMs: Date.now(),
-        });
-      } catch {
-        /* ignore telemetry errors */
-      }
-    },
+    onFinish: options.onFinish ? (event) => options.onFinish!({ usage: event.usage }) : undefined,
   });
 }

@@ -1,12 +1,12 @@
 import { anthropic } from "@ai-sdk/anthropic";
-import { createGoogleGenerativeAI, google } from "@ai-sdk/google";
+import { createGoogle, google } from "@ai-sdk/google";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import type { ImageModelV3, LanguageModelV3 } from "@ai-sdk/provider";
+import type { ImageModelV4, LanguageModelV4 } from "@ai-sdk/provider";
 
 export type ProviderType = "anthropic" | "openai-compatible";
 
 type CallableProvider = {
-  (modelId: string): LanguageModelV3;
+  (modelId: string): LanguageModelV4;
 };
 
 export function getAIProvider(
@@ -48,7 +48,7 @@ export function buildModelFallbackChain(preferredModel: string, fallbackModel?: 
 const GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image";
 
 /** @deprecated fetch models from cache otherwise API (use API base url + key). Keep single 'getModel' method. This is currently in apps/web, we must migrate it to apps/server */
-export function getGeminiImageModel(apiKey?: string): ImageModelV3 {
-  const provider = apiKey ? createGoogleGenerativeAI({ apiKey }) : google;
+export function getGeminiImageModel(apiKey?: string): ImageModelV4 {
+  const provider = apiKey ? createGoogle({ apiKey }) : google;
   return provider.image(GEMINI_IMAGE_MODEL);
 }

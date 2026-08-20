@@ -1,5 +1,5 @@
 import { getLogger } from "@app/logger";
-import { CallSettings, generateText, LanguageModel } from "ai";
+import { LanguageModelCallOptions, generateText, LanguageModel, type RequestOptions } from "ai";
 
 import { getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
@@ -11,7 +11,10 @@ export interface ModelInfo {
   available: boolean;
 }
 
-const probeModel = async (model: LanguageModel, settings: CallSettings) =>
+const probeModel = async (
+  model: LanguageModel,
+  settings: LanguageModelCallOptions & Omit<RequestOptions, "timeout">,
+) =>
   await generateText({
     ...settings,
     model,
