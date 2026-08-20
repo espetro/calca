@@ -5,7 +5,8 @@
   "license": "AGPL-3.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./otel": "./src/otel.ts"
   },
   "scripts": {
     "typecheck": "bunx tsc --noEmit",
@@ -18,7 +19,17 @@
   },
   "dependencies": {
     "@logtape/logtape": "^2.0.5",
-    "@logtape/pretty": "^2.0.5"
+    "@logtape/pretty": "^2.0.5",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.56.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.56.0",
+    "@opentelemetry/instrumentation-fetch": "^0.56.0",
+    "@opentelemetry/instrumentation-http": "^0.56.0",
+    "@opentelemetry/resources": "^1.29.0",
+    "@opentelemetry/sdk-metrics": "^1.29.0",
+    "@opentelemetry/sdk-node": "^0.56.0",
+    "@opentelemetry/sdk-trace-node": "^1.29.0",
+    "@opentelemetry/semantic-conventions": "^1.29.0"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",

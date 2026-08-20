@@ -46,6 +46,11 @@
     "bun": ">=1.0.0"
   },
   "packageManager": "bun@1.2.10",
+  "overrides": {
+    "@opentelemetry/sdk-metrics": "1.29.0",
+    "@opentelemetry/resources": "1.29.0",
+    "@opentelemetry/sdk-trace-node": "1.29.0"
+  },
   "dependencies": {
     "@ai-sdk/provider-utils": "^4.0.23",
     "@inlang/paraglide-js-adapter-vite": "^1.2.40",

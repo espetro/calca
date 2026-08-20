@@ -2,7 +2,7 @@
   "extends": "../../packages/config/tsconfig/base.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "types": ["node-dom-types"]
+    "types": ["node", "node-dom-types"]
   },
   "include": ["src/**/*.ts"]
 }
