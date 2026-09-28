@@ -1,42 +1,22 @@
-# packages/agent-core/AGENTS.md — Agent harness
+# @calca/agent-core — agent notes
 
-> In-browser agent loop + contracts. See root [AGENTS.md](../../AGENTS.md) for universal rules.
-
-## Package Purpose
-
-`@calca/agent-core` is the browser-safe harness for Layer 3: run loop, tool
-dispatch, human-in-the-loop approvals, capability injection, and the
-`RunEvent` stream. It must stay lean — one runtime dep
-(`@standard-schema/spec`), optional `ai` peer for `./ai-sdk`.
+Contract seam between the app and whichever agent loop backs it. AI SDK
+(`ToolLoopAgent`) is the only implementation today; keep the surface
+LangChain/TanStack-shaped so a gate decision (issue #41) can swap it.
 
 ## Hard rules
 
-- **Browser-safe**: no `node:*`, `bun`, or `electrobun` imports in `src/`. The
-  browser-bundle CI check (Phase 3, #41) will enforce this — don't break it.
-- **The loop is the only tool executor.** Never give adapters `execute`
-  functions — approvals would be bypassable.
-- **All IO goes through `Capabilities` ports** (`llm`, `canvas`, `storage`,
-  `secrets`, `skills`, `commands`, `mcp`). No fetch/fs/store calls inside the
-  loop.
-- **One `RunEvent` union** in `events.ts` is the UI + multiplayer wire format;
-  extend it additively.
-- **Taxonomy is contractual**: names map to LangChain/TanStack AI (see README
-  table + ADR 0008). Renames are breaking changes — don't do them casually.
+- **Browser-safe**: no `node:*`, Bun, Electrobun or fs imports.
+- **Interface-first**: object shapes are `interface`; unions stay `type`.
+- **No harness logic here**: loop, approvals, retries live in the impl. If
+  you're writing a loop, stop — it belongs in the harness.
+- All tool I/O via `Capabilities` → `experimental_context`; never globals.
+- New vocabulary must map to a LangChain or TanStack name (see README table).
 
 ## Layout
 
-| File              | Contents                                                               |
-| ----------------- | ---------------------------------------------------------------------- |
-| `messages.ts`     | `Message`, `MessagePart`, `ToolCallPart`, `ToolResultPart`             |
-| `tool.ts`         | `Tool`, `toolDefinition`, `ToolContext`                                |
-| `capabilities.ts` | `Capabilities`, `ModelPort`, `StoragePort`, `SecretPort`, `CanvasPort` |
-| `events.ts`       | `RunEvent`, `RunStatus`                                                |
-| `interrupt.ts`    | `ApprovalRequest/Decision/Handler`                                     |
-| `agent.ts`        | `AgentSpec`, `RunInput`, `RunResult`                                   |
-| `loop.ts`         | `runAgent` — the loop                                                  |
-| `ai-sdk.ts`       | `aiSdkModel` adapter (`ai` peer)                                       |
-
-## Testing
-
-`bun run test` — `loop.test.ts` scripts a fake `ModelPort`; add cases there for
-any loop change (deny-path, abort, unknown tool, maxSteps cap).
+| File                  | Purpose                                                                      |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `src/harness.ts`      | The contract: `AgentHarness`, `AgentSpec`, `Capabilities`, `HarnessRunInput` |
+| `src/ai-sdk.ts`       | `aiSdkHarness` — `ToolLoopAgent` adapter                                     |
+| `src/harness.test.ts` | Mock-model tests via `ai/test` `MockLanguageModelV3`                         |

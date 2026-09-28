@@ -1,4 +1,4 @@
-# Agent harness taxonomy & in-house `agent-core` on the AI SDK
+# Agent harness taxonomy & `agent-core` contract seam on the AI SDK
 
 ## Metadata
 
@@ -27,13 +27,13 @@ Verified findings:
 
 - **Adopt `langchain@^1`** — Verified browser-safe full harness. Cost: second provider stack beside the AI SDK, LangGraph conceptual surface, `langsmith` in the client bundle, weight.
 - **Adopt `@tanstack/ai`** — Closest design match. Blocked today: 0.x breaking cadence and server-side adapters (documented BYOK path requires a relay).
-- **In-house `@calca/agent-core` on AI SDK** — Keep loop + approvals + event stream ours (~few hundred LOC over `streamText`); provider churn stays absorbed by `ai`. Common vocabulary so either candidate slots in behind the same seam later.
+- **`@calca/agent-core` as a contract seam on AI SDK** — Define only the interface (`AgentHarness`, `AgentSpec`, `Capabilities`, `HarnessRunInput`); the loop, tool dispatch, approvals, step limits and abort are `ToolLoopAgent` behaviour. Common vocabulary so either candidate slots in behind the same seam later.
 
 ## Decision Outcome
 
-Chosen option: **In-house `@calca/agent-core` on the AI SDK, with the shared taxonomy.**
+Chosen option: **`@calca/agent-core` as a thin contract seam, `ToolLoopAgent` as the sole implementation today.**
 
-The delta a harness would own is thin (loop, tool dispatch, approval pauses); the delta it would drag in is thick (second provider stack / relay / graph runtime). The package's names deliberately mirror LangChain + TanStack AI terms — `AgentSpec`/`Run`/`Step`/`Tool`/`toolDefinition`/`ToolCall`/`Approval`/`ModelPort`/`RunEvent`/`Capabilities` — see the mapping table in `packages/agent-core/README.md`. Migration cost later is bounded: map capabilities → tools/middleware, swap `ModelPort` for the harness's adapter call.
+The delta a third-party harness would own is thin; the delta it would drag in is thick (second provider stack / relay / graph runtime). agent-core therefore owns no loop — it names the seam: `AgentSpec` → `createAgent`/`defineAgent`, `AgentHarness.stream` → `chat()`/LangGraph stream, `HarnessRunInput.model` → `BaseChatModel`/adapter, `Capabilities` → runtime context, emitted events → AI-SDK `TextStreamPart` (mapping table in `packages/agent-core/README.md`). Tools keep `needsApproval` + `experimental_context` so capabilities and approvals stay ours without owning the loop. Swapping later = one new `AgentHarness` impl emitting the same `TextStreamPart` shapes.
 
 **Re-evaluation gates** (tracked on #41):
 

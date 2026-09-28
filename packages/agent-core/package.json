@@ -5,8 +5,7 @@
   "license": "AGPL-3.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./ai-sdk": "./src/ai-sdk.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "build": "echo 'build: not yet implemented'",
@@ -18,18 +17,11 @@
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
-    "@standard-schema/spec": "^1.0.0"
+    "ai": "^6.0.156"
   },
   "devDependencies": {
+    "@ai-sdk/provider": "^3.0.0",
     "typescript": "^6.0.3",
     "vitest": "^3.0.0"
-  },
-  "peerDependencies": {
-    "ai": ">=6"
-  },
-  "peerDependenciesMeta": {
-    "ai": {
-      "optional": true
-    }
   }
 }
