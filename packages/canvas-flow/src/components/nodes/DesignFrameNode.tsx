@@ -1,8 +1,6 @@
-import type { Comment as CommentType, DesignIteration, PipelineStatus } from "@app/shared";
+import { DesignFrame, DEFAULT_FRAME_WIDTH, PipelineStatusOverlay } from "@calca/canvas-ui";
+import type { Comment as CommentType, DesignIteration, PipelineStatus } from "@calca/shared";
 import { useViewport, type Node, type NodeProps } from "@xyflow/react";
-
-import { DesignFrame, DEFAULT_FRAME_WIDTH } from "../DesignFrame";
-import { PipelineStatusOverlay } from "../PipelineStatusOverlay";
 
 export type DesignFrameNodeData = {
   iteration: DesignIteration;

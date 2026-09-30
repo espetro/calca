@@ -1,4 +1,4 @@
-import type { Point } from "@app/shared";
+import type { Point } from "@calca/shared";
 import { atom } from "jotai";
 
 export const canvasOffsetAtom = atom<Point>({ x: 0, y: 0 });

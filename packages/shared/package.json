@@ -19,6 +19,7 @@
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
+    "@calca/shared": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
-import type { CanvasImage } from "@app/shared";
-import type { GenerationGroup } from "@app/shared";
-import type { Point } from "@app/shared";
+import type { CanvasImage } from "@calca/shared";
+import type { GenerationGroup } from "@calca/shared";
+import type { Point } from "@calca/shared";
 
 /** Frames data stored in the internal Jotai clipboard atom */
 export interface ClipboardFramesData {

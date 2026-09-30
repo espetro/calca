@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 
-import { createRateLimiter } from "./rate-limiter.js";
-import { validateFeedback } from "./validate.js";
 import { postDiscussionComment } from "./github.js";
+import { createRateLimiter } from "./rate-limiter.js";
 import type { Env, FeedbackResponse } from "./types.js";
+import { validateFeedback } from "./validate.js";
 
 type Bindings = Env;
 
@@ -30,9 +30,9 @@ app.get("/health", (c) => {
 app.post("/feedback", async (c) => {
   // Extract IP from CF-Connecting-IP header (set automatically by CF) or x-forwarded-for
   const ip =
-    (c.req.header("CF-Connecting-IP") ??
-      c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ??
-      "unknown");
+    c.req.header("CF-Connecting-IP") ??
+    c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown";
 
   // Create rate limiter from KV binding
   const limiter = createRateLimiter(c.env.RATE_LIMIT_KV);
@@ -57,7 +57,7 @@ app.post("/feedback", async (c) => {
   const { data } = validation;
 
   // Create GitHub issue
-    const result = await postDiscussionComment({
+  const result = await postDiscussionComment({
     token: c.env.GITHUB_TOKEN,
     repo: c.env.GITHUB_REPO,
     data,

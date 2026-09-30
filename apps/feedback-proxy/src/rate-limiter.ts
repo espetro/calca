@@ -1,6 +1,6 @@
+import type { KVNamespace } from "@cloudflare/workers-types";
 import { createStorage } from "unstorage";
 import cloudflareKVBindingDriver from "unstorage/drivers/cloudflare-kv-binding";
-import type { KVNamespace } from "@cloudflare/workers-types";
 
 const hourlyLimit = 5;
 const dailyLimit = 20;
@@ -34,9 +34,7 @@ export function createRateLimiter(kv: KVNamespace) {
   }
 
   return {
-    async check(
-      ip: string,
-    ): Promise<{ allowed: boolean; retryAfterSeconds?: number }> {
+    async check(ip: string): Promise<{ allowed: boolean; retryAfterSeconds?: number }> {
       const normalizedIp = normalizeIp(ip);
       const now = Date.now();
 

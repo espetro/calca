@@ -23,11 +23,11 @@ The Calca desktop app checks for updates on startup by comparing the local versi
 
 Each GitHub Release must include:
 
-| Asset | Format | Required |
-|-------|--------|----------|
-| `Calca-mac-arm64.dmg` | DMG installer (Apple Silicon) | Yes |
-| `Calca-mac-x64.dmg` | DMG installer (Intel) | Yes |
-| `checksums.txt` | SHA256 checksums for both DMGs | Yes |
+| Asset                 | Format                         | Required |
+| --------------------- | ------------------------------ | -------- |
+| `Calca-mac-arm64.dmg` | DMG installer (Apple Silicon)  | Yes      |
+| `Calca-mac-x64.dmg`   | DMG installer (Intel)          | Yes      |
+| `checksums.txt`       | SHA256 checksums for both DMGs | Yes      |
 
 Release tag format: `v{major}.{minor}.{patch}` (e.g., `v0.3.0`)
 
@@ -48,6 +48,7 @@ Release tag format: `v{major}.{minor}.{patch}` (e.g., `v0.3.0`)
 ## CI/CD Integration
 
 On tag push `v*`:
+
 1. Build desktop app (`platforms/desktop/scripts/build.sh`)
 2. Generate SHA256 checksums
 3. Create GitHub Release with tag, release notes, and DMG assets

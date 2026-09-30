@@ -12,7 +12,7 @@ Layer 3 needs an in-browser, serverless agent harness (BYOK, keys held client-si
 
 Verified findings:
 
-- **`langchain` v1** is now a *passing* candidate: its browser bundle exports `createAgent` + middleware (HITL, retry, summarization, subagents) with zero `node:` imports, provider adapters set `dangerouslyAllowBrowser: true`, MIT, ~18k★, biweekly releases — adoptable at `^1`.
+- **`langchain` v1** is now a _passing_ candidate: its browser bundle exports `createAgent` + middleware (HITL, retry, summarization, subagents) with zero `node:` imports, provider adapters set `dangerouslyAllowBrowser: true`, MIT, ~18k★, biweekly releases — adoptable at `^1`.
 - **`@tanstack/ai`** is philosophically closest (isomorphic tools, approval flow, `defineByok` keyring, Standard Schema) but is `0.x` (~93 releases/10mo) and its adapters are server-side — BYOK currently routes keys through a relay over `x-byok-*` headers.
 - smolagents has **no JS distribution** (Python only; HF's JS answer `@huggingface/tiny-agents` is a Node MCP CLI). `agentic` and `LlamaIndex.TS` repos are **archived**. VoltAgent / AgentKit / KaibanJS / ADK-JS / beeai / genkit / Claude Agent SDK are all Node/server-side by verified dep tree.
 

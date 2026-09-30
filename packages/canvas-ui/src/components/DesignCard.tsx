@@ -1,4 +1,4 @@
-import type { Comment as CommentType, DesignIteration, Point } from "@app/shared";
+import type { Comment as CommentType, DesignIteration, Point } from "@calca/shared";
 
 import { DesignFrame, DEFAULT_FRAME_WIDTH } from "./DesignFrame";
 

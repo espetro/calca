@@ -12,15 +12,15 @@
 
 ## Decision Drivers
 
-* {driver 1 — e.g., "Performance must remain under 200ms"}
-* {driver 2 — e.g., "Team is familiar with the technology"}
-* {driver 3 — e.g., "Must support future scalability"}
+- {driver 1 — e.g., "Performance must remain under 200ms"}
+- {driver 2 — e.g., "Team is familiar with the technology"}
+- {driver 3 — e.g., "Must support future scalability"}
 
 ## Considered Options
 
-* **{option 1}** — {brief description}
-* **{option 2}** — {brief description}
-* **{option 3}** — {brief description}
+- **{option 1}** — {brief description}
+- **{option 2}** — {brief description}
+- **{option 3}** — {brief description}
 
 ## Decision Outcome
 
@@ -30,11 +30,11 @@ Chosen option: **"{option N}"**
 
 ### Consequences
 
-* Good: {positive consequence}
-* Good: {positive consequence}
-* Bad: {negative consequence}
-* Bad: {negative consequence}
-* Neutral: {neither good nor bad, but worth noting}
+- Good: {positive consequence}
+- Good: {positive consequence}
+- Bad: {negative consequence}
+- Bad: {negative consequence}
+- Neutral: {neither good nor bad, but worth noting}
 
 ## Validation
 

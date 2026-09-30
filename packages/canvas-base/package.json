@@ -1,0 +1,31 @@
+{
+  "name": "@calca/canvas-base",
+  "version": "0.6.1",
+  "private": false,
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "echo 'build: not yet implemented'",
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "test": "vitest run",
+    "clean": "rm -rf dist",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
+  },
+  "dependencies": {
+    "@calca/shared": "workspace:*",
+    "jotai": "^2.19.1"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

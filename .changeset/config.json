@@ -14,7 +14,11 @@
       "@app/shared",
       "@app/pro",
       "@app/analytics",
-      "@app/logger"
+      "@app/logger",
+      "@calca/shared",
+      "@calca/canvas-base",
+      "@calca/canvas-ui",
+      "@calca/canvas-flow"
     ]
   ],
   "linked": [],

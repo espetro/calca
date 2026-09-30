@@ -4,9 +4,9 @@ A Cloudflare Worker that accepts feedback submissions and posts comments to a Gi
 
 ## Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check |
+| Method | Path        | Description                                      |
+| ------ | ----------- | ------------------------------------------------ |
+| `GET`  | `/health`   | Health check                                     |
 | `POST` | `/feedback` | Submit feedback → posts comment to Discussion #5 |
 
 ## Features
@@ -43,8 +43,8 @@ bun run deploy
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `GITHUB_TOKEN` | Personal access token with Discussions read/write permission (fine-grained PAT) |
-| `GITHUB_REPO` | Target repository in `owner/repo` format |
-| `ALLOWED_ORIGIN` | CORS origin (e.g., `https://calca.localhost`) |
+| Variable         | Description                                                                     |
+| ---------------- | ------------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`   | Personal access token with Discussions read/write permission (fine-grained PAT) |
+| `GITHUB_REPO`    | Target repository in `owner/repo` format                                        |
+| `ALLOWED_ORIGIN` | CORS origin (e.g., `https://calca.localhost`)                                   |

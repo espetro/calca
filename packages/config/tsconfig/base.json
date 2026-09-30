@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "strict": true,
@@ -18,11 +16,5 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    ".next",
-    "coverage"
-  ]
+  "exclude": ["node_modules", "dist", "build", ".next", "coverage"]
 }

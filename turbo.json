@@ -1,21 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
+  "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^clean",
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        "build/**"
-      ],
-      "env": [
-        "NODE_ENV"
-      ]
+      "dependsOn": ["^clean", "^build"],
+      "outputs": ["dist/**", "build/**"],
+      "env": ["NODE_ENV"]
     },
     "dev": {
       "cache": false,
@@ -28,30 +18,20 @@
     "dev-desktop": {
       "cache": false,
       "persistent": true,
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "typecheck": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "outputs": [],
       "outputLogs": "errors-only"
     },
     "test": {
-      "dependsOn": [
-        "^clean"
-      ],
-      "outputs": [
-        "coverage/**"
-      ],
+      "dependsOn": ["^clean"],
+      "outputs": ["coverage/**"],
       "outputLogs": "errors-only"
     },
     "lint": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "outputs": [],
       "outputLogs": "errors-only"
     },
@@ -59,9 +39,7 @@
       "outputs": []
     },
     "validate": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "clean": {

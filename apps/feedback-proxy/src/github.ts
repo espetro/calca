@@ -64,10 +64,13 @@ export async function postDiscussionComment(params: {
   ].join("\n");
 
   try {
-    const result = await octokit.graphql<AddDiscussionCommentResponse>(ADD_DISCUSSION_COMMENT_MUTATION, {
-      discussionId: DISCUSSION_NODE_ID,
-      body: bodyMarkdown,
-    });
+    const result = await octokit.graphql<AddDiscussionCommentResponse>(
+      ADD_DISCUSSION_COMMENT_MUTATION,
+      {
+        discussionId: DISCUSSION_NODE_ID,
+        body: bodyMarkdown,
+      },
+    );
 
     const commentUrl = result.addDiscussionComment.comment.url;
     return { ok: true, commentUrl };

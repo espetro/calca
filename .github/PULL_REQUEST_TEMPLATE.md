@@ -30,7 +30,7 @@ By submitting this pull request, I confirm that:
 - [ ] I have read and agree to the Contributor License Agreement (CLA)
 - [ ] My contributions are my original work
 - [ ] I grant the project maintainer the right to relicense my contributions
-  for commercial purposes
+      for commercial purposes
 
 ## Additional Notes
 

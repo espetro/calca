@@ -1,5 +1,11 @@
-import { canvasOffsetAtom, canvasScaleAtom, copyFrames, cutFrames, pasteFrames } from "@app/canvas";
-import { groupsAtom } from "@app/canvas";
+import {
+  canvasOffsetAtom,
+  canvasScaleAtom,
+  copyFrames,
+  cutFrames,
+  pasteFrames,
+} from "@calca/canvas-base";
+import { groupsAtom } from "@calca/canvas-base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRef } from "react";
 

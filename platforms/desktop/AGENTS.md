@@ -39,13 +39,13 @@ platforms/desktop/
 
 **Electrobun ≠ Electron.** They share similar concepts but have different APIs.
 
-| Concept | Electrobun | Electron |
-|---------|------------|----------|
-| Main process runtime | Bun | Node.js |
-| IPC mechanism | RPC via `defineRPC` | ipcMain/ipcRenderer |
-| Import path | `electrobun/bun` (main) / `electrobun/view` (renderer) | `electron` |
-| Window class | `BrowserWindow` | `BrowserWindow` |
-| Webview class | `BrowserView` | `BrowserView` (deprecated) |
+| Concept              | Electrobun                                             | Electron                   |
+| -------------------- | ------------------------------------------------------ | -------------------------- |
+| Main process runtime | Bun                                                    | Node.js                    |
+| IPC mechanism        | RPC via `defineRPC`                                    | ipcMain/ipcRenderer        |
+| Import path          | `electrobun/bun` (main) / `electrobun/view` (renderer) | `electron`                 |
+| Window class         | `BrowserWindow`                                        | `BrowserWindow`            |
+| Webview class        | `BrowserView`                                          | `BrowserView` (deprecated) |
 
 ```typescript
 // Main process — import from electrobun/bun
@@ -69,9 +69,9 @@ const channel = await Updater.localInfo.channel().catch(() => "unknown");
 const devMode = channel === "dev";
 ```
 
-| Mode | Webview URL | API Requests | Static Assets |
-|------|-------------|--------------|---------------|
-| Dev | `VITE_DEV_URL` (http://localhost:5173) | Proxied to Vite | Vite HMR |
+| Mode | Webview URL                             | API Requests               | Static Assets    |
+| ---- | --------------------------------------- | -------------------------- | ---------------- |
+| Dev  | `VITE_DEV_URL` (http://localhost:5173)  | Proxied to Vite            | Vite HMR         |
 | Prod | `http://localhost:{port}` (OS-assigned) | Handled by embedded server | `Resources/web/` |
 
 **Dev flow:** `bun run dev:desktop` → `bun run --parallel web-dev electrobun-watch` → Vite starts, Electrobun probes via `waitForServer()`, then creates window. **Prod flow:** embedded server (`port: 0`) serves bundled web assets from `Resources/web/`.
@@ -85,6 +85,7 @@ const devMode = channel === "dev";
 **Usage:** `BrowserView.defineRPC<CalcaRPCSchema>()` on bun side, `Electroview.defineRPC()` on renderer side. Handlers defined in `src/window.ts`, implementations in `src/updater.ts`.
 
 **Rules:**
+
 1. **Always wrap handlers in try/catch** — unhandled exceptions crash the main process
 2. **Never return stack traces to renderer** — log errors, return structured `{ error: string }` objects
 3. **Null-check renderer side** — `window.rpc?.request.method()` in case connection is lost
@@ -98,6 +99,7 @@ Docs: [defineRPC (bun side)](https://blackboard.sh/electrobun/docs/apis/browser-
 `src/server.ts` — `Bun.serve({ port: 0, hostname: "localhost" })`. Routes: `/api/*` and `/health` → `@app/server` (Hono); dev mode `/*` → Vite proxy; prod mode `/*` → static files from `Resources/web/`.
 
 **Rules:**
+
 1. **Always use `port: 0`** — OS assigns an available port, avoiding conflicts
 2. **Path traversal prevention** — validate resolved paths start with `STATIC_DIR` (see `serveStaticFile()`)
 3. **SPA fallback** — unknown routes serve `index.html`
@@ -115,6 +117,7 @@ bun run verify         # Smoke test: server health, window creation, RPC respons
 ```
 
 **Rules:**
+
 - Use `bun run --parallel` for dev — no custom process orchestrators, no `concurrently`
 - Use `bun --cwd <dir> run <script>` for cross-directory scripts — never `process.chdir()` or zx `cd()`
 - Build must be self-contained — no manual web build step required
@@ -135,6 +138,7 @@ bun run verify         # Smoke test: server health, window creation, RPC respons
 **Logtape** with hierarchical categories: `["calca", "desktop", "<module>"]` (e.g. `["calca", "desktop", "server"]`). Two sinks: console + rotating file (daily, 7-day retention). See `src/logger.ts` for configuration.
 
 **Rules:**
+
 1. **Mask sensitive data** — never log tokens, passwords, API keys
 2. **Use tagged templates** — `log.info\`Message with ${value}\``
 3. **Hierarchical categories** — `["calca", "desktop", "<module>"]`
@@ -166,6 +170,7 @@ Docs: [Updater API](https://blackboard.sh/electrobun/docs/apis/updater/) | [Upda
 ## Dependencies
 
 **Rules:**
+
 1. **Electrobun pinned** — exact version (`1.16.0`), no `^` or `~`
 2. **zx build-only** — never import in runtime code (`src/`)
 3. **No runtime web deps** — desktop is standalone, don't bundle React/Vite
@@ -176,19 +181,19 @@ See `package.json` for current versions.
 
 ## Guardrails — MUST NOT
 
-| Forbidden Pattern | Reason | Correct Alternative |
-|--------------------|--------|---------------------|
-| `process.chdir()` | Breaks when run from different CWDs | `--cwd` flag or `import.meta.dirname` |
-| `cd()` from zx | Same as above | `bun --cwd <dir> run <script>` |
-| `@ts-nocheck` / `@ts-ignore` | Hides type errors | Fix the actual type error |
-| `require()` | ESM-only project | `import` |
-| `console.log()` | Unstructured logging | `getLogger()` with Logtape |
-| Empty catch blocks | Hides errors | Log or handle explicitly |
-| Hardcoded ports | Port conflicts | `port: 0` for OS assignment |
-| `NODE_ENV` for dev detection | Unreliable in desktop | `Updater.localInfo.channel()` |
-| Importing from `electron` | Wrong framework | `electrobun/bun` or `electrobun/view` |
-| `preBuild`/`postBuild` hooks | Supply chain risk | Explicit build scripts |
-| `.bak` files in repo | Debug artifacts | Delete before commit |
+| Forbidden Pattern            | Reason                              | Correct Alternative                   |
+| ---------------------------- | ----------------------------------- | ------------------------------------- |
+| `process.chdir()`            | Breaks when run from different CWDs | `--cwd` flag or `import.meta.dirname` |
+| `cd()` from zx               | Same as above                       | `bun --cwd <dir> run <script>`        |
+| `@ts-nocheck` / `@ts-ignore` | Hides type errors                   | Fix the actual type error             |
+| `require()`                  | ESM-only project                    | `import`                              |
+| `console.log()`              | Unstructured logging                | `getLogger()` with Logtape            |
+| Empty catch blocks           | Hides errors                        | Log or handle explicitly              |
+| Hardcoded ports              | Port conflicts                      | `port: 0` for OS assignment           |
+| `NODE_ENV` for dev detection | Unreliable in desktop               | `Updater.localInfo.channel()`         |
+| Importing from `electron`    | Wrong framework                     | `electrobun/bun` or `electrobun/view` |
+| `preBuild`/`postBuild` hooks | Supply chain risk                   | Explicit build scripts                |
+| `.bak` files in repo         | Debug artifacts                     | Delete before commit                  |
 
 ---
 
