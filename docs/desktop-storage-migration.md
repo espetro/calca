@@ -3,6 +3,7 @@
 ## Current State
 
 All app data lives in browser `localStorage`:
+
 - **Settings**: provider, model, API keys, theme, analytics toggle
 - **Canvas**: designs, comments, positions, viewport state
 - **AI Pipeline**: prompt history, generation results

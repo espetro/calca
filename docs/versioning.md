@@ -63,6 +63,7 @@ bunx changeset
 ```
 
 Follow the prompts:
+
 1. Select affected packages (multi-select)
 2. Choose version bump type: `major`, `minor`, or `patch`
 3. Add a summary of changes
@@ -87,6 +88,7 @@ git push origin v0.1.1
 ```
 
 The `changeset version` command:
+
 - Updates package.json versions across all affected packages
 - Generates/updates CHANGELOG.md entries
 - Deletes consumed changeset files
@@ -124,7 +126,7 @@ The `commit-msg` hook runs `commitlint` on every commit message to ensure it fol
 ✅ Be specific in your changeset summaries  
 ✅ Use appropriate version bump types  
 ✅ Write clear, descriptive commit messages  
-✅ Reference issue numbers in commit bodies when relevant  
+✅ Reference issue numbers in commit bodies when relevant
 
 ### Don'ts
 
@@ -132,7 +134,7 @@ The `commit-msg` hook runs `commitlint` on every commit message to ensure it fol
 ❌ Use vague commit messages like "update stuff"  
 ❌ Bump major versions for minor changes  
 ❌ Manually edit CHANGELOG.md (let changesets handle it)  
-❌ Ignore commit message validation errors  
+❌ Ignore commit message validation errors
 
 ## Troubleshooting
 
@@ -145,6 +147,7 @@ If your commit message fails the linter:
 3. Try the commit again with the corrected message
 
 Example fix:
+
 ```bash
 # ❌ Invalid
 git commit -m "updated the thing"

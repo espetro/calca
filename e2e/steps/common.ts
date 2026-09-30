@@ -1,5 +1,6 @@
-import { Step } from 'gauge-ts';
-import { ab, snapshot, findRef, assertContains } from '../support/ab';
+import { Step } from "gauge-ts";
+
+import { ab, snapshot, findRef, assertContains } from "../support/ab";
 
 export default class CommonSteps {
   @Step("Open <url>")
@@ -58,8 +59,7 @@ export default class CommonSteps {
       try {
         findRef(snap, label);
         return;
-      } catch {
-      }
+      } catch {}
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
     throw new Error(`Label "${label}" did not appear within ${timeout}ms`);

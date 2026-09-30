@@ -1,7 +1,7 @@
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import { getLogger } from "@app/logger";
-import { type Context, Hono } from "hono";
+import { type Context, Hono, type TypedResponse } from "hono";
 
 import { REACT_PROMPT, TAILWIND_PROMPT } from "../lib/export-prompts";
 import htmlToSvg from "../lib/html-to-svg";
@@ -38,7 +38,9 @@ async function convertWithAI(
   return resultText.trim();
 }
 
-export async function handleExport(c: Context) {
+type ExportResponse = TypedResponse<{ error: string }> | TypedResponse<{ result: string }>;
+
+export async function handleExport(c: Context): Promise<Response & ExportResponse> {
   try {
     const { html: rawHtml, format, apiKey, model, providerType, baseURL } = await c.req.json();
 

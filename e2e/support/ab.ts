@@ -1,15 +1,15 @@
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 export function ab(cmd: string): string {
   const stdout = execSync(`agent-browser ${cmd}`, {
-    encoding: 'utf-8',
-    stdio: ['pipe', 'pipe', 'pipe'],
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
   });
   return stdout;
 }
 
 export function snapshot(): string {
-  return ab('snapshot -i');
+  return ab("snapshot -i");
 }
 
 export function findRef(snap: string, label: string): string {
@@ -28,5 +28,5 @@ export function assertContains(snap: string, text: string): void {
 }
 
 function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

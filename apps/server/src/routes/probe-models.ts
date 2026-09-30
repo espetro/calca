@@ -1,11 +1,15 @@
 import { probeModels } from "@app/core/ai/probe";
 import type { ProviderType } from "@app/core/ai/providers";
 import { getLogger } from "@app/logger";
-import { type Context, Hono } from "hono";
+import { type Context, Hono, type TypedResponse } from "hono";
 
 const logger = getLogger(["calca", "server", "routes", "probe"]);
 
-export async function handleProbeModels(c: Context) {
+type ProbeModelsResponse =
+  | TypedResponse<{ error: string }>
+  | TypedResponse<{ available: Record<string, boolean> }>;
+
+export async function handleProbeModels(c: Context): Promise<Response & ProbeModelsResponse> {
   try {
     const { apiKey, providerType, baseURL } = (await c.req.json()) as {
       apiKey?: string;

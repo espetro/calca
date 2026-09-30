@@ -123,7 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Toolbar Rewrite** — Rewrote mode-sidebar with tooltips, lucide icons, and compact sizing; rewrote export-menu and remix-button to use dropdown-menu with hover behavior; unified canvas-hud styling
 - **Desktop Scripts** — Replaced shell scripts with cross-platform TypeScript; consolidated scripts into single build command and cross-platform dev coordinator; broke down monolithic entry point into focused modules
-- **Server** — Exported Hono app without starting server for embeddability; migrated console.* to @app/logger; removed custom logging wrapper
+- **Server** — Exported Hono app without starting server for embeddability; migrated console.\* to @app/logger; removed custom logging wrapper
 - **Frontend** — Replaced fetch with Hono RPC client; added shared dropdown-menu and tooltip components; replaced custom SVGs with lucide icons
 - **Monorepo** — Simplified workspace imports to use package.json exports/imports; consolidated desktop to `platforms/desktop/` and removed stale scaffolds
 
@@ -134,7 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevented welcome re-showing on reload and fixed tour re-render
 - Migrated SettingsDialog to jotai atoms for state consistency
 - Resolved CORS error by adding dev server proxy
-- Bridged VITE_AI_* env vars from root .env to import.meta.env
+- Bridged VITE*AI*\* env vars from root .env to import.meta.env
 - Fixed hardcoded colors and suppressed CDN warning; added semantic tokens and updated component colors; improved color visibility and mode differentiation
 - Used custom jotai provider to sync desktop app bar functionality
 - Removed idle timeout limit on electrobun
