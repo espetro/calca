@@ -2,7 +2,7 @@
   "name": "@calca/agent-core",
   "version": "0.6.1",
   "private": true,
-  "license": "AGPL-3.0",
+  "license": "Apache-2.0",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
@@ -17,11 +17,11 @@
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
-    "ai": "^6.0.156"
+    "ai": "catalog:"
   },
   "devDependencies": {
-    "@ai-sdk/provider": "^3.0.0",
-    "typescript": "^6.0.3",
-    "vitest": "^3.0.0"
+    "@ai-sdk/provider": "^4.0.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

@@ -1,6 +1,6 @@
-import type { LanguageModelV3StreamPart } from "@ai-sdk/provider";
+import type { LanguageModelV4StreamPart } from "@ai-sdk/provider";
 import { jsonSchema, tool } from "ai";
-import { convertArrayToReadableStream, MockLanguageModelV3 } from "ai/test";
+import { convertArrayToReadableStream, MockLanguageModelV4 } from "ai/test";
 import { describe, expect, it } from "vitest";
 
 import { aiSdkHarness } from "./ai-sdk.js";
@@ -11,7 +11,7 @@ const usage = {
   outputTokens: { total: 5, text: 5, reasoning: 0 },
 };
 
-const textParts = (delta: string): LanguageModelV3StreamPart[] => [
+const textParts = (delta: string): LanguageModelV4StreamPart[] => [
   { type: "stream-start" as const, warnings: [] },
   { type: "text-start" as const, id: "1" },
   { type: "text-delta" as const, id: "1", delta },
@@ -21,7 +21,7 @@ const textParts = (delta: string): LanguageModelV3StreamPart[] => [
 
 describe("aiSdkHarness", () => {
   it("streams model text through to the caller", async () => {
-    const model = new MockLanguageModelV3({
+    const model = new MockLanguageModelV4({
       doStream: async () => ({
         stream: convertArrayToReadableStream(textParts("hello")),
       }),
@@ -41,7 +41,7 @@ describe("aiSdkHarness", () => {
     expect(parts.at(-1)?.type).toBe("finish");
   });
 
-  it("executes tools and exposes capabilities via experimental_context", async () => {
+  it("executes tools and exposes capabilities via the tool context", async () => {
     const capabilities: Capabilities = { canvas: { addFrame: "fn" } };
     let seenContext: unknown;
     let calls = 0;
@@ -55,15 +55,15 @@ describe("aiSdkHarness", () => {
         additionalProperties: false,
       }),
       execute: (input, options) => {
-        seenContext = options.experimental_context;
+        seenContext = options.context;
         return Promise.resolve(input.v);
       },
     });
 
-    const model = new MockLanguageModelV3({
+    const model = new MockLanguageModelV4({
       doStream: () => {
         calls += 1;
-        const parts: LanguageModelV3StreamPart[] =
+        const parts: LanguageModelV4StreamPart[] =
           calls === 1
             ? [
                 { type: "stream-start" as const, warnings: [] },
