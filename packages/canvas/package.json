@@ -2,9 +2,6 @@
   "name": "@app/canvas",
   "version": "0.6.1",
   "license": "MIT",
-  "bin": {
-    "calca-canvas-mcp": "./bin/mcp-server.ts"
-  },
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -16,13 +13,11 @@
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run",
-    "mcp": "bun run ./bin/mcp-server.ts",
     "clean": "rm -rf dist",
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
     "@app/shared": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.29.0",
     "@xyflow/react": "^12.11.1",
     "zod": "^4.4.3"
   },

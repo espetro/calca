@@ -58,19 +58,24 @@ const runStage = async (
   }
 };
 
-const main = async () => {
+const getPackageName = async (cwdValue: string) => {
+  const cwdPath = cwdValue.startsWith("/") ? cwdValue : `${process.cwd()}/${cwdValue}`;
+  const pkgJson: { name: string } = await Bun.file(`${cwdPath}/package.json`).json();
+  return pkgJson.name;
+};
+
+const parseArgs = async () => {
   const argv = process.argv;
   const cwdIndex = argv.indexOf("--cwd");
-  let filter: string | undefined;
+  const cwdValue = argv[cwdIndex + 1];
 
-  if (cwdIndex !== -1 && argv[cwdIndex + 1]) {
-    const cwdArg = argv[cwdIndex + 1]!;
-    const cwdPath = cwdArg.startsWith("/")
-      ? cwdArg
-      : `${process.cwd()}/${cwdArg}`;
-    const pkgJson: { name: string } = await Bun.file(`${cwdPath}/package.json`).json();
-    filter = pkgJson.name;
-  }
+  const filter = cwdIndex !== -1 && cwdValue ? await getPackageName(cwdValue) : undefined;
+
+  return { filter };
+};
+
+const main = async () => {
+  const { filter } = await parseArgs();
 
   const results = await Promise.all(stages.map((stage) => runStage(stage, filter)));
 

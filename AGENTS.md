@@ -25,6 +25,8 @@ calca/
 └── docs/             → Architecture decisions, PRD
 ```
 
+The project backlog is at https://github.com/users/espetro/projects/6/views/1 .
+
 ---
 
 > **⚠️ Current State — Read This First**
