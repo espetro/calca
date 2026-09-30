@@ -1,8 +1,7 @@
+import { canvasOffsetAtom, canvasScaleAtom } from "@calca/canvas-base";
 import { useReactFlow, useViewport } from "@xyflow/react";
 import { useSetAtom } from "jotai";
 import { useCallback, useEffect } from "react";
-
-import { canvasOffsetAtom, canvasScaleAtom } from "../state/canvas-atoms";
 
 interface Point {
   x: number;

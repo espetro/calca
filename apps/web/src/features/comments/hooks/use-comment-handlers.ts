@@ -1,5 +1,5 @@
-import { groupsAtom } from "@app/canvas";
 import { getLogger } from "@app/logger";
+import { groupsAtom } from "@calca/canvas-base";
 import { useAtom } from "jotai";
 import { useCallback, useRef } from "react";
 

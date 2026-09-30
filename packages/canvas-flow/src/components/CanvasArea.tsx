@@ -5,7 +5,7 @@ import type {
   PipelineStatus,
   Point,
   ToolMode,
-} from "@app/shared";
+} from "@calca/shared";
 import {
   Background,
   Controls,

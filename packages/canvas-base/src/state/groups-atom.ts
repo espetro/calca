@@ -1,4 +1,4 @@
-import type { GenerationGroup } from "@app/shared";
+import type { GenerationGroup } from "@calca/shared";
 import { atom } from "jotai";
 
 const STORAGE_KEY = "calca-canvas-session";

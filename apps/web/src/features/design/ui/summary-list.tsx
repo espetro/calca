@@ -1,4 +1,4 @@
-import { groupsAtom } from "@app/canvas";
+import { groupsAtom } from "@calca/canvas-base";
 import { useAtom } from "jotai";
 import { useState } from "react";
 

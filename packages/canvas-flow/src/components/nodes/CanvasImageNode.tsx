@@ -1,4 +1,4 @@
-import type { CanvasImage } from "@app/shared";
+import type { CanvasImage } from "@calca/shared";
 import type { Node, NodeProps } from "@xyflow/react";
 
 export type CanvasImageNodeData = {
