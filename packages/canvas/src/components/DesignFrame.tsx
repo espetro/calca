@@ -1,60 +1,68 @@
+import type { Comment as CommentType, DesignIteration } from "@app/shared";
 import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import type {
-  Comment as CommentType,
-  DesignIteration,
-  PipelineStatus,
-  Point,
-} from "#/shared/types";
-import { useMountEffect } from "#/shared/utils/use-mount-effect";
+import { useMountEffect } from "../utils/use-mount-effect";
 
 const getTailwindScriptSrc = (): string => {
-  if (typeof window !== "undefined" && (window as any).__CALCA_DESKTOP__) {
+  if (
+    typeof window !== "undefined" &&
+    (window as unknown as { __CALCA_DESKTOP__?: boolean }).__CALCA_DESKTOP__
+  ) {
     return `${window.location.origin}/tailwindcss.js`;
   }
   return "https://cdn.tailwindcss.com";
 };
 
 export const DEFAULT_FRAME_WIDTH = 480;
-const FRAME_WIDTH = DEFAULT_FRAME_WIDTH; // Kept for export compat
-const INITIAL_IFRAME_HEIGHT = 2000; // Start tall, measure down
+const FRAME_WIDTH = DEFAULT_FRAME_WIDTH;
+const INITIAL_IFRAME_HEIGHT = 2000;
 
-interface DesignCardProps {
+interface DesignFrameProps {
   iteration: DesignIteration;
-  isCommentMode: boolean;
-  isSelectMode: boolean;
-  isDragging: boolean;
+  width?: number;
+  height?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  isCommentMode?: boolean;
+  isSelectMode?: boolean;
   isSelected?: boolean;
-  onSelect?: (e?: React.MouseEvent) => void;
-  onAddComment: (iterationId: string, position: Point) => void;
-  onClickComment: (comment: CommentType, iterationId: string) => void;
-  onDragStart: (e: React.MouseEvent) => void;
-  scale: number;
-  pipelineStatus?: PipelineStatus;
+  isDragging?: boolean;
+  scale?: number;
+  onClick?: (e: React.MouseEvent) => void;
+  onMouseDown?: (e: React.MouseEvent) => void;
+  onAddComment?: (
+    iterationId: string,
+    position: { x: number; y: number },
+    screenX: number,
+    screenY: number,
+  ) => void;
+  onClickComment?: (comment: CommentType, iterationId: string) => void;
 }
 
-export function DesignCard({
+export function DesignFrame({
   iteration,
+  width,
+  height: _height,
+  className = "",
+  style,
   isCommentMode,
   isSelectMode,
-  isDragging,
   isSelected,
-  onSelect,
+  isDragging,
+  scale = 1,
+  onClick,
+  onMouseDown,
   onAddComment,
   onClickComment,
-  onDragStart,
-  scale,
-  pipelineStatus,
-}: DesignCardProps) {
+}: DesignFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(320);
   const measuredRef = useRef(false);
   const measurementGenRef = useRef(0);
 
-  // Build srcdoc — wrap content in a measuring div to get exact height
-  const frameW = iteration.width || FRAME_WIDTH;
+  const frameW = width || iteration.width || FRAME_WIDTH;
   const srcdoc =
     iteration.html && !iteration.isLoading
       ? `<!DOCTYPE html>
@@ -68,7 +76,6 @@ export function DesignCard({
     #calca-measure { width: ${frameW}px; overflow: hidden; }
     img, video, svg { max-width: 100%; height: auto; display: block; object-fit: cover; }
     * { animation: none !important; transition: none !important; }
-    /* Kill common viewport-height patterns that inflate measurement */
     [style*="100vh"], [style*="min-height: 100vh"], [style*="height: 100vh"] { height: auto !important; min-height: 0 !important; }
   </style>
 </head><body><div id="calca-measure" data-gen="${measurementGenRef.current}">${iteration.html}</div>
@@ -86,7 +93,6 @@ setTimeout(reportHeight, 2000);
 </script></body></html>`
       : undefined;
 
-  // Listen for height messages from sandboxed iframe
   // oxlint-disable-next-line
   useEffect(() => {
     if (!iteration.html || iteration.isLoading) {
@@ -96,7 +102,6 @@ setTimeout(reportHeight, 2000);
     measurementGenRef.current += 1;
     const currentGen = measurementGenRef.current;
 
-    // If we have a size hint from the model, use it as the initial content height
     if (iteration.height) {
       setContentHeight(iteration.height);
     }
@@ -119,112 +124,73 @@ setTimeout(reportHeight, 2000);
   }, [iteration.html, iteration.isLoading, iteration.id, iteration.height]);
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!isCommentMode) {
-      return;
+    if (isCommentMode && onAddComment && wrapperRef.current) {
+      e.stopPropagation();
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / scale;
+      const y = (e.clientY - rect.top) / scale;
+      onAddComment(iteration.id, { x, y }, e.clientX, e.clientY);
     }
-    e.stopPropagation();
-
-    const rect = wrapperRef.current?.getBoundingClientRect();
-    if (!rect) {
-      return;
-    }
-
-    const x = (e.clientX - rect.left) / scale;
-    const y = (e.clientY - rect.top) / scale;
-    onAddComment(iteration.id, { x, y });
+    onClick?.(e);
   };
 
-  // Use measured content height, fallback to model hint
-  // Use measured height if available, then size hint, then default
   const frameHeight = iteration.isLoading ? 320 : contentHeight;
 
   return (
     <div
-      className={`absolute ${isDragging ? "z-50" : ""}`}
+      ref={wrapperRef}
       data-tour="design-frame"
-      style={{
-        left: iteration.position.x,
-        top: iteration.position.y,
-        width: iteration.width || FRAME_WIDTH,
-      }}
+      onClick={handleClick}
+      onMouseDown={onMouseDown}
+      className={`relative bg-white rounded-xl shadow-md border overflow-hidden transition-shadow ${
+        isSelected ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg" : "border-gray-200/80"
+      } ${
+        isCommentMode
+          ? "cursor-crosshair ring-2 ring-blue-400/20 hover:ring-blue-400/40"
+          : isSelectMode
+            ? isDragging
+              ? "cursor-grabbing shadow-xl ring-2 ring-blue-400/30"
+              : "cursor-grab hover:shadow-lg"
+            : ""
+      } ${className}`}
+      style={{ ...style, height: frameHeight, width: frameW }}
     >
-      <div className="mb-2 flex items-center gap-2 group/label">
-        <span className="text-xs font-medium text-gray-500/80 bg-white/60 backdrop-blur-sm px-2.5 py-0.5 rounded-lg border border-white/40">
-          {iteration.label}
-        </span>
-      </div>
-
-      {/* Frame — fixed width, NO transitions on any dimension */}
-      <div
-        ref={wrapperRef}
-        onClick={(e) => {
-          handleClick(e);
-          if (isSelectMode && onSelect) {
-            e.stopPropagation();
-            onSelect(e);
-          }
-        }}
-        onMouseDown={(e) => {
-          if (isSelectMode) {
-            e.stopPropagation();
-            onDragStart(e);
-          }
-        }}
-        className={`relative bg-white rounded-xl shadow-md border overflow-hidden transition-shadow ${
-          isSelected ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg" : "border-gray-200/80"
-        } ${
-          isCommentMode
-            ? "cursor-crosshair ring-2 ring-blue-400/20 hover:ring-blue-400/40"
-            : isSelectMode
-              ? isDragging
-                ? "cursor-grabbing shadow-xl ring-2 ring-blue-400/30"
-                : "cursor-grab hover:shadow-lg"
-              : ""
-        }`}
-        style={{ height: frameHeight, width: iteration.width || FRAME_WIDTH }}
-      >
-        {/* No revision overlay — comment pins show status instead */}
-
-        {iteration.isLoading ? (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-            <div className="relative w-10 h-10">
-              <Loader className="w-10 h-10 animate-spin" />
-            </div>
-            <span className="text-[12px] font-medium text-gray-400">Generating...</span>
+      {iteration.isLoading ? (
+        <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+          <div className="relative w-10 h-10">
+            <Loader className="w-10 h-10 animate-spin" />
           </div>
-        ) : (
-          <iframe
-            ref={iframeRef}
-            title={iteration.label}
-            sandbox="allow-scripts"
-            srcDoc={srcdoc}
-            style={{
-              border: "none",
-              display: "block",
-              height: measuredRef.current
-                ? contentHeight
-                : iteration.height || INITIAL_IFRAME_HEIGHT,
-              pointerEvents: "none",
-              width: iteration.width || FRAME_WIDTH,
-            }}
-          />
-        )}
+          <span className="text-[12px] font-medium text-gray-400">Generating…</span>
+        </div>
+      ) : (
+        <iframe
+          ref={iframeRef}
+          title={iteration.label}
+          sandbox="allow-scripts"
+          srcDoc={srcdoc}
+          style={{
+            border: "none",
+            display: "block",
+            height: measuredRef.current ? contentHeight : iteration.height || INITIAL_IFRAME_HEIGHT,
+            pointerEvents: "none",
+            width: frameW,
+          }}
+        />
+      )}
 
-        {/* Comment pins — only visible in comment mode */}
-        {isCommentMode &&
-          iteration.comments.map((comment) => (
-            <CommentPin
-              key={comment.id}
-              comment={comment}
-              onClick={() => onClickComment(comment, iteration.id)}
-            />
-          ))}
-      </div>
+      {isCommentMode &&
+        onClickComment &&
+        onAddComment &&
+        iteration.comments.map((comment) => (
+          <CommentPin
+            key={comment.id}
+            comment={comment}
+            onClick={() => onClickComment(comment, iteration.id)}
+          />
+        ))}
     </div>
   );
 }
-
-export { FRAME_WIDTH };
 
 const STATUS_COLORS = {
   done: {

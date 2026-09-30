@@ -1,8 +1,8 @@
+import { canvasOffsetAtom, canvasScaleAtom, copyFrames, cutFrames, pasteFrames } from "@app/canvas";
+import { groupsAtom } from "@app/canvas";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRef } from "react";
 
-import { copyFrames, cutFrames, pasteFrames } from "#/features/canvas/lib/frame-clipboard";
-import { canvasOffsetAtom, canvasScaleAtom } from "#/features/canvas/state/canvas-atoms";
 import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import { commentDraftAtom } from "#/features/design/state/comment-atoms";
 import {
@@ -10,7 +10,6 @@ import {
   spaceHeldAtom,
   toolModeAtom,
 } from "#/features/design/state/generation-atoms";
-import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom } from "#/features/design/state/images-atoms";
 import { feedbackModalOpenAtom } from "#/features/feedback/store";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";

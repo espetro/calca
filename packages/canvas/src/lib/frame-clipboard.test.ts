@@ -39,7 +39,6 @@ describe("frame-clipboard", () => {
             height: 600,
             prompt: "a warm landing page",
             comments: [],
-            imageId,
           },
         ],
         position: POINT(200, 300),

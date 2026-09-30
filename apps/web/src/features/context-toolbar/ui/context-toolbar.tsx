@@ -1,7 +1,7 @@
+import { groupsAtom } from "@app/canvas";
 import { useAtomValue } from "jotai";
 
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
-import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { ExportMenu } from "#/features/export";
 import {
   NavigationMenu,

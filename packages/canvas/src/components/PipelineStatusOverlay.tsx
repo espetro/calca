@@ -1,5 +1,4 @@
-import { Progress } from "#/shared/components/ui/progress";
-import { type PipelineStatus, STAGE_CONFIG } from "#/shared/types";
+import { type PipelineStatus, STAGE_CONFIG } from "@app/shared";
 
 interface PipelineStatusBarProps {
   status: PipelineStatus;
@@ -26,18 +25,20 @@ export function PipelineStatusOverlay({
   }
 
   const topOffset = y + frameHeight + 8;
+  const value = Math.max(status.progress * 100, 5);
+
+  const indicatorClass = isError ? "bg-destructive" : "bg-gradient-to-r from-primary to-secondary";
+  const pulseClass = status.stage === "layout" || status.stage === "images" ? "animate-pulse" : "";
 
   return (
     <div className="absolute pointer-events-none" style={{ left: x, top: topOffset, width }}>
       {!isQueued && (
-        <Progress
-          value={Math.max(status.progress * 100, 5)}
-          className={`h-1 ${
-            isError
-              ? "[&_[data-slot=progress-indicator]]:bg-destructive"
-              : "[&_[data-slot=progress-indicator]]:bg-gradient-to-r [&_[data-slot=progress-indicator]]:from-primary [&_[data-slot=progress-indicator]]:to-secondary"
-          } ${status.stage === "layout" || status.stage === "images" ? "[&_[data-slot=progress-indicator]]:animate-pulse" : ""}`}
-        />
+        <div className="h-1 w-full overflow-hidden rounded-full bg-primary/20">
+          <div
+            className={`h-full transition-all ${indicatorClass} ${pulseClass}`}
+            style={{ width: `${value}%` }}
+          />
+        </div>
       )}
       <div className="flex items-center justify-between mt-1.5">
         <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
