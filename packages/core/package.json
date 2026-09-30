@@ -30,13 +30,13 @@
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^3.0.68",
-    "@ai-sdk/google": "^3.0.61",
-    "@ai-sdk/openai-compatible": "^2.0.41",
-    "@ai-sdk/provider": "3.0.8",
-    "@ai-sdk/provider-utils": "^4.0.26",
+    "@ai-sdk/anthropic": "^4.0.0",
+    "@ai-sdk/google": "^4.0.0",
+    "@ai-sdk/openai-compatible": "^3.0.0",
+    "@ai-sdk/provider": "^4.0.0",
+    "@ai-sdk/provider-utils": "^4.0.0",
     "@app/logger": "workspace:*",
-    "ai": "^6.0.156",
+    "ai": "^7.0.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
