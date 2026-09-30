@@ -1,9 +1,8 @@
+import { groupsAtom } from "@app/canvas";
 import { useAtom } from "jotai";
 
 import { Button } from "#/shared/components/ui/button";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
-
-import { groupsAtom } from "../state/groups-atoms";
 
 interface SummaryDialogProps {
   groupId: string;

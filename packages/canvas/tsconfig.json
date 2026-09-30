@@ -1,0 +1,12 @@
+{
+  "extends": "../../packages/config/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["node", "bun"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "bin/**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

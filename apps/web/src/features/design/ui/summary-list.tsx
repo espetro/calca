@@ -1,9 +1,9 @@
+import { groupsAtom } from "@app/canvas";
 import { useAtom } from "jotai";
 import { useState } from "react";
 
 import { Button } from "#/shared/components/ui/button";
 
-import { groupsAtom } from "../state/groups-atoms";
 import { SummaryDialog } from "./summary-dialog";
 
 export function SummaryList() {

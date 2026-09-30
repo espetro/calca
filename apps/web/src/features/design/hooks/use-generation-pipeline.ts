@@ -1,3 +1,4 @@
+import { groupsAtom } from "@app/canvas";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo, useRef } from "react";
 
@@ -7,7 +8,6 @@ import {
   isGeneratingAtom,
   pipelineStagesAtom,
 } from "#/features/design/state/generation-atoms";
-import { groupsAtom } from "#/features/design/state/groups-atoms";
 import { canvasImagesAtom } from "#/features/design/state/images-atoms";
 import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";

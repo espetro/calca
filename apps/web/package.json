@@ -22,6 +22,7 @@
     "@ai-sdk/anthropic": "^3.0.68",
     "@ai-sdk/google": "^3.0.61",
     "@app/analytics": "workspace:*",
+    "@app/canvas": "workspace:*",
     "@app/core": "workspace:*",
     "@app/logger": "workspace:*",
     "@app/shared": "workspace:*",

@@ -1,9 +1,5 @@
-import { getLogger } from "@app/logger";
+import type { GenerationGroup } from "@app/shared";
 import { atom } from "jotai";
-
-const logger = getLogger(["calca", "web", "design", "persist"]);
-
-import type { GenerationGroup } from "#/shared/types";
 
 const STORAGE_KEY = "calca-canvas-session";
 const IMG_DB_NAME = "calca-canvas-images";
@@ -114,13 +110,13 @@ function debouncedPersist(groups: GenerationGroup[]): void {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
       if (Object.keys(images).length > 0) {
         saveImagesToIDB(images).catch((error) =>
-          logger.debug("Failed to save images to IndexedDB", {
+          console.debug("Failed to save images to IndexedDB", {
             error: error instanceof Error ? error.message : String(error),
           }),
         );
       }
     } catch (error) {
-      logger.debug("Failed to save canvas session", {
+      console.debug("Failed to save canvas session", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
