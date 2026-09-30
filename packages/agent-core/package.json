@@ -1,0 +1,27 @@
+{
+  "name": "@calca/agent-core",
+  "version": "0.6.1",
+  "private": true,
+  "license": "AGPL-3.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo 'build: not yet implemented'",
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "test": "vitest run",
+    "clean": "rm -rf dist",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
+  },
+  "dependencies": {
+    "ai": "^6.0.156"
+  },
+  "devDependencies": {
+    "@ai-sdk/provider": "^3.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^3.0.0"
+  }
+}
