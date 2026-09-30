@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 import exportRoute from "./routes/export";
+import metricsRoute from "./routes/metrics";
 import probeModelsRoute from "./routes/probe-models";
 import workflowRoute from "./routes/workflow";
 
@@ -15,7 +16,8 @@ const app = new Hono()
   .get("/health", (c) => c.json({ status: "ok" }))
   .route("/api/workflow", workflowRoute)
   .route("/api/export", exportRoute)
-  .route("/api/probe-models", probeModelsRoute);
+  .route("/api/probe-models", probeModelsRoute)
+  .route("/api/metrics", metricsRoute);
 
 logger.info("Server app initialized");
 
