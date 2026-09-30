@@ -1,0 +1,22 @@
+import type { Point } from "./canvas";
+
+export type CommentStatus = "waiting" | "working" | "done";
+
+export interface CommentMessage {
+  id: string;
+  role: "user" | "calca";
+  text: string;
+  createdAt: number;
+}
+
+export interface Comment {
+  id: string;
+  position: Point; // Relative to the iteration
+  text: string;
+  number: number;
+  resolved?: boolean;
+  createdAt: number;
+  status?: CommentStatus;
+  aiResponse?: string;
+  thread?: CommentMessage[];
+}
