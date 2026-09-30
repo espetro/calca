@@ -1,4 +1,4 @@
-import { type PipelineStatus, STAGE_CONFIG } from "@app/shared";
+import { type PipelineStatus, STAGE_CONFIG } from "@calca/shared";
 
 interface PipelineStatusBarProps {
   status: PipelineStatus;

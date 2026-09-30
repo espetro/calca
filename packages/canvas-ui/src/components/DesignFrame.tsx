@@ -1,4 +1,4 @@
-import type { Comment as CommentType, DesignIteration } from "@app/shared";
+import type { Comment as CommentType, DesignIteration } from "@calca/shared";
 import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 

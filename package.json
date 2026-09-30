@@ -12,6 +12,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
+    "check:canvas-boundaries": "bun scripts/check-canvas-boundaries.ts",
     "build:desktop": "bun run --cwd platforms/desktop build:desktop",
     "clean": "turbo clean",
     "dev": "turbo dev",

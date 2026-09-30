@@ -26,7 +26,6 @@ export {
   type SummaryOutput,
 } from "./schemas/summary";
 
-export * from "./types/canvas";
-export * from "./types/design";
-export * from "./types/comment";
-export * from "./types/pipeline";
+// Domain types live in the Apache-2.0 `@calca/shared` package; re-exported
+// here so existing `@app/shared` imports keep working.
+export * from "@calca/shared";
