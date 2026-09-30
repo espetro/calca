@@ -25,3 +25,8 @@ export {
   validateSummary,
   type SummaryOutput,
 } from "./schemas/summary";
+
+export * from "./types/canvas";
+export * from "./types/design";
+export * from "./types/comment";
+export * from "./types/pipeline";

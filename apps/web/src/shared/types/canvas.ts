@@ -1,6 +1,1 @@
-export interface Point {
-  x: number;
-  y: number;
-}
-
-export type ToolMode = "select" | "draw-area" | "edit-component" | "comment";
+export type { Point, ToolMode } from "@app/shared";
