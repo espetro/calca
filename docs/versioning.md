@@ -99,15 +99,16 @@ The `changeset version` command:
 
 ## Git Hooks
 
-The project uses `simple-git-hooks` to enforce commit message standards:
+The project declares git hooks in the `simple-git-hooks` map in the root `package.json` (the map format is kept; hooks are written by `scripts/install-git-hooks.ts` on postinstall — the `simple-git-hooks` package itself is not installed because its own postinstall crashes under Bun's `.bun` store layout):
 
 ```json
 "simple-git-hooks": {
-  "commit-msg": "bunx commitlint --edit $1"
+  "commit-msg": "bunx commitlint --edit $1",
+  "pre-push": "bun run validate:quick"
 }
 ```
 
-This hook runs `commitlint` on every commit message to ensure it follows the conventional commit format.
+The `commit-msg` hook runs `commitlint` on every commit message to ensure it follows the conventional commit format; `pre-push` runs the quick validation gate.
 
 ### Hook Enforcement
 

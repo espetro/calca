@@ -123,7 +123,7 @@ Single-version toolchains are governed by `catalogs.default` in the root `packag
 | `bun run validate:quick` | manifests + typecheck + lint + format (~10 s) | `pre-push` git hook |
 | `bun run validate`       | validate:quick **plus** tests                 | pre-PR gate         |
 
-Git hooks (`commit-msg` commitlint, `pre-push` validate:quick) install via `simple-git-hooks` on `bun install` (postinstall: `scripts/install-git-hooks.ts`). It degrades gracefully where `.git` or hooks can't be written — plain `bun install` needs no flags.
+Git hooks (`commit-msg` commitlint, `pre-push` validate:quick) are declared in the `simple-git-hooks` map in the root `package.json` and written by `scripts/install-git-hooks.ts` on `bun install` (postinstall). The `simple-git-hooks` package is deliberately not a dependency — its own postinstall crashes under Bun's `.bun` store layout. The script degrades gracefully where `.git` or hooks can't be written — plain `bun install` needs no flags.
 
 ---
 
