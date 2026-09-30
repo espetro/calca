@@ -16,7 +16,7 @@ for await (const part of harness.stream({
   agent: { name: "designer", instructions, tools },
   model, // any AI SDK LanguageModel (BYOK providers)
   messages, // ModelMessage[]
-  capabilities, // injected as experimental_context into tool execute()
+  capabilities, // injected into each tool's execute() via `toolsContext`
   signal, // AbortSignal
 })) {
   // AI SDK TextStreamPart: text-delta, tool-call, tool-result,
@@ -46,7 +46,7 @@ same `TextStreamPart` shapes; nothing above this package changes.
 ## Rules
 
 - Browser-safe: no `node:*`, Bun or Electrobun imports.
-- All tool I/O goes through `Capabilities` (`experimental_context`), never
+- All tool I/O goes through `Capabilities` (forwarded via `toolsContext`), never
   globals or ambient state.
 - Stay thin — the stream contract is AI SDK's `TextStreamPart`; add
   agent-core vocabulary only where the SDK has no name for it.

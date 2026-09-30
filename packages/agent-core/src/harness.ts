@@ -25,7 +25,7 @@ export interface SecretPort {
 
 /**
  * Host-provided capabilities, injected per run and visible to every tool's
- * `execute` via `experimental_context`. Concrete shapes are owned by the
+ * `execute` via the tool `context` option. Concrete shapes are owned by the
  * layers: `canvas` by the canvas lib, `storage`/`secrets` by the host app;
  * `skills`/`commands`/`mcp` are desktop-only slots.
  */

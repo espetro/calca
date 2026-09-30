@@ -10,7 +10,7 @@ LangChain/TanStack-shaped so a gate decision (issue #41) can swap it.
 - **Interface-first**: object shapes are `interface`; unions stay `type`.
 - **No harness logic here**: loop, approvals, retries live in the impl. If
   you're writing a loop, stop — it belongs in the harness.
-- All tool I/O via `Capabilities` → `experimental_context`; never globals.
+- All tool I/O via `Capabilities` → the tool `context` option (`toolsContext`); never globals.
 - New vocabulary must map to a LangChain or TanStack name (see README table).
 
 ## Layout
@@ -19,4 +19,4 @@ LangChain/TanStack-shaped so a gate decision (issue #41) can swap it.
 | --------------------- | ---------------------------------------------------------------------------- |
 | `src/harness.ts`      | The contract: `AgentHarness`, `AgentSpec`, `Capabilities`, `HarnessRunInput` |
 | `src/ai-sdk.ts`       | `aiSdkHarness` — `ToolLoopAgent` adapter                                     |
-| `src/harness.test.ts` | Mock-model tests via `ai/test` `MockLanguageModelV3`                         |
+| `src/harness.test.ts` | Mock-model tests via `ai/test` `MockLanguageModelV4`                         |
