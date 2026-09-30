@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "@calca/shared": "workspace:*",
-    "zod": "^3.24.0"
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "vitest": "^3.0.0"
+    "vitest": "catalog:"
   }
 }

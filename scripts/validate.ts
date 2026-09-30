@@ -1,11 +1,17 @@
 /**
  * * Runs all validation steps and just shows a simple ✅ (OK), ⚠️ (WARN), or ❌ (FAIL) for each validation check.
  */
+import { join } from "node:path";
+
 import { $ } from "bun";
+
+const MANIFESTS_CHECK = join(import.meta.dir, "check-workspace-manifests.ts");
 
 interface Stage {
   display: string;
+  /** turbo task name, or a raw command when `raw` is set */
   cmd: string;
+  raw?: boolean;
   onError?: (_: $.ShellError) => string | null;
 }
 
@@ -30,18 +36,25 @@ const warnOnError = ({ stdout, stderr }: $.ShellError): string | null => {
   return null;
 };
 
-const stages: Stage[] = [
+const quickStages: Stage[] = [
+  { display: "Manifests", cmd: `bun ${MANIFESTS_CHECK}`, raw: true },
   { display: "TypeScript", cmd: "typecheck" },
   { display: "Lint", cmd: "lint", onError: warnOnError },
   { display: "Format", cmd: "format" },
-  { display: "Test", cmd: "test" },
 ];
 
+const stages: Stage[] = [...quickStages, { display: "Test", cmd: "test" }];
+
 const runStage = async (
-  { display, cmd, onError }: Stage,
+  { display, cmd, raw, onError }: Stage,
   filter?: string,
 ): Promise<StageOutput> => {
   try {
+    if (raw) {
+      const [bin, ...args] = cmd.split(" ");
+      await $`${bin} ${args}`.quiet();
+      return { line: `Running ${display}... ✅`, ok: true };
+    }
     const turboCmd = filter
       ? $`bunx turbo ${cmd} --filter=${filter}`.quiet()
       : $`bunx turbo ${cmd}`.quiet();
@@ -71,13 +84,16 @@ const parseArgs = async () => {
 
   const filter = cwdIndex !== -1 && cwdValue ? await getPackageName(cwdValue) : undefined;
 
-  return { filter };
+  const quick = argv.includes("--quick");
+
+  return { filter, quick };
 };
 
 const main = async () => {
-  const { filter } = await parseArgs();
+  const { filter, quick } = await parseArgs();
 
-  const results = await Promise.all(stages.map((stage) => runStage(stage, filter)));
+  const activeStages = quick ? quickStages : stages;
+  const results = await Promise.all(activeStages.map((stage) => runStage(stage, filter)));
 
   for (const { line } of results) {
     console.log(line);

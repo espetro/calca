@@ -21,7 +21,7 @@
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
   },
   "devDependencies": {
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.4"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }
