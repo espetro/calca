@@ -1,11 +1,27 @@
 # E2E Test Specs
 
-Tests use **Gauge** (Markdown specs) + **agent-browser** (browser execution).
-Steps are defined in `e2e/steps/`. Run with `bun run test:e2e`.
+Tests use **Gauge** (Markdown specs, `gauge-ts`) driving **agent-browser** against the running Vite app.
+Steps are defined in `e2e/steps/` (implementation in TypeScript classes with `@Step` decorators).
+
+## Running tests
+
+```bash
+# Prereqs, once: bun install (pulls gauge-cli, agent-browser, gauge-ts)
+# Servers needed: Vite on :5173 (or whatever BASE_URL points at) and apps/server on :3001
+bun run --cwd apps/web dev &
+bun run --cwd apps/server dev &
+
+bun run test:e2e                          # all specs in e2e/specs
+bun run test:e2e:spec e2e/specs/login.md  # single spec
+```
+
+`GAUGE_TS_PACKAGE_RUNNER=bun STEP_IMPL_DIR=steps,support` is baked into the npm scripts —
+`npx` breaks on `catalog:` overrides, so step resolution runs under bun.
 
 ## Writing a spec
 
 Create a `.md` file in `e2e/specs/`. Each H1 is a feature, each H2 is a scenario.
+Parameters use `<angle brackets>`; values containing spaces must be quoted.
 
 ```markdown
 # Checkout Flow
@@ -15,59 +31,55 @@ Create a `.md` file in `e2e/specs/`. Each H1 is a feature, each H2 is a scenario
 - Open "http://localhost:3000/shop"
 - Click "Add to Cart"
 - Page should contain "1 item in cart"
-
-## Logged-in user sees saved address
-
-- Open "http://localhost:3000/checkout"
-- Page should contain "123 Main St"
 ```
 
-## Built-in steps (e2e/steps/common.ts)
+## Built-in steps (e2e/steps/common.ts, prompt-bar.ts, settings.ts)
 
-| Step                                     | Description                  |
-| ---------------------------------------- | ---------------------------- |
-| `Open <url>`                             | Navigate to URL              |
-| `Click <label>`                          | Click element matching label |
-| `Click the <label> button`               | Same, button-scoped          |
-| `Fill <value> in the <label> field`      | Type into input              |
-| `Select <value> in the <label> dropdown` | Select option                |
-| `Page should contain <text>`             | Assert visible text          |
-| `Page should not contain <text>`         | Assert absence               |
-| `Wait for <label> to appear`             | Poll up to 5s                |
+| Step                                              | Notes                                                              |
+| ------------------------------------------------- | ------------------------------------------------------------------ |
+| `Open <url>`                                      | `"/"`, `"/?quick=1"` — relative to `BASE_URL` (default :5173)      |
+| `Wait for page to load completely`                | Wait for network + render idle                                     |
+| `Page should contain <text>` / `… not contain`    | Assert presence / absence in snapshot                              |
+| `Wait for <label> to appear`                      | Poll snapshot, default ~30s                                        |
+| `Wait up to <seconds> seconds`                    | Fixed sleep                                                        |
+| `Click <label>` / `Click the <label> button` / `Click the <label> icon` | Resolves a11y ref from `snapshot`, falls back to `snapshot -i` |
+| `Fill <value> in the <label> field`               | Type into named input/textarea                                     |
+| `Select <value> in the <label> dropdown`          | Native select                                                      |
+| `Press the <key> key`                             | e.g. `Enter`, `Escape`, `ArrowUp`                                  |
+| `Reload the page`                                 | Full reload                                                        |
+| `Wait for <n> rendered nodes` / `Wait for node <name> to render` | Poll `.react-flow__node` iframes (default 600s)         |
+| `Select the first canvas node` / `The first canvas node should have moved` | Canvas node assertions                       |
+| `Switch to the Select tool`                       | Dispatches the `v` shortcut — **required before dragging nodes**   |
+| `Drag the first canvas node`                      | Stepped mouse drag (+120,+80); needs Select mode + a node          |
+| `Set the variations count to <value>`             | Clicks the stepper +/- buttons until the count matches (1–4)       |
+| `Clear the attachments`                           | Drops `selectedImages` from settings + reloads                     |
+| `Hover the <tour> control`                        | `pointerover` — Radix `NavigationMenu` triggers on hover, not click |
+| `Move the caret to the <pos> of the prompt field` | `start`/`end` — history nav requires caret at a text boundary      |
+| `Seed prompt history with <recent> and <older>`   | Writes `calca-prompt-history` localStorage + reloads               |
+| `Seed an image attachment named <name>`           | Writes `selectedImages` so the attachment pill appears             |
+| `Upload <path> to the media picker`               | File input                                                         |
+| `Page should show the prompt bar` / `The prompt field should be empty` / `The prompt field should contain <text>` | Prompt-bar assertions           |
+| `Dismiss the onboarding dialog` / `Reset the onboarding flag` | Onboarding flow                                    |
+| `Open the settings dialog` / `Click outside the modal` / `Scroll to the <label> section` | Settings modal                      |
+| `Quick mode should be <state>`                    | `enabled`/`disabled` in settings                                    |
 
-Parameters use `<angle brackets>` inline. Values with spaces must be quoted in the step text.
+## Environment
 
-## Adding new steps
+- `BASE_URL` — defaults to `http://localhost:5173`
+- Generation specs need a real provider: run Vite with `VITE_AI_BASE_URL`, `VITE_AI_API_KEY`, `VITE_AI_MODEL` set (the env-injected provider). Text-only models reject image-input — clear attachments before generation specs.
+- **`?quick=1`** — sequential mode takes >5min on slow models (6 serial LLM stages); every spec that waits on rendered output must open `/?quick=1` (persisted in settings across reloads).
 
-Add a new file in `e2e/steps/` and export a class with `@Step` decorators. Import `snapshot`, `findRef`, and `ab` from `../support/ab`.
+## Isolation & known quirks
 
-```typescript
-import { Step } from "gauge-ts";
-import { ab, snapshot, findRef } from "../support/ab";
-
-export default class ProfileSteps {
-  @Step("Upload avatar from <path>")
-  async uploadAvatar(path: string) {
-    const snap = snapshot();
-    const ref = findRef(snap, "avatar");
-    ab(`fill ${ref} "${path}"`);
-  }
-}
-```
+- `BeforeSpec` cold-starts each spec file: wipes `localStorage` **and** all IndexedDB databases (`calca-canvas-images` — the blob store `localStorage.clear()` misses). Never rely on state leaking between spec files.
+- Refs (`e1`, `e2`…) are ephemeral — `findRef` resolves them right before each `ab()` call; never cache refs across steps.
+- Snapshot lines render refs non-bracket-adjacent (`[expanded=false, ref=e168]`) — parse with `ref=(\w+)`, not `\[ref=`.
+- Nodes are draggable only in Select mode (`nodesDraggable={isSelectMode}`); React Flow drags need multi-step `mouse move`, not a teleport.
+- `agent-browser open` reuses the bound tab — steps can't open parallel windows.
+- Gauge failure screenshots may capture an unrelated surface (e.g. a New Tab page); treat them as uninformative unless the app tab is verified dead.
 
 ## Naming conventions
 
 - Spec files: `e2e/specs/<feature-name>.md` (kebab-case)
 - Step files: `e2e/steps/<feature-name>.ts` (matching the spec)
 - Group generic cross-feature steps in `common.ts`
-
-## Best practices
-
-- Refs (`@e1`, `@e2`) are ephemeral — they reset on navigation or DOM mutation. Always call `snapshot()` immediately before each interaction, never cache refs across steps.
-
-## Running tests
-
-```bash
-bun run test:e2e                          # all specs
-bun run test:e2e:spec e2e/specs/login.md  # single spec
-```
