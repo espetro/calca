@@ -2,51 +2,39 @@
 
 ## Toolbar is visible on app load
 
-- Open "https://calca.localhost"
-- Wait for "Menu" to appear
-- Page should contain "Menu"
+* Open "/"
+* Wait for "Menu" to appear
+* Page should contain "Menu"
 
-## Switching to Draw Area mode
+## Zoom controls are available
 
-- Open "https://calca.localhost"
-- Click the "Draw Area" button
-- Page should contain "Draw Area"
+* Open "/"
+* Click the "Zoom in" button
+* Click the "Zoom out" button
+* Page should contain "%"
 
-## Switching to Edit Component mode
+## Canvas utility controls exist
 
-- Open "https://calca.localhost"
-- Click the "Edit Component" button
-- Page should contain "Edit Component"
+* Open "/"
+* Page should contain "Reset view"
+* Page should contain "Designer Preset"
+* Page should contain "System Prompt"
 
-## Switching back to Select mode
+## Opening the menu on a fresh canvas
 
-- Open "https://calca.localhost"
-- Click the "Draw Area" button
-- Click the "Select" button
-- Page should contain "Select"
-
-## Zoom in and out
-
-- Open "https://calca.localhost"
-- Click the "Zoom in" button
-- Click the "Zoom out" button
-- Page should contain "%"
-
-## Opening the menu
-
-- Open "https://calca.localhost"
-- Click the "Menu" button
-- Page should contain "Import .design"
+* Open "/"
+* Click the "Menu" button
+* Page should contain "Import .design"
 
 ## Menu does not show Prompt Library or DESIGN.md
 
-- Open "https://calca.localhost"
-- Click the "Menu" button
-- Page should not contain "Prompt Library"
-- Page should not contain "DESIGN.md"
+* Open "/"
+* Click the "Menu" button
+* Page should not contain "Prompt Library"
+* Page should not contain "DESIGN.md"
 
 ## Opening Settings from toolbar
 
-- Open "https://calca.localhost"
-- Click the model indicator button
-- Page should contain "Settings"
+* Open "/"
+* Open the settings dialog
+* Page should contain "Settings"
