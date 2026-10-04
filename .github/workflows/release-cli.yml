@@ -1,0 +1,125 @@
+name: Release CLI
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build from (e.g. v0.6.2)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  npm:
+    name: Publish @calca/* to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+      - run: bun install
+      - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/mcp-core --filter=@calca/mcp
+      - name: Publish publishable @calca/* packages
+        if: env.NPM_TOKEN != ''
+        run: |
+          set -e
+          for pkg in shared canvas-base mcp-core mcp; do
+            (cd "packages/$pkg" && npm publish --access public)
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Skip publish (no NPM_TOKEN)
+        if: env.NPM_TOKEN == ''
+        run: echo "NPM_TOKEN not configured — skipping npm publish (packages were still built)" >&2
+
+  binaries:
+    name: Compile calca (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - bun-linux-x64
+          - bun-linux-x64-musl
+          - bun-linux-arm64
+          - bun-linux-arm64-musl
+          - bun-darwin-x64
+          - bun-darwin-arm64
+          - bun-windows-x64
+          - bun-windows-x64-baseline
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+      - run: bun install
+      - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/mcp-core --filter=@calca/mcp
+      - name: Compile single-file binary
+        run: |
+          set -e
+          out="dist-bin/calca-${{ matrix.target }}"
+          mkdir -p dist-bin
+          # bytecode is unsupported on windows targets; strip .exe handling via bun itself
+          if [[ "${{ matrix.target }}" == bun-windows-* ]]; then
+            bun build --compile --minify --target=${{ matrix.target }} \
+              packages/mcp/src/cli.ts --outfile "$out.exe"
+          else
+            bun build --compile --minify --bytecode --target=${{ matrix.target }} \
+              packages/mcp/src/cli.ts --outfile "$out"
+          fi
+      - name: Checksums
+        run: |
+          cd dist-bin && sha256sum * > SHA256SUMS.partial && cat SHA256SUMS.partial
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calca-${{ matrix.target }}
+          path: dist-bin/*
+          if-no-files-found: error
+
+  release:
+    name: GitHub Release + checksums + attestations
+    needs: binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: calca-*
+          path: dist-bin
+          merge-multiple: true
+      - name: Generate SHA256SUMS
+        run: |
+          cd dist-bin
+          rm -f SHA256SUMS.partial
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${{ github.ref_name }}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            tag="${{ inputs.tag }}"
+          fi
+          gh release create "$tag" dist-bin/* \
+            --title "calca $tag" \
+            --notes "calca CLI binaries + SHA256SUMS. Install via \`npx -y @calca/mcp\` or download a binary." \
+            || gh release upload "$tag" dist-bin/* --clobber
+      - name: Attest binaries
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: "dist-bin/*"

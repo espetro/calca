@@ -1,0 +1,48 @@
+{
+  "name": "@calca/mcp",
+  "version": "0.6.1",
+  "private": false,
+  "description": "calca CLI — MCP playground server for AI agents",
+  "license": "Apache-2.0",
+  "bin": {
+    "calca": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "test": "vitest run",
+    "clean": "rm -rf dist",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD",
+    "check:pack": "publint && attw --pack . --profile esm-only"
+  },
+  "dependencies": {
+    "@calca/canvas-base": "workspace:*",
+    "@calca/mcp-core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.32.0",
+    "citty": "^0.1.6",
+    "consola": "^3.4.2",
+    "pathe": "^2.0.3"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.0",
+    "publint": "^0.3.0",
+    "tsdown": "^0.23.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
