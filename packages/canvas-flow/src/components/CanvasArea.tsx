@@ -1,3 +1,4 @@
+import type { Command, ShapeRecord } from "@calca/canvas-base";
 import type {
   CanvasImage,
   Comment,
@@ -9,24 +10,20 @@ import type {
 import {
   Background,
   Controls,
-  type Edge,
+  Panel,
+  SelectionMode,
   type Node,
   type NodeChange,
-  Panel,
-  ReactFlow,
-  SelectionMode,
-  applyNodeChanges,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
+import { FlowCanvas, useCanvasStore } from "../adapter";
 import type { CanvasHandle } from "../hooks/use-canvas";
-import { CanvasImageNode, type CanvasImageNodeType } from "./nodes/CanvasImageNode";
-import { DesignFrameNode, type DesignFrameNodeType } from "./nodes/DesignFrameNode";
-
-const DEFAULT_FRAME_HEIGHT = 320;
-const DEFAULT_FRAME_WIDTH = 480;
+import { calcaViews, imageToRecord, iterationToRecord } from "../views";
+import { CanvasImageNode } from "./nodes/CanvasImageNode";
+import { DesignFrameNode } from "./nodes/DesignFrameNode";
 
 type RubberBand = {
   startX: number;
@@ -76,6 +73,14 @@ const nodeTypes = {
   designFrame: DesignFrameNode,
 };
 
+const propsEqual = (a: Record<string, unknown>, b: Record<string, unknown>) => {
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const key of keys) {
+    if (!Object.is(a[key], b[key])) return false;
+  }
+  return true;
+};
+
 export const CanvasArea = ({
   groups,
   onGroupsChange,
@@ -98,156 +103,96 @@ export const CanvasArea = ({
   emptyDescription,
   toolbar,
 }: CanvasAreaProps) => {
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges] = useState<Edge[]>([]);
+  const store = useCanvasStore();
+  if (!store) {
+    throw new Error("CanvasArea must render inside a CanvasStoreProvider");
+  }
 
   const isSelectMode = toolMode === "select" && !spaceHeld;
   const isCommentMode = toolMode === "comment" && !spaceHeld;
 
-  const allIterations = useMemo(
-    () => groups.flatMap((g) => g.iterations.map((iter) => ({ ...iter, groupId: g.id }))),
-    [groups],
-  );
-
-  const nextNodes = useMemo((): Node[] => {
-    const frameNodes: DesignFrameNodeType[] = allIterations.map((iteration) => ({
-      id: iteration.id,
-      type: "designFrame",
-      position: { ...iteration.position },
-      width: iteration.width || DEFAULT_FRAME_WIDTH,
-      height: iteration.isLoading ? DEFAULT_FRAME_HEIGHT : iteration.height || DEFAULT_FRAME_HEIGHT,
-      data: {
-        groupId: iteration.groupId,
-        isCommentMode,
-        isDragging: false,
-        isSelectMode,
-        iteration,
-        onAddComment,
-        onClickComment,
-        pipelineStatus: pipelineStages?.[iteration.id],
-      },
-      selected: selectedIds.has(iteration.id),
-      selectable: isSelectMode,
-      draggable: isSelectMode,
-    }));
-
-    const imageNodes: CanvasImageNodeType[] = canvasImages.map((image) => ({
-      id: image.id,
-      type: "canvasImage",
-      position: { ...image.position },
-      width: image.width,
-      height: image.height,
-      data: {
-        image,
-        isDragging: false,
-        isSelectMode,
-        isSelected: selectedIds.has(image.id),
-      },
-      selected: selectedIds.has(image.id),
-      selectable: isSelectMode,
-      draggable: isSelectMode,
-    }));
-
-    return [...frameNodes, ...imageNodes];
-  }, [
-    allIterations,
-    canvasImages,
-    isCommentMode,
-    isSelectMode,
-    onAddComment,
-    onClickComment,
-    pipelineStages,
-    selectedIds,
-  ]);
-
+  // Bridge the app's controlled props into the document: diff by record id
+  // and apply create/update/delete commands with history off (the app owns
+  // persistence; the store is the render source of truth).
+  const prevRecords = useRef(new Map<string, ShapeRecord>());
   useEffect(() => {
-    setNodes((prev) => {
-      const byId = new Map(prev.map((n) => [n.id, n]));
-      return nextNodes.map((n) => {
-        const existing = byId.get(n.id);
-        if (existing) {
-          // Preserve React Flow's transient drag/selection state while refreshing data.
-          return {
-            ...n,
-            position: existing.position,
-            selected: existing.selected,
-            data: {
-              ...n.data,
-              isDragging: existing.data?.isDragging ?? false,
-              scale: existing.data?.scale ?? 1,
-            },
-          };
-        }
-        return n;
-      });
-    });
-  }, [nextNodes]);
+    const next = new Map<string, ShapeRecord>();
+    const prev = prevRecords.current;
+    const indexOf = (id: string) => prev.get(id)?.index ?? store.nextIndex(null);
 
-  const updatePositionsFromChanges = useCallback(
-    (changes: NodeChange[]) => {
+    for (const group of groups) {
+      for (const iteration of group.iterations) {
+        next.set(iteration.id, iterationToRecord(iteration, group.id, indexOf(iteration.id)));
+      }
+    }
+    for (const image of canvasImages) {
+      next.set(image.id, imageToRecord(image, indexOf(image.id)));
+    }
+
+    const commands: Command[] = [];
+    for (const [id, record] of next) {
+      const existing = prev.get(id);
+      if (!existing) {
+        commands.push({ op: "create-shape", record });
+      } else if (!propsEqual(existing.props, record.props)) {
+        commands.push({ op: "update", id, props: record.props });
+      }
+    }
+    for (const id of prev.keys()) {
+      if (!next.has(id)) commands.push({ op: "delete", id });
+    }
+
+    prevRecords.current = next;
+    if (commands.length > 0) {
+      store.apply(commands, { origin: "remote", history: false });
+    }
+  }, [groups, canvasImages, store]);
+
+  // Write document changes back into the app's jotai-backed props so
+  // persistence and other consumers keep working unchanged.
+  const onCommandsApplied = useCallback(
+    (commands: Command[], _changes: NodeChange[]) => {
       const positionUpdates = new Map<string, Point>();
-      for (const change of changes) {
-        if (change.type === "position" && change.position) {
-          positionUpdates.set(change.id, { ...change.position });
+      const removedIds = new Set<string>();
+      for (const command of commands) {
+        if (command.op === "update" && typeof command.props.position === "object") {
+          positionUpdates.set(command.id, command.props.position as Point);
+        } else if (command.op === "delete") {
+          removedIds.add(command.id);
         }
       }
 
-      if (positionUpdates.size === 0) return;
-
-      onGroupsChange((prevGroups) =>
-        prevGroups.map((group) => ({
-          ...group,
-          iterations: group.iterations.map((iter) => {
-            const update = positionUpdates.get(iter.id);
-            return update ? { ...iter, position: update } : iter;
+      if (positionUpdates.size > 0) {
+        onGroupsChange((prevGroups) =>
+          prevGroups.map((group) => ({
+            ...group,
+            iterations: group.iterations.map((iter) => {
+              const update = positionUpdates.get(iter.id);
+              return update ? { ...iter, position: update } : iter;
+            }),
+          })),
+        );
+        onCanvasImagesChange((prevImages) =>
+          prevImages.map((img) => {
+            const update = positionUpdates.get(img.id);
+            return update ? { ...img, position: update } : img;
           }),
-        })),
-      );
+        );
+      }
 
-      onCanvasImagesChange((prevImages) =>
-        prevImages.map((img) => {
-          const update = positionUpdates.get(img.id);
-          return update ? { ...img, position: update } : img;
-        }),
-      );
+      if (removedIds.size > 0) {
+        onGroupsChange((prevGroups) =>
+          prevGroups
+            .map((group) => ({
+              ...group,
+              iterations: group.iterations.filter((iter) => !removedIds.has(iter.id)),
+            }))
+            .filter((group) => group.iterations.length > 0),
+        );
+        onCanvasImagesChange((prevImages) => prevImages.filter((img) => !removedIds.has(img.id)));
+      }
     },
     [onGroupsChange, onCanvasImagesChange],
-  );
-
-  const updateSelectionFromChanges = useCallback(
-    (changes: NodeChange[]) => {
-      const selectionChanges = new Map<string, boolean>();
-      for (const change of changes) {
-        if (change.type === "select") {
-          selectionChanges.set(change.id, change.selected);
-        }
-      }
-
-      if (selectionChanges.size === 0) return;
-
-      onSelectedIdsChange((prev) => {
-        const next = new Set(prev);
-        for (const [id, selected] of selectionChanges) {
-          if (selected) {
-            next.add(id);
-          } else {
-            next.delete(id);
-          }
-        }
-        return next;
-      });
-    },
-    [onSelectedIdsChange],
-  );
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      setNodes((prev) => applyNodeChanges(changes, prev));
-      updatePositionsFromChanges(changes);
-      updateSelectionFromChanges(changes);
-    },
-    [updatePositionsFromChanges, updateSelectionFromChanges],
   );
 
   const onNodeDragStart = useCallback(
@@ -269,8 +214,7 @@ export const CanvasArea = ({
 
   const onSelectionChange = useCallback(
     ({ nodes: selectedNodes }: { nodes: Node[] }) => {
-      const ids = new Set(selectedNodes.map((n) => n.id));
-      onSelectedIdsChange(ids);
+      onSelectedIdsChange(new Set(selectedNodes.map((n) => n.id)));
     },
     [onSelectedIdsChange],
   );
@@ -305,19 +249,30 @@ export const CanvasArea = ({
     [onContextMenu],
   );
 
+  const ctx = useMemo(
+    () => ({
+      isSelectMode,
+      isCommentMode,
+      selectedIds,
+      pipelineStages,
+      onAddComment,
+      onClickComment,
+    }),
+    [isSelectMode, isCommentMode, selectedIds, pipelineStages, onAddComment, onClickComment],
+  );
+
   return (
     <div
-      ref={reactFlowWrapper}
       className="absolute inset-0 canvas-dots"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onContextMenu={handleContextMenu}
     >
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
+      <FlowCanvas
+        views={calcaViews}
+        data={ctx}
         nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
+        onCommandsApplied={onCommandsApplied}
         onSelectionChange={onSelectionChange}
         onPaneClick={onPaneClick}
         onNodeDragStart={onNodeDragStart}
@@ -342,7 +297,7 @@ export const CanvasArea = ({
         <Controls className="!bottom-4 !left-4" />
 
         {toolbar && <Panel position="bottom-center">{toolbar}</Panel>}
-      </ReactFlow>
+      </FlowCanvas>
 
       {groups.length === 0 && canvasImages.length === 0 && emptyTitle && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
