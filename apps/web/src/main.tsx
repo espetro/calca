@@ -1,7 +1,7 @@
 import { initAnalytics } from "@app/analytics";
 import { createLogger } from "@app/logger";
-import { copyFrames, pasteFrames, groupsAtom } from "@calca/canvas-base";
-import { canvasOffsetAtom, canvasScaleAtom } from "@calca/canvas-base";
+import { copyFrames, pasteFrames, groupsAtom } from "@calca/canvas-flow";
+import { canvasOffsetAtom, canvasScaleAtom } from "@calca/canvas-flow";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { createStore, Provider } from "jotai";
 import { StrictMode } from "react";

@@ -181,11 +181,8 @@
     "packages/canvas-base": {
       "name": "@calca/canvas-base",
       "version": "0.6.1",
-      "dependencies": {
-        "@calca/shared": "workspace:*",
-        "jotai": "^2.19.1",
-      },
       "devDependencies": {
+        "@standard-schema/spec": "^1.0.0",
         "typescript": "catalog:",
         "vitest": "catalog:",
       },
