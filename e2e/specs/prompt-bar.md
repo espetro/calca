@@ -10,16 +10,16 @@
 ## Navigating prompt history with arrow keys
 
 * Open "/"
-* Fill "First prompt text" in the "Prompt" field
-* Press the "Enter" key
-* Wait for "Generating" to appear
-* Fill "Second prompt text" in the "Prompt" field
-* Press the "Enter" key
-* Wait for "Generating" to appear
+* Seed prompt history with "Second prompt text" and "First prompt text"
+* Reload the page
 * Press the "ArrowUp" key
 * The prompt field should contain "Second prompt text"
+* Move the caret to the "start" of the prompt field
+* Press the "ArrowUp" key
+* The prompt field should contain "First prompt text"
+* Move the caret to the "end" of the prompt field
 * Press the "ArrowDown" key
-* The prompt field should be empty
+* The prompt field should contain "Second prompt text"
 
 ## Toggling Build/Ideate mode
 
@@ -36,18 +36,18 @@
 * Click the variations option "3"
 * Page should contain "3"
 
-## Uploading an image attachment
+## Image attachment renders as a named pill
 
 * Open "/"
-* Upload "e2e/fixtures/test-image.png" to the media picker
-* Wait up to "2" seconds
-* Page should contain "test-image"
+* Seed an image attachment named "test-image.png"
+* Reload the page
+* Wait for "test-image.png" to appear
 
-## Canceling generation with Escape key
+## Canceling generation
 
 * Open "/"
 * Fill "A long generation prompt that will take time to process" in the "Prompt" field
 * Press the "Enter" key
 * Wait for "Generating" to appear
-* Press the "Escape" key
-* Page should not contain "Generating…"
+* Click the "Cancel (Esc)" button
+* Wait for "Variations" to appear

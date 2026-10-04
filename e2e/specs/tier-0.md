@@ -5,11 +5,12 @@ user. Scenarios run in order and share the canvas state produced earlier.
 
 ## Cold open shows onboarding, dismiss leaves a usable prompt bar
 
-* Reset the onboarding flag
 * Open "/"
+* Reset the onboarding flag
+* Reload the page
 * Wait for "Welcome to Calca" to appear
 * Click the "Skip for now" button
-* Page should contain "Prompt"
+* Page should show the prompt bar
 * Page should contain "Build"
 
 ## Prompt to rendered frame, persisted across reload

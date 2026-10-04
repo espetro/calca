@@ -27,7 +27,7 @@ export function findRef(snap: string, label: string): string {
     const m = line.match(/"([^"]+)"/);
     if (!m) continue;
     const name = m[1].toLowerCase();
-    const ref = line.match(/\[ref=(\w+)\]/);
+    const ref = line.match(/ref=(\w+)/);
     if (!ref) continue;
     if (name === needle) return `@${ref[1]}`;
     if (partial === null && name.includes(needle)) partial = `@${ref[1]}`;

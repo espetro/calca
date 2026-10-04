@@ -19,5 +19,5 @@
 * Press the "Enter" key
 * Wait for node "Variation 1" to render
 * Select the first canvas node
-* Click the "Remix" button
-* Page should contain "Custom"
+* Hover the "remix-button" control
+* Wait for "Custom" to appear

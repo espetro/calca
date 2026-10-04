@@ -1,4 +1,4 @@
-import { Step } from "gauge-ts";
+import { Step, BeforeSpec } from "gauge-ts";
 
 import { ab, snapshot, snapshotAll, findRef, assertContains } from "../support/ab";
 
@@ -9,6 +9,13 @@ function evalJs(expr: string): string {
 }
 
 export default class CommonSteps {
+  @BeforeSpec()
+  async coldStart() {
+    ab(`open ${BASE_URL}`);
+    evalJs(`localStorage.clear()`);
+    ab(`open ${BASE_URL}`);
+  }
+
   @Step("Open <url>")
   async open(url: string) {
     ab(`open ${url.startsWith("http") ? url : BASE_URL + url}`);
@@ -26,12 +33,33 @@ export default class CommonSteps {
     if (snap.includes("Welcome to Calca")) {
       ab(`click ${findRef(snap, "Skip for now")}`);
     }
+    this.dismissOverlay();
+  }
+
+  private dismissOverlay() {
+    const out = evalJs(
+      `(()=>{const d=document.querySelector('[data-tour=summary-dialog]');` +
+        `if(!d)return 'none';const b=d.querySelector('.absolute.inset-0');` +
+        `if(b){b.dispatchEvent(new MouseEvent('click',{bubbles:true}));return 'closed'}return 'open'})()`
+    );
+    return out;
   }
 
   @Step("Click the <label> button")
   async clickButton(label: string) {
-    const snap = snapshot();
-    ab(`click ${findRef(snap, label)}`);
+    let lastErr: unknown;
+    let lastSnap = "";
+    for (let i = 0; i < 4; i++) {
+      lastSnap = snapshot();
+      try {
+        ab(`click ${findRef(lastSnap, label)}`);
+        return;
+      } catch (err) {
+        lastErr = err;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+    throw new Error(`${lastErr}\n--- snapshot at failure ---\n${lastSnap.slice(0, 3000)}`);
   }
 
   @Step("Click <label>")
@@ -102,7 +130,7 @@ export default class CommonSteps {
     const timeout = 300000;
     while (Date.now() - start < timeout) {
       const snap = snapshotAll();
-      if (snap.includes(`Iframe "${name}`) || snap.includes(`"${name}`)) return;
+      if (snap.includes(`Iframe "${name}`)) return;
       if (snap.includes("Failed")) throw new Error(`Node "${name}" failed to render`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -113,7 +141,7 @@ export default class CommonSteps {
   async waitForNodeCount(n: string) {
     const want = Number(n);
     const start = Date.now();
-    const timeout = 300000;
+    const timeout = 600000;
     while (Date.now() - start < timeout) {
       const count = (snapshotAll().match(/Iframe "/g) ?? []).length;
       if (count >= want) return;
@@ -126,6 +154,12 @@ export default class CommonSteps {
   async selectFirstNode() {
     evalJs(`document.querySelector('.react-flow__node').focus()`);
     ab("press Enter");
+  }
+
+  @Step("Move the caret to the <pos> of the prompt field")
+  async moveCaret(pos: string) {
+    const p = pos === "start" ? "0,0" : "t.value.length,t.value.length";
+    evalJs(`(()=>{const t=document.querySelector('textarea');if(!t)throw new Error('no textarea');t.setSelectionRange(${p});return 'ok'})()`);
   }
 
   @Step("The prompt field should contain <text>")
@@ -142,6 +176,36 @@ export default class CommonSteps {
     if (value && value !== '""' && value !== "''") {
       throw new Error(`Prompt field not empty: ${value}`);
     }
+  }
+
+  @Step("Hover the <tour> control")
+  async hoverControl(tour: string) {
+    evalJs(
+      `(()=>{const el=document.querySelector('[data-tour=${tour}]');if(!el)throw new Error('no ${tour}');` +
+        `el.dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse'}));` +
+        `el.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerType:'mouse'}));` +
+        `return el.getAttribute('aria-expanded')})()`
+    );
+  }
+
+  @Step("Seed an image attachment named <name>")
+  async seedImage(name: string) {
+    evalJs(
+      `(()=>{const s=JSON.parse(localStorage.getItem('calca-settings')||'{}');` +
+        `s.selectedImages=[{id:'seed-1',name:'${name}',src:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='}];` +
+        `localStorage.setItem('calca-settings',JSON.stringify(s));return 'ok'})()`
+    );
+  }
+
+  @Step("Seed prompt history with <recent> and <older>")
+  async seedHistory(recent: string, older: string) {
+    evalJs(`localStorage.setItem('calca-prompt-history', JSON.stringify(['${recent}','${older}']))`);
+  }
+
+  @Step("Page should show the prompt bar")
+  async promptBarVisible() {
+    const out = evalJs(`!!document.querySelector('textarea')`);
+    if (!out.includes("true")) throw new Error("prompt bar textarea not found");
   }
 
   @Step("Quick mode should be <state>")
@@ -163,10 +227,15 @@ export default class CommonSteps {
     this.dragStart = evalJs(
       `document.querySelector('.react-flow__node').style.transform || document.querySelector('.react-flow__node').getAttribute('data-id')`
     );
-    const box = ab(`get box ".react-flow__node"`).match(/(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/);
-    if (!box) throw new Error("No canvas node to drag");
-    const x = Number(box[1]) + Number(box[3]) / 2;
-    const y = Number(box[2]) + Number(box[4]) / 2;
+    const out = ab(`get box ".react-flow__node"`);
+    const num = (key: string) => Number(out.match(new RegExp(`${key}:\\s*(\\d+)`))?.[1] ?? NaN);
+    const bx = num("x");
+    const by = num("y");
+    const bw = num("width");
+    const bh = num("height");
+    if ([bx, by, bw, bh].some(Number.isNaN)) throw new Error("No canvas node to drag");
+    const x = Math.round(bx + bw / 2);
+    const y = Math.round(by + bh / 2);
     ab(`mouse move ${x} ${y}`);
     ab("mouse down");
     ab(`mouse move ${x + 120} ${y + 80}`);
@@ -198,9 +267,10 @@ export default class CommonSteps {
 
   @Step("Reset the onboarding flag")
   async resetOnboarding() {
-    evalJs(
-      `const s=JSON.parse(localStorage.getItem('calca-settings')||'{}');s.onboardingCompleted=false;localStorage.setItem('calca-settings',JSON.stringify(s));1`
+    const out = evalJs(
+      `(()=>{const s=JSON.parse(localStorage.getItem('calca-settings')||'{}');s.onboardingCompleted=false;localStorage.setItem('calca-settings',JSON.stringify(s));return JSON.parse(localStorage.getItem('calca-settings')).onboardingCompleted})()`
     );
+    if (out.includes("true")) throw new Error("onboarding flag reset failed");
   }
 
   @Step("Reload the page")

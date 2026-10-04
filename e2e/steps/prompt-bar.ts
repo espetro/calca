@@ -4,8 +4,8 @@ import { ab, snapshot, findRef } from "../support/ab";
 
 export default class PromptBarSteps {
   @Step("Click the variations option <value>")
-  async clickVariationsOption(value: string) {
+  async clickVariationsOption(value: string | number) {
     const snap = snapshot();
-    ab(`click ${findRef(snap, value)}`);
+    ab(`click ${findRef(snap, String(value))}`);
   }
 }
