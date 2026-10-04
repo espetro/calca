@@ -282,6 +282,20 @@
         "vitest": "catalog:",
       },
     },
+    "packages/mcp-core": {
+      "name": "@calca/mcp-core",
+      "version": "0.6.1",
+      "dependencies": {
+        "@calca/canvas-base": "workspace:*",
+      },
+      "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.5",
+        "publint": "^0.3.25",
+        "tsdown": "^0.23.0",
+        "typescript": "catalog:",
+        "vitest": "catalog:",
+      },
+    },
     "packages/pipeline": {
       "name": "@calca/pipeline",
       "version": "0.6.1",
@@ -499,6 +513,8 @@
     "@calca/canvas-flow": ["@calca/canvas-flow@workspace:packages/canvas-flow"],
 
     "@calca/canvas-ui": ["@calca/canvas-ui@workspace:packages/canvas-ui"],
+
+    "@calca/mcp-core": ["@calca/mcp-core@workspace:packages/mcp-core"],
 
     "@calca/pipeline": ["@calca/pipeline@workspace:packages/pipeline"],
 
