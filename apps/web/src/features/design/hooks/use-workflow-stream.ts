@@ -1,5 +1,5 @@
 import { getLogger } from "@app/logger";
-import { groupsAtom } from "@calca/canvas-base";
+import { groupsAtom } from "@calca/canvas-flow";
 import { useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
 

@@ -1,5 +1,5 @@
 import { trackExportComplete } from "@app/analytics";
-import { groupsAtom, hydrateGroups, resetSessionAtom } from "@calca/canvas-base";
+import { groupsAtom, hydrateGroups, resetSessionAtom } from "@calca/canvas-flow";
 import { CanvasArea, CanvasProvider, useCanvas } from "@calca/canvas-flow";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";

@@ -4,8 +4,8 @@ import {
   copyFrames,
   cutFrames,
   pasteFrames,
-} from "@calca/canvas-base";
-import { groupsAtom } from "@calca/canvas-base";
+} from "@calca/canvas-flow";
+import { groupsAtom } from "@calca/canvas-flow";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRef } from "react";
 

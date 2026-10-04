@@ -1,4 +1,4 @@
-import { groupsAtom } from "@calca/canvas-base";
+import { groupsAtom } from "@calca/canvas-flow";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo, useRef } from "react";
 

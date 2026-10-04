@@ -1,4 +1,4 @@
-import { groupsAtom } from "@calca/canvas-base";
+import { groupsAtom } from "@calca/canvas-flow";
 import { useAtomValue } from "jotai";
 
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";

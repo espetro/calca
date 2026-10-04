@@ -6,6 +6,8 @@ import { join } from "node:path";
 import { $ } from "bun";
 
 const MANIFESTS_CHECK = join(import.meta.dir, "check-workspace-manifests.ts");
+const BOUNDARIES_CHECK = join(import.meta.dir, "check-canvas-boundaries.ts");
+const BUDGETS_CHECK = join(import.meta.dir, "check-bundle-budgets.ts");
 
 interface Stage {
   display: string;
@@ -43,7 +45,19 @@ const quickStages: Stage[] = [
   { display: "Format", cmd: "format" },
 ];
 
-const stages: Stage[] = [...quickStages, { display: "Test", cmd: "test" }];
+const stages: Stage[] = [
+  ...quickStages,
+  { display: "Test", cmd: "test" },
+  {
+    display: "Canvas build",
+    cmd: "bunx turbo build --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow",
+    raw: true,
+  },
+  { display: "Pack (publint/attw)", cmd: "check:pack" },
+  { display: "Boundaries", cmd: `bun ${BOUNDARIES_CHECK}`, raw: true },
+  { display: "Budgets", cmd: `bun ${BUDGETS_CHECK}`, raw: true },
+  { display: "Smoke", cmd: "bun packages/canvas-base/smoke.mjs", raw: true },
+];
 
 const runStage = async (
   { display, cmd, raw, onError }: Stage,
@@ -93,7 +107,14 @@ const main = async () => {
   const { filter, quick } = await parseArgs();
 
   const activeStages = quick ? quickStages : stages;
-  const results = await Promise.all(activeStages.map((stage) => runStage(stage, filter)));
+  // Canvas dist must exist before pack/budgets/smoke run.
+  const buildStage = activeStages.find((s) => s.display === "Canvas build");
+  const rest = activeStages.filter((s) => s !== buildStage);
+  const results: StageOutput[] = [];
+  if (buildStage) {
+    results.push(await runStage(buildStage, filter));
+  }
+  results.push(...(await Promise.all(rest.map((stage) => runStage(stage, filter)))));
 
   for (const { line } of results) {
     console.log(line);

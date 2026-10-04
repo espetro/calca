@@ -3,36 +3,45 @@
   "version": "0.6.1",
   "private": false,
   "license": "Apache-2.0",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "echo 'build: not yet implemented'",
+    "build": "tsdown",
     "typecheck": "bunx tsc --noEmit",
     "lint": "oxlint --fix .",
     "format": "oxfmt --write .",
     "test": "vitest run --passWithNoTests",
     "clean": "rm -rf dist",
-    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD",
+    "check:pack": "publint && attw --pack . --profile esm-only"
   },
   "dependencies": {
     "@calca/canvas-base": "workspace:*",
     "@calca/canvas-ui": "workspace:*",
     "@calca/shared": "workspace:*",
     "@xyflow/react": "^12.11.1",
-    "jotai": "^2.19.1",
-    "zod": "catalog:"
+    "jotai": "^2.19.1"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "publint": "^0.3.25",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "tsdown": "^0.23.0",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
