@@ -17,16 +17,19 @@ import { createCanvasStore, generateKeyBetween } from "@calca/canvas-base";
 const store = createCanvasStore();
 store.addEventListener("change", (e) => console.log(e.detail));
 
-store.apply([
-  {
-    op: "create-shape",
-    record: {
-      id: "frame-1",
-      type: "frame",
-      parentId: null,
-      index: generateKeyBetween(null, null),
-      props: { x: 0, y: 0, w: 640, h: 480 },
+store.apply(
+  [
+    {
+      op: "create-shape",
+      record: {
+        id: "frame-1",
+        type: "frame",
+        parentId: null,
+        index: generateKeyBetween(null, null),
+        props: { x: 0, y: 0, w: 640, h: 480 },
+      },
     },
-  },
-], { origin: "agent" });
+  ],
+  { origin: "agent" },
+);
 ```

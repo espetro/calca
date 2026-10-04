@@ -2,7 +2,7 @@
   "name": "calca",
   "version": "0.6.1",
   "private": true,
-  "description": "AI design tool with infinite canvas — vibe coding for design",
+  "description": "AI design tool with infinite canvas \u2014 vibe coding for design",
   "license": "AGPL-3.0",
   "workspaces": [
     "apps/*",
@@ -28,7 +28,8 @@
     "validate": "bun scripts/validate.ts",
     "validate:quick": "bun scripts/validate.ts --quick",
     "check:manifests": "bun scripts/check-workspace-manifests.ts",
-    "postinstall": "bun scripts/install-git-hooks.ts"
+    "postinstall": "bun scripts/install-git-hooks.ts",
+    "check:knip": "knip"
   },
   "dependencies": {
     "@ai-sdk/provider-utils": "^4.0.23",
@@ -44,6 +45,7 @@
     "@types/react-dom": "^19.2.3",
     "gauge-ts": "^0.3.6",
     "jsdom": "^29.0.2",
+    "knip": "^6.39.0",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "turbo": "^2.4.0",
