@@ -15,7 +15,7 @@ user. Scenarios run in order and share the canvas state produced earlier.
 
 ## Prompt to rendered frame, persisted across reload
 
-* Open "/"
+* Open "/?quick=1"
 * Fill "A minimal hero section for a bakery" in the "Prompt" field
 * Press the "Enter" key
 * Wait for node "Variation 1" to render
@@ -32,5 +32,6 @@ user. Scenarios run in order and share the canvas state produced earlier.
 ## Canvas node can be dragged
 
 * Open "/"
+* Switch to the Select tool
 * Drag the first canvas node
 * The first canvas node should have moved

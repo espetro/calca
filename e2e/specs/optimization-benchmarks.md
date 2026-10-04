@@ -5,7 +5,7 @@ fast loops — run nightly or before releases.
 
 ## Repeated generation succeeds twice
 
-* Open "/"
+* Open "/?quick=1"
 * Fill "A pricing card with a buy button" in the "Prompt" field
 * Press the "Enter" key
 * Wait for node "Variation 1" to render

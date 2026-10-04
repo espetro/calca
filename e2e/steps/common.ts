@@ -12,6 +12,13 @@ export default class CommonSteps {
   @BeforeSpec()
   async coldStart() {
     ab(`open ${BASE_URL}`);
+    // Canvas images live in IndexedDB (calca-canvas-images) — localStorage.clear
+    // alone leaves stale nodes findable by waitForNode across runs.
+    evalJs(
+      `(async()=>{const ds=await(indexedDB.databases?indexedDB.databases():[]);`
+      + `await Promise.all(ds.map(d=>new Promise(r=>{`
+      + `const q=indexedDB.deleteDatabase(d.name);`
+      + `q.onsuccess=q.onerror=q.onblocked=()=>r(0)})))})()`);
     evalJs(`localStorage.clear()`);
     ab(`open ${BASE_URL}`);
   }
@@ -236,9 +243,9 @@ export default class CommonSteps {
     if ([bx, by, bw, bh].some(Number.isNaN)) throw new Error("No canvas node to drag");
     const x = Math.round(bx + bw / 2);
     const y = Math.round(by + bh / 2);
-    ab(`mouse move ${x} ${y}`);
+    ab(`mouse move ${x} ${y} --steps 3`);
     ab("mouse down");
-    ab(`mouse move ${x + 120} ${y + 80}`);
+    ab(`mouse move ${x + 120} ${y + 80} --steps 15 --duration 600`);
     ab("mouse up");
   }
 
@@ -263,6 +270,26 @@ export default class CommonSteps {
   @Step("Wait up to <seconds> seconds")
   async waitSeconds(seconds: string) {
     await new Promise((resolve) => setTimeout(resolve, Number(seconds) * 1000));
+  }
+
+  @Step("Clear the attachments")
+  async clearAttachments() {
+    evalJs(
+      `(()=>{const s=JSON.parse(localStorage.getItem('calca-settings')||'{}');delete s.selectedImages;localStorage.setItem('calca-settings',JSON.stringify(s));return 'ok'})()`,
+    );
+    ab(`open ${BASE_URL}`);
+    const start = Date.now();
+    while (Date.now() - start < 15000) {
+      if (snapshot().includes("Prompt")) return;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    throw new Error("App did not reload after clearing attachments");
+  }
+
+  @Step("Switch to the Select tool")
+  async selectTool() {
+    evalJs(`document.activeElement && document.activeElement.blur()`);
+    evalJs(`window.dispatchEvent(new KeyboardEvent('keydown',{key:'v',bubbles:true}))`);
   }
 
   @Step("Reset the onboarding flag")

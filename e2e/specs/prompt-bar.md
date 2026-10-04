@@ -33,7 +33,7 @@
 
 * Open "/"
 * Click the "Variations" button
-* Click the variations option "3"
+* Set the variations count to "3"
 * Page should contain "3"
 
 ## Image attachment renders as a named pill
@@ -46,6 +46,7 @@
 ## Canceling generation
 
 * Open "/"
+* Clear the attachments
 * Fill "A long generation prompt that will take time to process" in the "Prompt" field
 * Press the "Enter" key
 * Wait for "Generating" to appear
