@@ -29,7 +29,9 @@ export function createCalcaMcpServer(session: CanvasSession): Server {
     try {
       const result = await tool.handler(session, request.params.arguments ?? {});
       return {
-        structuredContent: result as Record<string, unknown>,
+        ...(typeof result === "object" && result !== null
+          ? { structuredContent: result as Record<string, unknown> }
+          : {}),
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
     } catch (error) {

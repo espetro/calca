@@ -69,7 +69,8 @@
     },
     "check:pack": {
       "dependsOn": [
-        "^build"
+        "^build",
+        "build"
       ],
       "outputs": []
     }

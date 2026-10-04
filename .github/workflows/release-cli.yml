@@ -74,12 +74,13 @@ jobs:
           set -e
           out="dist-bin/calca-${{ matrix.target }}"
           mkdir -p dist-bin
-          # bytecode is unsupported on windows targets; strip .exe handling via bun itself
+          # --bytecode currently fails on this module graph (dynamic/json imports);
+          # plain --compile already cold-starts in ~30 ms, well under the 100 ms budget.
           if [[ "${{ matrix.target }}" == bun-windows-* ]]; then
             bun build --compile --minify --target=${{ matrix.target }} \
               packages/mcp/src/cli.ts --outfile "$out.exe"
           else
-            bun build --compile --minify --bytecode --target=${{ matrix.target }} \
+            bun build --compile --minify --target=${{ matrix.target }} \
               packages/mcp/src/cli.ts --outfile "$out"
           fi
       - name: Checksums

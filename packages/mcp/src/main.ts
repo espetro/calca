@@ -9,7 +9,7 @@ export const main = defineCommand({
     description: "Calca — agent playground CLI (MCP canvas tools)",
   },
   subCommands: {
-    mcp: () => import("./commands/mcp.ts").then((r) => r.mcpCommand),
-    open: () => import("./commands/open.ts").then((r) => r.openCommand),
+    mcp: () => import("./commands/mcp").then((r) => r.mcpCommand),
+    open: () => import("./commands/open").then((r) => r.openCommand),
   },
 });

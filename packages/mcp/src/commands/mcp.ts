@@ -2,8 +2,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { defineCommand } from "citty";
 import { consola } from "consola";
 
-import { createCalcaMcpServer } from "../server.ts";
-import { loadSession } from "../session.ts";
+import { createCalcaMcpServer } from "../server";
+import { loadSession } from "../session";
 
 export const mcpCommand = defineCommand({
   meta: {
@@ -22,7 +22,7 @@ export const mcpCommand = defineCommand({
     },
   },
   subCommands: {
-    install: () => import("../install.ts").then((r) => r.installCommand),
+    install: () => import("../install").then((r) => r.installCommand),
   },
   async run({ args }) {
     const session = await loadSession({ file: args.file, agentId: args.agent });

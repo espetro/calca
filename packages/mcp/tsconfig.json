@@ -4,8 +4,8 @@
     "outDir": "dist",
     "rootDir": "src",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "verbatimModuleSyntax": true,
-    "isolatedDeclarations": true
+    "types": ["node"],
+    "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

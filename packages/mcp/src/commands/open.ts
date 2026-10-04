@@ -20,12 +20,12 @@ export const openCommand = defineCommand({
   async run({ args }) {
     const snapshot = JSON.parse(await readFile(args.file, "utf8"));
     const session = createCanvasSession({ snapshot, agentId: "cli" });
-    const shapes = session.store.records;
+    const records = session.store.all();
     const byType = new Map<string, number>();
-    for (const record of shapes.values()) {
+    for (const record of records) {
       byType.set(record.type, (byType.get(record.type) ?? 0) + 1);
     }
-    consola.info(`${args.file}: ${shapes.size} record(s)`);
+    consola.info(`${args.file}: ${records.length} record(s)`);
     for (const [type, count] of [...byType].toSorted()) {
       consola.log(`  ${type}: ${count}`);
     }

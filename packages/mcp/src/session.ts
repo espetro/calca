@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 
+import type { CanvasSnapshot } from "@calca/canvas-base";
 import { createCanvasSession, type CanvasSession } from "@calca/mcp-core";
 import { consola } from "consola";
 
@@ -9,7 +10,7 @@ export interface LoadSessionOptions {
 }
 
 export async function loadSession(options: LoadSessionOptions): Promise<CanvasSession> {
-  let snapshot: unknown;
+  let snapshot: CanvasSnapshot | undefined;
   if (options.file) {
     try {
       snapshot = JSON.parse(await readFile(options.file, "utf8"));

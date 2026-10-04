@@ -1,2 +1,2 @@
-export { createCalcaMcpServer } from "./server.ts";
-export { loadSession, type LoadSessionOptions } from "./session.ts";
+export { createCalcaMcpServer } from "./server";
+export { loadSession, type LoadSessionOptions } from "./session";
