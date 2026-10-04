@@ -19,7 +19,8 @@
       "@calca/canvas-base",
       "@calca/canvas-ui",
       "@calca/canvas-flow",
-      "@calca/mcp-core"
+      "@calca/mcp-core",
+      "@calca/mcp"
     ]
   ],
   "linked": [],
