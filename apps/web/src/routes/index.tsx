@@ -194,8 +194,9 @@ function HomeInner() {
   });
 
   useMountEffect(() => {
-    if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
-      setSettings((prev) => ({ ...prev, quickMode: true }));
+    const quickMode = new URLSearchParams(window.location.search).get("quickMode");
+    if (quickMode === "true" || quickMode === "false") {
+      setSettings((prev) => ({ ...prev, quickMode: quickMode === "true" }));
     }
   });
 
@@ -267,7 +268,21 @@ function HomeInner() {
       const file = e.target.files?.[0];
       if (!file) return;
       readCanvasFile(file)
-        .then(({ groups: importedGroups }) => setGroups(importedGroups))
+        .then(({ groups: importedGroups }) => {
+          setGroups(importedGroups);
+          const bounds = importedGroups
+            .flatMap((g) => g.iterations)
+            .reduce(
+              (acc, it) => ({
+                minX: Math.min(acc.minX, it.position.x),
+                minY: Math.min(acc.minY, it.position.y),
+                maxX: Math.max(acc.maxX, it.position.x + it.width),
+                maxY: Math.max(acc.maxY, it.position.y + it.height),
+              }),
+              { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity },
+            );
+          if (Number.isFinite(bounds.minX)) canvas.zoomToFit(bounds);
+        })
         .catch((error) => {
           console.error("Canvas import failed", error);
           toast.error(error instanceof Error ? error.message : "Failed to import file");
@@ -276,7 +291,7 @@ function HomeInner() {
           e.target.value = "";
         });
     },
-    [setGroups],
+    [setGroups, canvas],
   );
 
   return (

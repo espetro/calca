@@ -31,12 +31,19 @@ export const summaryStep: Step<SummaryInput, SummaryOutput> = async (input, ctx:
   });
 
   const raw = result.text;
-  try {
-    const parsed = JSON.parse(raw);
-    const validated = validateSummary(parsed);
-    return { summary: JSON.stringify(validated) };
-  } catch (error) {
-    ctx.logger.warn("Summary validation failed:", { error });
-    return { summary: raw };
+  const candidates = [raw];
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenced) candidates.push(fenced[1].trim());
+  const first = raw.indexOf("{");
+  const last = raw.lastIndexOf("}");
+  if (first >= 0 && last > first) candidates.push(raw.slice(first, last + 1));
+
+  for (const candidate of candidates) {
+    try {
+      const validated = validateSummary(JSON.parse(candidate));
+      return { summary: JSON.stringify(validated) };
+    } catch {}
   }
+  ctx.logger.warn("Summary validation failed:", { raw: raw.slice(0, 200) });
+  return { summary: raw };
 };

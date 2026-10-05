@@ -8,7 +8,7 @@ interface OnboardingBannerProps {
 
 const OnboardingBanner = ({ onClick }: OnboardingBannerProps) => {
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40">
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40">
       <Button
         variant="secondary"
         className={cn(
