@@ -37,7 +37,7 @@ export default function Footer() {
           <div className="max-w-xs">
             <Mark withWordmark size={26} />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              The open canvas layer. Apache-2.0 libraries, AGPL-3.0 app, BYOK always.
+              The open canvas layer. Open source end to end, BYOK always.
             </p>
           </div>
           <nav className="grid grid-cols-2 gap-10 sm:grid-cols-3">

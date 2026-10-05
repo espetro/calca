@@ -27,10 +27,10 @@ export default function OpenLayer() {
             can drive.
           </h2>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            Calca ships as npm packages, not just an app. The document model, the React Flow
-            adapter, the MCP tool surface, and the agent seam are Apache-2.0. Build your own
-            surface, or hand Claude, Cursor, or Codex a board file and let it arrange, comment, and
-            propose.
+            Calca ships as open-source npm packages, not just an app. The document model, the React
+            Flow adapter, the MCP tool surface, and the agent seam are all yours to build on. Make
+            your own surface, or hand Claude, Cursor, or Codex a board file and let it arrange,
+            comment, and propose.
           </p>
           <a
             href={LINKS.docs}
@@ -63,9 +63,6 @@ calca open board.json`}</code>
                   <p className="font-mono text-[13px] font-medium text-foreground">{pkg.name}</p>
                   <p className="truncate text-xs text-muted-foreground">{pkg.role}</p>
                 </div>
-                <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 font-mono text-[11px] text-secondary-foreground">
-                  Apache-2.0
-                </span>
               </li>
             ))}
             <li className="flex items-center justify-between gap-4 px-5 py-3">
@@ -75,11 +72,9 @@ calca open board.json`}</code>
                   the Calca app itself, web + desktop
                 </p>
               </div>
-              <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 font-mono text-[11px] text-secondary-foreground">
-                AGPL-3.0
-              </span>
             </li>
           </ul>
+          <p className="mt-3 text-xs text-muted-foreground">Every package above is open source.</p>
         </div>
       </div>
     </section>
