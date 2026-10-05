@@ -119,22 +119,24 @@ function debouncedPersistImages(images: CanvasImage[]): void {
   }, 500);
 }
 
-export async function hydrateImages(setImages: (imgs: CanvasImage[]) => void): Promise<void> {
+export async function hydrateImages(
+  setImages: (imgs: CanvasImage[] | ((p: CanvasImage[]) => CanvasImage[])) => void,
+): Promise<void> {
   try {
     const db = await openDB();
     const stored = await dbGet<StoredImage[]>(db, "canvas-images");
     if (stored && stored.length > 0) {
-      setImages(
-        stored.map((s) => ({
-          dataUrl: s.compressedDataUrl,
-          height: s.height,
-          id: s.id,
-          name: s.name,
-          position: s.position,
-          thumbnail: s.thumbnail,
-          width: s.width,
-        })),
-      );
+      const restored = stored.map((s) => ({
+        dataUrl: s.compressedDataUrl,
+        height: s.height,
+        id: s.id,
+        name: s.name,
+        position: s.position,
+        thumbnail: s.thumbnail,
+        width: s.width,
+      }));
+      // Apply only if nothing was written while the async read was in flight.
+      setImages((prev) => (prev.length === 0 ? restored : prev));
     }
   } catch (error) {
     logger.debug("Failed to load canvas images", {
