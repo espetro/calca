@@ -1,16 +1,12 @@
 import { getLogger } from "@app/logger";
-import { Clipboard, Download, Loader, LucideProps } from "lucide-react";
+import { ChevronDown, Clipboard, Download, Loader, LucideProps } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
 import { BsFiletypeJpg, BsFiletypePng, BsFiletypeSvg } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib";
 import { SiReact, SiTailwindcss } from "react-icons/si";
 
 import useExportCodeMutation from "#/features/design/hooks/use-export-code-mutation";
-import {
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
-} from "#/shared/components/ui/navigation-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
 type CodeExportFormat = "tailwind" | "react";
 type ImageExportFormat = "svg" | "png" | "jpg" | "copy-image";
@@ -221,6 +217,7 @@ export function ExportMenu({
 }: ExportMenuProps) {
   const [exporting, setExporting] = useState<ExportFormat | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const { mutateAsync } = useExportCodeMutation();
 
@@ -297,20 +294,31 @@ export function ExportMenu({
 
   return (
     <>
-      <NavigationMenuItem>
-        <NavigationMenuTrigger className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-gray-600 hover:bg-gray-100/80 hover:text-gray-800 transition-all duration-200 rounded-xl group">
-          <Download className="w-4 h-4" />
-          <span>Export</span>
-        </NavigationMenuTrigger>
+      <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+        <PopoverTrigger asChild>
+          <button className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-gray-600 hover:bg-gray-100/80 hover:text-gray-800 transition-all duration-200 rounded-xl group">
+            <Download className="w-4 h-4" />
+            <span>Export</span>
+            <ChevronDown className="w-3 h-3 transition-transform group-data-[state=open]:rotate-180" />
+          </button>
+        </PopoverTrigger>
 
-        <NavigationMenuContent className="w-[240px] md:w-[240px] bg-white/60 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1 rounded-xl">
+        <PopoverContent
+          align="center"
+          side="bottom"
+          sideOffset={8}
+          className="w-[240px] bg-white/60 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1 rounded-xl"
+        >
           <div className="px-2.5 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
             Image
           </div>
           {IMAGE_FORMATS.map((fmt) => (
             <button
               key={fmt.id}
-              onPointerDown={() => handleExport(fmt.id)}
+              onClick={() => {
+                handleExport(fmt.id);
+                setMenuOpen(false);
+              }}
               disabled={exporting !== null}
               className="w-full rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer text-left px-2.5 py-1.5 flex items-center gap-2 disabled:opacity-40"
             >
@@ -329,7 +337,10 @@ export function ExportMenu({
           {CODE_FORMATS.map((fmt) => (
             <button
               key={fmt.id}
-              onPointerDown={() => handleExport(fmt.id)}
+              onClick={() => {
+                handleExport(fmt.id);
+                setMenuOpen(false);
+              }}
               disabled={exporting !== null}
               className="w-full rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer text-left px-2.5 py-1.5 flex items-center gap-2 disabled:opacity-40"
             >
@@ -340,8 +351,8 @@ export function ExportMenu({
               )}
             </button>
           ))}
-        </NavigationMenuContent>
-      </NavigationMenuItem>
+        </PopoverContent>
+      </Popover>
 
       {/* Loading indicator */}
       {exporting && <LoadingIndicator />}

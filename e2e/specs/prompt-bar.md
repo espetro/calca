@@ -2,71 +2,64 @@
 
 ## Submitting a prompt with Enter key
 
-- Open "https://calca.localhost"
-- Page should contain "Describe a design..."
-- Fill "A modern pricing card with three tiers: Starter, Pro, and Enterprise" in the Prompt field
-- Press the "Enter" key
-- Wait for "Generating..." to appear
+* Open "/"
+* Fill "A modern pricing card with three tiers" in the "Prompt" field
+* Press the "Enter" key
+* Wait for "Generating" to appear
 
 ## Navigating prompt history with arrow keys
 
-- Open "https://calca.localhost"
-- Fill "First prompt text" in the Prompt field
-- Press the "Enter" key
-- Wait for "Generating..." to appear
-- Wait for "Describe a design..." to appear
-- Fill "Second prompt text" in the Prompt field
-- Press the "Enter" key
-- Wait for "Generating..." to appear
-- Wait for "Describe a design..." to appear
-- Fill "Third prompt text" in the Prompt field
-- Press the "Enter" key
-- Wait for "Generating..." to appear
-- Wait for "Describe a design..." to appear
-- Press the "ArrowUp" key
-- Page should contain "Third prompt text"
-- Press the "ArrowDown" key
-- Page should contain "Second prompt text"
+* Open "/"
+* Seed prompt history with "Second prompt text" and "First prompt text"
+* Reload the page
+* Press the "ArrowUp" key
+* The prompt field should contain "Second prompt text"
+* Move the caret to the "start" of the prompt field
+* Press the "ArrowUp" key
+* The prompt field should contain "First prompt text"
+* Move the caret to the "end" of the prompt field
+* Press the "ArrowDown" key
+* The prompt field should contain "Second prompt text"
 
 ## Toggling Build/Ideate mode
 
-- Open "https://calca.localhost"
-- Page should contain "Describe a design..."
-- Click the Build button
-- Page should contain "Ideate"
-- Click the Ideate button
-- Page should contain "Build"
+* Open "/"
+* Click the "Build" button
+* Page should contain "Ideate"
+* Click the "Ideate" button
+* Page should contain "Build"
 
 ## Selecting variations count
 
-- Open "https://calca.localhost"
-- Click the Variations button
-- Click the variations option 3
-- Page should contain "3"
+* Open "/"
+* Click the "Variations" button
+* Set the variations count to "3"
+* Page should contain "3"
 
-## Toggling critique mode
+## Image attachment renders as a named pill
 
-- Open "https://calca.localhost"
-- Page should contain "Describe a design..."
-- Click the Critique mode button
-- Page should contain "Critique"
-- Click the Critique mode button
-- Page should contain "Critique"
+* Open "/"
+* Seed an image attachment named "test-image.png"
+* Reload the page
+* Wait for "test-image.png" to appear
 
-## Uploading and removing an image
+## Canceling generation
 
-- Open "https://calca.localhost"
-- Click the Add image button
-- Fill "e2e/fixtures/test-image.png" in the Add image field
-- Wait for "test-image" to appear
-- Click the Remove image button
-- Page should not contain "test-image"
+* Open "/"
+* Clear the attachments
+* Fill "A long generation prompt that will take time to process" in the "Prompt" field
+* Press the "Enter" key
+* Wait for "Generating" to appear
+* Click the "Cancel (Esc)" button
+* Wait for "Variations" to appear
+* Page should not contain "Generating"
 
-## Canceling generation with Escape key
+## Canceling generation with Escape
 
-- Open "https://calca.localhost"
-- Fill "A long generation prompt that will take time to process" in the Prompt field
-- Press the "Enter" key
-- Wait for "Generating..." to appear
-- Press the "Escape" key
-- Page should not contain "Generating..."
+* Open "/"
+* Fill "A long generation prompt that will take time to process" in the "Prompt" field
+* Press the "Enter" key
+* Wait for "Generating" to appear
+* Press "Escape"
+* Wait for "Variations" to appear
+* Page should not contain "Generating"

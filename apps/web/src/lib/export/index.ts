@@ -168,6 +168,9 @@ export async function readCanvasFile(file: File): Promise<DeserializedCanvas> {
 
   try {
     const result = deserializeCanvasFile(parsed);
+    if (result.isLegacyOtto) {
+      logger.info("Imported legacy .otto file");
+    }
     return result;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -202,34 +205,8 @@ export function exportCanvas(groups: GenerationGroup[]): void {
 }
 
 // ---------------------------------------------------------------------------
-// File input factory
+// File input
 // ---------------------------------------------------------------------------
 
-/**
- * Create a hidden file input that accepts both .otto and .design files.
- * Calls `onFile` with the deserialized groups on successful read.
- * Shows an alert on error.
- */
-export function openImportDialog(onFile: (groups: GenerationGroup[]) => void): void {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = IMPORT_EXTENSIONS.join(",");
-  input.onchange = (e) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
-    if (!file) {
-      return;
-    }
-
-    readCanvasFile(file)
-      .then(({ groups, isLegacyOtto }) => {
-        if (isLegacyOtto) {
-          logger.info("Imported legacy .otto file");
-        }
-        onFile(groups);
-      })
-      .catch((error) => {
-        alert(error instanceof Error ? error.message : "Failed to import file");
-      });
-  };
-  input.click();
-}
+/** Accepted file extensions for the import input. */
+export const IMPORT_ACCEPT = IMPORT_EXTENSIONS.join(",");

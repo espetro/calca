@@ -1,6 +1,7 @@
-# Basic Navigation
+# Smoke test
 
-## Root page loads with visible content
+## The app loads
 
-- Open "http://localhost:3000"
-- Page should contain "Calca"
+* Open "/"
+* Page should contain "Calca"
+* Page should contain "Prompt"

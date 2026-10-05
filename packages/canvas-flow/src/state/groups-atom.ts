@@ -153,18 +153,22 @@ export const resetSessionAtom = atom(
   },
 );
 
-export async function hydrateGroups(setGroups: (g: GenerationGroup[]) => void): Promise<void> {
+export async function hydrateGroups(
+  setGroups: (g: GenerationGroup[] | ((p: GenerationGroup[]) => GenerationGroup[])) => void,
+): Promise<void> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as GenerationGroup[];
       const valid = parsed.filter((g) => g.iterations.some((it) => it.html && !it.isLoading));
       if (valid.length > 0) {
+        // Apply only if nothing was written while the async reads were in flight.
         try {
           const images = await loadImagesFromIDB();
-          setGroups(restoreBase64(valid, images));
+          const restored = restoreBase64(valid, images);
+          setGroups((prev) => (prev.length === 0 ? restored : prev));
         } catch {
-          setGroups(valid);
+          setGroups((prev) => (prev.length === 0 ? valid : prev));
         }
         return;
       }

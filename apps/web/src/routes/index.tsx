@@ -3,7 +3,8 @@ import { groupsAtom, hydrateGroups, resetSessionAtom } from "@calca/canvas-flow"
 import { CanvasArea, CanvasProvider, useCanvas } from "@calca/canvas-flow";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { CanvasHUD } from "#/features/canvas-hud";
 import OnboardingBanner from "#/features/canvas-hud/ui/onboarding-banner";
@@ -41,7 +42,7 @@ import {
 import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
-import { exportCanvas, openImportDialog } from "#/lib/export";
+import { exportCanvas, IMPORT_ACCEPT, readCanvasFile } from "#/lib/export";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
@@ -239,11 +240,28 @@ function HomeInner() {
     trackExportComplete("svg", frameCount, Date.now() - startTime);
   }, [groups]);
 
+  const importInputRef = useRef<HTMLInputElement>(null);
+
   const handleImportDesign = useCallback(() => {
-    openImportDialog((importedGroups) => {
-      setGroups(importedGroups);
-    });
-  }, [setGroups]);
+    importInputRef.current?.click();
+  }, []);
+
+  const handleImportFile = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      readCanvasFile(file)
+        .then(({ groups: importedGroups }) => setGroups(importedGroups))
+        .catch((error) => {
+          console.error("Canvas import failed", error);
+          toast.error(error instanceof Error ? error.message : "Failed to import file");
+        })
+        .finally(() => {
+          e.target.value = "";
+        });
+    },
+    [setGroups],
+  );
 
   return (
     <div className="h-screen w-screen overflow-hidden relative select-none">
@@ -298,6 +316,15 @@ function HomeInner() {
         hasFrames={groups.length > 0}
       />
 
+      <input
+        ref={importInputRef}
+        type="file"
+        accept={IMPORT_ACCEPT}
+        className="hidden"
+        data-tour="import-file"
+        onChange={handleImportFile}
+      />
+
       <ModeSidebar mode={toolMode} onModeChange={setToolMode} />
 
       <CanvasHUD
@@ -313,7 +340,7 @@ function HomeInner() {
         onRemix={pipeline.handleRemix}
         isGenerating={pipeline.isGenerating}
         genStatus={pipeline.genStatus}
-        onCancel={() => pipeline.abortRef.current?.abort()}
+        onCancel={pipeline.cancel}
       />
 
       {showGitHash && (
