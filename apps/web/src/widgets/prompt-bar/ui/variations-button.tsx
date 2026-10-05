@@ -82,18 +82,23 @@ export function VariationsButton({
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Decrease variations"
             onClick={() => onConceptCountChange(Math.max(1, conceptCount - 1))}
             disabled={conceptCount <= 1}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <Minus className="w-4 h-4 text-gray-600" />
           </Button>
-          <span className="text-lg font-semibold text-gray-800 min-w-[40px] text-center">
+          <span
+            aria-live="polite"
+            className="text-lg font-semibold text-gray-800 min-w-[40px] text-center"
+          >
             {conceptCount}
           </span>
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Increase variations"
             onClick={() => onConceptCountChange(Math.min(5, conceptCount + 1))}
             disabled={conceptCount >= 5}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

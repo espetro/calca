@@ -296,7 +296,12 @@ export const CanvasArea = ({
         <Background gap={20} size={1} color="#e5e7eb" />
         <Controls className="!bottom-4 !left-4" />
 
-        {toolbar && <Panel position="bottom-center">{toolbar}</Panel>}
+        {/* 1001: selected nodes elevate to z-index 1000 and must not cover the toolbar */}
+        {toolbar && (
+          <Panel position="top-center" style={{ zIndex: 1001 }}>
+            {toolbar}
+          </Panel>
+        )}
       </FlowCanvas>
 
       {groups.length === 0 && canvasImages.length === 0 && emptyTitle && (
