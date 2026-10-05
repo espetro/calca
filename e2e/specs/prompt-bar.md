@@ -52,3 +52,14 @@
 * Wait for "Generating" to appear
 * Click the "Cancel (Esc)" button
 * Wait for "Variations" to appear
+* Page should not contain "Generating"
+
+## Canceling generation with Escape
+
+* Open "/"
+* Fill "A long generation prompt that will take time to process" in the "Prompt" field
+* Press the "Enter" key
+* Wait for "Generating" to appear
+* Press "Escape"
+* Wait for "Variations" to appear
+* Page should not contain "Generating"

@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from "fs";
+import { basename, resolve } from "path";
+
 import { Step, BeforeSpec } from "gauge-ts";
 
 import { ab, snapshot, snapshotAll, findRef, assertContains } from "../support/ab";
@@ -5,6 +8,10 @@ import { ab, snapshot, snapshotAll, findRef, assertContains } from "../support/a
 const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:5173";
 
 function evalJs(expr: string): string {
+  // Design nodes render in sandboxed iframes; once one mounts, agent-browser's
+  // eval context can land inside it (about:blank, opaque origin) where DOM and
+  // localStorage access silently return null or throw SecurityError.
+  ab("frame main");
   return ab(`eval "${expr.replace(/"/g, '\\"')}"`).trim();
 }
 
@@ -77,6 +84,7 @@ export default class CommonSteps {
 
   @Step("Open the settings dialog")
   async openSettings() {
+    ab("frame main");
     ab(`click "[data-tour=toolbar-settings]"`);
   }
 
@@ -96,13 +104,64 @@ export default class CommonSteps {
 
   @Step("Upload <path> to the media picker")
   async uploadMedia(path: string) {
-    ab(`upload "input[type=file]" "${path}"`);
+    ab("frame main");
+    const filePath =
+      [resolve(path), resolve("..", path)].find((c) => existsSync(c)) ?? resolve(path);
+    ab(`upload "input[type=file]" "${filePath}"`);
+  }
+
+  @Step("Import <path> as a design file")
+  async importDesign(path: string) {
+    // agent-browser's upload is unreliable for this input: the change it
+    // dispatches does not bubble to React's root delegation, and the File's
+    // backing stream sometimes never resolves. Constructing the File in-page
+    // via DataTransfer produces a real bubbling change — the same signal a
+    // file picker produces — and is fully deterministic.
+    ab("frame main");
+    // Steps run with cwd=e2e, but spec paths are repo-root relative — try both.
+    const filePath =
+      [resolve(path), resolve("..", path)].find((c) => existsSync(c)) ?? resolve(path);
+    const b64 = readFileSync(filePath).toString("base64");
+    const name = basename(filePath);
+    const placed = evalJs(
+      `(()=>{const bin=atob('${b64}');` +
+        `const bytes=Uint8Array.from(bin,(c)=>c.charCodeAt(0));` +
+        `const f=new File([bytes],'${name}',{type:'application/json'});` +
+        `const dt=new DataTransfer();dt.items.add(f);` +
+        `const i=document.querySelector('[data-tour=import-file]');` +
+        `i.files=dt.files;` +
+        `const n=i.files.length;` +
+        `i.dispatchEvent(new Event('change',{bubbles:true}));` +
+        `return 'files:'+n})()`,
+    );
+    if (!placed.includes("files:1")) {
+      throw new Error(`Design file was not attached to the import input — ${placed}`);
+    }
+    const start = Date.now();
+    let diag = "";
+    while (Date.now() - start < 15000) {
+      diag = evalJs(
+        `JSON.stringify({hasSession:!!localStorage.getItem('calca-canvas-session'),` +
+          `toast:(document.querySelector('[data-sonner-toast]')||{textContent:''}).textContent})`,
+      );
+      try {
+        const state = JSON.parse(JSON.parse(diag));
+        if (state.hasSession) return;
+      } catch {}
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    throw new Error(`Design import did not reach the canvas store — ${diag}`);
   }
 
   @Step("Press the <key> key")
   async pressKey(key: string) {
     const snap = snapshot();
     ab(`focus ${findRef(snap, "Prompt")}`);
+    ab(`press ${key}`);
+  }
+
+  @Step("Press <key>")
+  async pressKeyGlobal(key: string) {
     ab(`press ${key}`);
   }
 
@@ -135,13 +194,22 @@ export default class CommonSteps {
   async waitForNode(name: string) {
     const start = Date.now();
     const timeout = 300000;
+    let snap = "";
     while (Date.now() - start < timeout) {
-      const snap = snapshotAll();
+      snap = snapshotAll();
       if (snap.includes(`Iframe "${name}`)) return;
       if (snap.includes("Failed")) throw new Error(`Node "${name}" failed to render`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-    throw new Error(`Node "${name}" did not render within ${timeout}ms`);
+    let pageErrors = "";
+    try {
+      pageErrors = ab("errors").slice(0, 2000);
+    } catch {
+      pageErrors = "(could not read page errors)";
+    }
+    throw new Error(
+      `Node "${name}" did not render within ${timeout}ms\n--- page errors ---\n${pageErrors}\n--- snapshot tail ---\n${snap.slice(-2000)}`,
+    );
   }
 
   @Step("Wait for <n> rendered nodes")
@@ -159,8 +227,8 @@ export default class CommonSteps {
 
   @Step("Select the first canvas node")
   async selectFirstNode() {
-    evalJs(`document.querySelector('.react-flow__node').focus()`);
-    ab("press Enter");
+    ab("frame main");
+    ab(`click ".react-flow__node"`);
   }
 
   @Step("Move the caret to the <pos> of the prompt field")
@@ -234,6 +302,7 @@ export default class CommonSteps {
     this.dragStart = evalJs(
       `document.querySelector('.react-flow__node').style.transform || document.querySelector('.react-flow__node').getAttribute('data-id')`
     );
+    ab("frame main");
     const out = ab(`get box ".react-flow__node"`);
     const num = (key: string) => Number(out.match(new RegExp(`${key}:\\s*(\\d+)`))?.[1] ?? NaN);
     const bx = num("x");

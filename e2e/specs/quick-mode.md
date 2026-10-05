@@ -15,9 +15,11 @@
 ## Remix a generated node
 
 * Open "/?quickMode=true"
-* Fill "A simple pricing card" in the "Prompt" field
-* Press the "Enter" key
+* Dismiss the onboarding dialog
+* Import "e2e/fixtures/pricing-card.design" as a design file
 * Wait for node "Variation 1" to render
 * Select the first canvas node
-* Hover the "remix-button" control
+* Click "Remix"
 * Wait for "Custom" to appear
+* Click "Custom"
+* Page should contain "Remixing"

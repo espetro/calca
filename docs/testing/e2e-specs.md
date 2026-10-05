@@ -11,9 +11,13 @@ Steps are defined in `e2e/steps/` (implementation in TypeScript classes with `@S
 bun run --cwd apps/web dev &
 bun run --cwd apps/server dev &
 
-bun run test:e2e                          # all specs in e2e/specs
+bun run test:e2e                          # all specs in e2e/specs (deterministic suite)
 bun run test:e2e:spec e2e/specs/login.md  # single spec
 ```
+
+`e2e/benchmarks/` holds wall-clock-bound scenarios (real-model generation
+latency). They are excluded from the default suite — run them explicitly with
+`gauge run e2e/benchmarks` (nightly / pre-release).
 
 `GAUGE_TS_PACKAGE_RUNNER=bun STEP_IMPL_DIR=steps,support` is baked into the npm scripts —
 `npx` breaks on `catalog:` overrides, so step resolution runs under bun.
@@ -53,11 +57,12 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 | `Drag the first canvas node`                      | Stepped mouse drag (+120,+80); needs Select mode + a node          |
 | `Set the variations count to <value>`             | Clicks the stepper +/- buttons until the count matches (1–4)       |
 | `Clear the attachments`                           | Drops `selectedImages` from settings + reloads                     |
-| `Hover the <tour> control`                        | `pointerover` — Radix `NavigationMenu` triggers on hover, not click |
+| `Hover the <tour> control`                        | `pointerover` — for controls keyed to hover                       |
 | `Move the caret to the <pos> of the prompt field` | `start`/`end` — history nav requires caret at a text boundary      |
 | `Seed prompt history with <recent> and <older>`   | Writes `calca-prompt-history` localStorage + reloads               |
 | `Seed an image attachment named <name>`           | Writes `selectedImages` so the attachment pill appears             |
 | `Upload <path> to the media picker`               | File input                                                         |
+| `Import <path> as a design file`                  | Builds a `File` in-page via `DataTransfer`, dispatches `change` — deterministic import |
 | `Page should show the prompt bar` / `The prompt field should be empty` / `The prompt field should contain <text>` | Prompt-bar assertions           |
 | `Dismiss the onboarding dialog` / `Reset the onboarding flag` | Onboarding flow                                    |
 | `Open the settings dialog` / `Click outside the modal` / `Scroll to the <label> section` | Settings modal                      |
@@ -77,6 +82,9 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 - Nodes are draggable only in Select mode (`nodesDraggable={isSelectMode}`); React Flow drags need multi-step `mouse move`, not a teleport.
 - `agent-browser open` reuses the bound tab — steps can't open parallel windows.
 - Gauge failure screenshots may capture an unrelated surface (e.g. a New Tab page); treat them as uninformative unless the app tab is verified dead.
+- `agent-browser`'s `upload` command attaches files but its `change` dispatch does not reach React's root-level delegation (and paths resolve against the daemon cwd) — build the `File` in-page (`new File` + `DataTransfer`) and dispatch `new Event('change',{bubbles:true})` instead. Step processes run with `cwd=e2e`; spec paths are repo-root-relative, so resolve both anchors.
+- eval/snapshot can land inside a node's sandboxed design iframe (`about:blank`, `localStorage` throws `SecurityError`) — call `ab('frame main')` before eval or selector-based commands to force the main frame.
+- Never run `bun run validate` / a `canvas-flow` rebuild concurrently with e2e — Vite reloads the page mid-run and the spec sees a dead tab.
 
 ## Naming conventions
 
