@@ -197,26 +197,52 @@ export const useWorkflowStream = () => {
         }),
       );
 
+      const removePendingIterations = () => {
+        setGroups((prev) =>
+          prev
+            .map((g) => {
+              if (g.id !== groupId) {
+                return g;
+              }
+              const kept = g.iterations.filter((iter) => !iter.isLoading);
+              const removedIds = g.iterations
+                .filter((iter) => iter.isLoading)
+                .map((iter) => iter.id);
+              if (removedIds.length) {
+                setPipelineStages((prev) => {
+                  const next = { ...prev };
+                  removedIds.forEach((id) => delete next[id]);
+                  return next;
+                });
+              }
+              return { ...g, iterations: kept };
+            })
+            .filter((g) => g.iterations.length > 0),
+        );
+      };
+
       try {
-        const response = await apiClient.api.workflow.$post({
-          json: {
-            apiKey,
-            baseURL,
-            conceptCount,
-            contextImages,
-            existingHtml,
-            geminiKey,
-            mode,
-            model,
-            openaiKey,
-            prompt,
-            providerType,
-            revision,
-            systemPrompt,
-            unsplashKey,
+        const response = await apiClient.api.workflow.$post(
+          {
+            json: {
+              apiKey,
+              baseURL,
+              conceptCount,
+              contextImages,
+              existingHtml,
+              geminiKey,
+              mode,
+              model,
+              openaiKey,
+              prompt,
+              providerType,
+              revision,
+              systemPrompt,
+              unsplashKey,
+            },
           },
-          signal: controller.signal,
-        });
+          { init: { signal: controller.signal } },
+        );
         const { body } = response;
 
         if (!body) {
@@ -400,27 +426,7 @@ export const useWorkflowStream = () => {
           }
 
           if (part.type === "abort") {
-            setGroups((prev) =>
-              prev
-                .map((g) => {
-                  if (g.id !== groupId) {
-                    return g;
-                  }
-                  const kept = g.iterations.filter((iter) => !iter.isLoading);
-                  const removedIds = g.iterations
-                    .filter((iter) => iter.isLoading)
-                    .map((iter) => iter.id);
-                  if (removedIds.length) {
-                    setPipelineStages((prev) => {
-                      const next = { ...prev };
-                      removedIds.forEach((id) => delete next[id]);
-                      return next;
-                    });
-                  }
-                  return { ...g, iterations: kept };
-                })
-                .filter((g) => g.iterations.length > 0),
-            );
+            removePendingIterations();
           }
         };
 
@@ -511,7 +517,11 @@ export const useWorkflowStream = () => {
         const finalWordCount = prompt.split(/\s+/).filter(Boolean).length;
         trackGenerationComplete(model || "unknown", finalWordCount, conceptCount, totalDuration);
       } catch (error: unknown) {
-        if (error instanceof Error && error.name === "AbortError") return;
+        if (error instanceof Error && error.name === "AbortError") {
+          removePendingIterations();
+          setGenStatus("Generation canceled");
+          return;
+        }
 
         const msg = error instanceof Error ? error.message : "Workflow failed";
         logger.error("Fatal error", { error: msg });

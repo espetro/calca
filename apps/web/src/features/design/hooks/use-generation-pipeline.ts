@@ -1,6 +1,6 @@
 import { groupsAtom } from "@calca/canvas-flow";
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useWorkflowStream } from "#/features/design/hooks/use-workflow-stream";
 import {
@@ -58,8 +58,6 @@ interface CanvasLike {
 }
 
 export const useGenerationPipeline = (canvas: CanvasLike) => {
-  const abortRef = useRef<AbortController | null>(null);
-
   const [groups] = useAtom(groupsAtom);
   const settings = useAtomValue(settingsAtom);
   const canvasImages = useAtomValue(canvasImagesAtom);
@@ -72,7 +70,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
     [settings.providers, settings.model],
   );
 
-  const { startStream } = useWorkflowStream();
+  const { abort, startStream } = useWorkflowStream();
 
   const { mutateAsync: handleRevisionRaw } = usePostRevision();
 
@@ -108,10 +106,6 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
 
   const handleGenerate = useCallback(
     async (prompt: string) => {
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
-
       const promptBarImages = settings.selectedImages?.map((img) => img.src) || [];
       const canvasImgDataUrls =
         canvasImages.length > 0 ? canvasImages.map((img) => img.dataUrl) : [];
@@ -140,8 +134,6 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         systemPrompt: settings.systemPrompt || undefined,
         unsplashKey: settings.unsplashKey || undefined,
       });
-
-      abortRef.current = null;
     },
     [canvasImages, canvas, groups, settings, derived, startStream],
   );
@@ -177,14 +169,12 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         systemPrompt: settings.systemPrompt || undefined,
         unsplashKey: settings.unsplashKey || undefined,
       });
-
-      abortRef.current = null;
     },
     [canvasImages, canvas, groups, settings, derived, startStream],
   );
 
   return {
-    abortRef,
+    cancel: abort,
     genStatus,
     handleGenerate,
     handleRemix,

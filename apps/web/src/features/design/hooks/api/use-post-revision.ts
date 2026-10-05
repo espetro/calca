@@ -108,21 +108,23 @@ const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: 
     throw new Error("Revision requires options");
   }
 
-  const response = await apiClient.api.workflow.$post({
-    json: {
-      apiKey: derived.apiKey || undefined,
-      baseURL: derived.baseURL || undefined,
-      conceptCount: 1,
-      existingHtml: options.existingHtml,
-      mode: "quick",
-      model: derived.model,
-      prompt,
-      providerType: derived.providerType || undefined,
-      revision: options.revision,
-      systemPrompt,
+  const response = await apiClient.api.workflow.$post(
+    {
+      json: {
+        apiKey: derived.apiKey || undefined,
+        baseURL: derived.baseURL || undefined,
+        conceptCount: 1,
+        existingHtml: options.existingHtml,
+        mode: "quick",
+        model: derived.model,
+        prompt,
+        providerType: derived.providerType || undefined,
+        revision: options.revision,
+        systemPrompt,
+      },
     },
-    signal,
-  });
+    { init: { signal } },
+  );
   const { body } = response;
 
   if (!body) {

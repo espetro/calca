@@ -87,6 +87,16 @@ export function PromptBar({
     if (remixTarget) inputRef.current?.focus();
   }, [remixTarget]);
 
+  // The textarea unmounts while generating, so Escape must be handled globally.
+  useEffect(() => {
+    if (!isGenerating || !onCancel) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isGenerating, onCancel]);
+
   const addImage = useCallback(
     (image: { id: string; src: string; name?: string }) => {
       setError(null);
@@ -141,11 +151,6 @@ export function PromptBar({
         return;
       }
 
-      if (e.key === "Escape" && isGenerating) {
-        onCancel?.();
-        return;
-      }
-
       const input = inputRef.current;
       if (!input) {
         return;
@@ -163,7 +168,7 @@ export function PromptBar({
         }
       }
     },
-    [handleSubmit, isGenerating, onCancel, value, navigateHistory],
+    [handleSubmit, isGenerating, value, navigateHistory],
   );
 
   const handleImageSelect = useCallback(
