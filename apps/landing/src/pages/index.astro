@@ -1,16 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header';
-import Hero from '../components/Hero';
-import Screenshot from '../components/Screenshot';
-import Features from '../components/Features';
-import Footer from '../components/Footer';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header";
+import Hero from "../components/Hero";
+import Formats from "../components/Formats";
+import TryIt from "../components/TryIt";
+import OpenLayer from "../components/OpenLayer";
+import Footer from "../components/Footer";
 ---
 
 <Layout>
   <Header client:load />
-  <Hero client:load />
-  <Screenshot />
-  <Features client:load />
+  <main>
+    <Hero />
+    <Formats />
+    <TryIt />
+    <OpenLayer />
+  </main>
   <Footer />
 </Layout>

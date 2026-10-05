@@ -8,8 +8,8 @@ export interface Props {
 }
 
 const {
-  title = "Calca — AI Design Tool with Infinite Canvas",
-  description = "Describe your vision in plain English. Get multiple polished HTML/CSS design variations on an infinite canvas — no design skills required.",
+  title = "calca — the open canvas for every format",
+  description = "Describe a page, a prototype, a brand board. Get live variations as movable frames. BYOK, file-based, open source. Runs in the browser and on the desktop.",
   ogImage = "/screenshot.png",
 } = Astro.props;
 import "../styles/global.css";
@@ -23,13 +23,23 @@ import "../styles/global.css";
     <meta name="description" content={description} />
     <meta
       name="theme-color"
-      content="#0a0a0f"
+      content="#14141a"
       media="(prefers-color-scheme: dark)"
     />
     <meta
       name="theme-color"
-      content="#f5f7fa"
+      content="#f6f4ef"
       media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Fonts: Cabinet Grotesk (display, self-hosted). DM Sans + Bricolage
+         Grotesque ship via @fontsource-variable imports in global.css -->
+    <link
+      rel="preload"
+      href="/fonts/cabinet-grotesk-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
 
     <!-- Open Graph -->
@@ -49,7 +59,8 @@ import "../styles/global.css";
     <link rel="canonical" href="https://calca.illo.fyi" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/icon.png" />
 
     <title>{title}</title>
 
@@ -75,5 +86,27 @@ import "../styles/global.css";
   <body class="bg-background text-foreground antialiased">
     <PostHogInit client:load />
     <slot />
+    <script is:inline>
+      // Scroll reveal: add .is-visible once a .reveal element enters view.
+      (function () {
+        const els = document.querySelectorAll(".reveal");
+        if (!("IntersectionObserver" in window)) {
+          els.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.12 },
+        );
+        els.forEach((el) => io.observe(el));
+      })();
+    </script>
   </body>
 </html>

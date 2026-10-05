@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { AlertTriangle, Shuffle, ArrowRight, Loader2, X } from "lucide-react";
 import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 
-import { remixTargetAtom } from "#/features/design/state/generation-atoms";
+import { pendingPromptAtom, remixTargetAtom } from "#/features/design/state/generation-atoms";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
 import { Button } from "#/shared/components/ui/button";
 import type { DesignIteration } from "#/shared/types";
@@ -82,10 +82,19 @@ export function PromptBar({
 
   const [remixTarget, setRemixTarget] = useAtom(remixTargetAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
+  const [pendingPrompt, setPendingPrompt] = useAtom(pendingPromptAtom);
 
   useEffect(() => {
     if (remixTarget) inputRef.current?.focus();
   }, [remixTarget]);
+
+  // ?prompt= deep link: prefill once, then clear.
+  useEffect(() => {
+    if (!pendingPrompt) return;
+    setValue(pendingPrompt);
+    setPendingPrompt(null);
+    inputRef.current?.focus();
+  }, [pendingPrompt, setPendingPrompt]);
 
   // The textarea unmounts while generating, so Escape must be handled globally.
   useEffect(() => {

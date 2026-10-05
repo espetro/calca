@@ -54,6 +54,8 @@
       "dependencies": {
         "@astrojs/check": "^0.9.9",
         "@astrojs/react": "^4.2.0",
+        "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+        "@fontsource-variable/dm-sans": "^5.3.0",
         "@tailwindcss/vite": "^4.0.0",
         "astro": "^5.2.0",
         "posthog-js": "^1.372.10",
@@ -749,6 +751,10 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.8", "", { "dependencies": { "@floating-ui/dom": "^1.7.6" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
+
+    "@fontsource-variable/bricolage-grotesque": ["@fontsource-variable/bricolage-grotesque@5.3.0", "", {}, "sha512-TLi9Q4hJjS2UvoTMRSS2nHu6c4R56lAw60NR9QYtVRCHn0XtsFpiEhNffZ8Glsoxu6wEEwLKBP8lb94J52PNBA=="],
+
+    "@fontsource-variable/dm-sans": ["@fontsource-variable/dm-sans@5.3.0", "", {}, "sha512-BpUG5bqePiDFMBM4ZtLSlPdAIOM990uB1dlXzIf4aw21yQR7BmykedLXXXMqGWsR18aMLOsbWccwJNh3ztTQaA=="],
 
     "@getgauge/cli": ["@getgauge/cli@1.6.38", "", { "dependencies": { "adm-zip": "^0.6.1" }, "bin": { "gauge": "bin/gauge" } }, "sha512-6APFirqhf50Zugf7iMd09835UWYke2/wv0EzBeVIc8gpM/WQfyi8JQLWc6sp7BaIc8LOlN9cnSieb9iuyhl4xQ=="],
 

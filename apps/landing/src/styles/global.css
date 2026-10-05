@@ -1,4 +1,14 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/dm-sans";
 @import "tailwindcss";
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-grotesk-var.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -19,9 +29,12 @@
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-glow: var(--glow);
-  --color-glow-secondary: var(--glow-secondary);
+  --color-frame: var(--frame);
+  --color-frame-foreground: var(--frame-foreground);
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-brand: var(--font-brand);
+  --font-mono: var(--font-mono);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -29,49 +42,60 @@
 }
 
 :root {
-  --background: hsl(210 34% 96%);
-  --foreground: hsl(215 22% 17%);
-  --card: hsl(0 0% 100% / 0.95);
-  --card-foreground: hsl(215 22% 17%);
-  --primary: hsl(205 74% 43%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(206 28% 92%);
-  --secondary-foreground: hsl(215 22% 17%);
-  --muted: hsl(207 24% 93%);
-  --muted-foreground: hsl(214 12% 44%);
-  --accent: hsl(206 44% 90%);
-  --accent-foreground: hsl(215 22% 17%);
-  --border: hsl(208 22% 83%);
-  --ring: hsl(205 72% 45%);
-  --destructive: hsl(0 78% 57%);
+  /* Light: canvas paper — warm off-white with an ink foreground and a
+     single verdant accent. */
+  --background: hsl(44 30% 97%);
+  --foreground: hsl(252 10% 13%);
+  --card: hsl(0 0% 100% / 0.9);
+  --card-foreground: hsl(252 10% 13%);
+  --frame: hsl(44 24% 93%);
+  --frame-foreground: hsl(252 10% 20%);
+  --primary: hsl(152 62% 30%);
+  --primary-foreground: hsl(44 40% 98%);
+  --secondary: hsl(42 18% 91%);
+  --secondary-foreground: hsl(252 10% 18%);
+  --muted: hsl(42 14% 90%);
+  --muted-foreground: hsl(252 6% 40%);
+  --accent: hsl(40 20% 88%);
+  --accent-foreground: hsl(252 10% 18%);
+  --border: hsl(38 12% 80%);
+  --ring: hsl(152 62% 30%);
+  --destructive: hsl(0 68% 48%);
   --destructive-foreground: hsl(0 0% 100%);
-  --glow: hsl(205 74% 43% / 0.15);
-  --glow-secondary: hsl(280 60% 50% / 0.1);
+  --canvas-dot: hsl(252 10% 13% / 0.14);
+  --canvas-grid-size: 28px;
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Cabinet Grotesk", "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-brand:
+    "Bricolage Grotesque Variable", "Cabinet Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
   --radius: 0.75rem;
 }
 
 .dark {
-  --background: hsl(220 10% 10%);
-  --foreground: hsl(210 18% 93%);
-  --card: hsl(220 9% 16% / 0.95);
-  --card-foreground: hsl(210 18% 93%);
-  --primary: hsl(208 94% 66%);
-  --primary-foreground: hsl(220 15% 10%);
-  --secondary: hsl(220 8% 22%);
-  --secondary-foreground: hsl(210 18% 93%);
-  --muted: hsl(220 8% 20%);
-  --muted-foreground: hsl(214 10% 74%);
-  --accent: hsl(220 8% 24%);
-  --accent-foreground: hsl(210 18% 93%);
-  --border: hsl(220 8% 34%);
-  --ring: hsl(208 94% 66%);
-  --destructive: hsl(0 78% 57%);
+  /* Dark: charcoal canvas — neutral near-black, paper text, same accent. */
+  --background: hsl(250 8% 9%);
+  --foreground: hsl(42 24% 93%);
+  --card: hsl(250 7% 14% / 0.9);
+  --card-foreground: hsl(42 24% 93%);
+  --frame: hsl(250 7% 13%);
+  --frame-foreground: hsl(42 16% 82%);
+  --primary: hsl(152 60% 56%);
+  --primary-foreground: hsl(250 10% 9%);
+  --secondary: hsl(250 7% 19%);
+  --secondary-foreground: hsl(42 20% 90%);
+  --muted: hsl(250 7% 18%);
+  --muted-foreground: hsl(252 8% 66%);
+  --accent: hsl(250 7% 21%);
+  --accent-foreground: hsl(42 20% 90%);
+  --border: hsl(250 6% 27%);
+  --ring: hsl(152 60% 56%);
+  --destructive: hsl(0 68% 58%);
   --destructive-foreground: hsl(0 0% 100%);
-  --glow: hsl(208 94% 66% / 0.2);
-  --glow-secondary: hsl(280 60% 50% / 0.15);
+  --canvas-dot: hsl(42 24% 93% / 0.12);
 }
 
 html {
@@ -81,21 +105,69 @@ html {
 body {
   font-family: var(--font-sans);
   background-color: var(--background);
-  background-image: linear-gradient(180deg, hsl(210 32% 97%) 0%, hsl(210 28% 95%) 100%);
   color: var(--foreground);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dark body {
-  background-image: linear-gradient(180deg, hsl(220 10% 11%) 0%, hsl(220 10% 9%) 100%);
-}
-
 ::selection {
-  background-color: hsl(205 74% 43% / 0.22);
+  background-color: hsl(152 62% 30% / 0.22);
 }
 
 .dark ::selection {
-  background-color: hsl(208 94% 66% / 0.28);
+  background-color: hsl(152 60% 56% / 0.28);
+}
+
+/* Canvas dot grid — the product's own surface texture. */
+.canvas-dots {
+  background-image: radial-gradient(circle, var(--canvas-dot) 1.2px, transparent 1.2px);
+  background-size: var(--canvas-grid-size) var(--canvas-grid-size);
+}
+
+/* Fades the dot grid out toward the edges so it doesn't read as a texture band. */
+.canvas-dots-fade {
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 78%);
+}
+
+/* Scroll reveal — GPU-safe, single per-element transition. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .frame-drift {
+    animation: none !important;
+  }
+}
+
+/* Gentle drift on hero frames — communicates "movable frames on a canvas". */
+@keyframes frame-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--frame-rotate, 0deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--frame-rotate, 0deg));
+  }
+}
+.frame-drift {
+  animation: frame-drift 9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }

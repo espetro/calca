@@ -20,6 +20,7 @@ import {
 } from "#/features/design/state/comment-atoms";
 import {
   draggingImageIdAtom,
+  pendingPromptAtom,
   pipelineStagesAtom,
   rubberBandAtom,
   selectedIdsAtom,
@@ -40,6 +41,7 @@ import {
   currentTourStepIdAtom,
 } from "#/features/onboarding";
 import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
+import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
 import { isOwnKeyAtom, loadedAtom, settingsAtom } from "#/features/settings/state/settings-atoms";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, IMPORT_ACCEPT, readCanvasFile } from "#/lib/export";
@@ -194,6 +196,20 @@ function HomeInner() {
   useMountEffect(() => {
     if (new URLSearchParams(window.location.search).get("quickMode") === "true") {
       setSettings((prev) => ({ ...prev, quickMode: true }));
+    }
+  });
+
+  const setPendingPrompt = useSetAtom(pendingPromptAtom);
+
+  // Deep links from the landing page: ?prompt= prefills the prompt bar,
+  // ?preset= selects a system-prompt preset (uiux|marketing|brand|...).
+  useMountEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const prompt = params.get("prompt");
+    const preset = params.get("preset");
+    if (prompt) setPendingPrompt(prompt);
+    if (preset && SYSTEM_PROMPT_PRESETS.some((p) => p.id === preset)) {
+      setSettings((prev) => ({ ...prev, systemPromptPreset: preset }));
     }
   });
 

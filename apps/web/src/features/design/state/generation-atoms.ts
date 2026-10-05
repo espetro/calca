@@ -30,3 +30,6 @@ export const rubberBandAtom = atom<{
 export const draggingImageIdAtom = atom<string | null>(null);
 
 export const remixTargetAtom = atom<DesignIteration | null>(null);
+
+/** Prompt text injected via ?prompt= deep link, consumed once by the prompt bar. */
+export const pendingPromptAtom = atom<string | null>(null);
