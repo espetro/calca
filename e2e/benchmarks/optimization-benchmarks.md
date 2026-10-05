@@ -12,7 +12,7 @@ GAUGE_TS_PACKAGE_RUNNER=bun STEP_IMPL_DIR=steps,support \
 
 ## Repeated generation succeeds twice
 
-* Open "/?quick=1"
+* Open "/?quickMode=true"
 * Fill "A pricing card with a buy button" in the "Prompt" field
 * Press the "Enter" key
 * Wait for node "Variation 1" to render

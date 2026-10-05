@@ -41,7 +41,7 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 
 | Step                                              | Notes                                                              |
 | ------------------------------------------------- | ------------------------------------------------------------------ |
-| `Open <url>`                                      | `"/"`, `"/?quick=1"` — relative to `BASE_URL` (default :5173)      |
+| `Open <url>`                                      | `"/"`, `"/?quickMode=true"` — relative to `BASE_URL` (default :5173) |
 | `Wait for page to load completely`                | Wait for network + render idle                                     |
 | `Page should contain <text>` / `… not contain`    | Assert presence / absence in snapshot                              |
 | `Wait for <label> to appear`                      | Poll snapshot, default ~30s                                        |
@@ -72,7 +72,7 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 
 - `BASE_URL` — defaults to `http://localhost:5173`
 - Generation specs need a real provider: run Vite with `VITE_AI_BASE_URL`, `VITE_AI_API_KEY`, `VITE_AI_MODEL` set (the env-injected provider). Text-only models reject image-input — clear attachments before generation specs.
-- **`?quick=1`** — sequential mode takes >5min on slow models (6 serial LLM stages); every spec that waits on rendered output must open `/?quick=1` (persisted in settings across reloads).
+- **`?quickMode=true`** — sequential mode takes >5min on slow models (6 serial LLM stages); every spec that waits on rendered output must open `/?quickMode=true` (persisted in settings across reloads). `quickMode` defaults to true, so a wrong param name fails open — always use the real one.
 
 ## Isolation & known quirks
 
