@@ -15,7 +15,38 @@ export interface PipelineStatus {
   progress: number; // 0-1
   skipped?: boolean;
   reason?: string;
+  /** Per-stage detail for the frame checklist, keyed by PIPELINE_STEP_ORDER names. */
+  steps?: Partial<Record<PipelineStepName, PipelineStepState>>;
 }
+
+/** User-visible pipeline steps, in execution order (summary/collect run after frames complete). */
+export type PipelineStepName = "plan" | "layout" | "images" | "review" | "critique";
+
+export type PipelineStepStatus = "pending" | "running" | "success" | "failed";
+
+export interface PipelineStepState {
+  status: PipelineStepStatus;
+  /** ms epoch when the step last entered `running` */
+  startedAt?: number;
+  /** total duration once finished */
+  elapsedMs?: number;
+}
+
+export const PIPELINE_STEP_ORDER: PipelineStepName[] = [
+  "plan",
+  "layout",
+  "images",
+  "review",
+  "critique",
+];
+
+export const PIPELINE_STEP_LABELS: Record<PipelineStepName, string> = {
+  critique: "Critique",
+  images: "Images",
+  layout: "Layout",
+  plan: "Plan",
+  review: "Review",
+};
 
 export const STAGE_CONFIG: Record<
   PipelineStage,

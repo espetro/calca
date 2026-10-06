@@ -12,6 +12,9 @@ export const pipelineStagesAtom = atom<Record<string, PipelineStatus>>({});
 
 export const genStatusAtom = atom<string>("");
 
+/** ms epoch when the active generation started (drives elapsed-time display). */
+export const genStartedAtAtom = atom<number | null>(null);
+
 export const spaceHeldAtom = atom<boolean>(false);
 
 export const showGitHashAtom = atom<boolean>(false);

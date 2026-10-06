@@ -1,2 +1,7 @@
-export type { PipelineStage, PipelineStatus } from "@app/shared";
-export { STAGE_CONFIG } from "@app/shared";
+export type {
+  PipelineStage,
+  PipelineStatus,
+  PipelineStepName,
+  PipelineStepState,
+} from "@app/shared";
+export { PIPELINE_STEP_ORDER, STAGE_CONFIG } from "@app/shared";

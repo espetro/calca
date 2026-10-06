@@ -7,6 +7,8 @@ import { WorkflowInputSchema } from "./types";
 interface WorkflowStepResult {
   name: string;
   status: string;
+  /** Present for per-frame step events so clients can attribute progress per variation. */
+  frameIndex?: number;
   input: null;
   output: unknown;
   suspendPayload: null;
@@ -73,6 +75,7 @@ function updateSteps(
       steps[event.step] = {
         name: event.step,
         status: event.status,
+        frameIndex: event.frameIndex,
         input: existing?.input ?? null,
         output: event.output ?? existing?.output ?? null,
         suspendPayload: null,

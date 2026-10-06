@@ -5,6 +5,7 @@ import { ComponentProps, useCallback, useEffect, useRef, useState } from "react"
 import { pendingPromptAtom, remixTargetAtom } from "#/features/design/state/generation-atoms";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
 import { Button } from "#/shared/components/ui/button";
+import { useNow } from "#/shared/hooks/use-now";
 import type { DesignIteration } from "#/shared/types";
 
 import { usePromptHistory } from "../hooks/use-prompt-history";
@@ -42,16 +43,29 @@ const SubmitButton = ({ onSubmit, className, ...props }: SubmitButtonProps) => {
 
 interface PromptBarProps extends ActionButtonProps {
   genStatus?: string;
+  /** ms epoch when generation started; drives the elapsed-time readout. */
+  genStartedAt?: number | null;
   onSubmit: (prompt: string) => void;
   onRemix?: (iteration: DesignIteration, prompt: string) => void;
   onCancel?: () => void;
 }
+
+const formatElapsed = (ms: number): string => {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  if (totalSeconds < 60) {
+    return `${totalSeconds}s`;
+  }
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+};
 
 export function PromptBar({
   onSubmit,
   onRemix,
   isGenerating,
   genStatus,
+  genStartedAt,
   onCancel,
 }: PromptBarProps) {
   const [value, setValue] = useState("");
@@ -59,6 +73,7 @@ export function PromptBar({
   const [showVariations, setShowVariations] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const now = useNow(1000, !!isGenerating);
 
   const handleToggleVariations = () => {
     setShowVariations((prev) => {
@@ -222,6 +237,11 @@ export function PromptBar({
                 <span className="text-[13px] text-gray-500 font-medium truncate">
                   {genStatus || "Generating..."}
                 </span>
+                {genStartedAt != null && (
+                  <span className="text-[12px] text-gray-400 tabular-nums shrink-0">
+                    {formatElapsed(now - genStartedAt)}
+                  </span>
+                )}
               </div>
               <Button
                 variant="destructive"
