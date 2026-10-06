@@ -1,5 +1,17 @@
 # @app/web
 
+## 0.7.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @calca/canvas-base@0.7.5
+  - @calca/canvas-flow@0.7.5
+  - @app/shared@0.7.5
+  - @app/core@0.7.5
+  - @app/analytics@0.7.5
+  - @app/logger@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes

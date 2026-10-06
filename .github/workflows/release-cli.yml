@@ -46,6 +46,13 @@ jobs:
             (cd "packages/$pkg" && bun pm pack --destination "$out" >/dev/null)
           done
           for tgz in "$out"/*.tgz; do
+            spec=$(tar -xzOf "$tgz" package/package.json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=JSON.parse(s);console.log(`${p.name}@${p.version}`)})')
+            # Skip versions already on the registry so a re-run after a partial
+            # publish is idempotent.
+            if npm view "$spec" >/dev/null 2>&1; then
+              echo "skip: $spec already published"
+              continue
+            fi
             npm publish "$tgz" --access public --provenance
           done
 

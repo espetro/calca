@@ -1,5 +1,11 @@
 # @app/core
 
+## 0.7.5
+
+### Patch Changes
+
+- @app/logger@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes

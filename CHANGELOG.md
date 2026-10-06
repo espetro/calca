@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+## [0.7.5] - 2026-10-06
+
+### Fixed
+
+- Add `repository.url` + `directory` to published package manifests — required for provenance validation under npm trusted publishing (0.7.4 publish failed on this); publish loop now skips already-published versions so re-runs are idempotent
+
 ## [0.7.4] - 2026-10-06
 
 ### Added

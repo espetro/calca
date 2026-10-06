@@ -1,5 +1,13 @@
 # @calca/mcp-core
 
+## 0.7.5
+
+### Patch Changes
+
+- Add `repository.url` + `directory` to package manifests — required for provenance validation under npm trusted publishing.
+- Updated dependencies
+  - @calca/canvas-base@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @app/electrobun
 
+## 0.7.5
+
+### Patch Changes
+
+- @app/server@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes

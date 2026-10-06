@@ -1,6 +1,6 @@
 {
   "name": "@calca/canvas-ui",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "private": false,
   "license": "Apache-2.0",
   "files": [
@@ -46,5 +46,10 @@
     "lucide-react": "^1.8.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/espetro/calca",
+    "directory": "packages/canvas-ui"
   }
 }

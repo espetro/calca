@@ -1,5 +1,12 @@
 # @app/shared
 
+## 0.7.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @calca/shared@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes

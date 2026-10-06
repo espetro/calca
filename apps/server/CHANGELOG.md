@@ -1,5 +1,14 @@
 # @app/server
 
+## 0.7.5
+
+### Patch Changes
+
+- @app/shared@0.7.5
+- @calca/pipeline@1.0.5
+- @app/core@0.7.5
+- @app/logger@0.7.5
+
 ## 0.7.4
 
 ### Patch Changes
