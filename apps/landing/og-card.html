@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:'Cabinet Grotesk';src:url('file:///home/ubuntu/repos/calca/apps/landing/public/fonts/cabinet-grotesk-var.woff2') format('woff2');font-weight:100 900}
+@font-face{font-family:'DM Sans';src:url('file:///home/ubuntu/repos/calca/apps/landing/public/fonts/dm-sans-var.woff2') format('woff2');font-weight:100 900}
+*{margin:0;box-sizing:border-box}
+body{width:1200px;height:630px;position:relative;overflow:hidden;font-family:'DM Sans',sans-serif}
+.dots{position:absolute;inset:0;background-image:radial-gradient(var(--dot) 1.6px,transparent 1.6px);background-size:30px 30px}
+.row{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:64px}
+.logo{width:230px;height:230px;object-fit:contain}
+.divider{width:2px;height:230px;background:var(--rule);align-self:center}
+.txt{display:flex;flex-direction:column;gap:26px;flex-shrink:0}
+.name{font-family:'Cabinet Grotesk';font-weight:700;font-size:116px;letter-spacing:-0.02em;color:var(--ink);line-height:0.95}
+.tag{white-space:nowrap;font-size:44px;line-height:1.28;color:var(--sub);font-weight:400;letter-spacing:-0.01em}
+.tag b{font-weight:600;color:var(--ink)}.tag b.em{color:var(--sub)}
+.band{position:absolute;left:0;right:0;bottom:0;height:14px;background:var(--band)}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');</style></head><body>
+<div class="dots"></div>
+<div class="row">
+  <img class="logo" src="file:///home/ubuntu/repos/calca/apps/landing/public/logo.png">
+  <div class="divider"></div>
+  <div class="txt">
+    <div class="name">calca</div>
+    <div class="tag">One open canvas.<br><b class="em">Every format.</b></div>
+  </div>
+</div>
+<div class="band"></div>
+<script>
+const q=new URLSearchParams(location.search),v=q.get('v')||'a';
+const themes={
+ a:{bg:'hsl(44 30% 97%)',ink:'hsl(252 10% 13%)',sub:'hsl(252 6% 40%)',dot:'hsl(252 10% 13% / 0.14)',rule:'hsl(38 12% 80%)',band:'transparent'},
+ b:{bg:'hsl(252 10% 13%)',ink:'hsl(44 40% 98%)',sub:'hsl(42 20% 80%)',dot:'hsl(44 40% 98% / 0.12)',rule:'hsl(250 7% 30%)',band:'transparent'},
+ c:{bg:'hsl(44 30% 97%)',ink:'hsl(252 10% 13%)',sub:'hsl(152 62% 30%)',dot:'hsl(252 10% 13% / 0.14)',rule:'hsl(152 62% 30%)',band:'transparent'},
+}[v];
+const s=document.documentElement.style;
+s.setProperty('--ink',themes.ink);s.setProperty('--sub',themes.sub);
+s.setProperty('--dot',themes.dot);s.setProperty('--rule',themes.rule);s.setProperty('--band',themes.band);
+document.body.style.background=themes.bg;
+</script></body></html>
