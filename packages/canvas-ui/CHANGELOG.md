@@ -1,5 +1,13 @@
 # @calca/canvas-ui
 
+## 0.7.1
+
+### Patch Changes
+
+- Release CI fixes: node 22 for tsdown on release runners, ~/.npmrc auth for bun publish, checkout before gh release, clean calca-shared tarball.
+- Updated dependencies
+  - @calca/shared@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes

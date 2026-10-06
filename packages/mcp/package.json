@@ -1,6 +1,6 @@
 {
   "name": "@calca/mcp",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": false,
   "description": "calca CLI — MCP playground server for AI agents",
   "license": "Apache-2.0",
