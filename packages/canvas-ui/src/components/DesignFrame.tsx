@@ -1,5 +1,4 @@
 import type { Comment as CommentType, DesignIteration } from "@calca/shared";
-import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useMountEffect } from "../utils/use-mount-effect";
@@ -162,12 +161,13 @@ setTimeout(reportHeight, 2000);
       style={{ ...style, height: frameHeight, width: frameW }}
     >
       {iteration.isLoading ? (
-        <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-          <div className="relative w-10 h-10">
-            <Loader className="w-10 h-10 animate-spin" />
+        <>
+          <div className="calca-shimmer absolute inset-y-0 left-0 w-1/3" />
+          <div className="absolute inset-0 flex items-center justify-center gap-2">
+            <span className="calca-breathe w-1.5 h-1.5 rounded-full bg-muted-foreground" />
+            <span className="text-[11px] font-medium text-muted-foreground/70">Generating…</span>
           </div>
-          <span className="text-[12px] font-medium text-gray-400">Generating…</span>
-        </div>
+        </>
       ) : (
         <iframe
           ref={iframeRef}
