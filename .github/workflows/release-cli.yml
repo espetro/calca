@@ -30,7 +30,8 @@ jobs:
           bun-version: "1.4.2"
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node >= 22: tsdown needs Promise.withResolvers when it runs under node
+          node-version: 22
           registry-url: "https://registry.npmjs.org"
       - run: bun install
       - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow --filter=@calca/mcp-core --filter=@calca/mcp
@@ -98,6 +99,7 @@ jobs:
     needs: binaries
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           pattern: calca-*
