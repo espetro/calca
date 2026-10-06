@@ -12,6 +12,7 @@
     "dev": "bun --watch src/index.ts",
     "start": "bun dist/index.js",
     "build": "tsc",
+    "build:sw": "bun build src/sw.ts --outfile dist/sw.js --target browser --minify",
     "typecheck": "bunx tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "lint": "oxlint --fix .",

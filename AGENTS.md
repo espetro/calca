@@ -27,7 +27,7 @@ The project backlog is at https://github.com/users/espetro/projects/6/views/1 .
 > | Area                                               | Status                                                                                                                 |
 > | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 > | `apps/web`                                         | ✅ Active — the Calca app: **Vite SPA** + TanStack Router, Feature-Sliced Design (`app`/`features`/`widgets`/`shared`) |
-> | `apps/server`                                      | Scaffolding — Hono API                                                                                                 |
+> | `apps/server`                                      | Scaffolding — Hono API; also bundled as the web demo's root service worker (`src/sw.ts` → landing `dist/sw.js`)      |
 > | `apps/cli`                                         | Vestigial scaffold — the real L2 CLI is `packages/mcp` (`@calca/mcp`)                                                    |
 > | `apps/landing`                                     | ✅ Astro marketing site                                                                                                |
 > | `apps/feedback-proxy`                              | ✅ Cloudflare Worker — creates GitHub issues from app feedback                                                         |

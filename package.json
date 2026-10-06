@@ -12,7 +12,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
-    "build:app": "turbo run build:app --filter=@app/web && rm -rf apps/landing/dist/app && cp -r apps/web/dist apps/landing/dist/app",
+    "build:app": "turbo run build:app --filter=@app/web && turbo run build:sw --filter=@app/server && rm -rf apps/landing/dist/app && cp -r apps/web/dist apps/landing/dist/app && cp apps/server/dist/sw.js apps/landing/dist/sw.js",
     "build:docs": "docmd build",
     "check:canvas-boundaries": "bun scripts/check-canvas-boundaries.ts",
     "build:desktop": "bun run --cwd platforms/desktop build:desktop",
