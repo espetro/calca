@@ -7,7 +7,7 @@ export const LINKS = {
     "https://github.com/espetro/calca/releases/latest/download/stable-win-x64-Calca-Setup.zip",
   roadmap: "https://github.com/users/espetro/projects/6",
   docs: "/docs/",
-  docsMcp: "/docs/mcp",
+  docsMcp: "/docs/mcp/",
   feedback: "https://github.com/espetro/calca/discussions/5",
   polar: "https://buy.polar.sh/polar_cl_Mv1gdlG7bw3I70EC9IHtfeSHJj4PEKvA7JAUz23CFhj",
 } as const;
