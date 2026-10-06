@@ -22,6 +22,7 @@ import {
   draggingImageIdAtom,
   pendingPromptAtom,
   pipelineStagesAtom,
+  remixTargetAtom,
   rubberBandAtom,
   selectedIdsAtom,
   showGitHashAtom,
@@ -81,6 +82,7 @@ function HomeInner() {
   const [canvasImages, setCanvasImages] = useAtom(canvasImagesAtom);
 
   const [selectedIds, setSelectedIds] = useAtom(selectedIdsAtom);
+  const setRemixTarget = useSetAtom(remixTargetAtom);
   const [rubberBand, setRubberBand] = useAtom(rubberBandAtom);
   const [draggingId, setDraggingId] = useAtom(draggingIdAtom);
   const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
@@ -149,6 +151,25 @@ function HomeInner() {
       });
     },
     [canvas.offset.x, canvas.offset.y, canvas.scale, setCanvasImages],
+  );
+
+  // Selecting a single generated frame seeds the prompt bar with it as the
+  // remix input — same affordance as the context toolbar's custom remix.
+  // Clearing lives in selectedIdsAtom's write so every deselect path stays consistent.
+  const handleSelectedIdsChange = useCallback(
+    (update: Set<string> | ((prev: Set<string>) => Set<string>)) => {
+      setSelectedIds(update);
+
+      const next = typeof update === "function" ? update(selectedIds) : update;
+      const onlyId = next.size === 1 ? [...next][0] : undefined;
+      const iteration = onlyId
+        ? groups.flatMap((g) => g.iterations).find((it) => it.id === onlyId)
+        : undefined;
+      if (iteration && !iteration.isLoading && iteration.html) {
+        setRemixTarget(iteration);
+      }
+    },
+    [selectedIds, groups, setSelectedIds, setRemixTarget],
   );
 
   const handleContextMenu = useCallback(
@@ -304,7 +325,7 @@ function HomeInner() {
           canvasImages={canvasImages}
           onCanvasImagesChange={setCanvasImages}
           selectedIds={selectedIds}
-          onSelectedIdsChange={setSelectedIds}
+          onSelectedIdsChange={handleSelectedIdsChange}
           toolMode={toolMode}
           spaceHeld={spaceHeld}
           rubberBand={rubberBand}
