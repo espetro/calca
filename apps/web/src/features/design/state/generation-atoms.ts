@@ -1,3 +1,4 @@
+import { groupsAtom } from "@calca/canvas-flow";
 import { atom } from "jotai";
 
 import type { DesignIteration, PipelineStatus, ToolMode } from "#/shared/types";
@@ -25,9 +26,11 @@ export const remixTargetAtom = atom<DesignIteration | null>(null);
 
 const selectedIdsBaseAtom = atom<Set<string>>(new Set<string>());
 
-// Selection writes also drop the seeded remix target when its frame leaves the
-// selection — covers every mutation path (pane click, Escape, Delete,
-// multi-select) without each call site knowing about the chip.
+// Selection writes also maintain the remix chip: a single selected generated
+// frame seeds it; the chip clears when that frame leaves the selection. Keeping
+// the side-effects in the atom write (not a component callback) lets
+// onSelectedIdsChange stay the stable jotai setter — an unstable handler makes
+// React Flow re-fire onSelectionChange, which writes a fresh Set and loops.
 export const selectedIdsAtom = atom(
   (get) => get(selectedIdsBaseAtom),
   (get, set, update: Set<string> | ((prev: Set<string>) => Set<string>)) => {
@@ -37,6 +40,15 @@ export const selectedIdsAtom = atom(
     const target = get(remixTargetAtom);
     if (target && !next.has(target.id)) {
       set(remixTargetAtom, null);
+    }
+    if (next.size === 1) {
+      const onlyId = [...next][0];
+      const iteration = get(groupsAtom)
+        .flatMap((g) => g.iterations)
+        .find((it) => it.id === onlyId);
+      if (iteration && !iteration.isLoading && iteration.html) {
+        set(remixTargetAtom, iteration);
+      }
     }
   },
 );
