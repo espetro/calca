@@ -1,5 +1,18 @@
 # @app/web
 
+## 0.7.2
+
+### Patch Changes
+
+- Desktop build: resolve @tailwindcss/browser from the workspace node_modules.
+- Updated dependencies
+  - @app/core@0.7.2
+  - @app/shared@0.7.2
+  - @app/analytics@0.7.2
+  - @app/logger@0.7.2
+  - @calca/canvas-base@0.7.2
+  - @calca/canvas-flow@0.7.2
+
 ## 0.7.1
 
 ### Patch Changes
