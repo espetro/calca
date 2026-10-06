@@ -52,7 +52,7 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 | `Press the <key> key`                             | e.g. `Enter`, `Escape`, `ArrowUp`                                  |
 | `Reload the page`                                 | Full reload                                                        |
 | `Wait for <n> rendered nodes` / `Wait for node <name> to render` | Poll `.react-flow__node` iframes (default 600s)         |
-| `Select the first canvas node` / `The first canvas node should have moved` | Canvas node assertions                       |
+| `Select the first canvas node` / `The first canvas node should have moved` / `The first canvas node should be in the viewport` | Canvas node assertions |
 | `Switch to the Select tool`                       | Dispatches the `v` shortcut — **required before dragging nodes**   |
 | `Drag the first canvas node`                      | Stepped mouse drag (+120,+80); needs Select mode + a node          |
 | `Set the variations count to <value>`             | Clicks the stepper +/- buttons until the count matches (1–4)       |

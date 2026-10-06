@@ -231,6 +231,21 @@ export default class CommonSteps {
     ab(`click ".react-flow__node"`);
   }
 
+  @Step("The first canvas node should be in the viewport")
+  async firstNodeInViewport() {
+    const res = evalJs(
+      `(()=>{const n=document.querySelector('.react-flow__node');` +
+        `if(!n)return 'missing';` +
+        `const r=n.getBoundingClientRect();` +
+        `const ok=r.left>=0&&r.top>=0&&r.right<=window.innerWidth&&r.bottom<=window.innerHeight;` +
+        `return ok?'in-view':JSON.stringify({l:Math.round(r.left),t:Math.round(r.top),` +
+          `r:Math.round(r.right),b:Math.round(r.bottom),w:window.innerWidth,h:window.innerHeight})})()`,
+    );
+    if (res !== '"in-view"') {
+      throw new Error(`First canvas node is not fully in the viewport — ${res}`);
+    }
+  }
+
   @Step("Move the caret to the <pos> of the prompt field")
   async moveCaret(pos: string) {
     const p = pos === "start" ? "0,0" : "t.value.length,t.value.length";

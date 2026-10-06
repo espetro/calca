@@ -18,6 +18,7 @@
 * Dismiss the onboarding dialog
 * Import "e2e/fixtures/pricing-card.design" as a design file
 * Wait for node "Variation 1" to render
+* The first canvas node should be in the viewport
 * Select the first canvas node
 * Click "Remix"
 * Wait for "Custom" to appear
