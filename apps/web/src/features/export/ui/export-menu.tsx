@@ -281,7 +281,8 @@ export function ExportMenu({
           // Can't show preview for image failures
           logger.error("Image export failed");
         } else {
-          setPreview({ code: "// Export failed. Check API key and try again.", format });
+          const message = error instanceof Error ? error.message : "Export failed";
+          setPreview({ code: `// ${message.replace(/\s+/g, " ")}`, format });
         }
       } finally {
         setExporting(null);
