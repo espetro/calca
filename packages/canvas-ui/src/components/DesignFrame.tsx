@@ -81,11 +81,17 @@ export function DesignFrame({
 </head><body><div id="calca-measure" data-gen="${measurementGenRef.current}">${iteration.html}</div>
 <script>
 var GEN = ${measurementGenRef.current};
+var el = document.getElementById('calca-measure');
 function reportHeight() {
-  var el = document.getElementById('calca-measure');
   if (!el) return;
   var h = el.offsetHeight || el.scrollHeight || 100;
   parent.postMessage({ type: 'calca-frame-height', id: '${iteration.id}', height: h, gen: GEN }, '*');
+}
+// Layout can land after the first measurement (headless or slow paint) — the
+// observer keeps reporting so the frame height self-corrects instead of
+// locking to the ~100px fallback.
+if (typeof ResizeObserver === 'function' && el) {
+  new ResizeObserver(reportHeight).observe(el);
 }
 setTimeout(reportHeight, 300);
 setTimeout(reportHeight, 800);

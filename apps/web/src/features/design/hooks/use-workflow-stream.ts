@@ -104,6 +104,8 @@ interface WorkflowStreamParams {
   contextImages?: string[];
   revision?: string;
   existingHtml?: string;
+  /** Source iteration label when this stream is a remix — keeps lineage in the new frame's label. */
+  remixOf?: string;
 }
 
 export const useWorkflowStream = () => {
@@ -140,6 +142,7 @@ export const useWorkflowStream = () => {
         contextImages,
         revision,
         existingHtml,
+        remixOf,
       } = params;
 
       abortRef.current?.abort();
@@ -188,7 +191,11 @@ export const useWorkflowStream = () => {
               html: "",
               id: iterId,
               isLoading: true,
-              label: `Variation ${i + 1}`,
+              label: remixOf
+                ? conceptCount > 1
+                  ? `Remix ${i + 1} of ${remixOf}`
+                  : `Remix of ${remixOf}`
+                : `v${i + 1}`,
               position: positions[i],
               prompt,
               width: 400,
@@ -354,7 +361,11 @@ export const useWorkflowStream = () => {
                             height: frame.height || existing.height,
                             html: frame.html || "<p>Failed to generate</p>",
                             isLoading: false,
-                            label: frame.label || existing.label,
+                            // Pipeline emits only generic "Variation N" — keep
+                            // our lineage-aware label unless a real name arrives.
+                            label: /^Variation \d+$/.test(frame.label)
+                              ? existing.label
+                              : frame.label || existing.label,
                             width: frame.width || existing.width,
                           };
                         }),
@@ -491,7 +502,9 @@ export const useWorkflowStream = () => {
                       height: frame.height || existing.height,
                       html: frame.html || "<p>Failed to generate</p>",
                       isLoading: false,
-                      label: frame.label || existing.label,
+                      label: /^Variation \d+$/.test(frame.label)
+                        ? existing.label
+                        : frame.label || existing.label,
                       width: frame.width || existing.width,
                     };
                   }),

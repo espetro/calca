@@ -306,6 +306,11 @@ export const CanvasArea = ({
       )}
 
       <style>{`
+        /* Canvas pans via wheel/trackpad — never let overscroll chain into
+           the browser's history back/forward swipe. */
+        .react-flow {
+          overscroll-behavior: none;
+        }
         .react-flow__node-designFrame,
         .react-flow__node-canvasImage {
           border: none !important;

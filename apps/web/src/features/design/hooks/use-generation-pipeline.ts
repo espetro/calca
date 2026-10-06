@@ -165,6 +165,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         positions,
         prompt: sourceIteration.prompt || remixPrompt,
         providerType: derived.providerType || undefined,
+        remixOf: sourceIteration.label || "design",
         revision: remixPrompt,
         systemPrompt: settings.systemPrompt || undefined,
         unsplashKey: settings.unsplashKey || undefined,
