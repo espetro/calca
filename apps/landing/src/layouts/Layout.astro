@@ -10,8 +10,9 @@ export interface Props {
 const {
   title = "calca — the open canvas for every format",
   description = "Describe a page, a prototype, a brand board. Get live variations as movable frames. BYOK, file-based, open source. Runs in the browser and on the desktop.",
-  ogImage = "/screenshot.png",
+  ogImage = "/og.png",
 } = Astro.props;
+const ogImageUrl = new URL(ogImage, "https://calca.illo.fyi").href;
 import "../styles/global.css";
 ---
 
@@ -45,7 +46,9 @@ import "../styles/global.css";
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://calca.illo.fyi" />
     <meta property="og:type" content="website" />
 
@@ -53,7 +56,7 @@ import "../styles/global.css";
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Canonical -->
     <link rel="canonical" href="https://calca.illo.fyi" />
