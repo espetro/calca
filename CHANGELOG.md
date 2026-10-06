@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-10-06
+
+### Added
+
+- **Three-layer open-source architecture** — Layer 1 canvas primitives `@calca/canvas-base`, `@calca/canvas-ui`, `@calca/canvas-flow` and Layer 2 agent packages `@calca/mcp-core`, `@calca/mcp` (`calca` CLI + MCP canvas tools) published to npm
+- **Web app at `/app/`** — the Calca SPA deploys alongside the landing site at calca.illo.fyi/app
+- **End-user docs at `/docs/`** — docmd site with quickstart, providers/BYOK, formats, MCP setup, desktop
+- **Landing redesign** — open-canvas positioning, web-demo CTA, generated-format gallery, terminal MCP mock
+- **Desktop fit-view** — React Flow controls removed; fit-to-view moved to the app toolbar
+
+### Changed
+
+- Internal docs (PRD, ADRs, poc-learnings, versioning, testing specs) moved to `.agents/docs/`; root `docs/` is end-user only
+- Fixed Desktop Build CI to build `@calca/*` workspace deps before `@app/web`
+
 ## [0.6.1] - 2026-05-08
 
 ### Added

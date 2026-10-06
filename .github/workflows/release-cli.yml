@@ -36,10 +36,11 @@ jobs:
       - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow --filter=@calca/mcp-core --filter=@calca/mcp
       - name: Publish publishable @calca/* packages
         if: env.NPM_TOKEN != ''
+        # bun publish (not npm publish) rewrites workspace:* deps to real versions
         run: |
           set -e
-          for pkg in shared canvas-base canvas-ui canvas-flow mcp-core mcp; do
-            (cd "packages/$pkg" && npm publish --access public)
+          for pkg in calca-shared canvas-base canvas-ui canvas-flow mcp-core mcp; do
+            (cd "packages/$pkg" && bun publish --access public)
           done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
