@@ -1,5 +1,18 @@
 # @app/web
 
+## 0.7.1
+
+### Patch Changes
+
+- Release CI fixes: node 22 for tsdown on release runners, ~/.npmrc auth for bun publish, checkout before gh release, clean calca-shared tarball.
+- Updated dependencies
+  - @app/core@0.7.1
+  - @app/shared@0.7.1
+  - @app/analytics@0.7.1
+  - @app/logger@0.7.1
+  - @calca/canvas-base@0.7.1
+  - @calca/canvas-flow@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes
@@ -85,6 +98,7 @@
 ### Minor Changes
 
 - ### Features
+
   - **Prompt Bar Redesign**: Complete rewrite with composition API, floating preset buttons, popover UIs for variations and critique mode, image integration with AI pipeline, and custom hooks for viewport/window events
   - **Design Summary UI**: Added summary list, dialog, and wired into canvas page
   - **Canvas Improvements**: Decomposed page.tsx into widgets, added rubber-band selection, resize handles with dimension overlay
@@ -94,11 +108,13 @@
   - **Toolbar**: Added provider-prefixed model name resolution in display
 
   ### Fixes
+
   - Fixed stale iframe height measurements and reduced visual jumps in design rendering
   - Fixed onboarding backdrop click handler to dismiss modal
   - Fixed config to load .env from repo root using dotenv
 
   ### Refactors
+
   - Extracted useClickOutside hook and cleaned up unused code
   - Deduplicated HTML parsing utilities into design/lib
   - Migrated page.tsx from useState/hooks to Jotai atoms

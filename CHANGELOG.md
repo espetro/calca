@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-10-06
+
+### Fixed
+
+- Release CI: Node 22 for tsdown builds on release runners, `~/.npmrc` auth for `bun publish`, checkout before `gh release`, clean `@calca/shared` tarball
+
 ## [0.7.0] - 2026-10-06
 
 ### Added

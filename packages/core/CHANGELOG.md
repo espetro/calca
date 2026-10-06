@@ -1,5 +1,13 @@
 # @app/core
 
+## 0.7.1
+
+### Patch Changes
+
+- Release CI fixes: node 22 for tsdown on release runners, ~/.npmrc auth for bun publish, checkout before gh release, clean calca-shared tarball.
+- Updated dependencies
+  - @app/logger@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes
@@ -78,6 +86,7 @@
 ### Minor Changes
 
 - ### Features
+
   - **AI Pipeline**: Added generate, stream, probe, and fallback utilities for AI providers
   - **Multi-Provider Support**: Added provider abstraction with support for Anthropic, Google, and OpenAI-compatible providers
   - **Pipeline Stages**: Implemented layout, images, review, critique, plan, and summary stages
@@ -85,7 +94,9 @@
   - **Zod Validation**: Integrated Zod validation with graceful fallback in layout, review, and critique stages
 
   ### Fixes
+
   - Fixed provider type to 'openai-compatible' when base URL is set
 
   ### Tests
+
   - Added unit tests for parsers, providers, and settings lib

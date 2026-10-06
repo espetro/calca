@@ -1,5 +1,13 @@
 # @app/shared
 
+## 0.7.1
+
+### Patch Changes
+
+- Release CI fixes: node 22 for tsdown on release runners, ~/.npmrc auth for bun publish, checkout before gh release, clean calca-shared tarball.
+- Updated dependencies
+  - @calca/shared@0.7.1
+
 ## 0.7.0
 
 ### Minor Changes
@@ -34,11 +42,14 @@
 ### Minor Changes
 
 - ### Features
+
   - **Zod Schemas**: Added shared schemas for layout, review, critique, and summary validation
   - **Type Consolidation**: Consolidated Settings type across the monorepo
 
   ### Tests
+
   - Added layout schema unit tests
 
   ### Docs
+
   - Added package-specific AGENTS.md documentation
