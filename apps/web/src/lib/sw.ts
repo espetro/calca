@@ -16,7 +16,15 @@ export function ensureApiWorker(): Promise<void> {
     if (!("serviceWorker" in navigator)) return;
 
     try {
-      await navigator.serviceWorker.register("/sw.js");
+      // Bound every stage: a wedged first install (corrupted SW storage can
+      // leave register() pending forever) must not deadlock the API layer —
+      // on timeout the calls surface the real static-host error instead.
+      await Promise.race([
+        navigator.serviceWorker.register("/sw.js"),
+        new Promise<never>((_resolve, reject) =>
+          setTimeout(() => reject(new Error("sw.js registration timed out")), 5000),
+        ),
+      ]);
       // Wait for activation so the first API call is intercepted, then for
       // the worker's clients.claim() to make this page a controlled client.
       if (!navigator.serviceWorker.controller) {
@@ -27,8 +35,6 @@ export function ensureApiWorker(): Promise<void> {
             }),
           ),
           navigator.serviceWorker.ready.then(() => undefined),
-          // Never hang: without a controller the calls surface the real
-          // static-host error instead.
           new Promise<void>((resolve) => setTimeout(resolve, 2000)),
         ]);
       }
