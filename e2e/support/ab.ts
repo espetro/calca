@@ -41,3 +41,39 @@ export function assertContains(snap: string, text: string): void {
     throw new Error(`Expected snapshot to contain "${text}"`);
   }
 }
+
+/**
+ * Joins a spec-relative path onto E2E_BASE_URL, which may itself carry a base
+ * path (`http://localhost:8899/app/` in SW mode). "/" alone means the app root.
+ */
+export function appUrl(path: string): string {
+  const base = (process.env.E2E_BASE_URL ?? "http://localhost:5173").replace(/\/*$/, "/");
+  if (path.startsWith("http")) return path;
+  return base + path.replace(/^\/+/, "");
+}
+
+export function evalJs(expr: string): string {
+  // Design nodes render in sandboxed iframes; once one mounts, agent-browser's
+  // eval context can land inside it (about:blank, opaque origin) where DOM and
+  // localStorage access silently return null or throw SecurityError.
+  ab("frame main");
+  return ab(`eval "${expr.replace(/"/g, '\\"')}"`).trim();
+}
+
+/**
+ * agent-browser's `console`/`errors` buffers survive navigations — entries
+ * from a previous spec's page leak into the next load's "clean console"
+ * assertions. Clear them right before an Open.
+ */
+export function clearPageDiagnostics(): void {
+  try {
+    ab("console --clear");
+  } catch {
+    // older agent-browser without --clear — page buffers just persist
+  }
+  try {
+    ab("errors --clear");
+  } catch {
+    // same
+  }
+}

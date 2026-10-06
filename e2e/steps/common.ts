@@ -3,22 +3,22 @@ import { basename, resolve } from "path";
 
 import { Step, BeforeSpec } from "gauge-ts";
 
-import { ab, snapshot, snapshotAll, findRef, assertContains } from "../support/ab";
-
-const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:5173";
-
-function evalJs(expr: string): string {
-  // Design nodes render in sandboxed iframes; once one mounts, agent-browser's
-  // eval context can land inside it (about:blank, opaque origin) where DOM and
-  // localStorage access silently return null or throw SecurityError.
-  ab("frame main");
-  return ab(`eval "${expr.replace(/"/g, '\\"')}"`).trim();
-}
+import {
+  ab,
+  appUrl,
+  clearPageDiagnostics,
+  evalJs,
+  snapshot,
+  snapshotAll,
+  findRef,
+  assertContains,
+} from "../support/ab";
 
 export default class CommonSteps {
   @BeforeSpec()
   async coldStart() {
-    ab(`open ${BASE_URL}`);
+    clearPageDiagnostics();
+    ab(`open ${appUrl("/")}`);
     // Canvas images live in IndexedDB (calca-canvas-images) — localStorage.clear
     // alone leaves stale nodes findable by waitForNode across runs.
     evalJs(
@@ -27,12 +27,14 @@ export default class CommonSteps {
       + `const q=indexedDB.deleteDatabase(d.name);`
       + `q.onsuccess=q.onerror=q.onblocked=()=>r(0)})))})()`);
     evalJs(`localStorage.clear()`);
-    ab(`open ${BASE_URL}`);
+    clearPageDiagnostics();
+    ab(`open ${appUrl("/")}`);
   }
 
   @Step("Open <url>")
   async open(url: string) {
-    ab(`open ${url.startsWith("http") ? url : BASE_URL + url}`);
+    clearPageDiagnostics();
+    ab(`open ${appUrl(url)}`);
     const start = Date.now();
     while (Date.now() - start < 15000) {
       if (!snapshot().includes("no interactive elements")) break;
@@ -361,7 +363,8 @@ export default class CommonSteps {
     evalJs(
       `(()=>{const s=JSON.parse(localStorage.getItem('calca-settings')||'{}');delete s.selectedImages;localStorage.setItem('calca-settings',JSON.stringify(s));return 'ok'})()`,
     );
-    ab(`open ${BASE_URL}`);
+    clearPageDiagnostics();
+    ab(`open ${appUrl("/")}`);
     const start = Date.now();
     while (Date.now() - start < 15000) {
       if (snapshot().includes("Prompt")) return;
@@ -386,7 +389,8 @@ export default class CommonSteps {
 
   @Step("Reload the page")
   async reload() {
-    ab(`open ${BASE_URL}`);
+    clearPageDiagnostics();
+    ab(`open ${appUrl("/")}`);
     await new Promise((resolve) => setTimeout(resolve, 2500));
   }
 
