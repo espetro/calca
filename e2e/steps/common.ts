@@ -53,10 +53,12 @@ export default class CommonSteps {
   }
 
   private dismissOverlay() {
+    // The summary accordion auto-opens the latest item after generation —
+    // collapse it so it doesn't overlay subsequent steps.
     const out = evalJs(
-      `(()=>{const d=document.querySelector('[data-tour=summary-dialog]');` +
-        `if(!d)return 'none';const b=d.querySelector('.absolute.inset-0');` +
-        `if(b){b.dispatchEvent(new MouseEvent('click',{bubbles:true}));return 'closed'}return 'open'})()`
+      `(()=>{const b=document.querySelector(` +
+        `'[data-tour=summary-list] [aria-expanded="true"]');` +
+        `if(!b)return 'none';b.dispatchEvent(new MouseEvent('click',{bubbles:true}));return 'closed'})()`
     );
     return out;
   }
