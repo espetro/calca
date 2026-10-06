@@ -7,7 +7,7 @@ import metricsRoute from "./routes/metrics";
 import probeModelsRoute from "./routes/probe-models";
 import workflowRoute from "./routes/workflow";
 
-await createLogger(process.env.LOG_LEVEL as LogLevel);
+await createLogger(globalThis.process?.env?.LOG_LEVEL as LogLevel);
 
 const logger = getLogger(["calca", "server"]);
 

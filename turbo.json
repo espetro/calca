@@ -24,6 +24,14 @@
         "dist/**"
       ]
     },
+    "build:sw": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/sw.js"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true
