@@ -1,0 +1,9 @@
+/* Brand accents for the Calca docs site. */
+
+/* The AI assistant widget is hidden until a docmd Cloud relay is configured
+   (docmd-io/docmd#209 — it can't be disabled via config). */
+#docmd-ai-root,
+#ai-plugin-root,
+[id^="docmd-ai-"] {
+  display: none !important;
+}

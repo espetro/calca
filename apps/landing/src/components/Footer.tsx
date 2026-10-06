@@ -23,8 +23,8 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
     title: "Build",
     links: [
       { label: "Docs", href: LINKS.docs },
-      { label: "MCP quickstart", href: LINKS.docs },
-      { label: "Packages", href: "#open-layer" },
+      { label: "MCP setup", href: LINKS.docsMcp },
+      { label: "Agents & MCP", href: "#open-layer" },
     ],
   },
 ];

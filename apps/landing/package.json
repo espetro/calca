@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev:landing": "astro dev",
-    "build": "astro build && cd ../.. && bun run build:app",
+    "build": "astro build && cd ../.. && bun run build:docs && bun run build:app",
     "typecheck": "astro check",
     "preview": "astro preview",
     "test": "vitest run --passWithNoTests",

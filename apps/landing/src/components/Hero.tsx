@@ -17,7 +17,7 @@ const COLLAGE: CollageFrame[] = [
     src: "/gallery/web-bakery.png",
     alt: "Generated landing page for a sourdough bakery",
     label: "web page",
-    className: "left-0 top-10 w-[300px] lg:w-[340px]",
+    className: "left-0 top-0 w-[300px] lg:w-[340px]",
     rotate: "-4deg",
     delay: "0s",
   },
@@ -25,7 +25,7 @@ const COLLAGE: CollageFrame[] = [
     src: "/gallery/dashboard-fleet.png",
     alt: "Generated fleet-tracking dashboard UI",
     label: "app ui",
-    className: "right-0 top-0 w-[300px] lg:w-[360px]",
+    className: "right-0 top-4 w-[300px] lg:w-[360px]",
     rotate: "3deg",
     delay: "1.2s",
   },
@@ -33,7 +33,7 @@ const COLLAGE: CollageFrame[] = [
     src: "/gallery/brand-launch.png",
     alt: "Generated launch announcement card",
     label: "brand card",
-    className: "left-[18%] bottom-0 w-[260px] lg:w-[300px]",
+    className: "left-[9%] bottom-0 w-[260px] lg:w-[300px]",
     rotate: "2.5deg",
     delay: "2.1s",
   },
@@ -41,7 +41,7 @@ const COLLAGE: CollageFrame[] = [
     src: "/gallery/deck-robotics.png",
     alt: "Generated pitch-deck cover slide",
     label: "deck slide",
-    className: "right-[14%] bottom-6 w-[280px] lg:w-[330px]",
+    className: "right-[8%] bottom-0 w-[280px] lg:w-[330px]",
     rotate: "-2.5deg",
     delay: "0.6s",
   },
@@ -132,7 +132,7 @@ export default function Hero() {
         </div>
 
         {/* generated frames scattered on the canvas */}
-        <div className="relative mx-auto mt-4 hidden h-[430px] max-w-4xl md:block lg:h-[470px]">
+        <div className="relative mx-auto mt-12 hidden h-[540px] max-w-4xl md:block lg:h-[560px]">
           {COLLAGE.map((frame) => (
             <FrameCard key={frame.src} frame={frame} />
           ))}

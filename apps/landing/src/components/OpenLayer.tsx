@@ -1,25 +1,14 @@
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiBookOpen } from "react-icons/fi";
 
 import { LINKS } from "../lib/site";
+import Terminal from "./Terminal";
 
-interface Pkg {
-  name: string;
-  role: string;
-}
-
-const PACKAGES: Pkg[] = [
-  { name: "@calca/canvas-base", role: "document model + commands" },
-  { name: "@calca/canvas-ui", role: "headless canvas components" },
-  { name: "@calca/canvas-flow", role: "React Flow adapter" },
-  { name: "@calca/mcp-core", role: "MCP tool surface" },
-  { name: "@calca/mcp", role: "calca CLI + stdio server" },
-  { name: "@calca/agent-core", role: "BYOK agent seam" },
-];
+const HOSTS = ["claude-code", "cursor", "gemini-cli", "opencode", "codex"];
 
 export default function OpenLayer() {
   return (
     <section id="open-layer" className="mx-auto max-w-6xl px-4 py-24">
-      <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
         <div className="reveal">
           <h2 className="font-display text-4xl font-bold leading-[1.02] tracking-[-0.02em] sm:text-5xl">
             A canvas your agents
@@ -27,54 +16,45 @@ export default function OpenLayer() {
             can drive.
           </h2>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            Calca ships as open-source npm packages, not just an app. The document model, the React
-            Flow adapter, the MCP tool surface, and the agent seam are all yours to build on. Make
-            your own surface, or hand Claude, Cursor, or Codex a board file and let it arrange,
-            comment, and propose.
+            The calca CLI ships the canvas as MCP tools. One install and your agent can read a
+            board, stage edits under a lease, and rearrange frames — no screenshots, no copy-paste.
+            Open source, every layer.
           </p>
-          <a
-            href={LINKS.docs}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary"
-          >
-            Read the docs
-            <FiArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </a>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {HOSTS.map((host) => (
+              <span
+                key={host}
+                className="rounded-full border border-border bg-card px-3 py-1 font-mono text-[11px] text-muted-foreground"
+              >
+                {host}
+              </span>
+            ))}
+          </div>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <a
+              href={LINKS.docsMcp}
+              className="group inline-flex items-center gap-2 rounded-full bg-primary py-1.5 pl-6 pr-1.5 text-base font-semibold text-primary-foreground transition-transform duration-200 ease-out hover:-translate-y-0.5"
+            >
+              Set up your agent
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 transition-transform duration-200 group-hover:translate-x-0.5">
+                <FiArrowRight className="h-4 w-4" />
+              </span>
+            </a>
+            <a
+              href={LINKS.docs}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-base font-semibold text-foreground transition-colors duration-200 hover:bg-secondary"
+            >
+              <FiBookOpen className="h-4 w-4" />
+              All docs
+            </a>
+          </div>
         </div>
 
         <div className="reveal">
-          {/* double-bezel code card */}
-          <div className="rounded-2xl bg-frame p-1.5">
-            <div className="rounded-xl border border-border/70 bg-card p-5">
-              <pre className="overflow-x-auto font-mono text-[13px] leading-loose text-foreground/90">
-                <code>{`npm i @calca/canvas-flow
-
-npx @calca/mcp install claude-code
-calca open board.json`}</code>
-              </pre>
-            </div>
-          </div>
-
-          <ul className="mt-4 divide-y divide-border/70 rounded-2xl border border-border/70 bg-card">
-            {PACKAGES.map((pkg) => (
-              <li key={pkg.name} className="flex items-center justify-between gap-4 px-5 py-3">
-                <div className="min-w-0">
-                  <p className="font-mono text-[13px] font-medium text-foreground">{pkg.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{pkg.role}</p>
-                </div>
-              </li>
-            ))}
-            <li className="flex items-center justify-between gap-4 px-5 py-3">
-              <div className="min-w-0">
-                <p className="font-mono text-[13px] font-medium text-foreground">@calca/app</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  the Calca app itself, web + desktop
-                </p>
-              </div>
-            </li>
-          </ul>
-          <p className="mt-3 text-xs text-muted-foreground">Every package above is open source.</p>
+          <Terminal />
+          <p className="mt-3 text-xs text-muted-foreground">
+            One command to install, then your agent works the board directly.
+          </p>
         </div>
       </div>
     </section>

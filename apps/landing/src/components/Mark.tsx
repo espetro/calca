@@ -10,7 +10,14 @@ interface MarkProps {
 export function Mark({ withWordmark = false, size = 28, className = "" }: MarkProps) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <img src="/logo.png" alt="" width={size} height={size} aria-hidden="true" />
+      <img
+        src="/logo.png"
+        alt=""
+        width={size}
+        height={size}
+        aria-hidden="true"
+        className="translate-y-[2px]"
+      />
       {withWordmark ? (
         <span className="font-brand text-[1.35rem] font-bold leading-none tracking-[-0.03em]">
           calca
