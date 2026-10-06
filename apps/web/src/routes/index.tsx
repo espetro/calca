@@ -393,6 +393,7 @@ function HomeInner() {
         onRemix={pipeline.handleRemix}
         isGenerating={pipeline.isGenerating}
         genStatus={pipeline.genStatus}
+        genStartedAt={pipeline.genStartedAt}
         onCancel={pipeline.cancel}
       />
 

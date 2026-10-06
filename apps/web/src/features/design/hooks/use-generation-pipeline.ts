@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react";
 
 import { useWorkflowStream } from "#/features/design/hooks/use-workflow-stream";
 import {
+  genStartedAtAtom,
   genStatusAtom,
   isGeneratingAtom,
   pipelineStagesAtom,
@@ -64,6 +65,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
   const [isGenerating] = useAtom(isGeneratingAtom);
   const [pipelineStages] = useAtom(pipelineStagesAtom);
   const genStatus = useAtomValue(genStatusAtom);
+  const genStartedAt = useAtomValue(genStartedAtAtom);
 
   const derived = useMemo(
     () => deriveProviderFields(settings.providers, settings.model),
@@ -176,6 +178,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
 
   return {
     cancel: abort,
+    genStartedAt,
     genStatus,
     handleGenerate,
     handleRemix,

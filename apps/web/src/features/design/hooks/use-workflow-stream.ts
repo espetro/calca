@@ -17,10 +17,18 @@ import {
 import {
   isGeneratingAtom,
   pipelineStagesAtom,
+  genStartedAtAtom,
   genStatusAtom,
 } from "#/features/design/state/generation-atoms";
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
-import type { GenerationGroup, PipelineStage, Point } from "#/shared/types";
+import type {
+  GenerationGroup,
+  PipelineStage,
+  PipelineStepName,
+  PipelineStepState,
+  Point,
+} from "#/shared/types";
+import { PIPELINE_STEP_ORDER } from "#/shared/types";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
 // Mastra handleWorkflowStream emits `data-workflow` SSE parts per
@@ -29,6 +37,8 @@ import type { GenerationGroup, PipelineStage, Point } from "#/shared/types";
 interface WorkflowStepResult {
   name: string;
   status: string;
+  /** Present on per-frame step events (layout/images/review/critique/frameComplete). */
+  frameIndex?: number;
   input: Record<string, unknown> | null;
   output: unknown;
   suspendPayload: Record<string, unknown> | null;
@@ -87,11 +97,41 @@ const safeJsonParse = (text: string): unknown => {
   }
 };
 
-const STEP_STAGE_MAP: Record<string, { stage: PipelineStage; progress: number }> = {
-  collectResults: { stage: "refining", progress: 0.98 },
-  frameOrchestrator: { stage: "layout", progress: 0.2 },
-  plan: { stage: "layout", progress: 0.1 },
-  summary: { stage: "refining", progress: 0.95 },
+/** Wire step name → user-facing status text (running transitions only). */
+const STEP_STATUS_LABELS: Record<string, string> = {
+  collectResults: "Wrapping up",
+  critique: "Writing critique",
+  frameOrchestrator: "Processing frames",
+  images: "Adding images",
+  layout: "Generating layout",
+  plan: "Planning concepts",
+  review: "Reviewing design",
+  summary: "Summarizing results",
+};
+
+/** Wire step name → progress-bar stage bucket (keeps STAGE_CONFIG/pulse behavior). */
+const STEP_TO_STAGE: Record<PipelineStepName, PipelineStage> = {
+  critique: "refining",
+  images: "images",
+  layout: "layout",
+  plan: "queued",
+  review: "review",
+};
+
+const isFrameStepName = (name: string): name is PipelineStepName =>
+  (PIPELINE_STEP_ORDER as string[]).includes(name);
+
+const normalizeStepStatus = (status: string): "running" | "success" | "failed" | null => {
+  if (status === "running") {
+    return "running";
+  }
+  if (status === "success" || status === "finished") {
+    return "success";
+  }
+  if (status === "failed") {
+    return "failed";
+  }
+  return null;
 };
 
 const parseSSELine = (line: string): { type: string; [key: string]: unknown } | null => {
@@ -137,10 +177,13 @@ export const useWorkflowStream = () => {
   const setIsGenerating = useSetAtom(isGeneratingAtom);
   const setPipelineStages = useSetAtom(pipelineStagesAtom);
   const setGenStatus = useSetAtom(genStatusAtom);
+  const setGenStartedAt = useSetAtom(genStartedAtAtom);
 
   const abortRef = useRef<AbortController | null>(null);
   const generationStartTimeRef = useRef<number>(0);
   const completedStepsRef = useRef<Set<string>>(new Set());
+  // Per-iteration step states (iterId -> step name -> state), rebuilt per stream.
+  const frameStepsRef = useRef<Map<string, Map<PipelineStepName, PipelineStepState>>>(new Map());
 
   const abort = useCallback(() => {
     abortRef.current?.abort();
@@ -175,9 +218,11 @@ export const useWorkflowStream = () => {
 
       setIsGenerating(true);
       setGenStatus("Starting workflow…");
+      setGenStartedAt(Date.now());
 
       generationStartTimeRef.current = Date.now();
       completedStepsRef.current = new Set();
+      frameStepsRef.current = new Map();
 
       const wordCount = prompt.split(/\s+/).filter(Boolean).length;
       trackGenerationStart(model || "unknown", wordCount, conceptCount);
@@ -191,14 +236,29 @@ export const useWorkflowStream = () => {
       };
       setGroups((prev) => [...prev, newGroup]);
 
+      const frameStepNames: PipelineStepName[] =
+        mode === "quick"
+          ? ["plan", "layout", "images"]
+          : ["plan", "layout", "images", "review", "critique"];
+
       const iterIds: string[] = [];
       for (let i = 0; i < conceptCount; i++) {
         const iterId = `${groupId}-iter-${i}`;
         iterIds.push(iterId);
 
+        frameStepsRef.current.set(
+          iterId,
+          new Map(frameStepNames.map((name) => [name, { status: "pending" as const }])),
+        );
         setPipelineStages((prev) => ({
           ...prev,
-          [iterId]: { progress: 0, stage: "queued" },
+          [iterId]: {
+            progress: 0,
+            stage: "queued",
+            steps: Object.fromEntries(
+              frameStepNames.map((name) => [name, { status: "pending" as const }]),
+            ),
+          },
         }));
       }
 
@@ -227,6 +287,18 @@ export const useWorkflowStream = () => {
           };
         }),
       );
+
+      const snapshotSteps = (iterId: string) => {
+        const steps = frameStepsRef.current.get(iterId);
+        if (!steps) {
+          return undefined;
+        }
+        const snapshot: Partial<Record<PipelineStepName, PipelineStepState>> = {};
+        steps.forEach((state, name) => {
+          snapshot[name] = { ...state };
+        });
+        return snapshot;
+      };
 
       const removePendingIterations = () => {
         setGroups((prev) =>
@@ -292,110 +364,186 @@ export const useWorkflowStream = () => {
         let workflowOutput: WorkflowOutput | null = null;
         const completedFrameIndices = new Set<number>();
 
+        /** Recompute and publish one iteration's PipelineStatus from its step map. */
+        const publishStage = (iterId: string) => {
+          const steps = snapshotSteps(iterId);
+          if (!steps) {
+            return;
+          }
+          const ordered = PIPELINE_STEP_ORDER.filter((name) => steps[name]);
+          const doneCount = ordered.filter((name) => steps[name]?.status === "success").length;
+          const running = ordered.find((name) => steps[name]?.status === "running");
+          const lastActive = [...ordered].reverse().find((name) => {
+            const s = steps[name];
+            return s !== undefined && s.status !== "pending";
+          });
+          const stage: PipelineStage = running
+            ? STEP_TO_STAGE[running]
+            : lastActive
+              ? STEP_TO_STAGE[lastActive]
+              : "queued";
+          const progress = ordered.length
+            ? Math.min(0.98, (doneCount + (running ? 0.5 : 0)) / ordered.length)
+            : 0;
+
+          setPipelineStages((prev) => {
+            const existing = prev[iterId];
+            if (existing && (existing.stage === "done" || existing.stage === "error")) {
+              return prev;
+            }
+            return {
+              ...prev,
+              [iterId]: { ...existing, progress, stage, steps },
+            };
+          });
+        };
+
+        const applyStep = (
+          iterId: string,
+          name: PipelineStepName,
+          status: "running" | "success" | "failed",
+        ) => {
+          const steps = frameStepsRef.current.get(iterId);
+          const step = steps?.get(name);
+          if (
+            !step ||
+            step.status === status ||
+            step.status === "success" ||
+            step.status === "failed"
+          ) {
+            return;
+          }
+          const now = Date.now();
+          if (status === "running") {
+            step.status = "running";
+            step.startedAt = now;
+          } else {
+            step.status = status;
+            step.elapsedMs = step.startedAt ? now - step.startedAt : undefined;
+          }
+          publishStage(iterId);
+        };
+
+        /** Mark a frame's iteration done and mount its HTML — used by
+         *  frameComplete events and the end-of-stream fallbacks. */
+        const completeFrame = (index: number, frame: FrameResult) => {
+          const iterId = iterIds[index];
+          if (!iterId || completedFrameIndices.has(index)) {
+            return;
+          }
+          completedFrameIndices.add(index);
+
+          // Steps still "running" when the frame lands = the step that failed.
+          frameStepsRef.current.get(iterId)?.forEach((step) => {
+            if (step.status === "running") {
+              step.status = "failed";
+            }
+          });
+
+          setPipelineStages((prev) => ({
+            ...prev,
+            [iterId]: { progress: 1, stage: "done", steps: snapshotSteps(iterId) },
+          }));
+
+          trackPipelineStageComplete("layout", iterId, Date.now() - generationStartTimeRef.current);
+
+          setGenStatus(`${completedFrameIndices.size} of ${conceptCount} variations ready`);
+
+          setGroups((prev) =>
+            prev.map((g) => {
+              if (g.id !== groupId) {
+                return g;
+              }
+              return {
+                ...g,
+                iterations: g.iterations.map((existing) => {
+                  if (existing.id !== iterId) {
+                    return existing;
+                  }
+                  return {
+                    ...existing,
+                    height: frame.height || existing.height,
+                    html: frame.html || "<p>Failed to generate</p>",
+                    isLoading: false,
+                    // Pipeline emits only generic "Variation N" — keep
+                    // our lineage-aware label unless a real name arrives.
+                    label: /^Variation \d+$/.test(frame.label)
+                      ? existing.label
+                      : frame.label || existing.label,
+                    width: frame.width || existing.width,
+                  };
+                }),
+              };
+            }),
+          );
+        };
+
         const mapStepToStages = (steps: Record<string, WorkflowStepResult>) => {
           for (const [, stepResult] of Object.entries(steps)) {
             const stepName = stepResult.name;
-            const mapping = STEP_STAGE_MAP[stepName];
+            const frameIndex =
+              typeof stepResult.frameIndex === "number" ? stepResult.frameIndex : undefined;
+            const status = normalizeStepStatus(stepResult.status);
 
-            if (!mapping) {
+            // Per-frame completion carries the finished FrameResult — mount early.
+            if (stepName === "frameComplete") {
+              if (
+                frameIndex !== undefined &&
+                (stepResult.status === "success" || stepResult.status === "finished") &&
+                stepResult.output &&
+                typeof stepResult.output === "object"
+              ) {
+                completeFrame(frameIndex, stepResult.output as FrameResult);
+              }
               continue;
             }
 
-            if (
-              stepResult.status === "running" &&
-              !completedStepsRef.current.has(stepName + "_running")
-            ) {
-              completedStepsRef.current.add(stepName + "_running");
-              for (let i = 0; i < conceptCount; i++) {
-                const iterId = iterIds[i];
-                if (!iterId) {
-                  continue;
-                }
-
-                setPipelineStages((prev) => {
-                  const existing = prev[iterId];
-                  if (existing && (existing.stage === "done" || existing.stage === "error")) {
-                    return prev;
-                  }
-                  return {
-                    ...prev,
-                    [iterId]: {
-                      progress: mapping.progress + (i / conceptCount) * 0.15,
-                      stage: mapping.stage,
-                    },
-                  };
-                });
+            // Per-frame step events carry frameIndex → attribute to one iteration.
+            if (frameIndex !== undefined) {
+              const iterId = iterIds[frameIndex];
+              if (!iterId || !isFrameStepName(stepName) || !status) {
+                continue;
               }
-              trackPipelineStageStart(mapping.stage, iterIds[0] || groupId);
-
-              const statusLabel =
-                stepName === "frameOrchestrator"
-                  ? `Processing frames…`
-                  : `${stepName} step running…`;
-              setGenStatus(statusLabel);
+              if (status === "running") {
+                if (!completedStepsRef.current.has(`${iterId}:${stepName}`)) {
+                  completedStepsRef.current.add(`${iterId}:${stepName}`);
+                  trackPipelineStageStart(STEP_TO_STAGE[stepName], iterId);
+                }
+                const label = STEP_STATUS_LABELS[stepName];
+                if (label) {
+                  setGenStatus(`${label} · variation ${frameIndex + 1} of ${conceptCount}`);
+                }
+              }
+              applyStep(iterId, stepName, status);
+              continue;
             }
 
+            // Global (frame-less) steps.
+            if (stepName === "plan" && status) {
+              for (const iterId of iterIds) {
+                applyStep(iterId, "plan", status);
+              }
+            }
+            if (status === "running") {
+              const label = STEP_STATUS_LABELS[stepName];
+              if (label) {
+                setGenStatus(`${label}…`);
+              }
+            }
+
+            // Catch-all: frames that never emitted frameComplete (e.g. errorFrame).
             if (
               stepName === "frameOrchestrator" &&
               (stepResult.status === "success" || stepResult.status === "finished") &&
               stepResult.output
             ) {
-              const output = stepResult.output as {
-                frames?: FrameResult[];
-              };
+              const output = stepResult.output as { frames?: FrameResult[] };
               if (output.frames && Array.isArray(output.frames)) {
-                const stageDuration = Date.now() - generationStartTimeRef.current;
                 for (let i = 0; i < output.frames.length; i++) {
-                  if (completedFrameIndices.has(i)) {
-                    continue;
-                  }
-
                   const frame = output.frames[i];
-                  if (!frame) {
-                    continue;
+                  if (frame) {
+                    completeFrame(i, frame);
                   }
-
-                  const iterId = iterIds[i];
-                  if (!iterId) {
-                    continue;
-                  }
-
-                  completedFrameIndices.add(i);
-
-                  setPipelineStages((prev) => ({
-                    ...prev,
-                    [iterId]: { progress: 1, stage: "done" },
-                  }));
-
-                  trackPipelineStageComplete("layout", iterId, stageDuration);
-
-                  setGroups((prev) =>
-                    prev.map((g) => {
-                      if (g.id !== groupId) {
-                        return g;
-                      }
-                      return {
-                        ...g,
-                        iterations: g.iterations.map((existing) => {
-                          if (existing.id !== iterId) {
-                            return existing;
-                          }
-                          return {
-                            ...existing,
-                            height: frame.height || existing.height,
-                            html: frame.html || "<p>Failed to generate</p>",
-                            isLoading: false,
-                            // Pipeline emits only generic "Variation N" — keep
-                            // our lineage-aware label unless a real name arrives.
-                            label: /^Variation \d+$/.test(frame.label)
-                              ? existing.label
-                              : frame.label || existing.label,
-                            width: frame.width || existing.width,
-                          };
-                        }),
-                      };
-                    }),
-                  );
                 }
               }
             }
@@ -435,9 +583,14 @@ export const useWorkflowStream = () => {
                 continue;
               }
 
+              frameStepsRef.current.get(iterId)?.forEach((step) => {
+                if (step.status === "running") {
+                  step.status = "failed";
+                }
+              });
               setPipelineStages((prev) => ({
                 ...prev,
-                [iterId]: { progress: 0, stage: "error" },
+                [iterId]: { progress: 0, stage: "error", steps: snapshotSteps(iterId) },
               }));
 
               setGroups((prev) =>
@@ -495,46 +648,10 @@ export const useWorkflowStream = () => {
         const finalOutput = workflowOutput as WorkflowOutput | null;
         if (finalOutput?.frames) {
           for (let i = 0; i < finalOutput.frames.length; i++) {
-            if (completedFrameIndices.has(i)) {
-              continue;
-            }
-
             const frame = finalOutput.frames[i];
-            const iterId = iterIds[i];
-            if (!frame || !iterId) {
-              continue;
+            if (frame) {
+              completeFrame(i, frame);
             }
-
-            setPipelineStages((prev) => ({
-              ...prev,
-              [iterId]: { progress: 1, stage: "done" },
-            }));
-
-            setGroups((prev) =>
-              prev.map((g) => {
-                if (g.id !== groupId) {
-                  return g;
-                }
-                return {
-                  ...g,
-                  iterations: g.iterations.map((existing) => {
-                    if (existing.id !== iterId) {
-                      return existing;
-                    }
-                    return {
-                      ...existing,
-                      height: frame.height || existing.height,
-                      html: frame.html || "<p>Failed to generate</p>",
-                      isLoading: false,
-                      label: /^Variation \d+$/.test(frame.label)
-                        ? existing.label
-                        : frame.label || existing.label,
-                      width: frame.width || existing.width,
-                    };
-                  }),
-                };
-              }),
-            );
           }
 
           const summary = parseSummaryOutput(finalOutput.summary);
@@ -601,9 +718,14 @@ export const useWorkflowStream = () => {
                 if (!iter.isLoading) {
                   return iter;
                 }
+                frameStepsRef.current.get(iter.id)?.forEach((step) => {
+                  if (step.status === "running") {
+                    step.status = "failed";
+                  }
+                });
                 setPipelineStages((prev) => ({
                   ...prev,
-                  [iter.id]: { progress: 0, stage: "error" },
+                  [iter.id]: { progress: 0, stage: "error", steps: snapshotSteps(iter.id) },
                 }));
                 return {
                   ...iter,
@@ -622,7 +744,7 @@ export const useWorkflowStream = () => {
         abortRef.current = null;
       }
     },
-    [setGroups, setIsGenerating, setPipelineStages, setGenStatus],
+    [setGroups, setIsGenerating, setPipelineStages, setGenStatus, setGenStartedAt],
   );
 
   return { abort, startStream };
