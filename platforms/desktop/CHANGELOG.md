@@ -1,5 +1,13 @@
 # @app/electrobun
 
+## 0.7.2
+
+### Patch Changes
+
+- Desktop build: resolve @tailwindcss/browser from the workspace node_modules.
+- Updated dependencies
+  - @app/server@0.7.2
+
 ## 0.7.1
 
 ### Patch Changes

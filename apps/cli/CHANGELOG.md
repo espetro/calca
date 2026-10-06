@@ -1,5 +1,11 @@
 # @app/cli
 
+## 0.7.2
+
+### Patch Changes
+
+- Desktop build: resolve @tailwindcss/browser from the workspace node_modules.
+
 ## 0.7.1
 
 ### Patch Changes

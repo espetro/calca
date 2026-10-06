@@ -1,5 +1,13 @@
 # @calca/mcp-core
 
+## 0.7.2
+
+### Patch Changes
+
+- Desktop build: resolve @tailwindcss/browser from the workspace node_modules.
+- Updated dependencies
+  - @calca/canvas-base@0.7.2
+
 ## 0.7.1
 
 ### Patch Changes
