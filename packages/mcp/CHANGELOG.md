@@ -1,5 +1,14 @@
 # @calca/mcp
 
+## 0.7.3
+
+### Patch Changes
+
+- UX nits: import zooms to fit, bidirectional quickMode param, summary JSON repair, banner/toolbar overlap.
+- Updated dependencies
+  - @calca/canvas-base@0.7.3
+  - @calca/mcp-core@0.7.3
+
 ## 0.7.2
 
 ### Patch Changes

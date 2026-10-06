@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+## [0.7.3] - 2026-10-06
+
+### Fixed
+
+- UX nits from dogfooding: imported groups zoom into view, `?quickMode` toggles both ways, summary step parses fenced/prose-wrapped JSON, onboarding banner no longer covers the toolbar
+
 ## [0.7.2] - 2026-10-06
 
 ### Fixed
