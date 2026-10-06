@@ -1,5 +1,7 @@
 # @app/analytics
 
+## 0.7.4
+
 ## 0.7.3
 
 ### Patch Changes

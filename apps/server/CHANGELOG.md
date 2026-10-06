@@ -1,5 +1,15 @@
 # @app/server
 
+## 0.7.4
+
+### Patch Changes
+
+- The API layer now runs inside a root-scoped service worker on static deployments, so the hosted web demo answers `/api/*` end to end (probe, generation streams, exports). Error handling fixes: workflow stream no longer swallows non-OK responses as "Workflow complete", probe failures report the real status, and export errors surface the actual cause.
+  - @app/core@0.7.4
+  - @app/shared@0.7.4
+  - @app/logger@0.7.4
+  - @calca/pipeline@1.0.4
+
 ## 0.7.3
 
 ### Patch Changes

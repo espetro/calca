@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+## [0.7.4] - 2026-10-06
+
+### Added
+
+- The API layer runs inside a root-scoped service worker on static deployments — the hosted web demo answers `/api/*` end to end (probe, generation streams, exports)
+
+### Fixed
+
+- API error handling: workflow stream no longer swallows non-OK responses as "Workflow complete", probe failures report the real status, export errors surface the actual cause
+
+### Changed
+
+- README rewritten (demo CTA + npm package table); npm releases now publish via OIDC trusted publishing
+
 ## [0.7.3] - 2026-10-06
 
 ### Fixed
