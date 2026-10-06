@@ -2,7 +2,7 @@
   "name": "calca",
   "version": "0.6.1",
   "private": true,
-  "description": "AI design tool with infinite canvas \u2014 vibe coding for design",
+  "description": "AI design tool with infinite canvas — vibe coding for design",
   "license": "AGPL-3.0",
   "workspaces": [
     "apps/*",
@@ -53,6 +53,7 @@
     "oxlint": "catalog:",
     "ts-node": "^10.9.2",
     "turbo": "^2.4.0",
+    "unrun": "^0.3.1",
     "vitest": "catalog:"
   },
   "overrides": {
