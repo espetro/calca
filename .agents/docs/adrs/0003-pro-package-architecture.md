@@ -84,5 +84,5 @@ The package structure supports conditional builds through:
 ## More Information
 
 - Dual licensing model: `AGENTS.md` (Licensing & Open-Core Architecture section)
-- Architecture decisions: `docs/PRD.md`
+- Architecture decisions: [`../PRD.md`](../PRD.md)
 - Import rules and examples: `packages/pro/README.md`

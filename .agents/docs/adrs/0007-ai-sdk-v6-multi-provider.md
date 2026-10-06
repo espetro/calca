@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- **Status**: Accepted
+- **Status**: Accepted (implemented on AI SDK v7 today; the multi-provider decision is unchanged)
 - **Date**: 2026-04-12
 - **Decision makers**: Joaquin Terrasa
 

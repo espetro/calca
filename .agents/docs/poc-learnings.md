@@ -1,5 +1,11 @@
 # POC Learnings
 
+> **Status: historical POC retrospective.** Verdicts are frozen at POC-analysis
+> time — several were later reversed (Hono, TanStack Router, React Flow, and
+> Electrobun were ultimately adopted; Next.js, the CSS-transform canvas, and the
+> SQLite/Drizzle layer were not). For current architecture see `AGENTS.md` and
+> [`adrs/`](adrs/).
+
 > Analysis of the monorepo migration POC for Calca v2. Each technology choice gets a verdict: **CARRY** (use in v2), **SKIP** (don't use), or **REDESIGN** (reconsider approach).
 
 ---

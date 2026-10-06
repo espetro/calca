@@ -72,16 +72,23 @@ The following checks are enforced via lint rules and review:
 ```
 calca/
 ├── apps/
-│   ├── web/          → Next.js frontend (SPA-like) — see [apps/web/AGENTS.md](./apps/web/AGENTS.md)
-│   └── server/       → API server — see [apps/server/AGENTS.md](./apps/server/AGENTS.md)
+│   ├── web/          → Vite SPA + TanStack Router — see apps/web/AGENTS.md
+│   ├── server/       → Hono API server — see apps/server/AGENTS.md
+│   ├── cli/          → @app/cli seed
+│   ├── landing/      → Astro marketing site
+│   └── feedback-proxy → Cloudflare Worker
 ├── platforms/
-│   └── desktop/      → Electrobun wrapper (macOS + Windows) — see [platforms/desktop/AGENTS.md](./platforms/desktop/AGENTS.md)
+│   └── desktop/      → Electrobun wrapper (macOS + Windows) — see platforms/desktop/AGENTS.md
 ├── packages/
-│   ├── shared/       → Types & contracts — see [packages/shared/AGENTS.md](./packages/shared/AGENTS.md)
-│   ├── core/         → AI-agnostic logic — see [packages/core/AGENTS.md](./packages/core/AGENTS.md)
-│   ├── db/           → Database schema (Drizzle)
-│   └── ui/           → Reusable UI components
-└── docs/             → Architecture decisions, PRD
+│   ├── shared/       → Types & contracts — see packages/shared/AGENTS.md
+│   ├── core/         → AI-agnostic logic — see packages/core/AGENTS.md
+│   ├── agent-core/   → Agent-harness seam over the AI SDK
+│   ├── pipeline/     → Generation pipeline steps
+│   ├── canvas*/      → @calca/canvas-base · canvas-ui · canvas-flow
+│   ├── mcp*/         → @calca/mcp-core + calca CLI
+│   ├── pro/          → ELv2 enterprise features
+│   └── config·logger·analytics·calca-shared → supporting packages
+└── .agents/docs/     → Internal docs: ADRs, PRD, plans
 ```
 
 - **FSD alignment** — Feature-Sliced Design (FSD) organises code **within** a vertical slice (e.g., `apps/web/src/features/`). VSA governs the **between-slice** boundaries in the monorepo. They are complementary, not competing.

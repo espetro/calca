@@ -1,5 +1,9 @@
 # Desktop Storage Migration Plan
 
+> **Status: proposed — not yet implemented.** Desktop storage today only ensures
+> the user-data directory exists (`platforms/desktop/src/storage.ts`); no
+> `.migrated` flag, Keychain, or file-backed persistence is wired up.
+
 ## Current State
 
 All app data lives in browser `localStorage`:

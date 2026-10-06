@@ -10,15 +10,14 @@
 
 Calca is a Bun workspaces monorepo with multiple apps and packages that require coordinated build, test, and validation pipelines. The monorepo structure includes:
 
-- `apps/web/` — Next.js frontend
-- `apps/server/` — API server
+- `apps/web/` — Vite SPA + TanStack Router frontend
+- `apps/server/` — Hono API server
 - `apps/cli/` — CLI tool
 - `apps/landing/` — Marketing site
 - `packages/core/` — AI-agnostic logic
 - `packages/shared/` — Types and contracts
-- `packages/ui/` — Reusable UI components
 - `platforms/desktop/` — Electrobun desktop wrapper
-- `packages/config/`, `packages/logger/`, `packages/types/`, `packages/database/` — Supporting packages
+- `packages/config/`, `packages/logger/`, plus later additions (`agent-core`, `pipeline`, `canvas-*`, `mcp*`, `pro`, `analytics`, `calca-shared`) — supporting packages
 
 With multiple packages and apps, running builds, tests, or type checks across the entire monorepo requires a tool that can:
 
