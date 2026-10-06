@@ -1,69 +1,63 @@
-# Calca
+<div align="center">
+  <a href="https://calca.illo.fyi">
+    <img src="./docs/assets/logo.png" alt="calca" width="128" />
+  </a>
 
-An open, file-based, free-form AI canvas — design with words, on an infinite canvas, alongside agents.
+  <h1>calca</h1>
 
-**Design with words.**
+  <p>
+    <strong>An open canvas for every format.</strong><br />
+    Describe a page, a prototype, a brand board — get live variations as movable
+    frames, then remix, export, or hand the board to your agent.<br />
+    Open source · BYOK · Web + desktop
+  </p>
 
-[![GitHub stars](https://img.shields.io/github/stars/espetro/calca?style=flat)](https://github.com/espetro/calca/stargazers)
+  <p>
+    <a href="https://calca.illo.fyi/app/?prompt=A%20landing%20page%20for%20a%20sourdough%20bakery%20%E2%80%94%20warm%20hero%20with%20a%20tagline%2C%20a%20three-item%20bread%20menu%20with%20prices%2C%20a%20short%20story%20section%2C%20and%20a%20footer%20with%20hours%20and%20address.&preset=marketing"><strong>Try the web demo »</strong></a>
+    <br /><br />
+    <a href="https://calca.illo.fyi/docs/">Docs</a> ·
+    <a href="https://github.com/espetro/calca/releases/latest">Desktop app</a> ·
+    <a href="https://github.com/users/espetro/projects/6">Roadmap</a> ·
+    <a href="./CONTRIBUTING.md">Contributing</a>
+  </p>
 
-[![Latest Release](https://img.shields.io/github/v/release/espetro/calca?style=flat&label=latest)](https://github.com/espetro/calca/releases/latest)
+  <p>
+    <a href="https://github.com/espetro/calca/actions/workflows/canvas.yml"><img src="https://img.shields.io/github/actions/workflow/status/espetro/calca/canvas.yml?branch=main" alt="CI" /></a>
+    <a href="https://www.npmjs.com/package/@calca/mcp"><img src="https://img.shields.io/npm/v/@calca/mcp?label=npm" alt="npm @calca/mcp" /></a>
+    <a href="https://github.com/espetro/calca/releases/latest"><img src="https://img.shields.io/github/v/release/espetro/calca?label=release" alt="Latest release" /></a>
+    <a href="https://github.com/espetro/calca/stargazers"><img src="https://img.shields.io/github/stars/espetro/calca?style=flat" alt="GitHub stars" /></a>
+  </p>
 
-[![Back this project](https://img.shields.io/badge/back_this_project-%E2%9D%A4-ff69b4)](https://buy.polar.sh/polar_cl_Mv1gdlG7bw3I70EC9IHtfeSHJj4PEKvA7JAUz23CFhj)
+  <a href="https://calca.illo.fyi/app/">
+    <img src="./docs/assets/screenshot.png" alt="Calca canvas — a generated design frame and the prompt bar" width="720" />
+  </a>
+</div>
 
-![App screenshot, featuring the prompt bar with a generated design](./docs/assets/screenshot.png)
+## Packages
 
-## Three layers
+The canvas libraries and the agent playground are on npm — build a canvas app or plug an agent into a board:
 
-Calca is being re-architected into three layers (tracking issue: [#37](https://github.com/espetro/calca/issues/37)):
+| Package | What it gives you |
+| --- | --- |
+| [`@calca/canvas-base`](https://www.npmjs.com/package/@calca/canvas-base) | Zero-dependency document core: records, commands, undo history, versioned snapshots |
+| [`@calca/canvas-ui`](https://www.npmjs.com/package/@calca/canvas-ui) | Headless React canvas components — frame chrome, overlays, marquee selection |
+| [`@calca/canvas-flow`](https://www.npmjs.com/package/@calca/canvas-flow) | React Flow adapter: store → live canvas surface, user edits → commands |
+| [`@calca/mcp-core`](https://www.npmjs.com/package/@calca/mcp-core) | Runtime-neutral MCP tool surface and contract for canvas sessions |
+| [`@calca/mcp`](https://www.npmjs.com/package/@calca/mcp) | The `calca` CLI — stdio MCP server, board files, host installers |
+| [`@calca/shared`](https://www.npmjs.com/package/@calca/shared) | Shared TypeScript types for the stack |
 
-| Layer                    | Goal                                                                                                                  | Packages                                                                                                                            | Licence    |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| **1 — Canvas library**   | An open-source canvas comparable to tldraw, built on React Flow                                                       | `@calca/canvas-base` (RF-free primitives) · `@calca/canvas-ui` (headless UI components) · `@calca/canvas-flow` (React Flow adapter) | Apache-2.0 |
-| **2 — Agent playground** | Tooling so a team and their agents can work on a canvas in near-real-time — Web-Standards-only CLI + MCP              | `@calca/mcp-core` · `@calca/mcp` (`calca` CLI) · `calca serve` relay                                                                | Apache-2.0 |
-| **3 — Calca app**        | The free-form AI canvas app: fast iterations without token bloat or drift, driven by an in-browser BYOK agent harness | `@calca/agent-core` (Apache-2.0) · `@calca/app` (AGPL-3.0)                                                                          | AGPL-3.0   |
+Point your agent at a board:
 
-The libraries (Layers 1–2 plus `agent-core`) are Apache-2.0, the app is AGPL-3.0, and `packages/pro` stays under Elastic License v2.
+```bash
+npx -y @calca/mcp mcp install claude-code   # also: cursor, codex
+```
 
-## Repository map (today)
+## Where to go next
 
-- `apps/web` — the Calca app: Vite SPA (React 19, TanStack Router), Feature-Sliced Design
-- `apps/server` — Hono API server
-- `apps/cli` — vestigial scaffold; the Layer 2 CLI lives in `packages/mcp`
-- `apps/landing` — Astro marketing site · `apps/feedback-proxy` — Cloudflare Worker for feedback
-- `packages/canvas-base` · `canvas-ui` · `canvas-flow` (`@calca/*`) — the open canvas library: document model, headless UI, React Flow adapter
-- `packages/mcp-core` · `mcp` (`@calca/*`) — canvas MCP tool surface + `calca` CLI (stdio server, host installers)
-- `packages/agent-core` (`@calca/agent-core`) — browser-safe agent-harness seam over the AI SDK (BYOK)
-- `packages/pipeline` (`@calca/pipeline`) — generation pipeline steps · `packages/core` — prompts, providers, domain logic
-- `packages/shared` · `logger` · `analytics` · `config` · `pro`
-- `platforms/desktop` — Electrobun shell (macOS + Windows)
+- **Use the app** → [calca.illo.fyi/app](https://calca.illo.fyi/app/) · [quick start](https://calca.illo.fyi/docs/quickstart/) · [docs](https://calca.illo.fyi/docs/)
+- **Hack on the repo** → [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **Ideas & feedback** → [discussions](https://github.com/espetro/calca/discussions/5) · [roadmap](https://github.com/users/espetro/projects/6)
 
-## Features
+---
 
-- **Infinite Canvas** — Pan, zoom, and organize like Figma
-- **AI Design Generation** — Describe a design, get polished HTML/CSS variations
-- **Iterative Refinement** — Each concept learns from the last via sequential AI critique
-- **Multi-Model Pipeline** — Claude for layout + QA, Gemini for images
-- **BYOK** — Bring your own provider key; runs against local models (LM Studio) too
-- **Export** — Tailwind HTML, React (TSX), PNG/JPG/SVG
-- Cross-platform support: runs on ![macOS](https://img.shields.io/badge/platform-macOS-lightgrey) and ![Windows](https://img.shields.io/badge/platform-Windows-blue)
-
-## Contributing
-
-Calca is open-source (see License info below).
-
-If you're interested in contributing to Calca, please read our [contributing doc](CONTRIBUTING.md).
-
-- [Ideas and Feedback](https://github.com/espetro/calca/discussions/5)
-- [Roadmap](https://github.com/users/espetro/projects/6)
-
-## Built With
-
-[Vite](https://vitejs.dev) · [Turbo](https://turbo.build) · [Hono](https://hono.dev) · [TanStack Router](https://tanstack.com/router) · [React Flow](https://reactflow.dev) · [AI SDK](https://sdk.vercel.ai) · [Electrobun](https://electrobun.dev)
-
-## License
-
-Libraries (`@calca/canvas-*`, `@calca/mcp*`, `@calca/agent-core`): Apache-2.0
-App (`@calca/app`, `apps/`, other `packages/`): [AGPL-3.0](LICENSE)
-Pro (`packages/pro`): [Elastic License v2](packages/pro/LICENSE)
-
-Based on DesignBuddy Canvas (MIT-licensed)
+Calca is open source — see [LICENSE](./LICENSE) and each package's `package.json` for terms.
