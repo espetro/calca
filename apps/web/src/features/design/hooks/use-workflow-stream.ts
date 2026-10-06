@@ -19,6 +19,7 @@ import {
   pipelineStagesAtom,
   genStartedAtAtom,
   genStatusAtom,
+  openSummaryIdAtom,
 } from "#/features/design/state/generation-atoms";
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
 import type {
@@ -178,6 +179,7 @@ export const useWorkflowStream = () => {
   const setPipelineStages = useSetAtom(pipelineStagesAtom);
   const setGenStatus = useSetAtom(genStatusAtom);
   const setGenStartedAt = useSetAtom(genStartedAtAtom);
+  const setOpenSummaryId = useSetAtom(openSummaryIdAtom);
 
   const abortRef = useRef<AbortController | null>(null);
   const generationStartTimeRef = useRef<number>(0);
@@ -666,6 +668,8 @@ export const useWorkflowStream = () => {
                   : g,
               ),
             );
+            // Freshly generated summary opens automatically in the accordion.
+            setOpenSummaryId(groupId);
           }
         }
 

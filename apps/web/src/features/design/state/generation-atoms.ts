@@ -24,6 +24,10 @@ export const showLibraryAtom = atom<boolean>(false);
 
 export const remixTargetAtom = atom<DesignIteration | null>(null);
 
+// Which generation group has its summary accordion open in SummaryList; set
+// automatically when a generation's summary lands, toggled by user clicks.
+export const openSummaryIdAtom = atom<string | null>(null);
+
 const selectedIdsBaseAtom = atom<Set<string>>(new Set<string>());
 
 // Selection writes also maintain the remix chip: a single selected generated

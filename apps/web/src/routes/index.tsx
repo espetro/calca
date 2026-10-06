@@ -376,6 +376,8 @@ function HomeInner() {
         onCancel={pipeline.cancel}
       />
 
+      <SummaryList />
+
       {showGitHash && (
         <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">
           {import.meta.env.VITE_GIT_HASH}
