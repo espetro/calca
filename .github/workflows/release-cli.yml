@@ -16,8 +16,6 @@ permissions:
   id-token: write
   attestations: write
 
-env:
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   npm:
@@ -30,26 +28,26 @@ jobs:
           bun-version: "1.4.2"
       - uses: actions/setup-node@v4
         with:
-          # Node >= 22: tsdown needs Promise.withResolvers when it runs under node
-          node-version: 22
+          # Node >=22.14 + npm >=11.5.1: trusted publishing (OIDC) needs both.
+          # tsdown needs Promise.withResolvers when it runs under node.
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
       - run: bun install
       - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow --filter=@calca/mcp-core --filter=@calca/mcp
       - name: Publish publishable @calca/* packages
-        if: env.NPM_TOKEN != ''
-        # bun publish (not npm publish) rewrites workspace:* deps to real versions;
-        # it reads $HOME/.npmrc, not setup-node's NPM_CONFIG_USERCONFIG
+        # Trusted publishing (OIDC) replaces a stored NPM_TOKEN: npm CLI >=11.5.1
+        # negotiates it from id-token: write, and adds provenance attestations.
+        # bun pm pack (not npm pack) rewrites workspace:* deps to real versions;
+        # npm publish then pushes the already-rewritten tarball.
         run: |
           set -e
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> "$HOME/.npmrc"
+          out=$(mktemp -d)
           for pkg in calca-shared canvas-base canvas-ui canvas-flow mcp-core mcp; do
-            (cd "packages/$pkg" && bun publish --access public)
+            (cd "packages/$pkg" && bun pm pack --destination "$out" >/dev/null)
           done
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Skip publish (no NPM_TOKEN)
-        if: env.NPM_TOKEN == ''
-        run: echo "NPM_TOKEN not configured — skipping npm publish (packages were still built)" >&2
+          for tgz in "$out"/*.tgz; do
+            npm publish "$tgz" --access public --provenance
+          done
 
   binaries:
     name: Compile calca (${{ matrix.target }})
