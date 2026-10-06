@@ -16,6 +16,14 @@
         "NODE_ENV"
       ]
     },
+    "build:app": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true

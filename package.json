@@ -2,7 +2,7 @@
   "name": "calca",
   "version": "0.6.1",
   "private": true,
-  "description": "AI design tool with infinite canvas \u2014 vibe coding for design",
+  "description": "AI design tool with infinite canvas — vibe coding for design",
   "license": "AGPL-3.0",
   "workspaces": [
     "apps/*",
@@ -12,6 +12,8 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
+    "build:app": "turbo run build:app --filter=@app/web && rm -rf apps/landing/dist/app && cp -r apps/web/dist apps/landing/dist/app",
+    "build:docs": "docmd build",
     "check:canvas-boundaries": "bun scripts/check-canvas-boundaries.ts",
     "build:desktop": "bun run --cwd platforms/desktop build:desktop",
     "clean": "turbo clean",
@@ -41,6 +43,7 @@
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
     "@commitlint/types": "^20.5.0",
+    "@docmd/core": "^0.9.7",
     "@getgauge/cli": "^1.6.38",
     "@types/bun": "^1.3.13",
     "@types/react-dom": "^19.2.3",
@@ -52,6 +55,7 @@
     "oxlint": "catalog:",
     "ts-node": "^10.9.2",
     "turbo": "^2.4.0",
+    "unrun": "^0.3.1",
     "vitest": "catalog:"
   },
   "overrides": {

@@ -15,13 +15,14 @@ export type CanvasHandle = {
   resetView: () => void;
   zoomIn: () => void;
   zoomOut: () => void;
+  fitToView: () => void;
   zoomToFit: (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => void;
   screenToCanvas: (screenX: number, screenY: number, rect: DOMRect) => Point;
 };
 
 export function useCanvasViewport(): CanvasHandle {
   const { x, y, zoom } = useViewport();
-  const { setViewport } = useReactFlow();
+  const { setViewport, fitView } = useReactFlow();
   const setCanvasOffset = useSetAtom(canvasOffsetAtom);
   const setCanvasScale = useSetAtom(canvasScaleAtom);
 
@@ -41,6 +42,10 @@ export function useCanvasViewport(): CanvasHandle {
   const zoomOut = useCallback(() => {
     setViewport({ x, y, zoom: Math.max(zoom * 0.8, 0.1) });
   }, [setViewport, x, y, zoom]);
+
+  const fitToView = useCallback(() => {
+    void fitView({ padding: 0.2, duration: 300 });
+  }, [fitView]);
 
   const zoomToFit = useCallback(
     (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
@@ -83,6 +88,7 @@ export function useCanvasViewport(): CanvasHandle {
     resetView,
     zoomIn,
     zoomOut,
+    fitToView,
     zoomToFit,
     screenToCanvas,
   };

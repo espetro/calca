@@ -55,3 +55,6 @@ tmp/
 *.db*
 .osgrep
 *.dmg
+
+# Generated landing-gallery frame sources (regenerable via scripts/gen-frames.ts)
+frames-out/
