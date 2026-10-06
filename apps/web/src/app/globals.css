@@ -37,6 +37,42 @@ body {
   }
 }
 
+/* Generating frame — soft shimmer sweep + breathing dot (transform/opacity only) */
+.calca-shimmer {
+  background: linear-gradient(
+    100deg,
+    transparent 15%,
+    color-mix(in srgb, var(--muted) 55%, transparent) 50%,
+    transparent 85%
+  );
+  animation: calca-shimmer 2.6s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+}
+
+.calca-breathe {
+  animation: calca-breathe 1.9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes calca-shimmer {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(330%);
+  }
+}
+
+@keyframes calca-breathe {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
 body {
   -webkit-user-select: none;
 }

@@ -35,7 +35,6 @@ export function DesignFrameNode({ data, selected }: NodeProps<DesignFrameNodeTyp
   };
 
   const frameWidth = iteration.width || DEFAULT_FRAME_WIDTH;
-  const frameHeight = iteration.isLoading ? 320 : iteration.height || 320;
 
   return (
     <div style={{ width: frameWidth }}>
@@ -45,27 +44,23 @@ export function DesignFrameNode({ data, selected }: NodeProps<DesignFrameNodeTyp
         </span>
       </div>
 
-      <DesignFrame
-        iteration={iteration}
-        width={frameWidth}
-        isCommentMode={isCommentMode}
-        isSelectMode={isSelectMode}
-        isDragging={data.isDragging}
-        isSelected={selected}
-        scale={zoom}
-        onAddComment={handleAddComment}
-        onClickComment={onClickComment}
-      />
-
-      {pipelineStatus && pipelineStatus.stage !== "done" && (
-        <PipelineStatusOverlay
-          status={pipelineStatus}
-          x={0}
-          y={0}
+      <div className="relative">
+        <DesignFrame
+          iteration={iteration}
           width={frameWidth}
-          frameHeight={frameHeight}
+          isCommentMode={isCommentMode}
+          isSelectMode={isSelectMode}
+          isDragging={data.isDragging}
+          isSelected={selected}
+          scale={zoom}
+          onAddComment={handleAddComment}
+          onClickComment={onClickComment}
         />
-      )}
+
+        {pipelineStatus && pipelineStatus.stage !== "done" && (
+          <PipelineStatusOverlay status={pipelineStatus} />
+        )}
+      </div>
     </div>
   );
 }

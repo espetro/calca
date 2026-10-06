@@ -5,16 +5,12 @@ import {
   type PipelineStepState,
   STAGE_CONFIG,
 } from "@calca/shared";
-import { Check, Circle, Loader, X } from "lucide-react";
+import { Check, Circle, X } from "lucide-react";
 
 import { useNow } from "../utils/use-now";
 
 interface PipelineStatusBarProps {
   status: PipelineStatus;
-  x: number;
-  y: number;
-  width: number;
-  frameHeight: number;
 }
 
 const formatElapsed = (ms: number): string => {
@@ -32,7 +28,7 @@ const StepIcon = ({ status }: { status: PipelineStepState["status"] }) => {
     case "success":
       return <Check className="w-3 h-3 text-emerald-500" strokeWidth={3} />;
     case "running":
-      return <Loader className="w-3 h-3 text-primary animate-spin" />;
+      return <span className="w-1.5 h-1.5 rounded-full bg-primary calca-breathe" />;
     case "failed":
       return <X className="w-3 h-3 text-destructive" strokeWidth={3} />;
     default:
@@ -50,13 +46,7 @@ const stepTime = (step: PipelineStepState, now: number): string => {
   return step.status === "failed" ? "failed" : "";
 };
 
-export function PipelineStatusOverlay({
-  status,
-  x,
-  y,
-  width,
-  frameHeight,
-}: PipelineStatusBarProps) {
+export function PipelineStatusOverlay({ status }: PipelineStatusBarProps) {
   const config = STAGE_CONFIG[status.stage];
   const isDone = status.stage === "done";
   const isError = status.stage === "error";
@@ -67,7 +57,6 @@ export function PipelineStatusOverlay({
     return null;
   }
 
-  const topOffset = y + frameHeight + 8;
   const value = Math.max(status.progress * 100, 5);
   const stepRows = PIPELINE_STEP_ORDER.filter((name) => status.steps?.[name]);
 
@@ -75,7 +64,9 @@ export function PipelineStatusOverlay({
   const pulseClass = status.stage === "layout" || status.stage === "images" ? "animate-pulse" : "";
 
   return (
-    <div className="absolute pointer-events-none" style={{ left: x, top: topOffset, width }}>
+    // top:100% anchors to the card's live bottom edge — immune to the
+    // label-chip offset and to measured-height lag.
+    <div className="absolute top-full left-0 w-full mt-2 pointer-events-none">
       {!isQueued && (
         <div className="h-1 w-full overflow-hidden rounded-full bg-primary/20">
           <div
