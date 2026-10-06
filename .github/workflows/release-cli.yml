@@ -37,9 +37,11 @@ jobs:
       - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow --filter=@calca/mcp-core --filter=@calca/mcp
       - name: Publish publishable @calca/* packages
         if: env.NPM_TOKEN != ''
-        # bun publish (not npm publish) rewrites workspace:* deps to real versions
+        # bun publish (not npm publish) rewrites workspace:* deps to real versions;
+        # it reads $HOME/.npmrc, not setup-node's NPM_CONFIG_USERCONFIG
         run: |
           set -e
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> "$HOME/.npmrc"
           for pkg in calca-shared canvas-base canvas-ui canvas-flow mcp-core mcp; do
             (cd "packages/$pkg" && bun publish --access public)
           done
