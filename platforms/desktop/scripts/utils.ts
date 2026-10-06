@@ -17,8 +17,10 @@ export const logger = getLogger(["calca", "build"]);
 /** Preloads Design Artifact dependencies so we don't need to pull them from a CDN on every item */
 export const loadArtifactDependencies = async (source: string) => {
   logger.info("==> Copying Tailwind CSS browser bundle...");
+  // devDep of this package — Bun links it under platforms/desktop/node_modules,
+  // not the repo-root store
   const tailwindSource = resolve(
-    REPO_ROOT,
+    DESKTOP_DIR,
     "node_modules",
     "@tailwindcss",
     "browser",
