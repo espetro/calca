@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { apiClient } from "#/lib/api-client";
+import { apiClient, apiErrorMessage } from "#/lib/api-client";
 
 import type { ModelInfo } from "../types";
 
@@ -26,6 +26,9 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
     const response = await apiClient.api["probe-models"].$post({
       json: input,
     });
+    if (!response.ok) {
+      return { error: await apiErrorMessage(response, "Probe failed"), models: [] };
+    }
     const data = await response.json();
     if ("error" in data) {
       return { error: data.error, models: [] };

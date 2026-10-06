@@ -18,7 +18,7 @@ import {
   pipelineStagesAtom,
   genStatusAtom,
 } from "#/features/design/state/generation-atoms";
-import { apiClient } from "#/lib/api-client";
+import { apiClient, apiErrorMessage } from "#/lib/api-client";
 import type { GenerationGroup, PipelineStage, Point } from "#/shared/types";
 
 // ── Wire types ───────────────────────────────────────────────────────────────
@@ -243,6 +243,11 @@ export const useWorkflowStream = () => {
           },
           { init: { signal: controller.signal } },
         );
+
+        if (!response.ok) {
+          throw new Error(await apiErrorMessage(response, "Workflow request failed"));
+        }
+
         const { body } = response;
 
         if (!body) {
