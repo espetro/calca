@@ -1,6 +1,6 @@
 {
   "name": "@app/logger",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "private": true,
   "license": "AGPL-3.0",
   "type": "module",

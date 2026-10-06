@@ -1,5 +1,13 @@
 # @app/electrobun
 
+## 0.7.3
+
+### Patch Changes
+
+- UX nits: import zooms to fit, bidirectional quickMode param, summary JSON repair, banner/toolbar overlap.
+- Updated dependencies
+  - @app/server@0.7.3
+
 ## 0.7.2
 
 ### Patch Changes

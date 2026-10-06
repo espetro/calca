@@ -1,5 +1,18 @@
 # @app/web
 
+## 0.7.3
+
+### Patch Changes
+
+- UX nits: import zooms to fit, bidirectional quickMode param, summary JSON repair, banner/toolbar overlap.
+- Updated dependencies
+  - @app/core@0.7.3
+  - @app/shared@0.7.3
+  - @app/analytics@0.7.3
+  - @app/logger@0.7.3
+  - @calca/canvas-base@0.7.3
+  - @calca/canvas-flow@0.7.3
+
 ## 0.7.2
 
 ### Patch Changes
