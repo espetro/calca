@@ -5,7 +5,10 @@ import { DESKTOP_DIR, loadArtifactDependencies, logger, REPO_ROOT } from "./util
 const WEB_DIR = resolve(REPO_ROOT, "apps", "web", "dist");
 
 const runWebBuild = async () => {
-  const response = Bun.spawn(["bun", "run", "--cwd", REPO_ROOT, "--filter=@app/web", "build"], {
+  // turbo (not bun --filter) so @calca/* deps build before @app/web — their
+  // package exports point at dist/, which does not exist on a clean checkout.
+  const response = Bun.spawn(["bunx", "turbo", "run", "build", "--filter=@app/web"], {
+    cwd: REPO_ROOT,
     env: process.env,
     stdout: "inherit",
     stderr: "inherit",

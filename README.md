@@ -28,9 +28,10 @@ The libraries (Layers 1–2 plus `agent-core`) are Apache-2.0, the app is AGPL-3
 
 - `apps/web` — the Calca app: Vite SPA (React 19, TanStack Router), Feature-Sliced Design
 - `apps/server` — Hono API server
-- `apps/cli` — seed of the Layer 2 CLI/MCP playground
+- `apps/cli` — vestigial scaffold; the Layer 2 CLI lives in `packages/mcp`
 - `apps/landing` — Astro marketing site · `apps/feedback-proxy` — Cloudflare Worker for feedback
-- `packages/canvas` (`@app/canvas`) — app-level canvas feature package on React Flow (steps toward Layer 1)
+- `packages/canvas-base` · `canvas-ui` · `canvas-flow` (`@calca/*`) — the open canvas library: document model, headless UI, React Flow adapter
+- `packages/mcp-core` · `mcp` (`@calca/*`) — canvas MCP tool surface + `calca` CLI (stdio server, host installers)
 - `packages/agent-core` (`@calca/agent-core`) — browser-safe agent-harness seam over the AI SDK (BYOK)
 - `packages/pipeline` (`@calca/pipeline`) — generation pipeline steps · `packages/core` — prompts, providers, domain logic
 - `packages/shared` · `logger` · `analytics` · `config` · `pro`
@@ -43,7 +44,7 @@ The libraries (Layers 1–2 plus `agent-core`) are Apache-2.0, the app is AGPL-3
 - **Iterative Refinement** — Each concept learns from the last via sequential AI critique
 - **Multi-Model Pipeline** — Claude for layout + QA, Gemini for images
 - **BYOK** — Bring your own provider key; runs against local models (LM Studio) too
-- **Export** — Figma, Tailwind CSS, React components
+- **Export** — Tailwind HTML, React (TSX), PNG/JPG/SVG
 - Cross-platform support: runs on ![macOS](https://img.shields.io/badge/platform-macOS-lightgrey) and ![Windows](https://img.shields.io/badge/platform-Windows-blue)
 
 ## Contributing

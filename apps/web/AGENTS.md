@@ -13,27 +13,36 @@ apps/web/
 ├── src/
 │   ├── app/                    # Global styles (globals.css)
 │   ├── routes/                 # TanStack Router file-based routes
-│   │   ├── __root.tsx         # Root route with providers
+│   │   ├── __root.tsx         # Root route (QueryClientProvider, Toaster)
 │   │   └── index.tsx          # Main canvas page ("/")
 │   ├── main.tsx               # App entry point (Vite)
 │   ├── features/              # FSD features (business logic slices)
-│   │   ├── canvas/            # Canvas state, hooks, UI
-│   │   ├── design/            # Design generation pipeline
+│   │   ├── canvas-hud/        # Canvas HUD (zoom controls, tool pills)
+│   │   ├── design/            # Design generation (hooks, state, UI)
 │   │   ├── settings/          # App settings (BYOK, models)
 │   │   ├── comments/          # Comment threads
+│   │   ├── context-toolbar/   # Selection context toolbar
+│   │   ├── mode-sidebar/      # Tool-mode sidebar
 │   │   ├── export/            # Export functionality
+│   │   ├── feedback/          # In-app feedback → GitHub issues
 │   │   └── onboarding/        # Onboarding flow
 │   ├── widgets/               # Complex composite components
 │   │   ├── prompt-bar/        # AI prompt input bar
-│   │   └── toolbar/           # Canvas toolbar
+│   │   ├── toolbar/           # Canvas toolbar
+│   │   ├── keyboard-shortcuts/
+│   │   ├── rubber-band-selection/
+│   │   └── update-notification/
 │   ├── shared/                # Shared utilities (no business logic)
-│   │   ├── ai/                # AI client & providers
-│   │   ├── constants/         # Shared constants
+│   │   ├── components/        # Shared UI primitives
+│   │   ├── hooks/             # Shared React hooks
 │   │   ├── types/             # Shared TypeScript types
 │   │   └── utils/             # Utility functions
 │   └── lib/                   # Cross-cutting utilities
-│       ├── pipeline.ts        # Pipeline orchestration
-│       └── types.ts           # Global type helpers
+│       ├── api-client.ts      # Hono RPC client
+│       ├── services/          # queryClient + API services
+│       ├── export/            # Export helpers
+│       ├── i18n/              # Localization
+│       └── utils.ts
 ├── index.html                 # SPA shell
 ├── vite.config.ts             # Vite configuration
 └── package.json
@@ -46,37 +55,39 @@ apps/web/
 **Atom-based state with Jotai:**
 
 ```typescript
-// features/canvas/state/canvas-atoms.ts
+// features/design/state/generation-atoms.ts
 import { atom } from "jotai";
 
-export const viewportAtom = atom({ x: 0, y: 0, scale: 1 });
-export const selectedIdsAtom = atom<string[]>([]);
+export const toolModeAtom = atom<ToolMode>("select");
+export const isGeneratingAtom = atom<boolean>(false);
 ```
 
 **Use atoms in components:**
 
 ```typescript
 // Don't
-const [scale, setScale] = useState(1);
+const [mode, setMode] = useState("select");
 
 // Do
-const [viewport, setViewport] = useAtom(viewportAtom);
-const scale = viewport.scale;
+const [toolMode, setToolMode] = useAtom(toolModeAtom);
 ```
 
 ---
 
 ## Canvas Interaction Patterns
 
-**CSS transform-based pan/zoom with native wheel events:**
-
-See `features/canvas/hooks/use-canvas.ts` for the full implementation.
+The canvas itself is `@calca/canvas-flow` (React Flow adapter) — pan/zoom,
+selection, and node rendering live in the package, not the app. App-side state
+that drives it lives in `features/design/state` (Jotai atoms); canvas HUD
+controls (zoom, tool pills) live in `features/canvas-hud`.
 
 Key patterns:
 
-- Pan with drag (mouse down + move)
-- Zoom with wheel (toward cursor position)
-- State stored in Jotai atoms (`viewportAtom`)
+- Canvas state via `useCanvas()` from `@calca/canvas-flow`, accessed through a
+  `CanvasHandle` ref (`fitToView`, etc.)
+- App state stored in Jotai atoms
+- Nodes are iframes (`pointerEvents: none`) — drags start anywhere on a node in
+  Select mode
 
 ---
 
@@ -118,15 +129,12 @@ export const Route = createFileRoute("/")({
 **Test features:**
 
 ```typescript
-// features/canvas/hooks/use-canvas.test.ts
+// features/design/state/example.test.ts
 import { describe, it, expect } from "vitest";
-import { renderHook } from "@testing-library/react";
-import { useCanvas } from "./use-canvas";
 
-describe("useCanvas", () => {
-  it("initializes with default viewport", () => {
-    const { result } = renderHook(() => useCanvas());
-    expect(result.current.viewport.scale).toBe(1);
+describe("example", () => {
+  it("works", () => {
+    expect(true).toBe(true);
   });
 });
 ```
