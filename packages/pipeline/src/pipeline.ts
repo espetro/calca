@@ -12,6 +12,7 @@ import type {
   PipelineEvent,
   PlanOutput,
   StepContext,
+  SummaryOutput,
   WorkflowInput,
   WorkflowOutput,
 } from "./types";
@@ -67,9 +68,25 @@ export async function designPipeline(
     labels: frames.map((f) => f.label),
   };
 
+  // Summary is best-effort: a failure must never block the frames that are
+  // already generated — degrade to no summary and still complete the workflow.
   stepCtx.emit({ type: "step", step: "summary", status: "running" });
-  const summary = await wrapStep("summary", async (ctx) => summaryStep(summaryInput, ctx), stepCtx);
-  stepCtx.emit({ type: "step", step: "summary", status: "success", output: summary });
+  let summary: SummaryOutput;
+  try {
+    summary = await wrapStep("summary", async (ctx) => summaryStep(summaryInput, ctx), stepCtx);
+    stepCtx.emit({
+      type: "step",
+      step: "summary",
+      status: summary.summary ? "success" : "failed",
+      output: summary,
+    });
+  } catch (error) {
+    stepCtx.logger.warn("Summary step failed:", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    stepCtx.emit({ type: "step", step: "summary", status: "failed" });
+    summary = { summary: undefined };
+  }
 
   const output: WorkflowOutput = { frames, summary: summary.summary };
   stepCtx.emit({

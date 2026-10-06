@@ -108,9 +108,9 @@ function mockGenerateWithFallback() {
 
       if (functionId === "summary") {
         return {
-          result: { text: JSON.stringify({ rationale: "nice" }) } as Awaited<
-            ReturnType<typeof generateWithFallback>
-          >["result"],
+          result: {
+            text: JSON.stringify({ title: "Card", rationale: "nice" }),
+          } as Awaited<ReturnType<typeof generateWithFallback>>["result"],
           usedModel: options.model ?? "model",
         };
       }
@@ -184,7 +184,7 @@ describe("handleWorkflow", () => {
           label: "Variation 1",
         }),
       ],
-      summary: expect.stringContaining("rationale"),
+      summary: expect.objectContaining({ rationale: "nice", title: "Card" }),
     });
   });
 
