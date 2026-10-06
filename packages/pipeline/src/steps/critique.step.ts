@@ -1,6 +1,7 @@
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import { buildCritiquePrompt } from "@app/core/prompts/critique";
+import { stripReasoningBlocks } from "@app/shared";
 import type { ModelMessage } from "ai";
 
 import { stripBase64Images } from "../lib/strip-base64";
@@ -35,6 +36,6 @@ export const critiqueStep: Step<CritiqueInput, CritiqueOutput> = async (
   });
 
   return {
-    critique: result.text,
+    critique: stripReasoningBlocks(result.text ?? "").trim(),
   };
 };

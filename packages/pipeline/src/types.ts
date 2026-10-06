@@ -31,20 +31,27 @@ export const FrameResultSchema = z.object({
   critique: z.string().optional(),
 });
 
+export const SummaryDataSchema = z.object({
+  rationale: z.string(),
+  title: z.string(),
+});
+
 export const WorkflowOutputSchema = z.object({
   frames: z.array(FrameResultSchema),
-  summary: z.string().optional(),
+  summary: SummaryDataSchema.optional(),
 });
 
 export type WorkflowInput = z.infer<typeof WorkflowInputSchema>;
 export type WorkflowOutput = z.infer<typeof WorkflowOutputSchema>;
 export type FrameResult = z.infer<typeof FrameResultSchema>;
+export type SummaryData = z.infer<typeof SummaryDataSchema>;
 
 // ── Plan ────────────────────────────────────────────────────────────────────
 
 export const PlanInputSchema = z.object({
   apiKey: z.string().optional(),
   baseURL: z.string().optional(),
+  conceptCount: z.number().optional(),
   model: z.string().optional(),
   prompt: z.string(),
   providerType: z.string().optional(),
@@ -163,7 +170,7 @@ export const SummaryInputSchema = z.object({
 });
 
 export const SummaryOutputSchema = z.object({
-  summary: z.string(),
+  summary: SummaryDataSchema.optional(),
 });
 
 export type SummaryInput = z.infer<typeof SummaryInputSchema>;
