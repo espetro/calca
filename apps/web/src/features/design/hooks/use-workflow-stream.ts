@@ -1,4 +1,5 @@
 import { getLogger } from "@app/logger";
+import { validateSummary } from "@app/shared";
 import { groupsAtom } from "@calca/canvas-flow";
 import { useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
@@ -60,8 +61,31 @@ interface FrameResult {
 
 interface WorkflowOutput {
   frames: FrameResult[];
-  summary?: string;
+  summary?: unknown;
 }
+
+// The wire summary is the {title, rationale} object; tolerate a JSON-encoded
+// string so an older API bundle still renders. Anything else degrades to no
+// summary rather than surfacing raw model text in the UI.
+const parseSummaryOutput = (raw: unknown): { title: string; rationale: string } | undefined => {
+  const candidate = typeof raw === "string" ? safeJsonParse(raw) : raw;
+  if (!candidate) {
+    return undefined;
+  }
+  try {
+    return validateSummary(candidate);
+  } catch {
+    return undefined;
+  }
+};
+
+const safeJsonParse = (text: string): unknown => {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+};
 
 const STEP_STAGE_MAP: Record<string, { stage: PipelineStage; progress: number }> = {
   collectResults: { stage: "refining", progress: 0.98 },
@@ -513,22 +537,24 @@ export const useWorkflowStream = () => {
             );
           }
 
-          if (finalOutput.summary) {
+          const summary = parseSummaryOutput(finalOutput.summary);
+          if (summary) {
             setGroups((prev) =>
               prev.map((g) =>
                 g.id === groupId
                   ? {
                       ...g,
-                      summary: {
-                        rationale: finalOutput.summary ?? "",
-                        title: "",
-                      },
+                      summary: { rationale: summary.rationale, title: summary.title },
                     }
                   : g,
               ),
             );
           }
         }
+
+        // Drop placeholder iterations that never received a frame (e.g. plan
+        // produced fewer concepts than requested) — same cleanup as an abort.
+        removePendingIterations();
 
         setGenStatus("Workflow complete");
         const totalDuration = Date.now() - generationStartTimeRef.current;

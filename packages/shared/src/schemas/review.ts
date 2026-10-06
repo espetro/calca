@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { stripReasoningBlocks } from "../strip-reasoning";
+
 const htmlTagPattern = /<(?:!DOCTYPE|html|head|style|div|section|main|body|meta|link)[>\s]/i;
 
 export const ReviewSchema = z.string().transform((raw) => {
-  let cleaned = raw.trim();
+  let cleaned = stripReasoningBlocks(raw).trim();
 
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
@@ -44,6 +46,9 @@ export const ReviewParsedSchema = z.object({
     .min(1)
     .refine((html) => htmlTagPattern.test(html), {
       message: "Review output must contain a valid HTML tag",
+    })
+    .refine((html) => !/<(think|reasoning|thought)(\s[^>]*)?>/i.test(html), {
+      message: "Review output must not contain reasoning blocks",
     }),
   width: z.number().positive().optional(),
 });

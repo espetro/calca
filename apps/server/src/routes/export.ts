@@ -1,6 +1,7 @@
 import { generateWithFallback } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
 import { getLogger } from "@app/logger";
+import { stripReasoningBlocks } from "@app/shared";
 import { type Context, Hono, type TypedResponse } from "hono";
 
 import { REACT_PROMPT, TAILWIND_PROMPT } from "../lib/export-prompts";
@@ -28,7 +29,7 @@ async function convertWithAI(
     functionId: "export",
   });
 
-  let resultText = result.text.trim();
+  let resultText = stripReasoningBlocks(result.text ?? "").trim();
   if (resultText.startsWith("```")) {
     resultText = resultText
       .replace(/^```(?:html|tsx|jsx|typescript)?\n?/, "")

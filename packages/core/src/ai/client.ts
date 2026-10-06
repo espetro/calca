@@ -1,6 +1,6 @@
 import { getLogger } from "@app/logger";
 import { generateText, type ModelMessage, streamText } from "ai";
-import type { FinishReason, LanguageModelUsage } from "ai";
+import type { FinishReason, LanguageModelUsage, OutputInterface } from "ai";
 
 import { buildModelFallbackChain, getAIProvider, getClaudeModel } from "./providers";
 import type { ProviderType } from "./providers";
@@ -72,6 +72,8 @@ export interface GenerateOptions {
   systemPrompt?: string;
   functionId?: string;
   frameIndex?: number;
+  /** Structured-output spec (AI SDK `Output.object`) for providers that honor it. */
+  output?: OutputInterface;
   onFinish?: (event: { usage: LanguageModelUsage; text?: string; finishReason?: string }) => void;
 }
 
@@ -226,6 +228,7 @@ export async function generateWithFallback(
         messages: cachedMessages,
         maxOutputTokens: options.maxTokens,
         temperature: options.temperature,
+        ...(options.output ? { output: options.output } : {}),
         ...(providerType === "anthropic" ? { headers: cacheHeaders } : {}),
       });
 

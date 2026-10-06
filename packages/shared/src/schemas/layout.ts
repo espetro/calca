@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { stripReasoningBlocks } from "../strip-reasoning";
+
 const htmlTagPattern = /<(?:!DOCTYPE|html|head|style|div|section|main|body|meta|link)[>\s]/i;
 
 export const LayoutSchema = z.string().transform((raw) => {
-  let cleaned = raw.trim();
+  let cleaned = stripReasoningBlocks(raw).trim();
 
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
@@ -52,6 +54,9 @@ export const LayoutParsedSchema = z.object({
     .min(1)
     .refine((html) => htmlTagPattern.test(html), {
       message: "String must contain a valid HTML tag",
+    })
+    .refine((html) => !/<(think|reasoning|thought)(\s[^>]*)?>/i.test(html), {
+      message: "HTML must not contain reasoning blocks",
     }),
   width: z.number().positive().optional(),
 });

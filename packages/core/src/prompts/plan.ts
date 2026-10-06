@@ -21,5 +21,5 @@ Consider:
 - Full pages (landing, dashboard) → 2-3 concepts (they're complex)
 
 Respond in EXACTLY this JSON format, nothing else:
-{"count":N,"concepts":["visual style direction 1","visual style direction 2",...]}`;
+{"concepts":[{"name":"short label","direction":"visual style direction"},...]}`;
 }

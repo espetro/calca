@@ -44,47 +44,49 @@ async function readStream(
   return parts;
 }
 
+const defaultGenerateImpl = async (options: GenerateOptions) => {
+  const functionId = options.functionId ?? "";
+  const baseResult = { text: "" } as Awaited<ReturnType<typeof generateWithFallback>>["result"];
+
+  if (functionId === "plan") {
+    return {
+      result: { text: JSON.stringify([{ name: "Minimal", direction: "Clean" }]) } as Awaited<
+        ReturnType<typeof generateWithFallback>
+      >["result"],
+      usedModel: options.model ?? "model",
+    };
+  }
+
+  if (functionId.startsWith("review")) {
+    return {
+      result: { text: "<div>reviewed</div>" } as typeof baseResult,
+      usedModel: options.model ?? "model",
+    };
+  }
+
+  if (functionId.startsWith("critique")) {
+    return {
+      result: { text: "Looks good" } as typeof baseResult,
+      usedModel: options.model ?? "model",
+    };
+  }
+
+  if (functionId === "summary") {
+    return {
+      result: {
+        text: JSON.stringify({ title: "Nice card", rationale: "nice" }),
+      } as typeof baseResult,
+      usedModel: options.model ?? "model",
+    };
+  }
+
+  return { result: baseResult, usedModel: options.model ?? "model" };
+};
+
 function setupMocks() {
   vi.clearAllMocks();
 
-  (generateWithFallback as ReturnType<typeof vi.fn>).mockImplementation(
-    async (options: GenerateOptions) => {
-      const functionId = options.functionId ?? "";
-      const baseResult = { text: "" } as Awaited<ReturnType<typeof generateWithFallback>>["result"];
-
-      if (functionId === "plan") {
-        return {
-          result: { text: JSON.stringify([{ name: "Minimal", direction: "Clean" }]) } as Awaited<
-            ReturnType<typeof generateWithFallback>
-          >["result"],
-          usedModel: options.model ?? "model",
-        };
-      }
-
-      if (functionId.startsWith("review")) {
-        return {
-          result: { text: "<div>reviewed</div>" } as typeof baseResult,
-          usedModel: options.model ?? "model",
-        };
-      }
-
-      if (functionId.startsWith("critique")) {
-        return {
-          result: { text: "Looks good" } as typeof baseResult,
-          usedModel: options.model ?? "model",
-        };
-      }
-
-      if (functionId === "summary") {
-        return {
-          result: { text: JSON.stringify({ rationale: "nice" }) } as typeof baseResult,
-          usedModel: options.model ?? "model",
-        };
-      }
-
-      return { result: baseResult, usedModel: options.model ?? "model" };
-    },
-  );
+  (generateWithFallback as ReturnType<typeof vi.fn>).mockImplementation(defaultGenerateImpl);
 
   (streamAnthropic as ReturnType<typeof vi.fn>).mockResolvedValue({
     text: Promise.resolve(`<!--size:400x300-->\n<div>hello</div>`),
@@ -121,6 +123,52 @@ describe("designPipelineStream", () => {
     expect(last.data.status).toBe("success");
     expect(last.data.steps.collectResults?.output).toMatchObject({
       frames: [expect.objectContaining({ label: "Variation 1" })],
+      summary: { rationale: "nice", title: "Nice card" },
     });
+  });
+
+  it("strips reasoning blocks from streamed frame html", async () => {
+    setupMocks();
+    (streamAnthropic as ReturnType<typeof vi.fn>).mockResolvedValue({
+      text: Promise.resolve(
+        `<think>let me design a card</think>\n<!--size:400x300-->\n<div>hello</div>\n<reasoning>done</reasoning>`,
+      ),
+    });
+
+    const stream = designPipelineStream({ prompt: "a card", mode: "quick", model: "model" });
+    const parts = await readStream(stream);
+
+    const last = parts.filter((p) => p.type === "data-workflow").pop() as unknown as {
+      data: { steps: { collectResults?: { output?: { frames?: Array<{ html: string }> } } } };
+    };
+    const html = last.data.steps.collectResults?.output?.frames?.[0]?.html ?? "";
+    expect(html).toContain("<div>hello</div>");
+    expect(html).not.toMatch(/<(think|reasoning)/i);
+  });
+
+  it("still completes with frames when the summary step throws", async () => {
+    setupMocks();
+    (generateWithFallback as ReturnType<typeof vi.fn>).mockImplementation(
+      async (options: GenerateOptions) => {
+        if (options.functionId === "summary") {
+          throw new Error("summary exploded");
+        }
+        return defaultGenerateImpl(options);
+      },
+    );
+
+    const stream = designPipelineStream({ prompt: "a card", mode: "quick", model: "model" });
+    const parts = await readStream(stream);
+
+    const last = parts.filter((p) => p.type === "data-workflow").pop() as unknown as {
+      data: {
+        status: string;
+        steps: { collectResults?: { output?: { frames?: unknown[]; summary?: unknown } } };
+      };
+    };
+    const frames = last.data.steps.collectResults?.output?.frames;
+    expect(frames?.length).toBeGreaterThan(0);
+    expect(last.data.steps.collectResults?.output?.summary).toBeUndefined();
+    expect(parts.some((p) => p.type === "error")).toBe(false);
   });
 });

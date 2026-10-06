@@ -1,10 +1,13 @@
+import { stripReasoningBlocks } from "@app/shared";
+
 export function parseHtmlWithSize(
   raw: string,
   options?: { extractComments?: boolean; trimHtml?: boolean },
 ): { html: string; width?: number; height?: number; comment?: string } {
   const { extractComments = false, trimHtml = true } = options ?? {};
 
-  let cleaned = trimHtml ? raw.trim() : raw;
+  const scrubbed = stripReasoningBlocks(raw);
+  let cleaned = trimHtml ? scrubbed.trim() : scrubbed;
 
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:html)?\n?/, "").replace(/\n?```$/, "");
