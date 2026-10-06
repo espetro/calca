@@ -32,11 +32,11 @@
     },
     "apps/cli": {
       "name": "@app/cli",
-      "version": "0.6.1",
+      "version": "0.7.0",
     },
     "apps/feedback-proxy": {
       "name": "@app/feedback-proxy",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "hono": "^4.0.0",
         "octokit": "^4.1.0",
@@ -52,7 +52,7 @@
     },
     "apps/landing": {
       "name": "@app/landing",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@astrojs/check": "^0.9.9",
         "@astrojs/react": "^4.2.0",
@@ -74,7 +74,7 @@
     },
     "apps/server": {
       "name": "@app/server",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@app/core": "workspace:*",
         "@app/logger": "workspace:*",
@@ -95,7 +95,7 @@
     },
     "apps/web": {
       "name": "@app/web",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@ai-sdk/anthropic": "^4.0.0",
         "@ai-sdk/google": "^4.0.0",
@@ -169,7 +169,7 @@
     },
     "packages/analytics": {
       "name": "@app/analytics",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "posthog-js": "^1.371.0",
       },
@@ -180,7 +180,7 @@
     },
     "packages/calca-shared": {
       "name": "@calca/shared",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "devDependencies": {
         "typescript": "catalog:",
         "vitest": "catalog:",
@@ -188,7 +188,7 @@
     },
     "packages/canvas-base": {
       "name": "@calca/canvas-base",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.0",
         "@standard-schema/spec": "^1.0.0",
@@ -200,7 +200,7 @@
     },
     "packages/canvas-flow": {
       "name": "@calca/canvas-flow",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@calca/canvas-base": "workspace:*",
         "@calca/canvas-ui": "workspace:*",
@@ -220,21 +220,20 @@
         "vitest": "catalog:",
       },
       "peerDependencies": {
-        "react": "^19.2.4",
-        "react-dom": "^19.2.4",
+        "react": ">=19",
       },
     },
     "packages/canvas-ui": {
       "name": "@calca/canvas-ui",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@calca/shared": "workspace:*",
+        "lucide-react": "^1.8.0",
       },
       "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.5",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "lucide-react": "^1.8.0",
         "publint": "^0.3.25",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
@@ -243,14 +242,12 @@
         "vitest": "catalog:",
       },
       "peerDependencies": {
-        "lucide-react": "^1.8.0",
-        "react": "^19.2.4",
-        "react-dom": "^19.2.4",
+        "react": ">=19",
       },
     },
     "packages/core": {
       "name": "@app/core",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@ai-sdk/anthropic": "^4.0.0",
         "@ai-sdk/google": "^4.0.0",
@@ -268,7 +265,7 @@
     },
     "packages/logger": {
       "name": "@app/logger",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@logtape/logtape": "^2.0.5",
         "@logtape/pretty": "^2.0.5",
@@ -291,7 +288,7 @@
     },
     "packages/mcp": {
       "name": "@calca/mcp",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "bin": {
         "calca": "./dist/cli.mjs",
       },
@@ -314,7 +311,7 @@
     },
     "packages/mcp-core": {
       "name": "@calca/mcp-core",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@calca/canvas-base": "workspace:*",
       },
@@ -328,7 +325,7 @@
     },
     "packages/pipeline": {
       "name": "@calca/pipeline",
-      "version": "0.6.1",
+      "version": "1.0.0",
       "dependencies": {
         "@ai-sdk/anthropic": "^4.0.0",
         "@ai-sdk/openai": "^4.0.0",
@@ -348,14 +345,14 @@
     },
     "packages/pro": {
       "name": "@app/pro",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "devDependencies": {
         "typescript": "catalog:",
       },
     },
     "packages/shared": {
       "name": "@app/shared",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@calca/shared": "workspace:*",
         "zod": "catalog:",
@@ -366,7 +363,7 @@
     },
     "platforms/desktop": {
       "name": "@app/electrobun",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@app/server": "workspace:*",
         "@logtape/file": "^2.0.5",
