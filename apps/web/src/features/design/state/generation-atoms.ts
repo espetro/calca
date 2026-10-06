@@ -36,6 +36,12 @@ export const selectedIdsAtom = atom(
   (get, set, update: Set<string> | ((prev: Set<string>) => Set<string>)) => {
     const prev = get(selectedIdsBaseAtom);
     const next = typeof update === "function" ? update(prev) : update;
+    // React Flow re-emits onSelectionChange (fresh Set instance, same ids)
+    // every time StoreUpdater syncs nodes — a no-op write would churn the atom
+    // and re-render downstream subscribers into a setNodes loop.
+    if (prev.size === next.size && [...prev].every((id) => next.has(id))) {
+      return;
+    }
     set(selectedIdsBaseAtom, next);
     const target = get(remixTargetAtom);
     if (target && !next.has(target.id)) {
