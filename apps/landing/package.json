@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev:landing": "astro dev",
-    "build": "astro build && bun run build:app",
-    "build:app": "cd ../.. && bunx turbo run build:app --filter=@app/web && rm -rf apps/landing/dist/app && cp -r apps/web/dist apps/landing/dist/app",
+    "build": "astro build && cd ../.. && bun run build:app",
     "typecheck": "astro check",
     "preview": "astro preview",
     "test": "vitest run --passWithNoTests",
