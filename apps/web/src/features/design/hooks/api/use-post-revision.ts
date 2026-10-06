@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import type { DerivedProviderFields } from "#/features/settings/lib/derive-provider-fields";
-import { apiClient } from "#/lib/api-client";
+import { apiClient, apiErrorMessage } from "#/lib/api-client";
 
 const MUTATION_KEY = ["/api/workflow", "revision"] as const;
 
@@ -125,6 +125,11 @@ const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: 
     },
     { init: { signal } },
   );
+
+  if (!response.ok) {
+    throw new Error(await apiErrorMessage(response, "Revision request failed"));
+  }
+
   const { body } = response;
 
   if (!body) {
