@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev:landing": "astro dev",
-    "build": "astro build",
+    "build": "astro build && bun run build:app",
+    "build:app": "cd ../web && bunx vite build --base=/app/ && rm -rf ../landing/dist/app && cp -r dist ../landing/dist/app",
     "typecheck": "astro check",
     "preview": "astro preview",
     "test": "vitest run --passWithNoTests",

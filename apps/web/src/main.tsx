@@ -20,7 +20,12 @@ if (!window.__electrobun) {
   document.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
-const router = createRouter({ routeTree });
+// Deployed under a subpath (e.g. /app/ via `vite build --base=/app/`), the
+// router must strip that prefix; "./" and "/" both mean the site root.
+const baseUrl = import.meta.env.BASE_URL;
+const basepath = baseUrl === "./" || baseUrl === "/" ? "/" : baseUrl.replace(/\/$/, "");
+
+const router = createRouter({ routeTree, basepath });
 const store = createStore();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
