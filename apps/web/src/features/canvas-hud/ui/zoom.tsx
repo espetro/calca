@@ -1,4 +1,4 @@
-import { Minus, Plus } from "lucide-react";
+import { Focus, Minus, Plus } from "lucide-react";
 
 import { Button } from "#/shared/components/ui/button";
 
@@ -6,9 +6,10 @@ export interface ZoomControlsProps {
   scale: number;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  onFitView: () => void;
 }
 
-const ZoomControls = ({ onZoomIn, onZoomOut, scale }: ZoomControlsProps) => (
+const ZoomControls = ({ onZoomIn, onZoomOut, onFitView, scale }: ZoomControlsProps) => (
   <>
     <Button
       variant="ghost"
@@ -32,6 +33,16 @@ const ZoomControls = ({ onZoomIn, onZoomOut, scale }: ZoomControlsProps) => (
       className="w-8 h-8 rounded-xl text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
     >
       <Plus className="w-4 h-4" />
+    </Button>
+
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={onFitView}
+      title="Zoom to fit"
+      className="w-8 h-8 rounded-xl text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
+    >
+      <Focus className="w-4 h-4" />
     </Button>
   </>
 );

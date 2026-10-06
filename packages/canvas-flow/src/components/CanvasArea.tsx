@@ -7,14 +7,7 @@ import type {
   Point,
   ToolMode,
 } from "@calca/shared";
-import {
-  Background,
-  Controls,
-  Panel,
-  SelectionMode,
-  type Node,
-  type NodeChange,
-} from "@xyflow/react";
+import { Background, Panel, SelectionMode, type Node, type NodeChange } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -294,7 +287,6 @@ export const CanvasArea = ({
         className={isCommentMode ? "cursor-crosshair" : "cursor-default"}
       >
         <Background gap={20} size={1} color="#e5e7eb" />
-        <Controls className="!bottom-4 !left-4" />
 
         {/* 1001: selected nodes elevate to z-index 1000 and must not cover the toolbar */}
         {toolbar && (

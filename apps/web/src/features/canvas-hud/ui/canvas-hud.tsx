@@ -8,13 +8,21 @@ export interface CanvasHUDProps {
   offset: { x: number; y: number };
   onZoomIn: () => void;
   onZoomOut: () => void;
+  onFitView: () => void;
   onResetView: () => void;
 }
 
-const CanvasHUD = ({ scale, offset, onZoomIn, onZoomOut, onResetView }: CanvasHUDProps) => (
+const CanvasHUD = ({
+  scale,
+  offset,
+  onZoomIn,
+  onZoomOut,
+  onFitView,
+  onResetView,
+}: CanvasHUDProps) => (
   <div className="fixed bottom-4 right-4 z-50 flex items-center rounded-2xl p-1 bg-toolbar-bg-transparent backdrop-blur border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.2),inset_0_1px_0_oklch(0_0_0_/_0.08)]">
     <Compass offset={offset} onResetView={onResetView} />
-    <ZoomControls scale={scale} onZoomIn={onZoomIn} onZoomOut={onZoomOut} />
+    <ZoomControls scale={scale} onZoomIn={onZoomIn} onZoomOut={onZoomOut} onFitView={onFitView} />
     <BugIcon />
   </div>
 );

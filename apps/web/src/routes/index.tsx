@@ -348,6 +348,7 @@ function HomeInner() {
         offset={canvas.offset}
         onZoomIn={canvas.zoomIn}
         onZoomOut={canvas.zoomOut}
+        onFitView={canvas.fitToView}
         onResetView={canvas.resetView}
       />
 
