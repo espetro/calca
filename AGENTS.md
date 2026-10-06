@@ -28,10 +28,10 @@ The project backlog is at https://github.com/users/espetro/projects/6/views/1 .
 > | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 > | `apps/web`                                         | ✅ Active — the Calca app: **Vite SPA** + TanStack Router, Feature-Sliced Design (`app`/`features`/`widgets`/`shared`) |
 > | `apps/server`                                      | Scaffolding — Hono API                                                                                                 |
-> | `apps/cli`                                         | Scaffolding — Layer 2 seed (`@app/cli`)                                                                                |
+> | `apps/cli`                                         | Vestigial scaffold — the real L2 CLI is `packages/mcp` (`@calca/mcp`)                                                    |
 > | `apps/landing`                                     | ✅ Astro marketing site                                                                                                |
 > | `apps/feedback-proxy`                              | ✅ Cloudflare Worker — creates GitHub issues from app feedback                                                         |
-> | `packages/canvas` (`@app/canvas`, MIT)             | ✅ React Flow canvas feature package — **app-level**, the precursor of Layer 1                                         |
+> | `packages/canvas` (`@app/canvas`, MIT)             | ❌ Removed — superseded by Layer 1 `@calca/canvas-*`                                                                     |
 > | `packages/agent-core` (`@calca/agent-core`)        | ✅ Browser-safe agent-harness seam over the AI SDK `ToolLoopAgent` (BYOK)                                              |
 > | `packages/pipeline` (`@calca/pipeline`)            | ✅ Generation pipeline steps (plan → layout → images → review → critique → summary)                                    |
 > | `packages/core` (`@app/core`)                      | ✅ Providers, prompts, domain logic                                                                                    |
