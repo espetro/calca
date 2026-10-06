@@ -13,7 +13,10 @@
         "build/**"
       ],
       "env": [
-        "NODE_ENV"
+        "NODE_ENV",
+        "VITE_*",
+        "GIT_HASH",
+        "LOG_LEVEL"
       ]
     },
     "build:app": {
@@ -22,6 +25,12 @@
       ],
       "outputs": [
         "dist/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "VITE_*",
+        "GIT_HASH",
+        "LOG_LEVEL"
       ]
     },
     "build:sw": {

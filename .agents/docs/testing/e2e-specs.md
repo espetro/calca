@@ -1,23 +1,46 @@
 # E2E Test Specs
 
-Tests use **Gauge** (Markdown specs, `gauge-ts`) driving **agent-browser** against the running Vite app.
+Tests use **Gauge** (Markdown specs, `gauge-ts`) driving **agent-browser** against the running app.
 Steps are defined in `e2e/steps/` (implementation in TypeScript classes with `@Step` decorators).
 
-## Running tests
+## Two API runtimes
+
+The app has two API topologies (issue #74), and the suite covers both:
+
+| Mode            | Topology                                                                   | Command                |
+| --------------- | -------------------------------------------------------------------------- | ---------------------- |
+| **server**      | Vite dev server on :5173, `/api` proxied to `apps/server` on :3001         | `bun run test:e2e`     |
+| **sw** (prod)   | Static `apps/landing/dist` — SPA at `/app/`, API answered by root `/sw.js` | `bun run test:e2e:sw`  |
+
+`test:e2e` is the server-backed mode (the desktop dev topology) and skips
+specs tagged `sw` (`--tags "!sw"`). `test:e2e:sw` is handled by
+`scripts/e2e-sw.ts`, which:
+
+1. seeds `apps/landing/public/` into `dist/` (favicons/fonts) and runs
+   `bun run build:app` (vite `--base=/app/` → `dist/app/`, `build:sw` → `dist/sw.js`)
+   — skip with `E2E_SW_SKIP_BUILD=1` to reuse a dist;
+2. serves `dist/` on `E2E_SW_PORT` (default 8899) with static-host semantics —
+   no SPA fallback, so `/api/*` 404s unless the worker intercepts;
+3. runs `gauge run` with `E2E_BASE_URL=http://localhost:$PORT/app/` and
+   `E2E_API_MODE=sw` — all specs run, `sw`-tagged ones included.
 
 ```bash
-# Prereqs, once: bun install (pulls gauge-cli, agent-browser, gauge-ts)
-# Servers needed: Vite on :5173 (or whatever BASE_URL points at) and apps/server on :3001
+# Server-backed mode: Vite on :5173 + apps/server on :3001
 bun run --cwd apps/web dev &
 bun run --cwd apps/server dev &
-
-bun run test:e2e                          # all specs in e2e/specs (deterministic suite)
+bun run test:e2e                          # all specs except `sw`-tagged
 bun run test:e2e:spec e2e/specs/login.md  # single spec
+
+# SW-backed mode: builds + serves apps/landing/dist, no dev servers needed
+bun run test:e2e:sw                       # full suite against /app/ + /sw.js
+bun scripts/e2e-sw.ts e2e/specs/sw-runtime.md  # only the SW spec
+bun run test:e2e:sw:bench                 # SW benchmark specs (multi-minute SSE)
 ```
 
 `e2e/benchmarks/` holds wall-clock-bound scenarios (real-model generation
-latency). They are excluded from the default suite — run them explicitly with
-`gauge run e2e/benchmarks` (nightly / pre-release).
+latency, the multi-minute SSE-through-SW guard). They are excluded from the
+default suite — run them explicitly with `bun scripts/e2e-sw.ts e2e/benchmarks`
+(SW mode) or `gauge run e2e/benchmarks` (server mode).
 
 `GAUGE_TS_PACKAGE_RUNNER=bun STEP_IMPL_DIR=steps,support` is baked into the npm scripts —
 `npx` breaks on `catalog:` overrides, so step resolution runs under bun.
@@ -37,11 +60,11 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 - Page should contain "1 item in cart"
 ```
 
-## Built-in steps (e2e/steps/common.ts, prompt-bar.ts, settings.ts)
+## Built-in steps (e2e/steps/common.ts, prompt-bar.ts, api-runtime.ts)
 
 | Step                                              | Notes                                                              |
 | ------------------------------------------------- | ------------------------------------------------------------------ |
-| `Open <url>`                                      | `"/"`, `"/?quickMode=true"` — relative to `BASE_URL` (default :5173) |
+| `Open <url>`                                      | `"/"`, `"/?quickMode=true"` — joined onto `E2E_BASE_URL` (default :5173, or `…/app/` in SW mode) |
 | `Wait for page to load completely`                | Wait for network + render idle                                     |
 | `Page should contain <text>` / `… not contain`    | Assert presence / absence in snapshot                              |
 | `Wait for <label> to appear`                      | Poll snapshot, default ~30s                                        |
@@ -67,11 +90,23 @@ Parameters use `<angle brackets>`; values containing spaces must be quoted.
 | `Dismiss the onboarding dialog` / `Reset the onboarding flag` | Onboarding flow                                    |
 | `Open the settings dialog` / `Click outside the modal` / `Scroll to the <label> section` | Settings modal                      |
 | `Quick mode should be <state>`                    | `enabled`/`disabled` in settings                                    |
+| `The page should have no console errors`          | `agent-browser errors` + error-severity `console` lines must be empty |
+| `The page should be controlled by a service worker` | Polls `navigator.serviceWorker.controller` (15 s), asserts `/sw.js` script |
+| `In-page fetch <method> <path> should return status <code>` | `fetch()` in page context — e.g. `/health` 200 via the worker, `/api/no-such-route` 404 |
+| `In-page fetch <path> should return JSON <key> "<value>"` | Fetch + `res.json()` key assertion                |
+| `A provider probe to a dead endpoint should surface an error` | POST `/api/probe-models` at `localhost:1` must not report success |
+| `Seed a broken provider`                          | `calca-settings` provider pointing at `localhost:1` — generation must fail visibly |
+| `Seed provider credentials from the environment`  | Seeds `calca-settings` from `E2E_AI_*`/`VITE_AI_*`/`CAUCE_AI_*`/`AI_*_PAID`; no-op when a provider is already configured |
+| `The canvas should show a generation error`       | Polls node iframe `srcdoc` for the `⚠` failure markup (120 s)      |
+| `Wait up to <seconds> seconds for node <name> to render` | `Wait for node` with an explicit timeout — for multi-minute streams |
 
 ## Environment
 
-- `BASE_URL` — defaults to `http://localhost:5173`
-- Generation specs need a real provider: run Vite with `VITE_AI_BASE_URL`, `VITE_AI_API_KEY`, `VITE_AI_MODEL` set (the env-injected provider). Text-only models reject image-input — clear attachments before generation specs.
+- `E2E_BASE_URL` — app URL the steps open; defaults to `http://localhost:5173`. In SW mode the runner sets it to `http://localhost:8899/app/` — `Open "/"` resolves to the app root in both modes (`appUrl()` joins onto the base path).
+- `E2E_API_MODE` — `sw` when running through `test:e2e:sw`, `server` otherwise.
+- Generation specs need a real provider: in server mode run Vite with `VITE_AI_BASE_URL`, `VITE_AI_API_KEY`, `VITE_AI_MODEL` set (the env-injected provider). In SW mode those vars must be set **at build time** (vite `define` bakes them) — the `e2e-sw` runner resolves `VITE_AI_*` from `E2E_AI_*`/`CAUCE_AI_*`/`AI_*_PAID` and feeds them to the build. Text-only models reject image-input — clear attachments before generation specs.
+- `E2E_SW_SKIP_BUILD=1` — reuse the existing `apps/landing/dist` (fast iteration on specs).
+- `E2E_SW_PORT` — static server port for SW mode (default 8899).
 - **`?quickMode=true`** — sequential mode takes >5min on slow models (6 serial LLM stages); every spec that waits on rendered output must open `/?quickMode=true` (persisted in settings across reloads). `quickMode` defaults to true, so a wrong param name fails open — always use the real one.
 
 ## Isolation & known quirks
