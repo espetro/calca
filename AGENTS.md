@@ -239,7 +239,7 @@ VITE_AI_MODEL=lfm2.5-1.2b-instruct
 ## E2E Testing
 
 Specs are written in Gauge Markdown and run via agent-browser.
-See [docs/testing/e2e-specs.md](docs/testing/e2e-specs.md) for conventions, built-in steps, and how to add new ones.
+See [.agents/docs/testing/e2e-specs.md](.agents/docs/testing/e2e-specs.md) for conventions, built-in steps, and how to add new ones.
 
 ---
 
@@ -255,6 +255,8 @@ Uses **@changesets/cli** with unified versioning (all workspace packages in the 
 4. Commit and tag: `git commit -m "chore: release vX.Y.Z" && git tag vX.Y.Z && git push --tags`
 
 Desktop builds via GitHub Actions on `v*` tags.
+
+Details: [.agents/docs/versioning.md](.agents/docs/versioning.md) — changesets + conventional commits, and [.agents/docs/desktop-releases.md](.agents/docs/desktop-releases.md) — desktop release/update pipeline.
 
 ## Package-Specific Guides
 
@@ -283,7 +285,7 @@ Every AI design concept has three components:
 
 ### Pipeline Stages
 
-See [PRD — Pipeline](docs/PRD.md) for full details.
+See [PRD — Pipeline](.agents/docs/PRD.md) for full details.
 
 1. **Plan** — Determine concept count and visual directions
 2. **Layout** — Generate HTML/CSS with sizing hints
@@ -299,11 +301,13 @@ Three built-in presets: `ui-ux`, `marketing`, `brand`
 
 ## References
 
-- **PRD**: [docs/PRD.md](docs/PRD.md) — Product vision, positioning, and key features (pre-v-next)
+- **Docs layout**: `docs/` is reserved for end-user documentation; internal/dev docs live in [.agents/docs/](.agents/docs/)
+- **PRD**: [.agents/docs/PRD.md](.agents/docs/PRD.md) — Product vision, positioning, and key features (pre-v-next)
 - **v-next epic**: [issue #37](https://github.com/espetro/calca/issues/37) — Three-layer plan; supersedes PRD positioning where they differ
-- **POC Learnings**: [docs/poc-learnings.md](docs/poc-learnings.md) — Architecture decisions from prototyping
-- **ADRs**: [docs/adrs/](docs/adrs/) — Architecture Decision Records (numbered `NNNN-description.md`; latest: `0008-agent-harness-taxonomy`)
-- **Sisyphus Plans**: [.sisyphus/plans/](.sisyphus/plans/) — Implementation planning
+- **POC Learnings**: [.agents/docs/poc-learnings.md](.agents/docs/poc-learnings.md) — Architecture decisions from prototyping
+- **ADRs**: [.agents/docs/adrs/](.agents/docs/adrs/) — Architecture Decision Records (numbered `NNNN-description.md`; latest: `0008-agent-harness-taxonomy`)
+- **Versioning**: [.agents/docs/versioning.md](.agents/docs/versioning.md) — Changesets + conventional commits
+- **Desktop releases**: [.agents/docs/desktop-releases.md](.agents/docs/desktop-releases.md) — Distribution channels, signing, auto-update
 
 <!-- BEGIN:turborepo-agent-rules -->
 

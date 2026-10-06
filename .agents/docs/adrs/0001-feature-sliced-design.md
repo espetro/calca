@@ -38,16 +38,15 @@ FSD gives us the best of both worlds: feature isolation for day-to-day velocity,
 
 ## Validation
 
-The `apps/web/src/` directory follows this structure:
+The `apps/web/src/` directory follows this structure (Vite SPA + TanStack Router today; the canvas itself moved out to `packages/canvas` + `@calca/canvas-*`):
 
 ```
 apps/web/src/
-├── app/               # Next.js App Router pages & layouts
+├── routes/            # TanStack Router file-based routes
 ├── widgets/           # Composite UI blocks composed from features
 │   ├── prompt-bar/    #   Bottom prompt input
 │   └── toolbar/       #   Top toolbar
 ├── features/          # Business logic organized by domain
-│   ├── canvas/        #   Pan, zoom, drag, frame management
 │   ├── canvas-hud/    #   Canvas HUD overlay
 │   ├── comments/       #   Figma-style comment pins & AI response threads
 │   ├── context-toolbar/ # Context-aware toolbar actions
@@ -73,4 +72,4 @@ Each feature slice contains `ui/`, `hooks/`, `api/`, `lib/`, and an `index.ts` b
 ## More Information
 
 - [Feature-Sliced Design documentation](https://feature-sliced.design/)
-- [apps/web/src/features/README.md](../../apps/web/src/features/README.md) — FSD import rules and layer reference
+- [apps/web/src/features/README.md](../../../apps/web/src/features/README.md) — FSD import rules and layer reference

@@ -79,3 +79,11 @@ If you have questions about licensing or the CLA, please open an issue at https:
 
 Be respectful, constructive, and inclusive. We welcome contributors of all
 experience levels.
+
+## Development Docs
+
+- [AGENTS.md](./AGENTS.md) — architecture, conventions, and validation gates
+- [.agents/docs/](./.agents/docs/) — internal docs: ADRs, PRD, versioning,
+  desktop releases, e2e conventions
+- `docs/` is reserved for end-user documentation — do not add internal/dev
+  docs there
