@@ -24,7 +24,10 @@ const config: ElectrobunConfig = {
     mac: {
       icons: "calca.iconset",
       codesign: true,
-      notarize: isCI,
+      // CI notarizes by default; ELECTROBUN_NOTARIZE=false produces a signed but
+      // unnotarized build (used as fallback when the Apple agreement/signing is
+      // unavailable so releases still ship the .dmg).
+      notarize: isCI && process.env.ELECTROBUN_NOTARIZE !== "false",
       bundleCEF: !isBuild,
       chromiumFlags: isBuild ? undefined : cefFlags,
     },

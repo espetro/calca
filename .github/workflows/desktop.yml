@@ -81,12 +81,24 @@ jobs:
         if: matrix.platform == 'darwin'
         run: |
           echo "${{ secrets.APPLE_API_KEY_P8_BASE64 }}" | base64 --decode > /tmp/api_key.p8
-      - run: bun run build:desktop
+      - name: Build desktop
+        id: build
+        continue-on-error: true
+        run: bun run build:desktop
         env:
           ELECTROBUN_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
           ELECTROBUN_APPLEAPIISSUER: ${{ secrets.APPLE_API_ISSUER }}
           ELECTROBUN_APPLEAPIKEY: ${{ secrets.APPLE_API_KEY_ID }}
           ELECTROBUN_APPLEAPIKEYPATH: /tmp/api_key.p8
+          VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
+      - name: Build desktop (no notarization)
+        # Notarization depends on a signed Apple agreement; retry without it so
+        # the release still ships a signed .dmg instead of nothing.
+        if: steps.build.outcome == 'failure' && matrix.platform == 'darwin'
+        run: bun run build:desktop
+        env:
+          ELECTROBUN_NOTARIZE: "false"
+          ELECTROBUN_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
           VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
       - name: Cleanup API key
         if: matrix.platform == 'darwin'
@@ -99,7 +111,9 @@ jobs:
   release:
     needs: build-desktop
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v') && !failure() && !cancelled()
+    # Ship whatever legs produced artifacts — one platform's failure must not
+    # hold back the other's installers.
+    if: always() && startsWith(github.ref, 'refs/tags/v') && !cancelled()
     permissions:
       contents: write
     steps:
@@ -115,4 +129,6 @@ jobs:
           files: |
             artifacts/**/*.dmg
             artifacts/**/*.zip
+            artifacts/**/*.tar.zst
+            artifacts/**/update.json
           generate_release_notes: true
