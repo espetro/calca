@@ -3926,3 +3926,69 @@ export const promptlib_featureSectionLabel = () => `Feature Section`
 /* @__NO_SIDE_EFFECTS__ */
 export const promptlib_featureSectionText = () => `A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above.`
 
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const shared_close = () => `Close`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const errors_unknown = () => `Unknown error`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_importedLabel = () => `Imported`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_invalidFileNotObject = () => `Invalid file: not an object`
+
+
+
+
+	
+/**
+ * @param {{ ext: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_invalidFileMissingGroups = (params) => `Invalid ${params.ext} file: missing groups array`
+
+
+
+
+	
+/**
+ * @param {{ ext: NonNullable<unknown>, message: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_parseFailed = (params) => `Failed to parse ${params.ext} file: ${params.message}`
+

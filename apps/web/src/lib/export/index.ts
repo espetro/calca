@@ -9,6 +9,7 @@ import { getLogger } from "@app/logger";
 
 const logger = getLogger(["calca", "web", "export"]);
 
+import { m } from "#/lib/i18n";
 import type { GenerationGroup } from "#/shared/types";
 
 // ---------------------------------------------------------------------------
@@ -107,7 +108,7 @@ export function generateExportFilename(): string {
  */
 export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
   if (!data || typeof data !== "object") {
-    throw new Error("Invalid file: not an object");
+    throw new Error(m.export_invalidFileNotObject());
   }
 
   const obj = data as Record<string, unknown>;
@@ -116,11 +117,7 @@ export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
   const isLegacyOtto = obj.version === undefined;
 
   if (!obj.groups || !Array.isArray(obj.groups)) {
-    throw new Error(
-      isLegacyOtto
-        ? "Invalid .otto file: missing groups array"
-        : "Invalid .design file: missing groups array",
-    );
+    throw new Error(m.export_invalidFileMissingGroups({ ext: isLegacyOtto ? ".otto" : ".design" }));
   }
 
   const groups: GenerationGroup[] = (obj.groups as Record<string, unknown>[]).map(
@@ -135,7 +132,7 @@ export function deserializeCanvasFile(data: unknown): DeserializedCanvas {
           (iter: Record<string, unknown>, iterIndex: number) => ({
             id: (iter.id as string) || `imported-iter-${now}-${groupIndex}-${iterIndex}`,
             html: (iter.html as string) || "",
-            label: (iter.label as string) || "Imported",
+            label: (iter.label as string) || m.export_importedLabel(),
             position: (iter.position as { x: number; y: number }) || { x: 0, y: 0 },
             width: (iter.width as number) || 600,
             height: (iter.height as number) || 400,
@@ -173,13 +170,10 @@ export async function readCanvasFile(file: File): Promise<DeserializedCanvas> {
     }
     return result;
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    throw new Error(
-      isOttoFile
-        ? `Failed to parse .otto file: ${message}`
-        : `Failed to parse .design file: ${message}`,
-      { cause: error },
-    );
+    const message = error instanceof Error ? error.message : m.errors_unknown();
+    throw new Error(m.export_parseFailed({ ext: isOttoFile ? ".otto" : ".design", message }), {
+      cause: error,
+    });
   }
 }
 

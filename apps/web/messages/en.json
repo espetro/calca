@@ -281,7 +281,6 @@
     "previewTitle": "{format} Export",
     "failed": "Export failed"
   },
-  "feedback_errorHttp": "HTTP {status}",
   "route_importFailed": "Failed to import file",
   "error_title": "Something went wrong",
   "error_unexpected": "An unexpected error occurred.",
@@ -362,5 +361,11 @@
   "promptlib_bannerAdLabel": "Banner Ad",
   "promptlib_bannerAdText": "A web banner ad (728x90 leaderboard format) for a SaaS product. Product name, value proposition in one line, and a 'Try Free' CTA button. Clean, not cluttered.",
   "promptlib_featureSectionLabel": "Feature Section",
-  "promptlib_featureSectionText": "A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above."
+  "promptlib_featureSectionText": "A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above.",
+  "shared_close": "Close",
+  "errors_unknown": "Unknown error",
+  "export_importedLabel": "Imported",
+  "export_invalidFileNotObject": "Invalid file: not an object",
+  "export_invalidFileMissingGroups": "Invalid {ext} file: missing groups array",
+  "export_parseFailed": "Failed to parse {ext} file: {message}"
 }
