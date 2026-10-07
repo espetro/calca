@@ -1225,6 +1225,17 @@ export const settings_noModelsAvailable = () => `No models available`
 
 	
 /**
+ * @param {{ query: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_noModelsMatch = (params) => `No models match "${params.query}"`
+
+
+
+
+	
+/**
  * 
  * @returns {string}
  */

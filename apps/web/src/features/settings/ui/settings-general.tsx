@@ -23,6 +23,7 @@ import { Switch } from "#/shared/components/ui/switch";
 import { useProbeModels } from "../hooks/use-probe-models";
 import { apiKeyValidationSchema, validateModelInProvider } from "../lib/settings-schema";
 import type { ProviderConfig, Settings } from "../types";
+import { ModelCombobox } from "./model-combobox";
 
 interface SettingsGeneralProps {
   settings: Settings;
@@ -467,30 +468,15 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           {m.settings_modelLabel()}
         </Label>
-        <Select
+        <ModelCombobox
+          models={selectedProvider?.models ?? []}
           value={selectedModelId}
-          onValueChange={handleModelChange}
-          disabled={!selectedProvider || selectedProvider.models.length === 0}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue
-              placeholder={
-                !selectedProvider
-                  ? m.settings_selectProviderFirst()
-                  : selectedProvider.models.length === 0
-                    ? m.settings_noModelsAvailable()
-                    : m.settings_selectModel()
-              }
-            />
-          </SelectTrigger>
-          <SelectContent>
-            {selectedProvider?.models.map((model) => (
-              <SelectItem key={model.id} value={model.id}>
-                {model.displayName || model.id}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          onChange={handleModelChange}
+          disabled={!selectedProvider}
+          placeholder={
+            !selectedProvider ? m.settings_selectProviderFirst() : m.settings_selectModel()
+          }
+        />
         {modelError && <p className="text-[11px] text-red-500">{modelError}</p>}
       </div>
 
