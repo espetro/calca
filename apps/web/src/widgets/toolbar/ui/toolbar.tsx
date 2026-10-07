@@ -77,11 +77,11 @@ export function Toolbar({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-48 rounded-xl bg-foreground/90 backdrop-blur-2xl border border-border/40 shadow-[0_8px_32px_oklch(0_0_0_/_0.3)]"
+          className="w-48 rounded-xl bg-glass-bg backdrop-blur-2xl border border-glass-border shadow-glass"
         >
           <DropdownMenuItem
             onClick={onImport}
-            className="text-background/70 hover:bg-background/10 hover:text-background text-[12px] focus:bg-background/10 focus:text-background"
+            className="text-muted-foreground hover:bg-foreground/5 hover:text-foreground text-[12px] focus:bg-foreground/5 focus:text-foreground"
           >
             <span className="text-sm">📥</span>
             Import .design
@@ -90,12 +90,12 @@ export function Toolbar({
             <>
               <DropdownMenuItem
                 onClick={onExport}
-                className="text-background/70 hover:bg-background/10 hover:text-background text-[12px] focus:bg-background/10 focus:text-background"
+                className="text-muted-foreground hover:bg-foreground/5 hover:text-foreground text-[12px] focus:bg-foreground/5 focus:text-foreground"
               >
                 <span className="text-sm">📤</span>
                 Export .design
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-foreground/10" />
+              <DropdownMenuSeparator className="bg-border/50" />
               <DropdownMenuItem
                 onClick={onNewSession}
                 className="text-destructive hover:bg-destructive/10 text-[12px] focus:bg-destructive/10 focus:text-destructive"
