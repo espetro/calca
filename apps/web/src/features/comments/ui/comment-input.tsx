@@ -41,8 +41,8 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
         top: Math.max(8, clampedY),
       }}
     >
-      <div className="bg-white/50 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-3 w-[272px]">
-        <div className="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-2 px-1">
+      <div className="bg-glass-bg backdrop-blur-2xl rounded-2xl border border-glass-border shadow-glass p-3 w-[272px]">
+        <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">
           {m.comments_revisionComment()}
         </div>
         <Textarea
@@ -59,7 +59,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
             }
           }}
           placeholder={m.comments_describeRevision()}
-          className="w-full text-[13px] text-gray-800 placeholder-gray-400/60 bg-white/60 backdrop-blur-sm rounded-xl px-3 py-2.5 outline-none resize-none border border-white/40 focus:border-blue-300/60 focus:bg-white/80 transition-all"
+          className="w-full text-[13px] text-foreground placeholder:text-muted-foreground/60 bg-card/60 backdrop-blur-sm rounded-xl px-3 py-2.5 outline-none resize-none border border-border/40 focus:border-ring/60 focus:bg-card/80 transition-all"
           rows={3}
         />
         <div className="flex items-center justify-between mt-2.5 px-0.5">
@@ -67,7 +67,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
             variant="ghost"
             size="sm"
             onClick={onCancel}
-            className="text-[12px] text-gray-400 hover:text-gray-600 px-2.5 py-1.5 rounded-lg hover:bg-black/5 transition-all"
+            className="text-[12px] text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/5 transition-all"
           >
             {m.comments_cancel()}
           </Button>
@@ -76,7 +76,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
             size="sm"
             onClick={handleSubmit}
             disabled={!text.trim()}
-            className="text-[12px] font-medium text-white bg-blue-500/90 hover:bg-blue-500 disabled:opacity-30 px-4 py-1.5 rounded-xl transition-all shadow-sm backdrop-blur-sm"
+            className="text-[12px] font-medium text-primary-foreground bg-primary/90 hover:bg-primary disabled:opacity-30 px-4 py-1.5 rounded-xl transition-all shadow-sm backdrop-blur-sm"
           >
             {m.comments_revise()}
           </Button>

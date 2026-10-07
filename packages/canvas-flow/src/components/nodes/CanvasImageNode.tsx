@@ -18,7 +18,7 @@ export function CanvasImageNode({ data }: NodeProps<CanvasImageNodeType>) {
       className={`group w-full h-full rounded-lg overflow-hidden shadow-md transition-shadow ${
         isSelected
           ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg"
-          : "border border-white/40 hover:shadow-lg"
+          : "border border-border/50 hover:shadow-lg"
       } ${
         isSelectMode
           ? isDragging

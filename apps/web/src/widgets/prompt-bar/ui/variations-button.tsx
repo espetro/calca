@@ -44,10 +44,10 @@ export function VariationsButton({
           data-tour={dataTour}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
             disabled
-              ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"
+              ? "bg-muted/50 text-muted-foreground cursor-not-allowed border border-border/50"
               : conceptCount !== 1
                 ? ""
-                : "bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200/50"
+                : "bg-glass-bg/60 text-muted-foreground hover:bg-glass-bg border border-border/50"
           }`}
           style={
             !disabled && conceptCount !== 1
@@ -66,7 +66,9 @@ export function VariationsButton({
           <Dices className="w-3.5 h-3.5" />
           <span>{m.promptbar_variations()}</span>
           {conceptCount !== 1 && (
-            <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px]">{conceptCount}</span>
+            <span className="bg-foreground/10 px-1.5 py-0.5 rounded text-[10px]">
+              {conceptCount}
+            </span>
           )}
         </Button>
       </PopoverTrigger>
@@ -74,9 +76,9 @@ export function VariationsButton({
         align="start"
         side="top"
         sideOffset={8}
-        className="w-[180px] bg-white/20 backdrop-blur-3xl rounded-[20px] border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(255,255,255,0.15)] p-4"
+        className="w-[180px] bg-glass-bg/40 backdrop-blur-3xl rounded-[20px] border border-glass-border/50 shadow-glass p-4"
       >
-        <div className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-3">
+        <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-3">
           {m.promptbar_variationsPerPrompt()}
         </div>
         <div className="flex items-center justify-between">
@@ -86,13 +88,13 @@ export function VariationsButton({
             aria-label={m.promptbar_decreaseVariations()}
             onClick={() => onConceptCountChange(Math.max(1, conceptCount - 1))}
             disabled={conceptCount <= 1}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-glass-bg/60 hover:bg-glass-bg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <Minus className="w-4 h-4 text-gray-600" />
+            <Minus className="w-4 h-4 text-muted-foreground" />
           </Button>
           <span
             aria-live="polite"
-            className="text-lg font-semibold text-gray-800 min-w-[40px] text-center"
+            className="text-lg font-semibold text-foreground min-w-[40px] text-center"
           >
             {conceptCount}
           </span>
@@ -102,9 +104,9 @@ export function VariationsButton({
             aria-label={m.promptbar_increaseVariations()}
             onClick={() => onConceptCountChange(Math.min(5, conceptCount + 1))}
             disabled={conceptCount >= 5}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-glass-bg/60 hover:bg-glass-bg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <Plus className="w-4 h-4 text-gray-600" />
+            <Plus className="w-4 h-4 text-muted-foreground" />
           </Button>
         </div>
       </PopoverContent>

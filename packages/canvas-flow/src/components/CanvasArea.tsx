@@ -304,8 +304,10 @@ export const CanvasArea = ({
       {groups.length === 0 && canvasImages.length === 0 && emptyTitle && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold text-gray-300 mb-2">{emptyTitle}</h1>
-            {emptyDescription && <p className="text-gray-400/70 text-sm">{emptyDescription}</p>}
+            <h1 className="text-2xl font-semibold text-muted-foreground mb-2">{emptyTitle}</h1>
+            {emptyDescription && (
+              <p className="text-muted-foreground/70 text-sm">{emptyDescription}</p>
+            )}
           </div>
         </div>
       )}

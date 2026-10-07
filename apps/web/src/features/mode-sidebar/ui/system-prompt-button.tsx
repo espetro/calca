@@ -28,20 +28,20 @@ const SystemPromptDialog = ({ systemPrompt, ref }: SystemPromptDialogProps) => {
   return (
     <div
       ref={ref}
-      className="absolute right-full mr-4 top-1/2 -translate-y-1/2 z-[60] w-[280px] max-h-[calc(100vh-180px)] overflow-y-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-[0_12px_48px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] p-4"
+      className="absolute right-full mr-4 top-1/2 -translate-y-1/2 z-[60] w-[280px] max-h-[calc(100vh-180px)] overflow-y-auto bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-glass p-4"
     >
       <div className="flex items-center gap-2 mb-3">
-        <MessageSquare className="w-4 h-4 text-gray-600" />
-        <span className="text-sm font-semibold text-gray-800">{m.modesidebar_systemPrompt()}</span>
+        <MessageSquare className="w-4 h-4 text-muted-foreground" />
+        <span className="text-sm font-semibold text-foreground">{m.modesidebar_systemPrompt()}</span>
       </div>
 
       <Textarea
         value={systemPrompt}
         onChange={handleChange}
         placeholder={m.modesidebar_systemPromptPlaceholder()}
-        className="w-full h-32 px-4 py-3 rounded-xl bg-white/70 border border-gray-200/50 text-[13px] text-gray-700 placeholder-gray-400 outline-none focus:border-blue-300/50 focus:ring-1 focus:ring-blue-200/30 resize-y font-mono"
+        className="w-full h-32 px-4 py-3 rounded-xl bg-card/70 border border-border/50 text-[13px] text-foreground placeholder:text-muted-foreground outline-none focus:border-ring/60 focus:ring-1 focus:ring-ring/30 resize-y font-mono"
       />
-      <p className="mt-2 text-[10px] text-gray-500">{m.modesidebar_systemPromptDescription()}</p>
+      <p className="mt-2 text-[10px] text-muted-foreground">{m.modesidebar_systemPromptDescription()}</p>
     </div>
   );
 };
@@ -74,7 +74,7 @@ export function SystemPromptButton() {
         aria-label={m.modesidebar_systemPrompt()}
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
           isOpen || hasCustomPrompt
-            ? "bg-primary/90 text-white"
+            ? "bg-primary/90 text-primary-foreground"
             : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
         }`}
       >

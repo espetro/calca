@@ -46,9 +46,9 @@ export function ContextToolbar({
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-xl shadow-sm px-1.5 py-1 flex items-center gap-1">
+    <div className="rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl shadow-sm px-1.5 py-1 flex items-center gap-1">
       <RemixButton iteration={iteration} onRemix={onRemix} />
-      <div className="w-px h-4 bg-gray-200/50" />
+      <div className="w-px h-4 bg-border/50" />
       <ExportMenu
         html={iteration.html ?? ""}
         label={iteration.label ?? m.contexttoolbar_designFallback()}

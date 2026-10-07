@@ -34,8 +34,8 @@ export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButto
       aria-label={m.promptbar_addMedia()}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
         disabled
-          ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"
-          : "bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200/50"
+          ? "bg-muted/50 text-muted-foreground cursor-not-allowed border border-border/50"
+          : "bg-glass-bg/60 text-muted-foreground hover:bg-glass-bg border border-border/50"
       }`}
     >
       <ImageIcon className="w-3.5 h-3.5" />
