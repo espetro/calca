@@ -13,6 +13,7 @@ import { useCallback, useMemo, useRef } from "react";
 
 import { SYSTEM_PROMPT_PRESETS } from "#/features/settings/lib/presets";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 import { sidebarDialogAtom } from "../state/dialog-atom";
@@ -73,7 +74,7 @@ export function PresetButton() {
         variant="ghost"
         size="icon"
         onClick={handleToggle}
-        aria-label="Designer Preset"
+        aria-label={m.modesidebar_designerPreset()}
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
           isOpen || settings.systemPromptPreset !== "custom"
             ? "bg-chart-1/90 text-white"
@@ -90,7 +91,9 @@ export function PresetButton() {
         >
           <div className="flex items-center gap-2 mb-3">
             <CurrentIcon className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-semibold text-gray-800">Designer Preset</span>
+            <span className="text-sm font-semibold text-gray-800">
+              {m.modesidebar_designerPreset()}
+            </span>
           </div>
 
           <div className="flex flex-col gap-1.5">

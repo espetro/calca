@@ -1,5 +1,6 @@
 import { MousePointer, Pencil, SquareDashedMousePointer } from "lucide-react";
 
+import { m } from "#/lib/i18n";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/shared/components/ui/tooltip";
 import type { ToolMode } from "#/shared/types";
 
@@ -26,7 +27,7 @@ export function ModeSidebar({ mode, onModeChange }: ModeSidebarProps) {
             <MousePointer className="w-4 h-4" />
           </ModeButton>
         </TooltipTrigger>
-        <TooltipContent side="left">Select – V</TooltipContent>
+        <TooltipContent side="left">{m.modesidebar_select()}</TooltipContent>
       </Tooltip>
 
       <Tooltip>
@@ -41,7 +42,7 @@ export function ModeSidebar({ mode, onModeChange }: ModeSidebarProps) {
             <SquareDashedMousePointer className="w-4 h-4" />
           </ModeButton>
         </TooltipTrigger>
-        <TooltipContent side="left">Draw Area</TooltipContent>
+        <TooltipContent side="left">{m.modesidebar_drawArea()}</TooltipContent>
       </Tooltip>
 
       <Tooltip>
@@ -56,7 +57,7 @@ export function ModeSidebar({ mode, onModeChange }: ModeSidebarProps) {
             <Pencil className="w-4 h-4" />
           </ModeButton>
         </TooltipTrigger>
-        <TooltipContent side="left">Edit Component</TooltipContent>
+        <TooltipContent side="left">{m.modesidebar_editComponent()}</TooltipContent>
       </Tooltip>
 
       <div className="w-5 h-px bg-foreground/15" />
@@ -65,14 +66,14 @@ export function ModeSidebar({ mode, onModeChange }: ModeSidebarProps) {
         <TooltipTrigger asChild>
           <PresetButton />
         </TooltipTrigger>
-        <TooltipContent side="left">Designer Preset</TooltipContent>
+        <TooltipContent side="left">{m.modesidebar_designerPreset()}</TooltipContent>
       </Tooltip>
 
       <Tooltip>
         <TooltipTrigger asChild>
           <SystemPromptButton />
         </TooltipTrigger>
-        <TooltipContent side="left">System Prompt</TooltipContent>
+        <TooltipContent side="left">{m.modesidebar_systemPrompt()}</TooltipContent>
       </Tooltip>
     </div>
   );

@@ -2,6 +2,7 @@ import { useViewportSize } from "@mantine/hooks";
 import { Locate, LocateFixed, Navigation } from "lucide-react";
 import { useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 export interface CompassProps {
@@ -28,7 +29,7 @@ const Compass = ({ offset, onResetView }: CompassProps) => {
         variant="ghost"
         size="icon"
         onClick={onResetView}
-        title="Reset view"
+        title={m.canvashud_resetView()}
         className="w-8 h-8 rounded-xl text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
       >
         <span className="relative w-4 h-4 flex items-center justify-center">
