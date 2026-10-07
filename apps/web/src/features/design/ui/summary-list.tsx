@@ -21,7 +21,7 @@ export function SummaryList() {
 
   return (
     <div
-      className="fixed bottom-24 left-4 z-40 bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] max-h-72 overflow-y-auto w-[380px] max-w-[calc(100vw-2rem)]"
+      className="fixed bottom-24 left-4 z-40 bg-glass-bg backdrop-blur-2xl rounded-2xl border border-glass-border shadow-glass max-h-72 overflow-y-auto w-[380px] max-w-[calc(100vw-2rem)]"
       data-tour="summary-list"
     >
       {visibleGroups.map((group) => {
@@ -35,23 +35,23 @@ export function SummaryList() {
               variant="ghost"
               aria-expanded={hasSummary ? isOpen : undefined}
               onClick={() => hasSummary && setOpenId(isOpen ? null : group.id)}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left hover:bg-black/5 rounded-xl transition-colors"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left hover:bg-foreground/5 rounded-xl transition-colors"
             >
               {hasSummary ? (
                 <span className="text-emerald-500 text-sm font-bold shrink-0">✓</span>
               ) : (
-                <span className="w-2.5 h-2.5 rounded-full bg-gray-400 shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/50 shrink-0" />
               )}
               <span
                 className={`text-[13px] truncate ${
-                  hasSummary ? "text-gray-700" : "text-gray-400 italic"
+                  hasSummary ? "text-foreground" : "text-muted-foreground italic"
                 }`}
               >
                 {title}
               </span>
               {hasSummary && (
                 <ChevronDownIcon
-                  className={`ml-auto size-3.5 shrink-0 text-gray-400 transition-transform duration-200 ease-out ${
+                  className={`ml-auto size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 ease-out ${
                     isOpen ? "rotate-180" : ""
                   }`}
                 />
@@ -64,7 +64,7 @@ export function SummaryList() {
               }`}
             >
               <div className="overflow-hidden">
-                <p className="px-4 pb-3 pl-[42px] text-[12px] leading-relaxed text-gray-500">
+                <p className="px-4 pb-3 pl-[42px] text-[12px] leading-relaxed text-muted-foreground">
                   {group.summary?.rationale}
                 </p>
               </div>

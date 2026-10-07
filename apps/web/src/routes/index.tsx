@@ -379,7 +379,7 @@ function HomeInner() {
       <SummaryList />
 
       {showGitHash && (
-        <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-gray-400 bg-black/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">
+        <div className="fixed bottom-2 left-2 z-40 text-[9px] font-mono text-muted-foreground bg-foreground/5 backdrop-blur-sm px-2 py-1 rounded-md select-all">
           {import.meta.env.VITE_GIT_HASH}
         </div>
       )}
@@ -439,11 +439,11 @@ function HomeInner() {
             className="absolute inset-0 bg-black/20 backdrop-blur-sm"
             onClick={() => setShowResetConfirm(false)}
           />
-          <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
-            <h3 className="text-[15px] font-semibold text-gray-800 mb-2">
+          <div className="relative bg-glass-bg backdrop-blur-2xl rounded-2xl border border-glass-border shadow-glass p-8 w-[380px] max-w-[90vw] text-center">
+            <h3 className="text-[15px] font-semibold text-foreground mb-2">
               {m.dialog.resetTitle()}
             </h3>
-            <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
+            <p className="text-[13px] text-muted-foreground mb-6">{m.dialog.resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
               <Button variant="ghost" onClick={() => setShowResetConfirm(false)}>
                 Cancel
