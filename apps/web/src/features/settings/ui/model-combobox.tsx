@@ -73,10 +73,12 @@ export function ModelCombobox({
     }
   };
 
+  const anchorRef = useRef<HTMLDivElement>(null);
+
   return (
     <Popover open={open && models.length > 0} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
-        <div className="relative">
+        <div className="relative" ref={anchorRef}>
           <Input
             role="combobox"
             aria-expanded={showList}
@@ -89,6 +91,9 @@ export function ModelCombobox({
               setHighlightedIndex(0);
               setOpen(true);
             }}
+            // Radix dismisses the popover on pointerdown-outside before the
+            // click lands — reopen here so click-to-focus also opens the list.
+            onClick={() => setOpen(true)}
             onChange={(e) => {
               onChange(e.target.value);
               setHighlightedIndex(0);
@@ -104,6 +109,11 @@ export function ModelCombobox({
         align="start"
         className="w-(--radix-popover-anchor-width) p-1"
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => {
+          if (anchorRef.current?.contains(e.target as Node)) {
+            e.preventDefault();
+          }
+        }}
       >
         <div
           id="model-combobox-listbox"
