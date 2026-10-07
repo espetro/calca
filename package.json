@@ -32,6 +32,9 @@
     "validate": "bun scripts/validate.ts",
     "validate:quick": "bun scripts/validate.ts --quick",
     "check:manifests": "bun scripts/check-workspace-manifests.ts",
+    "i18n:fill": "bunx intl-ai fill",
+    "i18n:check": "bunx intl-ai check",
+    "i18n:status": "bunx intl-ai status",
     "postinstall": "bun scripts/install-git-hooks.ts",
     "check:knip": "knip"
   },

@@ -18,8 +18,40 @@ permissions:
 
 
 jobs:
+  i18n:
+    name: Locale parity (intl-ai)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+      - name: Fill + verify locale parity
+        # Prerelease tier model (see .agents/docs/i18n.md): `en` is the only
+        # authored locale; parity must be committed before the tag is cut.
+        # `fill` is additive — on an at-parity tree it makes zero model calls
+        # and changes nothing, so this is a cheap verify in the common case.
+        # If the tag was cut without parity, `fill` repairs the sandbox copy,
+        # `check` passes, and the diff gate below fails the release with
+        # instructions — a tag can never absorb commits, so shipping anyway
+        # would publish English-only artifacts.
+        env:
+          INTL_AI_API_KEY: ${{ secrets.INTL_AI_API_KEY }}
+          INTL_AI_MODEL: ${{ vars.INTL_AI_MODEL }}
+        run: |
+          set -e
+          bunx intl-ai fill
+          bunx intl-ai check
+          if [[ -n "$(git status --porcelain -- apps/web/messages intl-ai.lock.d)" ]]; then
+            echo "::error::Locale files were not at parity when this tag was cut."
+            echo "::error::Run 'bun run i18n:fill', commit apps/web/messages + intl-ai.lock.d, then re-tag."
+            git status --porcelain -- apps/web/messages intl-ai.lock.d
+            exit 1
+          fi
+
   npm:
     name: Publish @calca/* to npm
+    needs: i18n
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,6 +90,7 @@ jobs:
 
   binaries:
     name: Compile calca (${{ matrix.target }})
+    needs: i18n
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
