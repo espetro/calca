@@ -73,6 +73,24 @@ jobs:
           # Node >= 22: tsdown needs Promise.withResolvers when it runs under node
           node-version: 22
       - run: bun install
+      - name: Verify locale parity (intl-ai)
+        # Tag builds only — never a PR/main gate (see .agents/docs/i18n.md).
+        # `fill` is additive: zero model calls when the tag is at parity.
+        # If it repairs anything, the tag was cut without parity → fail the
+        # build rather than ship English-only installers.
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          INTL_AI_API_KEY: ${{ secrets.INTL_AI_API_KEY }}
+          INTL_AI_MODEL: ${{ vars.INTL_AI_MODEL }}
+        run: |
+          set -e
+          bunx intl-ai fill
+          bunx intl-ai check
+          if [[ -n "$(git status --porcelain -- apps/web/messages intl-ai.lock.d)" ]]; then
+            echo "::error::Locale files were not at parity when this tag was cut."
+            echo "::error::Run 'bun run i18n:fill', commit apps/web/messages + intl-ai.lock.d, then re-tag."
+            exit 1
+          fi
       - name: Import Apple Developer ID Certificate
         if: matrix.platform == 'darwin'
         uses: apple-actions/import-codesign-certs@v6

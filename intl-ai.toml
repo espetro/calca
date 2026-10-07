@@ -1,0 +1,26 @@
+# intl-ai — AI-assisted translation pipeline for apps/web.
+# Docs: https://intl-ai.illo.fyi/guide/configuration
+# Tier model: `en` is the only authored locale (tier-1, PR gate).
+# All other locales reach parity as a prerelease step only — see
+# .agents/docs/i18n.md and the `i18n` job in release-cli.yml.
+
+locale_dir = "apps/web/messages"
+source = "en"
+# All locale tags lowercase: `pt-br` (Brazilian Portuguese, the volume market —
+# `pt-pt` would be a separate target if ever needed), `zh-hans` (Simplified).
+targets = ["es", "fr", "de", "pt-br", "it", "nl", "ja", "zh-hans"]
+
+[provider]
+kind = "http"
+# Any OpenAI-compatible chat-completions endpoint. OpenRouter is the expected
+# default — a cheap model keeps a full 8-locale fill well under $1.
+# Set INTL_AI_MODEL to a cheap tier model, e.g. google/gemini-2.5-flash-lite.
+# Point base_url elsewhere to use another provider (OpenAI, LM Studio, ...).
+base_url = "https://openrouter.ai/api/v1"
+model = "${env:INTL_AI_MODEL}"
+api_key = "${env:INTL_AI_API_KEY}"
+
+# Release gate: only structural findings block. The LLM `judge` check stays
+# advisory (never in fail_on) so a provider outage can never hold a release.
+[check]
+fail_on = ["missing", "stale", "invalid"]

@@ -58,3 +58,6 @@ tmp/
 
 # Generated landing-gallery frame sources (regenerable via scripts/gen-frames.ts)
 frames-out/
+
+# intl-ai local findings cache (lockfile shards under intl-ai.lock.d/ ARE committed)
+.intl-ai/
