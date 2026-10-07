@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Textarea } from "#/shared/components/ui/textarea";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
@@ -42,7 +43,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
     >
       <div className="bg-glass-bg backdrop-blur-2xl rounded-2xl border border-glass-border shadow-glass p-3 w-[272px]">
         <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">
-          Revision comment
+          {m.comments_revisionComment()}
         </div>
         <Textarea
           ref={inputRef}
@@ -57,7 +58,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
               onCancel();
             }
           }}
-          placeholder="Describe your revision..."
+          placeholder={m.comments_describeRevision()}
           className="w-full text-[13px] text-foreground placeholder:text-muted-foreground/60 bg-card/60 backdrop-blur-sm rounded-xl px-3 py-2.5 outline-none resize-none border border-border/40 focus:border-ring/60 focus:bg-card/80 transition-all"
           rows={3}
         />
@@ -68,7 +69,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
             onClick={onCancel}
             className="text-[12px] text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/5 transition-all"
           >
-            Cancel
+            {m.comments_cancel()}
           </Button>
           <Button
             variant="default"
@@ -77,7 +78,7 @@ const CommentInput = ({ position, onSubmit, onCancel }: CommentInputProps) => {
             disabled={!text.trim()}
             className="text-[12px] font-medium text-primary-foreground bg-primary/90 hover:bg-primary disabled:opacity-30 px-4 py-1.5 rounded-xl transition-all shadow-sm backdrop-blur-sm"
           >
-            Revise ↵
+            {m.comments_revise()}
           </Button>
         </div>
       </div>

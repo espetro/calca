@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import type { ProviderConfig } from "#/features/settings/types";
 import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import {
   DropdownMenu,
@@ -12,8 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "#/shared/components/ui/dropdown-menu";
 import { Separator } from "#/shared/components/ui/separator";
-
-const NO_MODEL_SELECTED = "No model selected";
 
 interface ToolbarProps {
   isOwnKey: boolean;
@@ -37,7 +36,7 @@ export function Toolbar({
   const [providerId, modelId] = model.includes("/") ? model.split("/") : [null, model];
   const provider = providerId ? providers.find((_) => _.id === providerId) : undefined;
   const displayModel = provider?.models.find((_) => _.id === modelId)?.displayName || modelId;
-  const modelLabel = displayModel || model || NO_MODEL_SELECTED;
+  const modelLabel = displayModel || model || m.toolbar_noModel();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
@@ -51,7 +50,7 @@ export function Toolbar({
           onClick={() => setSettingsOpen(true)}
           data-tour="toolbar-settings"
           className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10 transition-all"
-          title="Settings"
+          title={m.settings_title()}
         >
           <span
             className={`w-1.5 h-1.5 rounded-full ${isOwnKey ? "bg-emerald-400" : "bg-amber-400"}`}
@@ -70,7 +69,7 @@ export function Toolbar({
             size="icon"
             className="w-8 h-8 rounded-xl text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
             data-tour="export-menu"
-            title="Menu"
+            title={m.toolbar_menu()}
           >
             <Menu className="w-4 h-4" />
           </Button>
@@ -84,7 +83,7 @@ export function Toolbar({
             className="text-muted-foreground hover:bg-foreground/5 hover:text-foreground text-[12px] focus:bg-foreground/5 focus:text-foreground"
           >
             <span className="text-sm">📥</span>
-            Import .design
+            {m.toolbar_importDesign()}
           </DropdownMenuItem>
           {hasFrames && (
             <>
@@ -93,7 +92,7 @@ export function Toolbar({
                 className="text-muted-foreground hover:bg-foreground/5 hover:text-foreground text-[12px] focus:bg-foreground/5 focus:text-foreground"
               >
                 <span className="text-sm">📤</span>
-                Export .design
+                {m.toolbar_exportDesign()}
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border/50" />
               <DropdownMenuItem
@@ -101,7 +100,7 @@ export function Toolbar({
                 className="text-destructive hover:bg-destructive/10 text-[12px] focus:bg-destructive/10 focus:text-destructive"
               >
                 <span className="text-sm">🗑</span>
-                Clear Canvas
+                {m.toolbar_clearCanvas()}
               </DropdownMenuItem>
             </>
           )}

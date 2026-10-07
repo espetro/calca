@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { ExportMenu } from "#/features/export";
+import { m } from "#/lib/i18n";
 import type { DesignIteration } from "#/shared/types";
 
 import { RemixButton } from "./remix-button";
@@ -50,7 +51,7 @@ export function ContextToolbar({
       <div className="w-px h-4 bg-border/50" />
       <ExportMenu
         html={iteration.html ?? ""}
-        label={iteration.label ?? "Design"}
+        label={iteration.label ?? m.contexttoolbar_designFallback()}
         width={iteration.width ?? 480}
         apiKey={apiKey}
         model={model}

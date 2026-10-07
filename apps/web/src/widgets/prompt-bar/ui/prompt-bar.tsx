@@ -4,6 +4,7 @@ import { ComponentProps, useCallback, useEffect, useRef, useState } from "react"
 
 import { pendingPromptAtom, remixTargetAtom } from "#/features/design/state/generation-atoms";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { useNow } from "#/shared/hooks/use-now";
 import type { DesignIteration } from "#/shared/types";
@@ -34,7 +35,7 @@ const SubmitButton = ({ onSubmit, className, ...props }: SubmitButtonProps) => {
       size="icon"
       onClick={onSubmit}
       className={`w-8 h-8 rounded-full bg-primary backdrop-blur-sm text-primary-foreground hover:bg-primary/85 disabled:opacity-25 disabled:hover:bg-primary transition-all shrink-0 ${className}`}
-      title="Send (Enter)"
+      title={m.promptbar_send()}
     >
       <ArrowRight />
     </Button>
@@ -198,7 +199,7 @@ export function PromptBar({
   const handleImageSelect = useCallback(
     async (file: File) => {
       if (file.size > 5 * 1024 * 1024) {
-        setError("Image must be 5MB or smaller");
+        setError(m.promptbar_errorImageTooLarge());
         return;
       }
 
@@ -206,7 +207,7 @@ export function PromptBar({
       reader.onload = () => {
         const dataUrl = reader.result as string;
         if (!dataUrl.startsWith("data:image/")) {
-          setError("Invalid image file");
+          setError(m.promptbar_errorInvalidImage());
           return;
         }
         addImage({ id: crypto.randomUUID(), name: file.name, src: dataUrl });
@@ -235,7 +236,7 @@ export function PromptBar({
               <div className="flex items-center gap-2 min-w-0">
                 <Loader2 className="w-4 h-4 animate-spin shrink-0 text-muted-foreground" />
                 <span className="text-[13px] text-muted-foreground font-medium truncate">
-                  {genStatus || "Generating..."}
+                  {genStatus || m.promptbar_generating()}
                 </span>
                 {genStartedAt != null && (
                   <span className="text-[12px] text-muted-foreground/80 tabular-nums shrink-0">
@@ -248,7 +249,7 @@ export function PromptBar({
                 size="icon"
                 onClick={onCancel}
                 className="w-8 h-8 rounded-lg bg-destructive/80 backdrop-blur-sm text-destructive-foreground hover:bg-destructive transition-all shrink-0"
-                title="Cancel (Esc)"
+                title={m.promptbar_cancel()}
               >
                 <X className="w-3.5 h-3.5" />
               </Button>
@@ -262,7 +263,10 @@ export function PromptBar({
                   <div className="flex items-center gap-1.5 bg-primary/10 border border-primary/30 rounded-full px-2.5 py-1 text-[12px] text-primary shrink-0">
                     <Shuffle className="w-3 h-3 shrink-0" />
                     <span>
-                      Remixing <span className="font-medium">{remixTarget.label ?? "design"}</span>
+                      {m.promptbar_remixing()}{" "}
+                      <span className="font-medium">
+                        {remixTarget.label ?? m.promptbar_remixFallback()}
+                      </span>
                     </span>
                     <button
                       onClick={() => setRemixTarget(null)}
@@ -284,7 +288,7 @@ export function PromptBar({
                 {showVisionWarning && (
                   <div className="text-xs text-amber-400/90 mt-1 mb-1 flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                    This model may not support image input
+                    {m.promptbar_visionWarning()}
                   </div>
                 )}
               </PromptInputHeader>
@@ -298,7 +302,9 @@ export function PromptBar({
                     resetHistoryIndex();
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder={remixTarget ? "Describe changes to make…" : "Describe a design..."}
+                  placeholder={
+                    remixTarget ? m.promptbar_placeholderRemix() : m.promptbar_placeholder()
+                  }
                   disabled={isGenerating}
                 />
               </PromptInputBody>

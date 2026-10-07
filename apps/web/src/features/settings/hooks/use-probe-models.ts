@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
+import { m } from "#/lib/i18n";
 
 import type { ModelInfo } from "../types";
 
@@ -27,7 +28,10 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
       json: input,
     });
     if (!response.ok) {
-      return { error: await apiErrorMessage(response, "Probe failed"), models: [] };
+      return {
+        error: await apiErrorMessage(response, m.settings_errorProbeFailed()),
+        models: [],
+      };
     }
     const data = await response.json();
     if ("error" in data) {
@@ -47,7 +51,7 @@ const probeModels = async (input: ProbeModelsInput): Promise<ProbeModelsOutput> 
     return { models };
   } catch (error) {
     return {
-      error: error instanceof Error ? error.message : "Unknown error",
+      error: error instanceof Error ? error.message : m.settings_errorUnknown(),
       models: [],
     };
   }

@@ -15,7 +15,8 @@
     ".next",
     "coverage",
     "*.config.ts",
-    "*.config.js"
+    "*.config.js",
+    "**/src/paraglide/**"
   ],
   "overrides": [
     {

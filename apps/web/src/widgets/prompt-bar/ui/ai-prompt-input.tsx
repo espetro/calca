@@ -1,5 +1,6 @@
 import { type PropsWithChildren, forwardRef, useEffect, useRef } from "react";
 
+import { m } from "#/lib/i18n";
 import { Textarea } from "#/shared/components/ui/textarea";
 
 interface PromptInputContainerProps extends PropsWithChildren {
@@ -86,7 +87,7 @@ export const PromptInputTextarea = forwardRef<HTMLTextAreaElement, PromptInputTe
         placeholder={placeholder}
         disabled={disabled}
         rows={1}
-        aria-label="Prompt"
+        aria-label={m.promptbar_promptAriaLabel()}
         className={`flex-1 px-0 py-2 text-[15px] text-foreground placeholder:text-muted-foreground/70 bg-transparent outline-none resize-none leading-[22px] border-0 [field-sizing:fixed] focus-visible:ring-0 focus-visible:ring-offset-0 min-h-0 shadow-none focus-visible:border-0 ${className}`}
         style={{ maxHeight: 22 * 6 }}
       />

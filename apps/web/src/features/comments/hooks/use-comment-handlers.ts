@@ -13,6 +13,7 @@ import {
   activeCommentIterationIdAtom,
   commentCountAtom,
 } from "#/features/design/state/comment-atoms";
+import { m } from "#/lib/i18n";
 import type { Comment as CommentType, CommentMessage } from "#/shared/types";
 
 interface RevisionJob {
@@ -133,7 +134,7 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
           createdAt: Date.now(),
           id: `msg-${Date.now()}`,
           role: "calca",
-          text: result.comment || "Done! I've updated the design.",
+          text: result.comment || m.comments_doneMessage(),
         };
         const doneThread = [...latestThread, calcaResponse];
         updateComment(iterationId, commentId, {
@@ -158,7 +159,9 @@ export const useCommentHandlers = (runPipelineForFrame: RunPipelineForFrameFn) =
         const errorResponse: CommentMessage = {
           id: `msg-${Date.now()}`,
           role: "calca",
-          text: `Revision failed: ${error instanceof Error ? error.message : "Unknown error"}. Try again.`,
+          text: m.comments_revisionFailed({
+            error: error instanceof Error ? error.message : m.comments_unknownError(),
+          }),
           createdAt: Date.now(),
         };
         const errorThread = [...latestThread, errorResponse];

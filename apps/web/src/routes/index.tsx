@@ -47,6 +47,7 @@ import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, IMPORT_ACCEPT, readCanvasFile } from "#/lib/export";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
+import type { Comment } from "#/shared/types";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 import { ErrorBoundary } from "#/widgets/error-boundary";
 import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
@@ -169,6 +170,16 @@ function HomeInner() {
     [selectedIds, clipboard, groups],
   );
 
+  // Stable ctx dep for React Flow — an inline arrow re-fires RF's
+  // onSelectionChange sync on every render.
+  const handleClickComment = useCallback(
+    (comment: Comment, iterationId: string) => {
+      setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
+      setActiveCommentIterationId(comment ? iterationId : null);
+    },
+    [setActiveComment, setActiveCommentIterationId],
+  );
+
   useMountEffect(() => {
     hydrateGroups(setGroups);
   });
@@ -285,7 +296,7 @@ function HomeInner() {
         })
         .catch((error) => {
           console.error("Canvas import failed", error);
-          toast.error(error instanceof Error ? error.message : "Failed to import file");
+          toast.error(error instanceof Error ? error.message : m.route_importFailed());
         })
         .finally(() => {
           e.target.value = "";
@@ -315,14 +326,11 @@ function HomeInner() {
           setDraggingImageId={setDraggingImageId}
           pipelineStages={pipelineStages}
           onAddComment={setCommentDraft}
-          onClickComment={(comment, iterationId) => {
-            setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
-            setActiveCommentIterationId(comment ? iterationId : null);
-          }}
+          onClickComment={handleClickComment}
           onImageDrop={handleImageDrop}
           onContextMenu={handleContextMenu}
-          emptyTitle={m.canvas.emptyTitle()}
-          emptyDescription={m.canvas.emptyDescription()}
+          emptyTitle={m.canvas_emptyTitle()}
+          emptyDescription={m.canvas_emptyDescription()}
           toolbar={
             selectedIds.size === 1 ? (
               <ContextToolbar
@@ -441,12 +449,12 @@ function HomeInner() {
           />
           <div className="relative bg-glass-bg backdrop-blur-2xl rounded-2xl border border-glass-border shadow-glass p-8 w-[380px] max-w-[90vw] text-center">
             <h3 className="text-[15px] font-semibold text-foreground mb-2">
-              {m.dialog.resetTitle()}
+              {m.dialog_resetTitle()}
             </h3>
-            <p className="text-[13px] text-muted-foreground mb-6">{m.dialog.resetDescription()}</p>
+            <p className="text-[13px] text-muted-foreground mb-6">{m.dialog_resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
               <Button variant="ghost" onClick={() => setShowResetConfirm(false)}>
-                Cancel
+                {m.dialog_keepDesigning()}
               </Button>
               <Button
                 variant="destructive"
@@ -456,7 +464,7 @@ function HomeInner() {
                   setShowResetConfirm(false);
                 }}
               >
-                Clear Canvas
+                {m.dialog_clearCanvasConfirm()}
               </Button>
             </div>
           </div>

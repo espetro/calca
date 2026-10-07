@@ -1,5 +1,6 @@
 import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Label } from "#/shared/components/ui/label";
 import {
@@ -14,10 +15,10 @@ import { Switch } from "#/shared/components/ui/switch";
 
 import type { Settings, Theme } from "../types";
 
-const THEME_OPTIONS: { value: Theme; label: string; icon: React.ReactNode }[] = [
-  { icon: <Sun className="w-4 h-4" />, label: "Light", value: "light" },
-  { icon: <Moon className="w-4 h-4" />, label: "Dark", value: "dark" },
-  { icon: <Monitor className="w-4 h-4" />, label: "System", value: "system" },
+const THEME_OPTIONS: { value: Theme; label: () => string; icon: React.ReactNode }[] = [
+  { icon: <Sun className="w-4 h-4" />, label: m.settings_themeLight, value: "light" },
+  { icon: <Moon className="w-4 h-4" />, label: m.settings_themeDark, value: "dark" },
+  { icon: <Monitor className="w-4 h-4" />, label: m.settings_themeSystem, value: "system" },
 ];
 
 interface SettingsPersonalizationProps {
@@ -30,7 +31,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
     <div className="space-y-8">
       <div className="space-y-3">
         <h3 className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
-          Theme
+          {m.settings_themeHeading()}
         </h3>
         <div className="flex gap-2 p-1 bg-muted rounded-xl">
           {THEME_OPTIONS.map((option) => (
@@ -45,7 +46,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
               }`}
             >
               {option.icon}
-              {option.label}
+              {option.label()}
             </Button>
           ))}
         </div>
@@ -55,15 +56,15 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
         <div className="flex items-center gap-3">
           <Globe className="w-4 h-4 text-muted-foreground" />
           <div>
-            <Label className="text-[13px] text-foreground">Language</Label>
+            <Label className="text-[13px] text-foreground">{m.settings_languageLabel()}</Label>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              Choose your preferred language
+              {m.settings_languageDescription()}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
-            Coming soon
+            {m.settings_comingSoon()}
           </span>
           <Select disabled value="en">
             <SelectTrigger className="w-[120px] h-8">
@@ -80,22 +81,22 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
 
       <div className="space-y-4">
         <h3 className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
-          Appearance
+          {m.settings_appearanceHeading()}
         </h3>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Palette className="w-4 h-4 text-muted-foreground" />
             <div>
-              <Label className="text-[13px] text-foreground">Custom accent color</Label>
+              <Label className="text-[13px] text-foreground">{m.settings_accentColorLabel()}</Label>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Choose your preferred accent color
+                {m.settings_accentColorDescription()}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
-              Coming soon
+              {m.settings_comingSoon()}
             </span>
             <Switch disabled />
           </div>
@@ -105,15 +106,15 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
           <div className="flex items-center gap-3">
             <Type className="w-4 h-4 text-muted-foreground" />
             <div>
-              <Label className="text-[13px] text-foreground">Font size</Label>
+              <Label className="text-[13px] text-foreground">{m.settings_fontSizeLabel()}</Label>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Adjust the interface font size
+                {m.settings_fontSizeDescription()}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
-              Coming soon
+              {m.settings_comingSoon()}
             </span>
             <Switch disabled />
           </div>

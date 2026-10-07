@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 
 import type { SelectedImage } from "#/features/settings/types";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 interface ImagePillProps {
@@ -9,7 +10,7 @@ interface ImagePillProps {
 }
 
 export function ImagePill({ image, onRemove }: ImagePillProps) {
-  const filename = image.name || "image";
+  const filename = image.name || m.promptbar_imageFallback();
 
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-glass-bg/40 backdrop-blur-sm border border-glass-border/50 shadow-sm">
@@ -20,8 +21,8 @@ export function ImagePill({ image, onRemove }: ImagePillProps) {
         size="icon"
         onClick={() => onRemove(image.id)}
         className="ml-1 p-1 h-auto w-auto rounded hover:bg-foreground/10 transition-colors"
-        title="Remove image"
-        aria-label="Remove image"
+        title={m.promptbar_removeImage()}
+        aria-label={m.promptbar_removeImage()}
       >
         <X className="w-3.5 h-3.5 text-muted-foreground" />
       </Button>

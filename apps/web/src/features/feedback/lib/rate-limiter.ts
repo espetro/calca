@@ -8,6 +8,8 @@
  * 4. Spam detection: If 3+ submissions in 5 minutes, require 30-min cooldown
  */
 
+import { m } from "#/lib/i18n";
+
 const DEBOUNCE_MS = 2_000;
 const SESSION_MAX = 5;
 const DAILY_MAX = 10;
@@ -169,7 +171,7 @@ export function canSubmitFeedback(): RateLimitResult {
   if (lastSubmission > 0 && now - lastSubmission < DEBOUNCE_MS) {
     return {
       allowed: false,
-      reason: "Please wait before submitting again",
+      reason: m.feedback_errorRateWait(),
       retryAfterMs: DEBOUNCE_MS - (now - lastSubmission),
     };
   }
@@ -178,8 +180,7 @@ export function canSubmitFeedback(): RateLimitResult {
   if (sessionCount >= SESSION_MAX) {
     return {
       allowed: false,
-      reason:
-        "Maximum submissions reached for this session. Please refresh the page to submit more.",
+      reason: m.feedback_errorRateSessionMax(),
     };
   }
 
@@ -187,14 +188,14 @@ export function canSubmitFeedback(): RateLimitResult {
   if (dailyCount >= DAILY_MAX) {
     return {
       allowed: false,
-      reason: "Daily submission limit reached. Please try again tomorrow.",
+      reason: m.feedback_errorRateDailyMax(),
     };
   }
 
   if (isInSpamCooldown()) {
     return {
       allowed: false,
-      reason: "Too many submissions detected. Please wait 30 minutes before trying again.",
+      reason: m.feedback_errorRateSpam(),
       retryAfterMs: getSpamCooldownRemaining(),
     };
   }

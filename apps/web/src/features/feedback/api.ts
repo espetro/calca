@@ -1,3 +1,5 @@
+import { m } from "#/lib/i18n";
+
 import type { FeedbackFormData, FeedbackSubmitResult } from "./types";
 
 const FEEDBACK_PROXY_URL = import.meta.env.VITE_FEEDBACK_PROXY_URL || "http://localhost:3002";
@@ -39,8 +41,8 @@ export async function submitFeedback(data: FeedbackFormData): Promise<FeedbackSu
   }
 
   if (!response.ok) {
-    const text = await response.text().catch(() => "Unknown error");
-    throw new Error(text || `HTTP ${response.status}`);
+    const text = await response.text().catch(() => m.feedback_errorUnknown());
+    throw new Error(text || m.feedback_errorHttp({ status: response.status }));
   }
 
   return response.json() as Promise<FeedbackSubmitResult>;

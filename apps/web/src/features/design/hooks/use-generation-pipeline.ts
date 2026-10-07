@@ -12,6 +12,7 @@ import {
 import { canvasImagesAtom } from "#/features/design/state/images-atoms";
 import { deriveProviderFields } from "#/features/settings/lib/derive-provider-fields";
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { m } from "#/lib/i18n";
 import type { DesignIteration, GenerationGroup, Point } from "#/shared/types";
 
 import usePostRevision from "./api/use-post-revision";
@@ -167,7 +168,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         positions,
         prompt: sourceIteration.prompt || remixPrompt,
         providerType: derived.providerType || undefined,
-        remixOf: sourceIteration.label || "design",
+        remixOf: sourceIteration.label || m.design_defaultDesignLabel(),
         revision: remixPrompt,
         systemPrompt: settings.systemPrompt || undefined,
         unsplashKey: settings.unsplashKey || undefined,

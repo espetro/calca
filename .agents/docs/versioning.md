@@ -78,6 +78,14 @@ When ready to release:
 # Update versions and CHANGELOG.md
 bunx changeset version
 
+# Prerelease: bring non-English locales to parity (see i18n.md).
+# `en` is the only authored locale; this step is what ships other locales.
+export INTL_AI_MODEL=google/gemini-2.5-flash-lite INTL_AI_API_KEY=<key>
+bun run i18n:fill   # additive: fills missing/stale keys only
+bun run i18n:check  # must be clean before tagging
+git add apps/web/messages intl-ai.lock.d
+git commit -m "chore(i18n): locale parity for release"
+
 # Commit the version changes
 git add .
 git commit -m "chore: bump versions for 0.1.1"

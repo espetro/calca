@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { ChevronDownIcon } from "lucide-react";
 
 import { openSummaryIdAtom } from "#/features/design/state/generation-atoms";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 export function SummaryList() {
@@ -27,7 +28,7 @@ export function SummaryList() {
       {visibleGroups.map((group) => {
         const hasSummary = Boolean(group.summary);
         const isOpen = hasSummary && openId === group.id;
-        const title = group.summary?.title ?? "Generating summary...";
+        const title = group.summary?.title ?? m.design_summaryGenerating();
 
         return (
           <div key={group.id}>

@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import { fileURLToPath } from "url";
 
+import { paraglide } from "@inlang/paraglide-js-adapter-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
@@ -37,7 +38,15 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react(), tanstackRouter(), tailwindcss()],
+  plugins: [
+    paraglide({
+      project: "./project.inlang",
+      outdir: "./src/paraglide",
+    }),
+    react(),
+    tanstackRouter(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: [{ find: "#", replacement: resolve(__dirname, "./src") }],
   },

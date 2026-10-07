@@ -307,6 +307,7 @@ Three built-in presets: `ui-ux`, `marketing`, `brand`
 - **POC Learnings**: [.agents/docs/poc-learnings.md](.agents/docs/poc-learnings.md) — Architecture decisions from prototyping
 - **ADRs**: [.agents/docs/adrs/](.agents/docs/adrs/) — Architecture Decision Records (numbered `NNNN-description.md`; latest: `0008-agent-harness-taxonomy`)
 - **Versioning**: [.agents/docs/versioning.md](.agents/docs/versioning.md) — Changesets + conventional commits
+- **i18n**: [.agents/docs/i18n.md](.agents/docs/i18n.md) — intl-ai translation pipeline, tier model, release parity gate
 - **Desktop releases**: [.agents/docs/desktop-releases.md](.agents/docs/desktop-releases.md) — Distribution channels, signing, auto-update
 
 <!-- BEGIN:turborepo-agent-rules -->

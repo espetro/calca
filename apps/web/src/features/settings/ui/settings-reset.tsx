@@ -2,6 +2,7 @@ import { useSetAtom } from "jotai";
 import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import {
   Dialog,
@@ -24,18 +25,15 @@ export function SettingsReset() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium">Reset to Factory Settings</h3>
-        <p className="text-sm text-muted-foreground">
-          Clear all settings, canvas data, and preferences. This action cannot be undone.
-        </p>
+        <h3 className="text-lg font-medium">{m.settings_resetTitle()}</h3>
+        <p className="text-sm text-muted-foreground">{m.settings_resetDescription()}</p>
       </div>
       <Separator />
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <Label className="text-sm font-medium">Reset Everything</Label>
+          <Label className="text-sm font-medium">{m.settings_resetEverythingLabel()}</Label>
           <p className="text-[11px] text-muted-foreground">
-            This will permanently delete all your settings, canvas designs, API keys, and
-            preferences.
+            {m.settings_resetEverythingDescription()}
           </p>
         </div>
         <Button
@@ -46,22 +44,19 @@ export function SettingsReset() {
           disabled={isResetting}
         >
           <RotateCcw className="size-4 mr-2" />
-          Reset
+          {m.settings_resetButton()}
         </Button>
       </div>
 
       <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reset to Factory Settings</DialogTitle>
-            <DialogDescription>
-              This will permanently delete all your settings, canvas designs, API keys, and
-              preferences. The app will reload with default settings.
-            </DialogDescription>
+            <DialogTitle>{m.settings_resetTitle()}</DialogTitle>
+            <DialogDescription>{m.settings_resetConfirmDescription()}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowConfirm(false)} disabled={isResetting}>
-              Cancel
+              {m.settings_cancel()}
             </Button>
             <Button
               variant="destructive"
@@ -71,7 +66,7 @@ export function SettingsReset() {
               }}
               disabled={isResetting}
             >
-              {isResetting ? "Resetting..." : "Reset"}
+              {isResetting ? m.settings_resetting() : m.settings_resetButton()}
             </Button>
           </DialogFooter>
         </DialogContent>

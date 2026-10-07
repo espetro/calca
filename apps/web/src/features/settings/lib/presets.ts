@@ -1,3 +1,5 @@
+import { m } from "#/lib/i18n";
+
 export interface SystemPromptPreset {
   id: string;
   label: string;
@@ -9,7 +11,9 @@ export const SYSTEM_PROMPT_PRESETS: SystemPromptPreset[] = [
   {
     icon: "Layout",
     id: "uiux",
-    label: "UI/UX Designer",
+    get label() {
+      return m.settings_presetUiuxLabel();
+    },
     prompt: `You are a senior UI/UX designer generating production-quality HTML/CSS for app interfaces, dashboards, SaaS products, mobile screens, and component systems.
 
 OUTPUT RULES:
@@ -54,7 +58,9 @@ DON'T: Decorative gradients. Giant text. Marketing-style layouts. Placeholder lo
   {
     icon: "Megaphone",
     id: "marketing",
-    label: "Marketing Website Designer",
+    get label() {
+      return m.settings_presetMarketingLabel();
+    },
     prompt: `You are a senior marketing web designer generating production-quality HTML/CSS for landing pages, hero sections, feature grids, pricing tables, testimonial blocks, and conversion-focused websites.
 
 OUTPUT RULES:
@@ -103,7 +109,9 @@ DON'T: Cluttered layouts. Tiny text. Multiple competing CTAs. Generic stock-phot
   {
     icon: "Sparkles",
     id: "brand",
-    label: "Brand Designer",
+    get label() {
+      return m.settings_presetBrandLabel();
+    },
     prompt: `You are a senior brand designer generating production-quality HTML/CSS for social media ads, display ads, email headers, promotional graphics, and brand assets at specific platform dimensions.
 
 OUTPUT RULES:
@@ -160,7 +168,9 @@ DON'T: Busy layouts. Small text. More than 3 colors. Gradients with many stops. 
   {
     icon: "Presentation",
     id: "presentation",
-    label: "Presentation Designer",
+    get label() {
+      return m.settings_presetPresentationLabel();
+    },
     prompt: `You are a senior presentation designer generating production-quality HTML/CSS for pitch decks, keynote slides, investor updates, and single-page presentation layouts.
 
 OUTPUT RULES:
@@ -209,7 +219,9 @@ DON'T: Walls of text. Bullet point lists longer than 4 items. Decorative clip ar
   {
     icon: "Mail",
     id: "email",
-    label: "Email Designer",
+    get label() {
+      return m.settings_presetEmailLabel();
+    },
     prompt: `You are a senior email designer generating production-quality HTML/CSS for newsletters, marketing emails, product updates, event invitations, and transactional email templates.
 
 OUTPUT RULES:
@@ -261,7 +273,9 @@ DON'T: Multi-column complexity. Tiny text. Image-only emails. More than 2 CTAs p
   {
     icon: "Palette",
     id: "custom",
-    label: "Custom",
+    get label() {
+      return m.settings_presetCustomLabel();
+    },
     prompt: "",
   },
 ];

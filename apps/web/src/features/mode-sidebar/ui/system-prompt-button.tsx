@@ -5,6 +5,7 @@ import { Ref, useCallback, useRef } from "react";
 
 import { Settings } from "#/features/settings";
 import { settingsAtom, updateSettingsAtom } from "#/features/settings/state/settings-atoms";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Textarea } from "#/shared/components/ui/textarea";
 
@@ -31,18 +32,16 @@ const SystemPromptDialog = ({ systemPrompt, ref }: SystemPromptDialogProps) => {
     >
       <div className="flex items-center gap-2 mb-3">
         <MessageSquare className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-semibold text-foreground">System Prompt</span>
+        <span className="text-sm font-semibold text-foreground">{m.modesidebar_systemPrompt()}</span>
       </div>
 
       <Textarea
         value={systemPrompt}
         onChange={handleChange}
-        placeholder='Add custom instructions for the AI designer...\n\ne.g. "You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy..."'
+        placeholder={m.modesidebar_systemPromptPlaceholder()}
         className="w-full h-32 px-4 py-3 rounded-xl bg-card/70 border border-border/50 text-[13px] text-foreground placeholder:text-muted-foreground outline-none focus:border-ring/60 focus:ring-1 focus:ring-ring/30 resize-y font-mono"
       />
-      <p className="mt-2 text-[10px] text-muted-foreground">
-        Prepended to every generation. Use for brand guidelines, design skills, or style overrides.
-      </p>
+      <p className="mt-2 text-[10px] text-muted-foreground">{m.modesidebar_systemPromptDescription()}</p>
     </div>
   );
 };
@@ -72,7 +71,7 @@ export function SystemPromptButton() {
         variant="ghost"
         size="icon"
         onClick={handleToggle}
-        aria-label="System Prompt"
+        aria-label={m.modesidebar_systemPrompt()}
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
           isOpen || hasCustomPrompt
             ? "bg-primary/90 text-primary-foreground"

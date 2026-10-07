@@ -1,5 +1,6 @@
 import { Dices, Minus, Plus } from "lucide-react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
@@ -60,10 +61,10 @@ export function VariationsButton({
                 }
               : undefined
           }
-          title="Number of design variations to generate"
+          title={m.promptbar_variationsTooltip()}
         >
           <Dices className="w-3.5 h-3.5" />
-          <span>Variations</span>
+          <span>{m.promptbar_variations()}</span>
           {conceptCount !== 1 && (
             <span className="bg-foreground/10 px-1.5 py-0.5 rounded text-[10px]">
               {conceptCount}
@@ -78,13 +79,13 @@ export function VariationsButton({
         className="w-[180px] bg-glass-bg/40 backdrop-blur-3xl rounded-[20px] border border-glass-border/50 shadow-glass p-4"
       >
         <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-3">
-          Variations per prompt
+          {m.promptbar_variationsPerPrompt()}
         </div>
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Decrease variations"
+            aria-label={m.promptbar_decreaseVariations()}
             onClick={() => onConceptCountChange(Math.max(1, conceptCount - 1))}
             disabled={conceptCount <= 1}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-glass-bg/60 hover:bg-glass-bg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -100,7 +101,7 @@ export function VariationsButton({
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Increase variations"
+            aria-label={m.promptbar_increaseVariations()}
             onClick={() => onConceptCountChange(Math.min(5, conceptCount + 1))}
             disabled={conceptCount >= 5}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-glass-bg/60 hover:bg-glass-bg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

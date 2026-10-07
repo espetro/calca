@@ -10,12 +10,14 @@ import ReactDOM from "react-dom/client";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { canvasImagesAtom } from "#/features/design/state/images-atoms";
 import { feedbackModalOpenAtom } from "#/features/feedback/store";
+import { initLocale } from "#/lib/i18n";
 import { ensureApiWorker } from "#/lib/sw";
 
 import { routeTree } from "./routeTree.gen";
 
 await createLogger(import.meta.env.LOG_LEVEL);
 initAnalytics();
+initLocale();
 
 // Static deployments host /api inside a service worker — start registering
 // early so it is active before the first API call.

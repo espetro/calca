@@ -1,61 +1,67 @@
-import messages from "./messages/en.json";
+import * as m from "#/paraglide/messages.js";
+import {
+  isAvailableLanguageTag,
+  languageTag,
+  onSetLanguageTag,
+  setLanguageTag,
+  sourceLanguageTag,
+} from "#/paraglide/runtime.js";
+import type { AvailableLanguageTag } from "#/paraglide/runtime.js";
 
-export const m = {
-  banner: {
-    addApiKey: () => messages.banner.addApiKey,
-  },
-  canvas: {
-    emptyTitle: () => messages.canvas.emptyTitle,
-    emptyDescription: () => messages.canvas.emptyDescription,
-  },
-  dialog: {
-    resetTitle: () => messages.dialog.resetTitle,
-    resetDescription: () => messages.dialog.resetDescription,
-    keepDesigning: () => messages.dialog.keepDesigning,
-    clearCanvasConfirm: () => messages.dialog.clearCanvasConfirm,
-  },
-  onboarding: {
-    welcomeTitle: () => messages.onboarding.welcomeTitle,
-    welcomeDescription: () => messages.onboarding.welcomeDescription,
-    apiKeyLabel: () => messages.onboarding.apiKeyLabel,
-    apiKeyRequired: () => messages.onboarding.apiKeyRequired,
-    apiKeyPlaceholder: () => messages.onboarding.apiKeyPlaceholder,
-    show: () => messages.onboarding.show,
-    hide: () => messages.onboarding.hide,
-    getKey: () => messages.onboarding.getKey,
-    imageSources: () => messages.onboarding.imageSources,
-    imageSourcesOptional: () => messages.onboarding.imageSourcesOptional,
-    imageSourcesDescription: () => messages.onboarding.imageSourcesDescription,
-    geminiLabel: () => messages.onboarding.geminiLabel,
-    dalleLabel: () => messages.onboarding.dalleLabel,
-    unsplashLabel: () => messages.onboarding.unsplashLabel,
-    getKeyShort: () => messages.onboarding.getKeyShort,
-    skip: () => messages.onboarding.skip,
-    getStarted: () => messages.onboarding.getStarted,
-    privacyNote: () => messages.onboarding.privacyNote,
-  },
-  toolbar: {
-    importDesign: () => messages.toolbar.importDesign,
-    exportDesign: () => messages.toolbar.exportDesign,
-    clearCanvas: () => messages.toolbar.clearCanvas,
-  },
-  tour: {
-    step1Title: () => messages.tour.step1Title,
-    step1Desc: () => messages.tour.step1Desc,
-    step2Title: () => messages.tour.step2Title,
-    step2Desc: () => messages.tour.step2Desc,
-    step3Title: () => messages.tour.step3Title,
-    step3Desc: () => messages.tour.step3Desc,
-    step4Title: () => messages.tour.step4Title,
-    step4Desc: () => messages.tour.step4Desc,
-    step5Title: () => messages.tour.step5Title,
-    step5Desc: () => messages.tour.step5Desc,
-    step6Title: () => messages.tour.step6Title,
-    step6Desc: () => messages.tour.step6Desc,
-    waitingMessage: () => messages.tour.waitingMessage,
-    skipTour: () => messages.tour.skipTour,
-    stepLabel: () => messages.tour.stepLabel,
-    done: () => messages.tour.done,
-    next: () => messages.tour.next,
-  },
+export { m };
+export type { AvailableLanguageTag };
+
+const LOCALE_STORAGE_KEY = "calca-locale";
+
+// Locale convention: all language tags are lowercase — `pt-br`, `zh-hans`,
+// never `pt-BR`. `project.inlang/settings.json` must follow the same rule when
+// new locales are added.
+
+const normalizeTag = (tag: string): string => tag.toLowerCase();
+
+const matchSupported = (tag: string): AvailableLanguageTag | undefined => {
+  const normalized = normalizeTag(tag);
+  if (isAvailableLanguageTag(normalized)) return normalized;
+  // Region fall-back: `pt-br` → `pt`.
+  const base = normalized.split("-")[0];
+  if (base && isAvailableLanguageTag(base)) return base;
+  return undefined;
+};
+
+const resolveLocale = (): AvailableLanguageTag => {
+  try {
+    const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
+    const match = stored && matchSupported(stored);
+    if (match) return match;
+  } catch {
+    // localStorage unavailable (private mode, SSR) — fall through.
+  }
+  for (const nav of navigator.languages ?? [navigator.language]) {
+    const match = matchSupported(nav);
+    if (match) return match;
+  }
+  return sourceLanguageTag;
+};
+
+export const getLocale = languageTag;
+
+/**
+ * Explicit user override — persists to localStorage and syncs `<html lang>`
+ * (via the listener registered in `initLocale`).
+ */
+export const setLocale = (tag: AvailableLanguageTag): void => {
+  setLanguageTag(normalizeTag(tag) as AvailableLanguageTag);
+  localStorage.setItem(LOCALE_STORAGE_KEY, languageTag());
+};
+
+/**
+ * Resolve the locale once at boot: stored override → navigator.languages →
+ * source tag. Registers the (single) `onSetLanguageTag` listener that keeps
+ * `<html lang>` in sync.
+ */
+export const initLocale = (): void => {
+  onSetLanguageTag((tag) => {
+    document.documentElement.lang = tag;
+  });
+  setLanguageTag(resolveLocale());
 };

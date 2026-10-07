@@ -59,6 +59,7 @@
     "@app/core": "workspace:*",
     "@app/server": "workspace:*",
     "@app/shared": "workspace:*",
+    "@inlang/plugin-message-format": "^2.2.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-router": "^1.117.0",
     "@tanstack/router-plugin": "^1.117.0",

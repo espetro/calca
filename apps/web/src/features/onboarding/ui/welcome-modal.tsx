@@ -3,6 +3,7 @@
 
 import { Download, LayoutGrid, Sparkles } from "lucide-react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import {
   Dialog,
@@ -28,15 +29,21 @@ interface WelcomeModalProps {
 const features = [
   {
     icon: Sparkles,
-    text: "Design with AI — Generate beautiful HTML/CSS concepts from natural language",
+    get text() {
+      return m.onboarding_featureDesignAi();
+    },
   },
   {
     icon: LayoutGrid,
-    text: "Compare variations — See up to 4 different designs side by side",
+    get text() {
+      return m.onboarding_featureCompare();
+    },
   },
   {
     icon: Download,
-    text: "Export anywhere — Copy code or save as images",
+    get text() {
+      return m.onboarding_featureExport();
+    },
   },
 ];
 
@@ -78,11 +85,10 @@ export function WelcomeModal({
       >
         <DialogHeader className="gap-3">
           <DialogTitle className="text-2xl font-semibold tracking-tight">
-            Welcome to Calca!
+            {m.onboarding_welcomeModalTitle()}
           </DialogTitle>
           <DialogDescription className="text-base leading-relaxed">
-            Your AI-powered design companion. Describe what you want, and watch as beautiful
-            concepts come to life on your canvas.
+            {m.onboarding_welcomeModalDescription()}
           </DialogDescription>
         </DialogHeader>
 
@@ -99,9 +105,9 @@ export function WelcomeModal({
 
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button variant="outline" onClick={handleSkip}>
-            Skip for now
+            {m.onboarding_skip()}
           </Button>
-          <Button onClick={handleTakeTour}>Take tour</Button>
+          <Button onClick={handleTakeTour}>{m.onboarding_takeTour()}</Button>
         </div>
       </DialogContent>
     </Dialog>
