@@ -1,5 +1,6 @@
 import { Dices, Minus, Plus } from "lucide-react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
@@ -60,10 +61,10 @@ export function VariationsButton({
                 }
               : undefined
           }
-          title="Number of design variations to generate"
+          title={m.promptbar_variationsTooltip()}
         >
           <Dices className="w-3.5 h-3.5" />
-          <span>Variations</span>
+          <span>{m.promptbar_variations()}</span>
           {conceptCount !== 1 && (
             <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px]">{conceptCount}</span>
           )}
@@ -76,13 +77,13 @@ export function VariationsButton({
         className="w-[180px] bg-white/20 backdrop-blur-3xl rounded-[20px] border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-1px_0_rgba(255,255,255,0.15)] p-4"
       >
         <div className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-3">
-          Variations per prompt
+          {m.promptbar_variationsPerPrompt()}
         </div>
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Decrease variations"
+            aria-label={m.promptbar_decreaseVariations()}
             onClick={() => onConceptCountChange(Math.max(1, conceptCount - 1))}
             disabled={conceptCount <= 1}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -98,7 +99,7 @@ export function VariationsButton({
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Increase variations"
+            aria-label={m.promptbar_increaseVariations()}
             onClick={() => onConceptCountChange(Math.min(5, conceptCount + 1))}
             disabled={conceptCount >= 5}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 hover:bg-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

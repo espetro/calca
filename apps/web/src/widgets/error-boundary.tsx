@@ -4,6 +4,7 @@ import { getLogger } from "@app/logger";
 import { AlertTriangle } from "lucide-react";
 import { Component, ComponentType, ErrorInfo, PropsWithChildren, ReactNode } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 interface ErrorBoundaryProps extends PropsWithChildren {
@@ -50,11 +51,13 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
             <AlertTriangle className="w-8 h-8 text-red-500" />
           </div>
-          <h2 className="text-lg font-semibold text-foreground">Something went wrong</h2>
+          <h2 className="text-lg font-semibold text-foreground">{m.error_title()}</h2>
           <p className="max-w-sm text-sm text-muted-foreground">
-            {this.state.error?.message ?? "An unexpected error occurred."}
+            {this.state.error?.message ?? m.error_unexpected()}
           </p>
-          <Button onClick={() => this.setState({ error: null, hasError: false })}>Try again</Button>
+          <Button onClick={() => this.setState({ error: null, hasError: false })}>
+            {m.error_tryAgain()}
+          </Button>
         </div>
       );
     }

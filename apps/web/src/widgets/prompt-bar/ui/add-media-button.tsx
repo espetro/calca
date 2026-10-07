@@ -1,6 +1,7 @@
 import { ImageIcon } from "lucide-react";
 import { useRef } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 interface AddMediaButtonProps {
@@ -30,7 +31,7 @@ export function AddMediaButton({ onFileSelect, disabled = false }: AddMediaButto
       size="sm"
       onClick={handleClick}
       disabled={disabled}
-      aria-label="Add media"
+      aria-label={m.promptbar_addMedia()}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all ${
         disabled
           ? "bg-gray-100/50 text-gray-400 cursor-not-allowed border border-gray-200/50"

@@ -3035,3 +3035,894 @@ export const export_previewTitle = (params) => `${params.format} Export`
 /* @__NO_SIDE_EFFECTS__ */
 export const export_failed = () => `Export failed`
 
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const route_importFailed = () => `Failed to import file`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const error_title = () => `Something went wrong`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const error_unexpected = () => `An unexpected error occurred.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const error_tryAgain = () => `Try again`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const toolbar_noModel = () => `No model selected`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const toolbar_menu = () => `Menu`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_availablePrefix = () => `Update`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_availableSuffix = () => `available`
+
+
+
+
+	
+/**
+ * @param {{ version: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_currentVersion = (params) => `(current: v${params.version})`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_downloading = () => `Downloading update…`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_readyToInstall = () => `Ready to install`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_download = () => `Download`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_restartInstall = () => `Restart & Install`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_dismiss = () => `Dismiss update notification`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_unavailable = () => `Updater not available`
+
+
+
+
+	
+/**
+ * @param {{ method: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const update_rpcNotFound = (params) => `RPC method ${params.method} not found`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_send = () => `Send (Enter)`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_generating = () => `Generating...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_cancel = () => `Cancel (Esc)`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_remixing = () => `Remixing`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_remixFallback = () => `design`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_errorImageTooLarge = () => `Image must be 5MB or smaller`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_errorInvalidImage = () => `Invalid image file`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_visionWarning = () => `This model may not support image input`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_placeholderRemix = () => `Describe changes to make…`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_placeholder = () => `Describe a design...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_promptAriaLabel = () => `Prompt`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_ideateMode = () => `Ideate mode`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_buildMode = () => `Build mode`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_ideate = () => `◈ Ideate`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_build = () => `✦ Build`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_addMedia = () => `Add media`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_generationMode = () => `Generation mode`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_quick = () => `Quick`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_critique = () => `Critique`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_critiqueLoop = () => `Critique Loop`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_critiqueLoopDesc = () => `Sequential generation with AI feedback between each frame. Each design learns from the previous one.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_quickMode = () => `Quick Mode`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_quickModeDesc = () => `Generate all designs in parallel without critique. Faster but less refined.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_imageFallback = () => `image`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_removeImage = () => `Remove image`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_variationsTooltip = () => `Number of design variations to generate`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_variations = () => `Variations`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_variationsPerPrompt = () => `Variations per prompt`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_decreaseVariations = () => `Decrease variations`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_increaseVariations = () => `Increase variations`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_title = () => `Prompt Library`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_catUi = () => `UI Components`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_catPages = () => `Full Pages`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_catMarketing = () => `Marketing`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_usePrompt = () => `Use prompt →`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_copied = () => `Copied ✓`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_copy = () => `Copy`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_toastLabel = () => `Toast Notifications`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_toastText = () => `A set of toast notification components — success, error, warning, and info variants. Stacked layout with icons, message text, and dismiss buttons. Rounded corners, subtle shadows.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_pricingCardsLabel = () => `Pricing Cards`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_pricingCardsText = () => `Three pricing tier cards side by side — Starter, Pro, Enterprise. Each with feature list, price, and CTA button. The middle card should be highlighted as the recommended option.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_loginFormLabel = () => `Login Form`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_loginFormText = () => `A modern login form with email and password fields, 'Remember me' checkbox, forgot password link, and a primary sign-in button. Include social login options (Google, GitHub).`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_settingsPanelLabel = () => `Settings Panel`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_settingsPanelText = () => `An account settings panel with profile section (avatar, name, email), notification toggles, theme selector (light/dark), and a danger zone with delete account button.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_navBarLabel = () => `Navigation Bar`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_navBarText = () => `A responsive top navigation bar with logo, nav links (Home, Features, Pricing, Docs), search input, and a user avatar dropdown. Clean and minimal.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_modalDialogLabel = () => `Modal Dialog`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_modalDialogText = () => `A confirmation modal dialog with a warning icon, title, description text, and two action buttons (Cancel and Confirm). Semi-transparent backdrop overlay.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_heroSectionLabel = () => `SaaS Hero Section`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_heroSectionText = () => `A SaaS landing page hero section with a large headline, subheadline, email capture input with CTA button, and a product screenshot or abstract illustration area below. Trust badges at the bottom.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_dashboardLabel = () => `Dashboard Layout`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_dashboardText = () => `An analytics dashboard with a sidebar nav, top stats row (4 metric cards), a large area chart, and a recent activity table below. Dark or light theme, clean data visualization.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_pricingPageLabel = () => `Pricing Page`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_pricingPageText = () => `A full pricing page with a toggle for monthly/annual billing, three plan cards with feature comparison lists, an FAQ section below, and an enterprise CTA banner.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_blogPostLabel = () => `Blog Post Layout`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_blogPostText = () => `A blog post page with article title, author avatar and byline, publish date, featured image, body text with headings and paragraphs, and a related posts section at the bottom.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_socialCardLabel = () => `Social Media Card`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_socialCardText = () => `A social media announcement card (1200x630 ratio) for a product launch. Bold headline, product name, a brief tagline, and a gradient or solid color background. Eye-catching and shareable.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_emailHeaderLabel = () => `Email Header`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_emailHeaderText = () => `An email header/hero section for a product newsletter. Company logo, bold announcement headline, short description, and a prominent CTA button. Works at 600px width.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_bannerAdLabel = () => `Banner Ad`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_bannerAdText = () => `A web banner ad (728x90 leaderboard format) for a SaaS product. Product name, value proposition in one line, and a 'Try Free' CTA button. Clean, not cluttered.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_featureSectionLabel = () => `Feature Section`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptlib_featureSectionText = () => `A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above.`
+

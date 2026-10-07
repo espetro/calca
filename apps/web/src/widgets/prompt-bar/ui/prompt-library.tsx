@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 interface PromptLibraryProps {
@@ -14,78 +15,84 @@ interface PromptItem {
   label: string;
 }
 
-const CATEGORIES: { name: string; icon: string; prompts: PromptItem[] }[] = [
+interface PromptCategory {
+  name: string;
+  icon: string;
+  prompts: PromptItem[];
+}
+
+const getCategories = (): PromptCategory[] => [
   {
     icon: "◻",
-    name: "UI Components",
+    name: m.promptlib_catUi(),
     prompts: [
       {
-        label: "Toast Notifications",
-        text: "A set of toast notification components — success, error, warning, and info variants. Stacked layout with icons, message text, and dismiss buttons. Rounded corners, subtle shadows.",
+        label: m.promptlib_toastLabel(),
+        text: m.promptlib_toastText(),
       },
       {
-        label: "Pricing Cards",
-        text: "Three pricing tier cards side by side — Starter, Pro, Enterprise. Each with feature list, price, and CTA button. The middle card should be highlighted as the recommended option.",
+        label: m.promptlib_pricingCardsLabel(),
+        text: m.promptlib_pricingCardsText(),
       },
       {
-        label: "Login Form",
-        text: "A modern login form with email and password fields, 'Remember me' checkbox, forgot password link, and a primary sign-in button. Include social login options (Google, GitHub).",
+        label: m.promptlib_loginFormLabel(),
+        text: m.promptlib_loginFormText(),
       },
       {
-        label: "Settings Panel",
-        text: "An account settings panel with profile section (avatar, name, email), notification toggles, theme selector (light/dark), and a danger zone with delete account button.",
+        label: m.promptlib_settingsPanelLabel(),
+        text: m.promptlib_settingsPanelText(),
       },
       {
-        label: "Navigation Bar",
-        text: "A responsive top navigation bar with logo, nav links (Home, Features, Pricing, Docs), search input, and a user avatar dropdown. Clean and minimal.",
+        label: m.promptlib_navBarLabel(),
+        text: m.promptlib_navBarText(),
       },
       {
-        label: "Modal Dialog",
-        text: "A confirmation modal dialog with a warning icon, title, description text, and two action buttons (Cancel and Confirm). Semi-transparent backdrop overlay.",
+        label: m.promptlib_modalDialogLabel(),
+        text: m.promptlib_modalDialogText(),
       },
     ],
   },
   {
     icon: "▣",
-    name: "Full Pages",
+    name: m.promptlib_catPages(),
     prompts: [
       {
-        label: "SaaS Hero Section",
-        text: "A SaaS landing page hero section with a large headline, subheadline, email capture input with CTA button, and a product screenshot or abstract illustration area below. Trust badges at the bottom.",
+        label: m.promptlib_heroSectionLabel(),
+        text: m.promptlib_heroSectionText(),
       },
       {
-        label: "Dashboard Layout",
-        text: "An analytics dashboard with a sidebar nav, top stats row (4 metric cards), a large area chart, and a recent activity table below. Dark or light theme, clean data visualization.",
+        label: m.promptlib_dashboardLabel(),
+        text: m.promptlib_dashboardText(),
       },
       {
-        label: "Pricing Page",
-        text: "A full pricing page with a toggle for monthly/annual billing, three plan cards with feature comparison lists, an FAQ section below, and an enterprise CTA banner.",
+        label: m.promptlib_pricingPageLabel(),
+        text: m.promptlib_pricingPageText(),
       },
       {
-        label: "Blog Post Layout",
-        text: "A blog post page with article title, author avatar and byline, publish date, featured image, body text with headings and paragraphs, and a related posts section at the bottom.",
+        label: m.promptlib_blogPostLabel(),
+        text: m.promptlib_blogPostText(),
       },
     ],
   },
   {
     icon: "◈",
-    name: "Marketing",
+    name: m.promptlib_catMarketing(),
     prompts: [
       {
-        label: "Social Media Card",
-        text: "A social media announcement card (1200x630 ratio) for a product launch. Bold headline, product name, a brief tagline, and a gradient or solid color background. Eye-catching and shareable.",
+        label: m.promptlib_socialCardLabel(),
+        text: m.promptlib_socialCardText(),
       },
       {
-        label: "Email Header",
-        text: "An email header/hero section for a product newsletter. Company logo, bold announcement headline, short description, and a prominent CTA button. Works at 600px width.",
+        label: m.promptlib_emailHeaderLabel(),
+        text: m.promptlib_emailHeaderText(),
       },
       {
-        label: "Banner Ad",
-        text: "A web banner ad (728x90 leaderboard format) for a SaaS product. Product name, value proposition in one line, and a 'Try Free' CTA button. Clean, not cluttered.",
+        label: m.promptlib_bannerAdLabel(),
+        text: m.promptlib_bannerAdText(),
       },
       {
-        label: "Feature Section",
-        text: "A product feature section with three columns. Each column has an icon, feature title, and short description. Clean grid layout with consistent spacing. Include a section headline above.",
+        label: m.promptlib_featureSectionLabel(),
+        text: m.promptlib_featureSectionText(),
       },
     ],
   },
@@ -97,6 +104,8 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
   if (!open) {
     return null;
   }
+
+  const categories = getCategories();
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -120,7 +129,7 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200/30 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-base">💡</span>
-            <h2 className="text-[15px] font-semibold text-gray-800">Prompt Library</h2>
+            <h2 className="text-[15px] font-semibold text-gray-800">{m.promptlib_title()}</h2>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-4 h-4" />
@@ -129,7 +138,7 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <div key={cat.name}>
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-sm opacity-60">{cat.icon}</span>
@@ -153,10 +162,10 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                     </div>
                     <div className="flex items-center gap-1.5 mt-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
                       <Button variant="default" size="sm" onClick={() => handleUse(p.text)}>
-                        Use prompt →
+                        {m.promptlib_usePrompt()}
                       </Button>
                       <Button variant="ghost" size="sm" onClick={() => handleCopy(p.text)}>
-                        {copied === p.text ? "Copied ✓" : "Copy"}
+                        {copied === p.text ? m.promptlib_copied() : m.promptlib_copy()}
                       </Button>
                     </div>
                   </div>

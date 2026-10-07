@@ -3,6 +3,7 @@ import { useWindowEvent } from "@mantine/hooks";
 import { RefreshCw, Zap } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
@@ -73,10 +74,10 @@ export function CritiqueModeButton({
               ? { background: "var(--mode-quick-bg)", color: "var(--mode-quick-fg)" }
               : { background: "var(--mode-critique-bg)", color: "var(--mode-critique-fg)" }
           }
-          title="Generation mode"
+          title={m.promptbar_generationMode()}
         >
           {quickMode ? <Zap className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
-          <span>{quickMode ? "Quick" : "Critique"}</span>
+          <span>{quickMode ? m.promptbar_quick() : m.promptbar_critique()}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -86,7 +87,7 @@ export function CritiqueModeButton({
         className="w-[260px] bg-background/80 backdrop-blur-3xl rounded-[20px] border border-border/50 shadow-lg p-3"
       >
         <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">
-          Generation mode
+          {m.promptbar_generationMode()}
         </div>
         <div className="space-y-2">
           <Button
@@ -128,14 +129,13 @@ export function CritiqueModeButton({
                 className="text-[12px] font-semibold"
                 style={{ color: "var(--mode-critique-fg)" }}
               >
-                Critique Loop
+                {m.promptbar_critiqueLoop()}
               </div>
               <div
                 className="text-[10px] leading-relaxed mt-0.5"
                 style={{ color: "var(--mode-critique-fg)", opacity: 0.7 }}
               >
-                Sequential generation with AI feedback between each frame. Each design learns from
-                the previous one.
+                {m.promptbar_critiqueLoopDesc()}
               </div>
             </div>
           </Button>
@@ -166,13 +166,13 @@ export function CritiqueModeButton({
             </div>
             <div className="flex-1 min-w-0 whitespace-normal">
               <div className="text-[12px] font-semibold" style={{ color: "var(--mode-quick-fg)" }}>
-                Quick Mode
+                {m.promptbar_quickMode()}
               </div>
               <div
                 className="text-[10px] leading-relaxed mt-0.5"
                 style={{ color: "var(--mode-quick-fg)", opacity: 0.7 }}
               >
-                Generate all designs in parallel without critique. Faster but less refined.
+                {m.promptbar_quickModeDesc()}
               </div>
             </div>
           </Button>
