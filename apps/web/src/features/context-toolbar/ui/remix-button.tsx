@@ -42,7 +42,7 @@ export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-gray-600 hover:bg-gray-100/80 hover:text-gray-800 transition-all duration-200 rounded-xl group"
+          className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-muted-foreground hover:bg-foreground/5 hover:text-foreground transition-all duration-200 rounded-xl group"
           data-tour="remix-button"
         >
           <Shuffle className="w-4 h-4" />
@@ -55,9 +55,9 @@ export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
         align="center"
         side="bottom"
         sideOffset={8}
-        className="w-[240px] bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] p-1.5 rounded-xl flex flex-col"
+        className="w-[240px] bg-glass-bg backdrop-blur-2xl border border-glass-border shadow-glass p-1.5 rounded-xl flex flex-col"
       >
-        <div className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+        <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
           Quick remix
         </div>
         {REMIX_PRESETS.map((preset) => (
@@ -67,18 +67,18 @@ export function RemixButton({ iteration, onRemix }: RemixButtonProps) {
               onRemix(iteration, preset.prompt);
               setOpen(false);
             }}
-            className="w-full rounded-lg text-[13px] text-gray-700 hover:bg-black/5 cursor-pointer text-left px-2 py-1.5"
+            className="w-full rounded-lg text-[13px] text-foreground hover:bg-foreground/5 cursor-pointer text-left px-2 py-1.5"
           >
             {preset.label}
           </button>
         ))}
-        <div className="my-1.5 border-t border-gray-200/30" />
+        <div className="my-1.5 border-t border-border/30" />
         <button
           onClick={() => {
             setRemixTarget(iteration);
             setOpen(false);
           }}
-          className="w-full rounded-lg text-[13px] text-gray-500 hover:bg-black/5 cursor-pointer text-left px-2 py-1.5 flex items-center gap-1.5"
+          className="w-full rounded-lg text-[13px] text-muted-foreground hover:bg-foreground/5 cursor-pointer text-left px-2 py-1.5 flex items-center gap-1.5"
         >
           <PenLine className="w-3.5 h-3.5" />
           <span>Custom…</span>

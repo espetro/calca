@@ -115,12 +115,12 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
       <div className="fixed inset-0 z-40" onClick={onClose} />
 
       {/* Slide-out panel */}
-      <div className="fixed top-3 right-3 bottom-3 z-50 w-[400px] max-w-[85vw] bg-white/70 backdrop-blur-2xl border border-white/50 rounded-2xl shadow-[-8px_0_40px_rgba(0,0,0,0.1)] flex flex-col overflow-hidden">
+      <div className="fixed top-3 right-3 bottom-3 z-50 w-[400px] max-w-[85vw] bg-glass-bg backdrop-blur-2xl border border-glass-border rounded-2xl shadow-glass flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200/30 shrink-0">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border/30 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-base">💡</span>
-            <h2 className="text-[15px] font-semibold text-gray-800">Prompt Library</h2>
+            <h2 className="text-[15px] font-semibold text-foreground">Prompt Library</h2>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-4 h-4" />
@@ -133,7 +133,7 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
             <div key={cat.name}>
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-sm opacity-60">{cat.icon}</span>
-                <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">
+                <h3 className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">
                   {cat.name}
                 </h3>
               </div>
@@ -141,12 +141,14 @@ export function PromptLibrary({ open, onClose, onUsePrompt }: PromptLibraryProps
                 {cat.prompts.map((p) => (
                   <div
                     key={p.label}
-                    className="group/item bg-white/50 hover:bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/40 hover:border-gray-200/60 px-4 py-3 transition-all"
+                    className="group/item bg-glass-bg/60 hover:bg-glass-bg backdrop-blur-sm rounded-xl border border-border/40 hover:border-border/60 px-4 py-3 transition-all"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-medium text-gray-700 mb-1">{p.label}</div>
-                        <div className="text-[11px] text-gray-400 leading-relaxed line-clamp-2">
+                        <div className="text-[13px] font-medium text-foreground mb-1">
+                          {p.label}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
                           {p.text}
                         </div>
                       </div>

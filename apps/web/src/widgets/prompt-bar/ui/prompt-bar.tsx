@@ -33,7 +33,7 @@ const SubmitButton = ({ onSubmit, className, ...props }: SubmitButtonProps) => {
       variant="ghost"
       size="icon"
       onClick={onSubmit}
-      className={`w-8 h-8 rounded-full bg-gray-900/80 backdrop-blur-sm text-white hover:bg-gray-800 disabled:opacity-25 disabled:hover:bg-gray-900/80 transition-all shrink-0 ${className}`}
+      className={`w-8 h-8 rounded-full bg-primary backdrop-blur-sm text-primary-foreground hover:bg-primary/85 disabled:opacity-25 disabled:hover:bg-primary transition-all shrink-0 ${className}`}
       title="Send (Enter)"
     >
       <ArrowRight />
@@ -233,12 +233,12 @@ export function PromptBar({
             /* Compact status bar */
             <div className="flex items-center justify-between gap-3 w-full">
               <div className="flex items-center gap-2 min-w-0">
-                <Loader2 className="w-4 h-4 animate-spin shrink-0 text-gray-400" />
-                <span className="text-[13px] text-gray-500 font-medium truncate">
+                <Loader2 className="w-4 h-4 animate-spin shrink-0 text-muted-foreground" />
+                <span className="text-[13px] text-muted-foreground font-medium truncate">
                   {genStatus || "Generating..."}
                 </span>
                 {genStartedAt != null && (
-                  <span className="text-[12px] text-gray-400 tabular-nums shrink-0">
+                  <span className="text-[12px] text-muted-foreground/80 tabular-nums shrink-0">
                     {formatElapsed(now - genStartedAt)}
                   </span>
                 )}
@@ -247,7 +247,7 @@ export function PromptBar({
                 variant="destructive"
                 size="icon"
                 onClick={onCancel}
-                className="w-8 h-8 rounded-lg bg-red-500/80 backdrop-blur-sm text-white hover:bg-red-600 transition-all shrink-0"
+                className="w-8 h-8 rounded-lg bg-destructive/80 backdrop-blur-sm text-destructive-foreground hover:bg-destructive transition-all shrink-0"
                 title="Cancel (Esc)"
               >
                 <X className="w-3.5 h-3.5" />
@@ -259,14 +259,14 @@ export function PromptBar({
               <PromptInputHeader>
                 {/* Remix mode chip */}
                 {remixTarget && (
-                  <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200/60 rounded-full px-2.5 py-1 text-[12px] text-blue-700 shrink-0">
+                  <div className="flex items-center gap-1.5 bg-primary/10 border border-primary/30 rounded-full px-2.5 py-1 text-[12px] text-primary shrink-0">
                     <Shuffle className="w-3 h-3 shrink-0" />
                     <span>
                       Remixing <span className="font-medium">{remixTarget.label ?? "design"}</span>
                     </span>
                     <button
                       onClick={() => setRemixTarget(null)}
-                      className="ml-0.5 hover:text-blue-900"
+                      className="ml-0.5 hover:text-primary"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -280,7 +280,7 @@ export function PromptBar({
                     ))}
                   </div>
                 )}
-                {error && <div className="text-xs text-red-400 mt-1 mb-1">{error}</div>}
+                {error && <div className="text-xs text-destructive mt-1 mb-1">{error}</div>}
                 {showVisionWarning && (
                   <div className="text-xs text-amber-400/90 mt-1 mb-1 flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
