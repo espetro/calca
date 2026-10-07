@@ -8,14 +8,46 @@ Merged from `desktop-distribution.md` + `desktop-auto-update.md`, corrected agai
 
 ## Release pipeline
 
-`.github/workflows/desktop.yml` builds the app on `macos-latest` (dmg) and
-`windows-2025` (zip) for pushes to `main`, `v*` tags, and `workflow_dispatch`:
+`.github/workflows/desktop.yml` builds the app on `macos-latest` (dmg),
+`windows-2025` (zip), and `ubuntu-latest` (self-extracting installer tar.gz)
+for pushes to `main`, `v*` tags, and `workflow_dispatch`:
 
 1. `bun run build:desktop` — web build → copy to `Resources/web/` → `electrobun build`
-2. On `v*` tags, `softprops/action-gh-release` publishes `artifacts/**/*.dmg` and
-   `artifacts/**/*.zip` with generated release notes
+2. On `v*` tags, `softprops/action-gh-release` publishes `artifacts/**/*.dmg`,
+   `artifacts/**/*.zip`, and `artifacts/**/*.tar.gz` with generated release notes
 
 Users download installers from GitHub Releases directly.
+
+## Linux build
+
+The `ubuntu-latest` leg needs no system packages — Electrobun downloads its
+prebuilt `electrobun-core-linux-x64` bundle (plus the CEF bundle when
+`build.linux.bundleCEF` is set) from its own GitHub releases at build time.
+
+Artifacts (all prefixed `stable-linux-x64-`):
+
+- `Calca-Setup.tar.gz` — the user-facing installer: a self-extracting binary
+  (`installer`) + `README.txt`. It installs to `~/.local/share/` and writes a
+  `.desktop` entry. No AppImage (upstream dropped it to avoid the libfuse2
+  dependency).
+- `Calca.tar.zst` + `update.json` — the Updater feed payload.
+
+Config lives in `build.linux` (`electrobun.config.ts`): `bundleCEF: true`
+bundles CEF instead of GTKWebKit — chosen for self-containment and reliable
+layer compositing on the canvas UI. `icon` expects a PNG (reuses
+`apps/web/public/icon-512x512.png`).
+
+**Runtime requirements (end-user machine):**
+
+- glibc ≥ 2.38 — Electrobun's prebuilt `libNativeWrapper.so` requires it
+  (Ubuntu ≥ 24.04, Fedora ≥ 39, Debian ≥ 13). Ubuntu 22.04 cannot run the app.
+- `libwebkit2gtk-4.1`, `libsoup-3`, `libayatana-appindicator3` — hard-linked by
+  the native wrapper **even in CEF mode** (window/tray plumbing; CEF only
+  renders the webview). Present by default on Ubuntu/Fedora desktops; minimal
+  installs need `apt install libwebkit2gtk-4.1-0 libayatana-appindicator3-1`.
+
+Verified on this repo via a real `bun run build:desktop` on Linux —
+`stable-linux-x64-Calca-Setup.tar.gz` ≈ 153 MB with CEF bundled.
 
 ## Signing & notarization
 
@@ -61,7 +93,7 @@ Notes:
 | Homebrew Cask | High | Single cask file pointing at the release dmg; phase 2 post-v1.0 |
 | Mac App Store | Low | Review + sandboxing blocks the embedded `Bun.serve` localhost server; revisit only if Electrobun gains sandbox support |
 | Sparkle | Medium | Redundant while Electrobun's updater works; re-evaluate only if the built-in updater proves limiting |
-| Linux (Flatpak/Snap/AppImage) | Not planned | Desktop targets are macOS + Windows |
+| Linux (Flatpak/Snap/AppImage) | Partial — tar.gz installer ships now | Ubuntu+Fedora desktops with glibc ≥ 2.38 covered; distro packages later if asked |
 
 ### Homebrew Cask sketch
 

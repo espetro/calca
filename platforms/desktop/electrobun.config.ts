@@ -34,6 +34,13 @@ const config: ElectrobunConfig = {
     win: {
       bundleCEF: false,
     },
+    linux: {
+      // GTKWebKit needs webkit2gtk-4.1 at runtime and composites poorly on a
+      // canvas-heavy UI; CEF keeps the build self-contained like the other legs.
+      bundleCEF: true,
+      chromiumFlags: isBuild ? undefined : cefFlags,
+      icon: "../../apps/web/public/icon-512x512.png",
+    },
     bun: {
       entrypoint: "src/index.ts",
     },
