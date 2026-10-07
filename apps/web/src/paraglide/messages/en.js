@@ -2076,3 +2076,542 @@ export const feedback_errorUnknown = () => `Unknown error`
 /* @__NO_SIDE_EFFECTS__ */
 export const feedback_errorHttp = (params) => `HTTP ${params.status}`
 
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_statusStarting = () => `Starting workflow…`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepWrappingUp = () => `Wrapping up`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepCritique = () => `Writing critique`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepProcessingFrames = () => `Processing frames`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepAddingImages = () => `Adding images`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepGeneratingLayout = () => `Generating layout`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepPlanningConcepts = () => `Planning concepts`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepReviewingDesign = () => `Reviewing design`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_stepSummarizing = () => `Summarizing results`
+
+
+
+
+	
+/**
+ * @param {{ label: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_statusStep = (params) => `${params.label}…`
+
+
+
+
+	
+/**
+ * @param {{ label: NonNullable<unknown>, current: NonNullable<unknown>, total: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_statusVariation = (params) => `${params.label} · variation ${params.current} of ${params.total}`
+
+
+
+
+	
+/**
+ * @param {{ done: NonNullable<unknown>, total: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_statusReady = (params) => `${params.done} of ${params.total} variations ready`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_statusComplete = () => `Workflow complete`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_statusCanceled = () => `Generation canceled`
+
+
+
+
+	
+/**
+ * @param {{ index: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_versionLabel = (params) => `v${params.index}`
+
+
+
+
+	
+/**
+ * @param {{ source: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_remixLabel = (params) => `Remix of ${params.source}`
+
+
+
+
+	
+/**
+ * @param {{ index: NonNullable<unknown>, source: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_remixLabelNumbered = (params) => `Remix ${params.index} of ${params.source}`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_defaultDesignLabel = () => `design`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_revisedLabel = () => `Revised`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_summaryGenerating = () => `Generating summary...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorWorkflowRequest = () => `Workflow request failed`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorNoResponseBody = () => `No response body`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorUnknownStream = () => `Unknown stream error`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorWorkflowFailed = () => `Workflow failed`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorGenerateFailed = () => `Failed to generate`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorCheckSettings = () => `Check Settings or try again`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorNoFrameResult = () => `No frame result received from workflow`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorRevisionOptions = () => `Revision requires options`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const design_errorRevisionRequest = () => `Revision request failed`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_revisionComment = () => `Revision comment`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_describeRevision = () => `Describe your revision...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_cancel = () => `Cancel`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_revise = () => `Revise ↵`
+
+
+
+
+	
+/**
+ * @param {{ number: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_commentNumber = (params) => `Comment #${params.number}`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_revising = () => `Revising...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_replyPlaceholder = () => `Reply with another revision...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_doneMessage = () => `Done! I've updated the design.`
+
+
+
+
+	
+/**
+ * @param {{ error: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_revisionFailed = (params) => `Revision failed: ${params.error}. Try again.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const comments_unknownError = () => `Unknown error`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_export = () => `Export`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_imageSection = () => `Image`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_codeSection = () => `Code`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_copyAsImage = () => `Copy as Image`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_converting = () => `Converting...`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_copy = () => `Copy`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_download = () => `Download`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_cancel = () => `Cancel`
+
+
+
+
+	
+/**
+ * @param {{ format: NonNullable<unknown> }} params
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_previewTitle = (params) => `${params.format} Export`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_failed = () => `Export failed`
+

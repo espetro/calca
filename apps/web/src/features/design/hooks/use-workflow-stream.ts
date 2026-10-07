@@ -22,6 +22,7 @@ import {
   openSummaryIdAtom,
 } from "#/features/design/state/generation-atoms";
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
+import { m } from "#/lib/i18n";
 import type {
   GenerationGroup,
   PipelineStage,
@@ -99,15 +100,15 @@ const safeJsonParse = (text: string): unknown => {
 };
 
 /** Wire step name → user-facing status text (running transitions only). */
-const STEP_STATUS_LABELS: Record<string, string> = {
-  collectResults: "Wrapping up",
-  critique: "Writing critique",
-  frameOrchestrator: "Processing frames",
-  images: "Adding images",
-  layout: "Generating layout",
-  plan: "Planning concepts",
-  review: "Reviewing design",
-  summary: "Summarizing results",
+const STEP_STATUS_LABELS: Record<string, () => string> = {
+  collectResults: m.design_stepWrappingUp,
+  critique: m.design_stepCritique,
+  frameOrchestrator: m.design_stepProcessingFrames,
+  images: m.design_stepAddingImages,
+  layout: m.design_stepGeneratingLayout,
+  plan: m.design_stepPlanningConcepts,
+  review: m.design_stepReviewingDesign,
+  summary: m.design_stepSummarizing,
 };
 
 /** Wire step name → progress-bar stage bucket (keeps STAGE_CONFIG/pulse behavior). */
@@ -219,7 +220,7 @@ export const useWorkflowStream = () => {
       abortRef.current = controller;
 
       setIsGenerating(true);
-      setGenStatus("Starting workflow…");
+      setGenStatus(m.design_statusStarting());
       setGenStartedAt(Date.now());
 
       generationStartTimeRef.current = Date.now();
@@ -279,9 +280,9 @@ export const useWorkflowStream = () => {
               isLoading: true,
               label: remixOf
                 ? conceptCount > 1
-                  ? `Remix ${i + 1} of ${remixOf}`
-                  : `Remix of ${remixOf}`
-                : `v${i + 1}`,
+                  ? m.design_remixLabelNumbered({ index: i + 1, source: remixOf })
+                  : m.design_remixLabel({ source: remixOf })
+                : m.design_versionLabel({ index: i + 1 }),
               position: positions[i],
               prompt,
               width: 400,
@@ -350,13 +351,13 @@ export const useWorkflowStream = () => {
         );
 
         if (!response.ok) {
-          throw new Error(await apiErrorMessage(response, "Workflow request failed"));
+          throw new Error(await apiErrorMessage(response, m.design_errorWorkflowRequest()));
         }
 
         const { body } = response;
 
         if (!body) {
-          throw new Error("No response body");
+          throw new Error(m.design_errorNoResponseBody());
         }
 
         const reader = body.getReader();
@@ -449,7 +450,9 @@ export const useWorkflowStream = () => {
 
           trackPipelineStageComplete("layout", iterId, Date.now() - generationStartTimeRef.current);
 
-          setGenStatus(`${completedFrameIndices.size} of ${conceptCount} variations ready`);
+          setGenStatus(
+            m.design_statusReady({ done: completedFrameIndices.size, total: conceptCount }),
+          );
 
           setGroups((prev) =>
             prev.map((g) => {
@@ -465,7 +468,7 @@ export const useWorkflowStream = () => {
                   return {
                     ...existing,
                     height: frame.height || existing.height,
-                    html: frame.html || "<p>Failed to generate</p>",
+                    html: frame.html || `<p>${m.design_errorGenerateFailed()}</p>`,
                     isLoading: false,
                     // Pipeline emits only generic "Variation N" — keep
                     // our lineage-aware label unless a real name arrives.
@@ -513,7 +516,13 @@ export const useWorkflowStream = () => {
                 }
                 const label = STEP_STATUS_LABELS[stepName];
                 if (label) {
-                  setGenStatus(`${label} · variation ${frameIndex + 1} of ${conceptCount}`);
+                  setGenStatus(
+                    m.design_statusVariation({
+                      current: frameIndex + 1,
+                      label: label(),
+                      total: conceptCount,
+                    }),
+                  );
                 }
               }
               applyStep(iterId, stepName, status);
@@ -529,7 +538,7 @@ export const useWorkflowStream = () => {
             if (status === "running") {
               const label = STEP_STATUS_LABELS[stepName];
               if (label) {
-                setGenStatus(`${label}…`);
+                setGenStatus(m.design_statusStep({ label: label() }));
               }
             }
 
@@ -577,7 +586,8 @@ export const useWorkflowStream = () => {
           }
 
           if (part.type === "error") {
-            const errorText = (part as { errorText?: string }).errorText ?? "Unknown stream error";
+            const errorText =
+              (part as { errorText?: string }).errorText ?? m.design_errorUnknownStream();
             logger.error("Stream error", { error: errorText });
             for (let i = 0; i < conceptCount; i++) {
               const iterId = iterIds[i];
@@ -677,18 +687,18 @@ export const useWorkflowStream = () => {
         // produced fewer concepts than requested) — same cleanup as an abort.
         removePendingIterations();
 
-        setGenStatus("Workflow complete");
+        setGenStatus(m.design_statusComplete());
         const totalDuration = Date.now() - generationStartTimeRef.current;
         const finalWordCount = prompt.split(/\s+/).filter(Boolean).length;
         trackGenerationComplete(model || "unknown", finalWordCount, conceptCount, totalDuration);
       } catch (error: unknown) {
         if (error instanceof Error && error.name === "AbortError") {
           removePendingIterations();
-          setGenStatus("Generation canceled");
+          setGenStatus(m.design_statusCanceled());
           return;
         }
 
-        const msg = error instanceof Error ? error.message : "Workflow failed";
+        const msg = error instanceof Error ? error.message : m.design_errorWorkflowFailed();
         logger.error("Fatal error", { error: msg });
 
         const errorType:
@@ -735,7 +745,7 @@ export const useWorkflowStream = () => {
                   ...iter,
                   html: `<div style="padding:32px;color:#666;font-family:system-ui">
                     <p style="font-size:14px">⚠ ${msg}</p>
-                    <p style="font-size:12px;margin-top:8px;color:#999">Check Settings or try again</p>
+                    <p style="font-size:12px;margin-top:8px;color:#999">${m.design_errorCheckSettings()}</p>
                   </div>`,
                   isLoading: false,
                 };

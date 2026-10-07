@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import type { DerivedProviderFields } from "#/features/settings/lib/derive-provider-fields";
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
+import { m } from "#/lib/i18n";
 
 const MUTATION_KEY = ["/api/workflow", "revision"] as const;
 
@@ -81,7 +82,7 @@ const getFrames = async (body: ReadableStream, signal: AbortSignal) => {
               frameResult = {
                 ...f,
                 html: f.html ?? "",
-                label: f.label ?? "Revised",
+                label: f.label ?? m.design_revisedLabel(),
               };
             }
           }
@@ -93,19 +94,19 @@ const getFrames = async (body: ReadableStream, signal: AbortSignal) => {
   }
 
   if (!frameResult) {
-    throw new Error("No frame result received from workflow");
+    throw new Error(m.design_errorNoFrameResult());
   }
 
   return {
     ...frameResult,
     html: frameResult.html ?? "",
-    label: frameResult.label ?? "Revised",
+    label: frameResult.label ?? m.design_revisedLabel(),
   } satisfies RevisionOutput;
 };
 
 const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: RevisionInput) => {
   if (!options) {
-    throw new Error("Revision requires options");
+    throw new Error(m.design_errorRevisionOptions());
   }
 
   const response = await apiClient.api.workflow.$post(
@@ -127,13 +128,13 @@ const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: 
   );
 
   if (!response.ok) {
-    throw new Error(await apiErrorMessage(response, "Revision request failed"));
+    throw new Error(await apiErrorMessage(response, m.design_errorRevisionRequest()));
   }
 
   const { body } = response;
 
   if (!body) {
-    throw new Error("No response body");
+    throw new Error(m.design_errorNoResponseBody());
   }
 
   return await getFrames(body, signal);
