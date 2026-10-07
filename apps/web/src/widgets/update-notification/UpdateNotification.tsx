@@ -2,6 +2,7 @@ import { Moon, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 type UpdaterState =
@@ -52,13 +53,13 @@ function clearDismissedVersion(): void {
 async function callRPC(method: string): Promise<void> {
   const rpc = window.__electrobun?.rpc?.request;
   if (!rpc) {
-    toast.error("Updater not available");
+    toast.error(m.update_unavailable());
     return;
   }
 
   const fn = rpc[method];
   if (typeof fn !== "function") {
-    toast.error(`RPC method '${method}' not found`);
+    toast.error(m.update_rpcNotFound({ method }));
     return;
   }
 
@@ -171,14 +172,17 @@ function UpdateBar({ state, onDismiss, onDownload, onApply }: UpdateBarProps): R
       <span className="tabular-nums">
         {isAvailable && (
           <>
-            Update <span className="font-semibold">v{state.version}</span> available{" "}
-            <span className="opacity-60">(current: v{state.currentVersion})</span>
+            {m.update_availablePrefix()} <span className="font-semibold">v{state.version}</span>{" "}
+            {m.update_availableSuffix()}{" "}
+            <span className="opacity-60">
+              {m.update_currentVersion({ version: state.currentVersion })}
+            </span>
           </>
         )}
-        {isDownloading && "Downloading update…"}
+        {isDownloading && m.update_downloading()}
         {isReady && (
           <>
-            Ready to install <span className="font-semibold">v{state.version}</span>
+            {m.update_readyToInstall()} <span className="font-semibold">v{state.version}</span>
           </>
         )}
       </span>
@@ -186,13 +190,13 @@ function UpdateBar({ state, onDismiss, onDownload, onApply }: UpdateBarProps): R
       <div className="flex items-center gap-2 ml-2">
         {isAvailable && (
           <Button variant="default" size="sm" onClick={onDownload}>
-            Download
+            {m.update_download()}
           </Button>
         )}
 
         {isReady && (
           <Button variant="secondary" size="sm" onClick={onApply}>
-            Restart &amp; Install
+            {m.update_restartInstall()}
           </Button>
         )}
 
@@ -201,7 +205,7 @@ function UpdateBar({ state, onDismiss, onDownload, onApply }: UpdateBarProps): R
             variant="ghost"
             size="icon"
             onClick={onDismiss}
-            aria-label="Dismiss update notification"
+            aria-label={m.update_dismiss()}
             className="opacity-60 hover:opacity-100"
           >
             <X className="w-4 h-4" />

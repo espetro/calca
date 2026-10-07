@@ -296,7 +296,7 @@ function HomeInner() {
         })
         .catch((error) => {
           console.error("Canvas import failed", error);
-          toast.error(error instanceof Error ? error.message : "Failed to import file");
+          toast.error(error instanceof Error ? error.message : m.route_importFailed());
         })
         .finally(() => {
           e.target.value = "";
@@ -454,7 +454,7 @@ function HomeInner() {
             <p className="text-[13px] text-gray-500 mb-6">{m.dialog_resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
               <Button variant="ghost" onClick={() => setShowResetConfirm(false)}>
-                Cancel
+                {m.dialog_keepDesigning()}
               </Button>
               <Button
                 variant="destructive"
@@ -464,7 +464,7 @@ function HomeInner() {
                   setShowResetConfirm(false);
                 }}
               >
-                Clear Canvas
+                {m.dialog_clearCanvasConfirm()}
               </Button>
             </div>
           </div>

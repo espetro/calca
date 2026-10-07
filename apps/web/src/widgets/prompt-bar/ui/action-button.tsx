@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 export interface ActionButtonProps {
@@ -38,9 +39,9 @@ const ActionButton = ({ isGenerating, dataTour }: ActionButtonProps) => {
               opacity: 0.7,
             }
       }
-      title={isIdeating ? "Ideate mode" : "Build mode"}
+      title={isIdeating ? m.promptbar_ideateMode() : m.promptbar_buildMode()}
     >
-      {isIdeating ? "◈ Ideate" : "✦ Build"}
+      {isIdeating ? m.promptbar_ideate() : m.promptbar_build()}
     </Button>
   );
 };
