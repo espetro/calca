@@ -18,11 +18,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>Calca</title>
     <script>
+      // Pre-React boot theme: mirrors __root.tsx's applier (keep in lockstep).
+      // Reads the real settings blob — a stale "te-theme" key used to live here.
       (function () {
         try {
-          var t = localStorage.getItem("te-theme");
-          if (!t) t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-          document.documentElement.classList.toggle("dark", t === "dark");
+          var t = "system";
+          var raw = localStorage.getItem("calca-settings");
+          if (raw) t = JSON.parse(raw).theme || "system";
+          var dark =
+            t === "dark" ||
+            (t === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
         } catch (e) {}
       })();
     </script>

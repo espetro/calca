@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { FlowCanvas, useCanvasStore } from "../adapter";
 import type { CanvasHandle } from "../hooks/use-canvas";
+import { useResolvedCssVar } from "../hooks/use-resolved-color";
 import { calcaViews, imageToRecord, iterationToRecord } from "../views";
 import { CanvasImageNode } from "./nodes/CanvasImageNode";
 import { DesignFrameNode } from "./nodes/DesignFrameNode";
@@ -103,6 +104,10 @@ export const CanvasArea = ({
 
   const isSelectMode = toolMode === "select" && !spaceHeld;
   const isCommentMode = toolMode === "comment" && !spaceHeld;
+
+  // RF's <Background> paints `color` as an SVG attribute — var() doesn't
+  // resolve there, so resolve --canvas-dot and re-read on theme flips.
+  const dotColor = useResolvedCssVar("--canvas-dot", "#e5e7eb");
 
   // Bridge the app's controlled props into the document: diff by record id
   // and apply create/update/delete commands with history off (the app owns
@@ -256,7 +261,7 @@ export const CanvasArea = ({
 
   return (
     <div
-      className="absolute inset-0 canvas-dots"
+      className="absolute inset-0 bg-canvas-bg"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onContextMenu={handleContextMenu}
@@ -286,7 +291,7 @@ export const CanvasArea = ({
         proOptions={{ hideAttribution: true }}
         className={isCommentMode ? "cursor-crosshair" : "cursor-default"}
       >
-        <Background gap={20} size={1} color="#e5e7eb" />
+        <Background gap={24} size={1} color={dotColor} />
 
         {/* 1001: selected nodes elevate to z-index 1000 and must not cover the toolbar */}
         {toolbar && (
