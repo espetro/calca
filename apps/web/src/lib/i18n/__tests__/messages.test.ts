@@ -1,9 +1,18 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const enJsonPath = resolve(__dirname, "../messages/en.json");
+const messagesDir = resolve(__dirname, "../../../../messages");
+const enJsonPath = resolve(messagesDir, "en.json");
+
+const loadJson = (path: string): Record<string, unknown> =>
+  JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+
+// paraglide-js compiles each message id to an exported JS identifier, so keys
+// must be flat valid identifiers (convention: `group_key`, e.g.
+// `onboarding_welcomeTitle`) — nested message objects are not supported.
+const VALID_ID = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 
 describe("i18n messages", () => {
   it("en.json must exist and be valid JSON", () => {
@@ -11,79 +20,52 @@ describe("i18n messages", () => {
     expect(() => JSON.parse(raw)).not.toThrow();
   });
 
-  it("onboarding.welcomeTitle must exist and be non-empty", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val =
-      messages.onboarding && (messages.onboarding as Record<string, unknown>).welcomeTitle;
-    expect(val).toBeDefined();
-    expect(typeof val).toBe("string");
-    expect((val as string).trim().length).toBeGreaterThan(0);
+  it("every message id must be a valid JS identifier", () => {
+    const messages = loadJson(enJsonPath);
+    const invalid = Object.keys(messages).filter((key) => key !== "$schema" && !VALID_ID.test(key));
+    expect(invalid, `Invalid message ids: ${invalid.join(", ")}`).toHaveLength(0);
   });
 
-  it("onboarding.welcomeDescription must exist and be non-empty", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val =
-      messages.onboarding && (messages.onboarding as Record<string, unknown>).welcomeDescription;
-    expect(val).toBeDefined();
-    expect(typeof val).toBe("string");
-    expect((val as string).trim().length).toBeGreaterThan(0);
-  });
-
-  it("canvas.emptyTitle must exist and be non-empty", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val = messages.canvas && (messages.canvas as Record<string, unknown>).emptyTitle;
-    expect(val).toBeDefined();
-    expect(typeof val).toBe("string");
-    expect((val as string).trim().length).toBeGreaterThan(0);
-  });
-
-  it("canvas.emptyDescription must exist and be non-empty", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val = messages.canvas && (messages.canvas as Record<string, unknown>).emptyDescription;
-    expect(val).toBeDefined();
-    expect(typeof val).toBe("string");
-    expect((val as string).trim().length).toBeGreaterThan(0);
-  });
-
-  it("toolbar.importDesign must exist and be non-empty", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val = messages.toolbar && (messages.toolbar as Record<string, unknown>).importDesign;
-    expect(val).toBeDefined();
-    expect(typeof val).toBe("string");
-    expect((val as string).trim().length).toBeGreaterThan(0);
-  });
-
-  it("toolbar.exportDesign must exist and be non-empty", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const val = messages.toolbar && (messages.toolbar as Record<string, unknown>).exportDesign;
-    expect(val).toBeDefined();
-    expect(typeof val).toBe("string");
-    expect((val as string).trim().length).toBeGreaterThan(0);
-  });
-
-  it("no i18n value may be an empty string", () => {
-    const raw = readFileSync(enJsonPath, "utf8");
-    const messages = JSON.parse(raw) as Record<string, unknown>;
-    const emptyStrings: string[] = [];
-
-    function collectEmptyStrings(obj: Record<string, unknown>, prefix = ""): void {
-      for (const [key, val] of Object.entries(obj)) {
-        const path = prefix ? `${prefix}.${key}` : key;
-        if (typeof val === "string" && val.trim() === "") {
-          emptyStrings.push(path);
-        } else if (typeof val === "object" && val !== null) {
-          collectEmptyStrings(val as Record<string, unknown>, path);
-        }
-      }
+  it("every message value must be a non-empty string", () => {
+    const messages = loadJson(enJsonPath);
+    const bad: string[] = [];
+    for (const [key, val] of Object.entries(messages)) {
+      if (key === "$schema") continue;
+      if (typeof val !== "string" || val.trim() === "") bad.push(key);
     }
+    expect(bad, `Non-string or empty messages at: ${bad.join(", ")}`).toHaveLength(0);
+  });
 
-    collectEmptyStrings(messages);
-    expect(emptyStrings, `Empty strings found at: ${emptyStrings.join(", ")}`).toHaveLength(0);
+  it("onboarding_welcomeTitle must exist and be non-empty", () => {
+    const val = loadJson(enJsonPath).onboarding_welcomeTitle;
+    expect(typeof val).toBe("string");
+    expect((val as string).trim().length).toBeGreaterThan(0);
+  });
+
+  it("canvas_emptyTitle must exist and be non-empty", () => {
+    const val = loadJson(enJsonPath).canvas_emptyTitle;
+    expect(typeof val).toBe("string");
+    expect((val as string).trim().length).toBeGreaterThan(0);
+  });
+
+  it("toolbar_importDesign must exist and be non-empty", () => {
+    const val = loadJson(enJsonPath).toolbar_importDesign;
+    expect(typeof val).toBe("string");
+    expect((val as string).trim().length).toBeGreaterThan(0);
+  });
+
+  it("every locale file must cover exactly the en keys", () => {
+    const sourceKeys = Object.keys(loadJson(enJsonPath))
+      .filter((key) => key !== "$schema")
+      .sort();
+    const localeFiles = readdirSync(messagesDir).filter(
+      (file) => file.endsWith(".json") && file !== "en.json",
+    );
+    for (const file of localeFiles) {
+      const keys = Object.keys(loadJson(resolve(messagesDir, file)))
+        .filter((key) => key !== "$schema")
+        .sort();
+      expect(keys, `${file} diverges from en.json`).toEqual(sourceKeys);
+    }
   });
 });

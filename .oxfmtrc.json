@@ -11,6 +11,7 @@
   "ignorePatterns": [
     "**/*.gen.ts",
     "**/*.gen.tsx",
+    "**/src/paraglide/**",
     "node_modules",
     "dist",
     "build",

@@ -321,8 +321,8 @@ function HomeInner() {
           }}
           onImageDrop={handleImageDrop}
           onContextMenu={handleContextMenu}
-          emptyTitle={m.canvas.emptyTitle()}
-          emptyDescription={m.canvas.emptyDescription()}
+          emptyTitle={m.canvas_emptyTitle()}
+          emptyDescription={m.canvas_emptyDescription()}
           toolbar={
             selectedIds.size === 1 ? (
               <ContextToolbar
@@ -441,9 +441,9 @@ function HomeInner() {
           />
           <div className="relative bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.7)] p-8 w-[380px] max-w-[90vw] text-center">
             <h3 className="text-[15px] font-semibold text-gray-800 mb-2">
-              {m.dialog.resetTitle()}
+              {m.dialog_resetTitle()}
             </h3>
-            <p className="text-[13px] text-gray-500 mb-6">{m.dialog.resetDescription()}</p>
+            <p className="text-[13px] text-gray-500 mb-6">{m.dialog_resetDescription()}</p>
             <div className="flex items-center justify-center gap-3">
               <Button variant="ghost" onClick={() => setShowResetConfirm(false)}>
                 Cancel

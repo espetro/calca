@@ -22,7 +22,7 @@ const OnboardingBanner = ({ onClick }: OnboardingBannerProps) => {
         onClick={onClick}
       >
         <span className="w-1.5 h-1.5 rounded-full bg-chart-1 animate-pulse" />
-        {m.banner.addApiKey()}
+        {m.banner_addApiKey()}
       </Button>
     </div>
   );
