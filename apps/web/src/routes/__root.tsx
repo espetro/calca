@@ -42,13 +42,9 @@ function RootLayout() {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      if (settings.theme === "dark") {
-        root.classList.add("dark");
-      } else if (settings.theme === "light") {
-        root.classList.remove("dark");
-      } else {
-        root.classList.toggle("dark", mediaQuery.matches);
-      }
+      const dark = settings.theme === "dark" || (settings.theme !== "light" && mediaQuery.matches);
+      root.classList.toggle("dark", dark);
+      root.style.colorScheme = dark ? "dark" : "light";
     };
 
     applyTheme();
@@ -151,7 +147,12 @@ function RootLayout() {
           )}
         </TooltipProvider>
       </QueryClientProvider>
-      <Toaster position="bottom-right" offset="40px" toastOptions={{ style: { width: "240px" } }} />
+      <Toaster
+        theme={settings.theme}
+        position="bottom-right"
+        offset="40px"
+        toastOptions={{ style: { width: "240px" } }}
+      />
       <UpdateNotification />
     </>
   );

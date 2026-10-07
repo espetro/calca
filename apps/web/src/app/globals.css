@@ -15,10 +15,9 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Dot grid pattern */
-.canvas-dots {
-  background-image: radial-gradient(circle, var(--canvas-dot) 1px, transparent 1px);
-  background-size: 24px 24px;
+body {
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 /* Clean loading spinner */

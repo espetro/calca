@@ -35,13 +35,14 @@
 
   /* Ghost / tracing-paper tone */
   --muted: oklch(0.86 0.058 125.92); /* overlap tint     #C8D9B0 */
-  --muted-foreground: oklch(0.57 0.0234 160.97); /* warm slate       #6B7B72 */
+  --muted-foreground: oklch(0.5 0.03 160); /* slate — ≥4.5:1 on bg/card (was 0.57, failed AA) */
 
   --accent: oklch(0.77 0.0749 131.06); /* soft olive       #A3BE8C */
   --accent-foreground: oklch(0.25 0.0114 156.31);
 
   /* Semantic */
   --destructive: oklch(0.58 0.24 28.48);
+  --destructive-foreground: oklch(1 0 0 / 85%); /* off-white on red ≈4:1 — pair on bg-destructive */
 
   /* Chrome */
   --border: oklch(0.86 0.058 125.92); /* ghost tone       #C8D9B0 */
@@ -97,6 +98,13 @@
   --toolbar-bg-transparent: oklch(0.25 0.0114 156.31 / 0.6);
   --pin-color: var(--primary);
   --pin-active: var(--accent);
+
+  /* Glass surfaces — the app's signature translucent panels. One recipe,
+     two palette entries: swap literals to bg-glass-bg / border-glass-border
+     / shadow-glass instead of per-component dark: overrides. */
+  --glass-bg: oklch(1 0 0 / 60%);
+  --glass-border: oklch(1 0 0 / 60%);
+  --shadow-glass: 0 8px 32px oklch(0 0 0 / 12%), inset 0 1px 0 oklch(1 0 0 / 70%);
 
   /* Playful mode accent tokens (constant, never flip with dark mode) */
   --variation-accent: oklch(0.76 0.0952 76.06); /* amber/chart-1 */
@@ -169,6 +177,7 @@
 
   /* Semantic */
   --destructive: oklch(0.7 0.19 22.23);
+  --destructive-foreground: oklch(0.25 0.03 20); /* charcoal on bright red ≈5:1 */
 
   /* Chrome */
   --border: oklch(1 0 0 / 10%);
@@ -230,6 +239,14 @@
   --mode-ideate-bg-subtle: oklch(0.24 0.05 285);
   --mode-ideate-fg: oklch(0.88 0.1 283);
   --mode-ideate-icon-bg: oklch(0.36 0.12 283);
+
+  /* Glass surfaces — lifted card tone + faint hairlines on dark */
+  --glass-bg: oklch(0.32 0.03 160 / 55%);
+  --glass-border: oklch(1 0 0 / 10%);
+  --shadow-glass: 0 8px 32px oklch(0 0 0 / 45%), inset 0 1px 0 oklch(1 0 0 / 8%);
+
+  /* Canvas dots need to stay visible on the dark canvas */
+  --canvas-dot: oklch(1 0 0 / 15%);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -252,6 +269,11 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-canvas-bg: var(--canvas-bg);
+  --color-canvas-dot: var(--canvas-dot);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -296,6 +318,7 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  --shadow-glass: var(--shadow-glass);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
