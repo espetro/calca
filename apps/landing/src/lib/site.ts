@@ -5,6 +5,8 @@ export const LINKS = {
     "https://github.com/espetro/calca/releases/latest/download/stable-macos-arm64-Calca.dmg",
   windowsZip:
     "https://github.com/espetro/calca/releases/latest/download/stable-win-x64-Calca-Setup.zip",
+  linuxTarGz:
+    "https://github.com/espetro/calca/releases/latest/download/stable-linux-x64-Calca-Setup.tar.gz",
   roadmap: "https://github.com/users/espetro/projects/6",
   docs: "/docs/",
   docsMcp: "/docs/mcp/",

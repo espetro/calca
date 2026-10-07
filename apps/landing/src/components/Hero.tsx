@@ -1,4 +1,4 @@
-import { FaGithub, FaApple, FaWindows } from "react-icons/fa";
+import { FaGithub, FaApple, FaWindows, FaLinux } from "react-icons/fa";
 import { FiArrowRight } from "react-icons/fi";
 
 import { LINKS } from "../lib/site";
@@ -127,6 +127,12 @@ export default function Hero() {
               className="inline-flex items-center gap-1.5 font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
             >
               <FaWindows className="h-3.5 w-3.5" /> Windows
+            </a>
+            <a
+              href={LINKS.linuxTarGz}
+              className="inline-flex items-center gap-1.5 font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+            >
+              <FaLinux className="h-3.5 w-3.5" /> Linux
             </a>
           </p>
         </div>

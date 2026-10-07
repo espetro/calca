@@ -13,5 +13,8 @@
     "format": "oxfmt --write .",
     "clean": "rm -rf dist",
     "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
   }
 }

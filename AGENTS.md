@@ -37,7 +37,7 @@ The project backlog is at https://github.com/users/espetro/projects/6/views/1 .
 > | `packages/core` (`@app/core`)                      | ✅ Providers, prompts, domain logic                                                                                    |
 > | `packages/shared` (`@app/shared`)                  | ✅ Types & Zod schemas                                                                                                 |
 > | `packages/logger` · `analytics` · `config` · `pro` | ✅ Infra / shared-config / ELv2 packages                                                                               |
-> | `platforms/desktop`                                | ✅ Electrobun shell (macOS + Windows)                                                                                  |
+> | `platforms/desktop`                                | ✅ Electrobun shell (macOS + Windows + Linux)                                                                                  |
 > | Layer 1 `@calca/canvas-*`                          | ✅ Delivered — Phase 1 ([#39](https://github.com/espetro/calca/issues/39))                                             |
 > | Layer 2 `@calca/mcp*`                              | ⚠️ In progress — `@calca/mcp-core` tool surface + `calca` CLI (Phase 2, [#40](https://github.com/espetro/calca/issues/40)) |
 

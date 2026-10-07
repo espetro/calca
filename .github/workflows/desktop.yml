@@ -59,6 +59,8 @@ jobs:
             platform: darwin
           - os: windows-2025
             platform: win32
+          - os: ubuntu-latest
+            platform: linux
     runs-on: ${{ matrix.os }}
     if: github.event_name != 'pull_request'
     steps:
@@ -129,6 +131,7 @@ jobs:
           files: |
             artifacts/**/*.dmg
             artifacts/**/*.zip
+            artifacts/**/*.tar.gz
             artifacts/**/*.tar.zst
             artifacts/**/update.json
           generate_release_notes: true

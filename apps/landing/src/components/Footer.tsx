@@ -8,6 +8,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Web demo", href: LINKS.app },
       { label: "macOS", href: LINKS.macosDmg },
       { label: "Windows", href: LINKS.windowsZip },
+      { label: "Linux", href: LINKS.linuxTarGz },
       { label: "Roadmap", href: LINKS.roadmap },
     ],
   },
