@@ -5,6 +5,8 @@ import { Tour, TourCard, TourOverlay, TourProvider, TourStep } from "@tour-kit/r
 import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
 
+import { m } from "#/lib/i18n";
+
 import { currentTourStepIdAtom, showTutorialAtom } from "../state/onboarding-atoms";
 
 export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boolean }) {
@@ -49,8 +51,8 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
         <TourStep
           id="prompt-bar"
           target='[data-tour="prompt-action-mode"]'
-          title="The Prompt Bar"
-          content="This is the prompt bar. Type your design idea here and press Enter or click the arrow to generate."
+          title={m.tour_promptBarTitle()}
+          content={m.tour_promptBarContent()}
           showNavigation
           showClose
           showProgress
@@ -59,8 +61,8 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
         <TourStep
           id="toolbar"
           target='[data-tour="toolbar-settings"]'
-          title="Toolbar"
-          content="Use the toolbar to adjust settings, view variations, and export your designs."
+          title={m.tour_toolbarTitle()}
+          content={m.tour_toolbarContent()}
           showNavigation
           showClose
           showProgress
@@ -69,8 +71,8 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
         <TourStep
           id="provider-setup"
           target='[data-tour="settings-provider"]'
-          title="AI Provider"
-          content="Select your AI provider from the dropdown. If you don't see any providers, you'll need to add one first."
+          title={m.tour_providerTitle()}
+          content={m.tour_providerContent()}
           showNavigation
           showClose
           showProgress
@@ -79,8 +81,8 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
         <TourStep
           id="add-provider"
           target='[data-tour="settings-add-provider"]'
-          title="Add a Provider"
-          content="Click here to add a new AI provider. You'll need to provide the provider's base URL and API key."
+          title={m.tour_addProviderTitle()}
+          content={m.tour_addProviderContent()}
           showNavigation
           showClose
           showProgress
@@ -89,8 +91,8 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
         <TourStep
           id="unsplash-key"
           target='[data-tour="settings-unsplash-key"]'
-          title="Unsplash API Key"
-          content="Add your Unsplash API key here to enable image generation in your designs."
+          title={m.tour_unsplashTitle()}
+          content={m.tour_unsplashContent()}
           showNavigation
           showClose
           showProgress
@@ -99,8 +101,8 @@ export function TutorialTour(props: { onComplete?: () => void; hasFrames?: boole
         <TourStep
           id="all-set"
           target={centerRef}
-          title="You're All Set!"
-          content="You can restart this tour anytime from Settings → General."
+          title={m.tour_allSetTitle()}
+          content={m.tour_allSetContent()}
           showNavigation
           showClose
           showProgress

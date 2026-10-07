@@ -215,6 +215,72 @@ export const onboarding_privacyNote = () => `Keys are stored locally in your bro
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const onboarding_welcomeModalTitle = () => `Welcome to Calca!`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const onboarding_welcomeModalDescription = () => `Your AI-powered design companion. Describe what you want, and watch as beautiful concepts come to life on your canvas.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const onboarding_featureDesignAi = () => `Design with AI — Generate beautiful HTML/CSS concepts from natural language`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const onboarding_featureCompare = () => `Compare variations — See up to 4 different designs side by side`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const onboarding_featureExport = () => `Export anywhere — Copy code or save as images`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const onboarding_takeTour = () => `Take tour`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const tour_step1Title = () => `Describe your design`
 
 
@@ -402,6 +468,138 @@ export const tour_next = () => `Next →`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const tour_promptBarTitle = () => `The Prompt Bar`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_promptBarContent = () => `This is the prompt bar. Type your design idea here and press Enter or click the arrow to generate.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_toolbarTitle = () => `Toolbar`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_toolbarContent = () => `Use the toolbar to adjust settings, view variations, and export your designs.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_providerTitle = () => `AI Provider`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_providerContent = () => `Select your AI provider from the dropdown. If you don't see any providers, you'll need to add one first.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_addProviderTitle = () => `Add a Provider`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_addProviderContent = () => `Click here to add a new AI provider. You'll need to provide the provider's base URL and API key.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_unsplashTitle = () => `Unsplash API Key`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_unsplashContent = () => `Add your Unsplash API key here to enable image generation in your designs.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_allSetTitle = () => `You're All Set!`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const tour_allSetContent = () => `You can restart this tour anytime from Settings → General.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const canvas_emptyTitle = () => `Calca`
 
 
@@ -502,6 +700,228 @@ export const dialog_clearCanvasConfirm = () => `Clear canvas`
  */
 /* @__NO_SIDE_EFFECTS__ */
 export const banner_addApiKey = () => `Add your API key in Settings to start designing`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const canvashud_zoomOut = () => `Zoom out`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const canvashud_zoomIn = () => `Zoom in`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const canvashud_zoomToFit = () => `Zoom to fit`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const canvashud_resetView = () => `Reset view`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_select = () => `Select – V`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_drawArea = () => `Draw Area`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_editComponent = () => `Edit Component`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_designerPreset = () => `Designer Preset`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_systemPrompt = () => `System Prompt`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_systemPromptPlaceholder = () => `Add custom instructions for the AI designer...
+
+e.g. "You are a Facebook ad designer. Use 1200x628, minimal text, strong visual hierarchy..."`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const modesidebar_systemPromptDescription = () => `Prepended to every generation. Use for brand guidelines, design skills, or style overrides.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_remix = () => `Remix`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_quickRemix = () => `Quick remix`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_customRemix = () => `Custom…`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_presetColors = () => `🎨 Different colors`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_presetLayouts = () => `📐 Different layouts`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_presetTypography = () => `🔤 Different typography`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_presetMinimal = () => `✨ More minimal`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_presetBold = () => `🔥 More bold`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const contexttoolbar_designFallback = () => `Design`
 
 
 
