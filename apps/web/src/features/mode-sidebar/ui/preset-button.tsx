@@ -76,7 +76,7 @@ export function PresetButton() {
         aria-label="Designer Preset"
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
           isOpen || settings.systemPromptPreset !== "custom"
-            ? "bg-chart-1/90 text-white"
+            ? "bg-chart-1/90 text-foreground"
             : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
         }`}
       >
@@ -103,7 +103,7 @@ export function PresetButton() {
                   onClick={() => handlePresetClick(preset.id)}
                   className={`flex items-center gap-2 text-left text-[12px] font-medium px-3 py-2 rounded-lg transition-all ${
                     settings.systemPromptPreset === preset.id
-                      ? "bg-chart-1/90 text-white shadow-sm"
+                      ? "bg-chart-1/90 text-foreground shadow-sm"
                       : "bg-glass-bg/60 text-muted-foreground hover:bg-glass-bg"
                   }`}
                 >

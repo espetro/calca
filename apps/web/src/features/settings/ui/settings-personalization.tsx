@@ -41,7 +41,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
               className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-[13px] font-medium ${
                 settings.theme === option.value
                   ? "shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-foreground hover:bg-foreground/5"
               }`}
             >
               {option.icon}
@@ -51,7 +51,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
         </div>
       </div>
 
-      <div className="flex items-center justify-between opacity-50">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Globe className="w-4 h-4 text-muted-foreground" />
           <div>
@@ -62,7 +62,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
             Coming soon
           </span>
           <Select disabled value="en">
@@ -83,7 +83,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
           Appearance
         </h3>
 
-        <div className="flex items-center justify-between opacity-50">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Palette className="w-4 h-4 text-muted-foreground" />
             <div>
@@ -94,14 +94,14 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
               Coming soon
             </span>
             <Switch disabled />
           </div>
         </div>
 
-        <div className="flex items-center justify-between opacity-50">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Type className="w-4 h-4 text-muted-foreground" />
             <div>
@@ -112,7 +112,7 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
               Coming soon
             </span>
             <Switch disabled />
