@@ -1,5 +1,6 @@
 import { Bug, Code2, Globe, Heart, MessageCircle } from "lucide-react";
 
+import { m } from "#/lib/i18n";
 import { Badge } from "#/shared/components/ui/badge";
 import { Separator } from "#/shared/components/ui/separator";
 
@@ -10,8 +11,8 @@ export function SettingsAbout() {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="flex flex-col">
-          <h3 className="text-lg font-semibold text-foreground">Calca</h3>
-          <p className="text-xs text-muted-foreground">AI design tool for the web</p>
+          <h3 className="text-lg font-semibold text-foreground">{m.settings_aboutAppName()}</h3>
+          <p className="text-xs text-muted-foreground">{m.settings_aboutTagline()}</p>
         </div>
         <Badge variant="secondary" className="text-[10px]">
           {appVersion}
@@ -22,34 +23,38 @@ export function SettingsAbout() {
 
       <div className="space-y-3">
         <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-          Built with <Heart className="size-3.5 text-red-400 fill-red-400" /> by Joaquin Terrasa
+          {m.settings_aboutBuiltWith()} <Heart className="size-3.5 text-red-400 fill-red-400" />{" "}
+          {m.settings_aboutBuiltBy()}
         </p>
       </div>
 
       <Separator />
 
       <div className="space-y-3">
-        <h4 className="text-xs font-medium text-foreground uppercase tracking-wider">Links</h4>
+        <h4 className="text-xs font-medium text-foreground uppercase tracking-wider">
+          {m.settings_aboutLinksHeading()}
+        </h4>
         <div className="flex flex-col gap-2">
           <a
             href="https://github.com/espetro/calca"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <Code2 className="size-4" />
-            GitHub Repository
+            {m.settings_aboutGithubRepo()}
           </a>
           <a
             href="https://x.com/josocjoq"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            <MessageCircle className="size-4" />X / Twitter
+            <MessageCircle className="size-4" />
+            {m.settings_aboutTwitter()}
           </a>
           <a
             href="https://github.com/espetro/calca"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <Globe className="size-4" />
-            Website (comming soon)
+            {m.settings_aboutWebsite()}
           </a>
         </div>
       </div>
@@ -57,9 +62,11 @@ export function SettingsAbout() {
       <Separator />
 
       <div className="space-y-3">
-        <h4 className="text-xs font-medium text-foreground uppercase tracking-wider">License</h4>
+        <h4 className="text-xs font-medium text-foreground uppercase tracking-wider">
+          {m.settings_aboutLicenseHeading()}
+        </h4>
         <p className="text-sm text-muted-foreground">
-          Open source under{" "}
+          {m.settings_aboutLicenseText()}{" "}
           <a
             href="https://github.com/espetro/calca/blob/main/LICENSE"
             className="text-foreground hover:underline font-medium"
@@ -76,7 +83,7 @@ export function SettingsAbout() {
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <Bug className="size-4" />
-        Report an issue
+        {m.settings_aboutReportIssue()}
       </a>
     </div>
   );
