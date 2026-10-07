@@ -75,7 +75,7 @@ export function SystemPromptButton() {
         aria-label="System Prompt"
         className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
           isOpen || hasCustomPrompt
-            ? "bg-primary/90 text-white"
+            ? "bg-primary/90 text-primary-foreground"
             : "text-toolbar-text hover:text-toolbar-text hover:bg-foreground/10"
         }`}
       >
