@@ -5,6 +5,7 @@ import { Eye, EyeOff, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { showTutorialAtom } from "#/features/onboarding/state/onboarding-atoms";
+import { m } from "#/lib/i18n";
 import { Badge } from "#/shared/components/ui/badge";
 import { Button } from "#/shared/components/ui/button";
 import { Input } from "#/shared/components/ui/input";
@@ -64,7 +65,7 @@ function ApiKeyInput({
           type="button"
           onClick={() => setShow(!show)}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label={show ? "Hide API key" : "Show API key"}
+          aria-label={show ? m.settings_hideApiKey() : m.settings_showApiKey()}
         >
           {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
         </Button>
@@ -115,11 +116,14 @@ function AddProviderForm({
         setTestResult({ message: result.error, success: false });
         setFetchedModels([]);
       } else {
-        setTestResult({ message: `Found ${result.models.length} models`, success: true });
+        setTestResult({
+          message: m.settings_testFoundModels({ count: result.models.length }),
+          success: true,
+        });
         setFetchedModels(result.models);
       }
     } catch {
-      setTestResult({ message: "Connection failed", success: false });
+      setTestResult({ message: m.settings_connectionFailed(), success: false });
       setFetchedModels([]);
     }
   };
@@ -143,7 +147,7 @@ function AddProviderForm({
     <div className="space-y-4 rounded-lg border p-4">
       <div className="flex items-center justify-between">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          New Provider
+          {m.settings_newProvider()}
         </Label>
         <Button
           variant="ghost"
@@ -151,7 +155,7 @@ function AddProviderForm({
           type="button"
           onClick={onCancel}
           className="text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Cancel"
+          aria-label={m.settings_cancel()}
         >
           <X className="size-4" />
         </Button>
@@ -159,7 +163,7 @@ function AddProviderForm({
 
       <div className="space-y-2">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          Provider ID
+          {m.settings_providerIdLabel()}
         </Label>
         <Input
           value={providerId}
@@ -167,31 +171,29 @@ function AddProviderForm({
             setProviderId(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""));
             setTestResult(null);
           }}
-          placeholder="my-provider"
+          placeholder={m.settings_providerIdPlaceholder()}
         />
-        <p className="text-[10px] text-muted-foreground">
-          Lowercase letters, numbers, and hyphens only
-        </p>
+        <p className="text-[10px] text-muted-foreground">{m.settings_providerIdHint()}</p>
       </div>
 
       <div className="space-y-2">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          API Type
+          {m.settings_apiTypeLabel()}
         </Label>
         <Select value={apiType} onValueChange={handleApiTypeChange}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="anthropic">Anthropic-compatible</SelectItem>
-            <SelectItem value="openai-compatible">OpenAI-compatible</SelectItem>
+            <SelectItem value="anthropic">{m.settings_apiTypeOptionAnthropic()}</SelectItem>
+            <SelectItem value="openai-compatible">{m.settings_apiTypeOptionOpenai()}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          Base URL
+          {m.settings_baseUrlLabel()}
         </Label>
         <Input
           value={baseUrl}
@@ -200,14 +202,16 @@ function AddProviderForm({
             setTestResult(null);
           }}
           placeholder={
-            apiType === "anthropic" ? "https://api.anthropic.com/v1" : "https://api.openai.com/v1"
+            apiType === "anthropic"
+              ? m.settings_baseUrlPlaceholderAnthropic()
+              : m.settings_baseUrlPlaceholderOpenai()
           }
         />
       </div>
 
       <div className="space-y-2">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          API Key
+          {m.settings_apiKeyLabel()}
         </Label>
         <div className="relative">
           <Input
@@ -217,7 +221,11 @@ function AddProviderForm({
               setApiKey(e.target.value);
               setTestResult(null);
             }}
-            placeholder={apiType === "anthropic" ? "sk-ant-..." : "sk-..."}
+            placeholder={
+              apiType === "anthropic"
+                ? m.settings_apiKeyPlaceholderAnthropic()
+                : m.settings_apiKeyPlaceholderSk()
+            }
           />
         </div>
       </div>
@@ -230,7 +238,7 @@ function AddProviderForm({
           onClick={handleTest}
           disabled={!canTest || probeModels.isPending}
         >
-          {probeModels.isPending ? "Testing..." : "Test Connection"}
+          {probeModels.isPending ? m.settings_testing() : m.settings_testConnection()}
         </Button>
         {testResult && (
           <span className={`text-xs ${testResult.success ? "text-green-600" : "text-red-500"}`}>
@@ -241,7 +249,7 @@ function AddProviderForm({
 
       <div className="flex items-center gap-2">
         <Button size="sm" type="button" onClick={handleSave} disabled={!canSave}>
-          Save
+          {m.settings_save()}
         </Button>
         <Button
           variant="ghost"
@@ -250,7 +258,7 @@ function AddProviderForm({
           onClick={onCancel}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          Cancel
+          {m.settings_cancel()}
         </Button>
       </div>
     </div>
@@ -410,21 +418,21 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
 
   const providerLabel = selectedProvider
     ? selectedProvider.apiType === "anthropic"
-      ? "Anthropic"
-      : "OpenAI-Compatible"
-    : "Provider";
+      ? m.settings_providerNameAnthropic()
+      : m.settings_providerNameOpenai()
+    : m.settings_providerNameGeneric();
 
   const providerPlaceholder = selectedProvider
     ? selectedProvider.apiType === "anthropic"
-      ? "sk-ant-..."
-      : "sk-..."
-    : "API key...";
+      ? m.settings_apiKeyPlaceholderAnthropic()
+      : m.settings_apiKeyPlaceholderSk()
+    : m.settings_apiKeyPlaceholderGeneric();
 
   return (
     <div className="space-y-6">
       <div className="space-y-3">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          AI Provider
+          {m.settings_aiProviderLabel()}
         </Label>
         <Select
           value={selectedProviderId}
@@ -434,7 +442,9 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           <SelectTrigger className="w-full" data-tour="settings-provider">
             <SelectValue
               placeholder={
-                settings.providers.length === 0 ? "No providers configured" : "Select a provider"
+                settings.providers.length === 0
+                  ? m.settings_noProvidersConfigured()
+                  : m.settings_selectProvider()
               }
             />
           </SelectTrigger>
@@ -455,7 +465,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
 
       <div className="space-y-3">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          Model
+          {m.settings_modelLabel()}
         </Label>
         <Select
           value={selectedModelId}
@@ -466,10 +476,10 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
             <SelectValue
               placeholder={
                 !selectedProvider
-                  ? "Select a provider first"
+                  ? m.settings_selectProviderFirst()
                   : selectedProvider.models.length === 0
-                    ? "No models available"
-                    : "Select a model"
+                    ? m.settings_noModelsAvailable()
+                    : m.settings_selectModel()
               }
             />
           </SelectTrigger>
@@ -487,7 +497,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
       {settings.providers.length > 0 && (
         <div className="space-y-2">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Configured Providers
+            {m.settings_configuredProviders()}
           </Label>
           <div className="space-y-2">
             {settings.providers.map((provider) => (
@@ -506,7 +516,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
                       type="button"
                       onClick={() => handleRemoveProvider(provider.id)}
                       className="text-muted-foreground hover:text-red-500 transition-colors"
-                      aria-label={`Remove ${provider.id}`}
+                      aria-label={m.settings_removeProvider({ provider: provider.id })}
                     >
                       <X className="size-4" />
                     </Button>
@@ -515,7 +525,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
                 <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                   <span className="truncate max-w-[200px]">{provider.baseUrl}</span>
                   <span>·</span>
-                  <span>{provider.models.length} models</span>
+                  <span>{m.settings_modelsCount({ count: provider.models.length })}</span>
                 </div>
               </div>
             ))}
@@ -535,7 +545,7 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
           data-tour="settings-add-provider"
         >
           <Plus className="size-4 mr-2" />
-          Add Provider
+          {m.settings_addProvider()}
         </Button>
       )}
 
@@ -544,16 +554,16 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
       <div className="space-y-4">
         <div>
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            API Keys
+            {m.settings_apiKeysHeading()}
           </Label>
           <p className="text-[11px] text-muted-foreground mt-1">
-            Add API keys to enable AI design generation and image sources.
+            {m.settings_apiKeysDescription()}
           </p>
         </div>
 
         {selectedProvider && (
           <ApiKeyInput
-            label={`${providerLabel} API Key`}
+            label={m.settings_providerApiKeyLabel({ provider: providerLabel })}
             value={selectedProvider.apiKey}
             onChange={handleProviderKeyChange}
             placeholder={providerPlaceholder}
@@ -562,27 +572,27 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
         )}
 
         <ApiKeyInput
-          label="Gemini API Key"
+          label={m.settings_geminiApiKeyLabel()}
           value={settings.geminiKey}
           onChange={handleGeminiKeyChange}
-          placeholder="AIza..."
+          placeholder={m.settings_geminiApiKeyPlaceholder()}
           error={apiKeyErrors.gemini}
         />
 
         <ApiKeyInput
-          label="Unsplash API Key"
+          label={m.settings_unsplashApiKeyLabel()}
           value={settings.unsplashKey}
           onChange={handleUnsplashKeyChange}
-          placeholder="Access key..."
+          placeholder={m.settings_unsplashApiKeyPlaceholder()}
           error={apiKeyErrors.unsplash}
           data-tour="settings-unsplash-key"
         />
 
         <ApiKeyInput
-          label="OpenAI API Key"
+          label={m.settings_openaiApiKeyLabel()}
           value={settings.openaiKey}
           onChange={handleOpenaiKeyChange}
-          placeholder="sk-..."
+          placeholder={m.settings_apiKeyPlaceholderSk()}
           error={apiKeyErrors.openai}
         />
       </div>
@@ -592,11 +602,10 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
       <div className="flex items-center justify-between">
         <div>
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Analytics
+            {m.settings_analyticsLabel()}
           </Label>
           <p className="text-[11px] text-muted-foreground mt-1">
-            Help us improve Calca by sharing anonymous usage patterns. No prompts or designs are
-            ever shared.
+            {m.settings_analyticsDescription()}
           </p>
         </div>
         <Switch checked={settings.analyticsEnabled} onCheckedChange={handleAnalyticsToggle} />
@@ -607,14 +616,14 @@ export function SettingsGeneral({ settings, onUpdate, onOpenChange }: SettingsGe
       <div className="flex items-center justify-between">
         <div>
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Tutorial
+            {m.settings_tutorialLabel()}
           </Label>
           <p className="text-[11px] text-muted-foreground mt-1">
-            Take the tutorial again to learn about Calca's features.
+            {m.settings_tutorialDescription()}
           </p>
         </div>
         <Button variant="outline" size="sm" type="button" onClick={handleRestartTour}>
-          Restart tour
+          {m.settings_restartTour()}
         </Button>
       </div>
     </div>

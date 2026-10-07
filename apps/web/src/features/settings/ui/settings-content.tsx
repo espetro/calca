@@ -1,6 +1,7 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Separator } from "#/shared/components/ui/separator";
 
 import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
@@ -18,7 +19,7 @@ export interface SettingsContentProps {
 function PlaceholderContent({ title }: { title: string }) {
   return (
     <div className="flex items-center justify-center h-full text-muted-foreground">
-      <p className="text-sm">{title} settings coming soon</p>
+      <p className="text-sm">{m.settings_sectionComingSoon({ title })}</p>
     </div>
   );
 }
@@ -33,7 +34,7 @@ export function SettingsContent({ onOpenChange, defaultSection }: SettingsConten
     <div className="flex h-[500px]">
       <div className="flex flex-col shrink-0 border-r border-border bg-muted/30">
         <div className="px-5 py-4">
-          <h2 className="text-sm font-semibold text-foreground">Settings</h2>
+          <h2 className="text-sm font-semibold text-foreground">{m.settings_title()}</h2>
         </div>
         <Separator />
         <SettingsSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
@@ -50,7 +51,7 @@ export function SettingsContent({ onOpenChange, defaultSection }: SettingsConten
         {activeSection === "personalization" && (
           <SettingsPersonalization settings={settings} onUpdate={updateSettings} />
         )}
-        {activeSection === "skills" && <PlaceholderContent title="Skills" />}
+        {activeSection === "skills" && <PlaceholderContent title={m.settings_navSkills()} />}
         {activeSection === "about" && <SettingsAbout />}
         {activeSection === "reset" && <SettingsReset />}
       </div>

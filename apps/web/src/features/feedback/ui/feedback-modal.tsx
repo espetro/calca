@@ -13,6 +13,7 @@ import {
 import MailChecker from "mailchecker";
 import { useCallback, useEffect, useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import {
   Dialog,
@@ -37,18 +38,22 @@ import {
 } from "../store";
 import type { FeedbackType } from "../types";
 
-const TAB_CONFIG: { id: FeedbackType; label: string; icon: React.ReactNode }[] = [
-  { id: "bug", label: "Bug Report", icon: <Bug className="w-3.5 h-3.5" /> },
-  { id: "feature", label: "Feature Request", icon: <Lightbulb className="w-3.5 h-3.5" /> },
-  { id: "feedback", label: "General Feedback", icon: <MessageSquare className="w-3.5 h-3.5" /> },
+const TAB_CONFIG: { id: FeedbackType; label: () => string; icon: React.ReactNode }[] = [
+  { id: "bug", label: m.feedback_tabBug, icon: <Bug className="w-3.5 h-3.5" /> },
+  { id: "feature", label: m.feedback_tabFeature, icon: <Lightbulb className="w-3.5 h-3.5" /> },
+  {
+    id: "feedback",
+    label: m.feedback_tabGeneral,
+    icon: <MessageSquare className="w-3.5 h-3.5" />,
+  },
 ];
 
 function getSystemInfoPreview(): string {
   return [
-    `App Version: 0.3.0`,
-    `OS: ${navigator.platform}`,
-    `Screen: ${window.screen.width}x${window.screen.height}`,
-    `URL: ${window.location.pathname}`,
+    `${m.feedback_sysInfoAppVersion()}: 0.3.0`,
+    `${m.feedback_sysInfoOs()}: ${navigator.platform}`,
+    `${m.feedback_sysInfoScreen()}: ${window.screen.width}x${window.screen.height}`,
+    `${m.feedback_sysInfoUrl()}: ${window.location.pathname}`,
   ].join("\n");
 }
 
@@ -83,21 +88,21 @@ function FeedbackModal() {
   const validate = (): boolean => {
     const errors: { title?: string; description?: string; email?: string } = {};
     if (!formData.title.trim()) {
-      errors.title = "Title is required";
+      errors.title = m.feedback_errorTitleRequired();
     } else if (formData.title.length > 200) {
-      errors.title = "Title must be 200 characters or less";
+      errors.title = m.feedback_errorTitleTooLong({ max: 200 });
     }
     if (!formData.description.trim()) {
-      errors.description = "Description is required";
+      errors.description = m.feedback_errorDescriptionRequired();
     } else if (formData.description.length > 5000) {
-      errors.description = "Description must be 5000 characters or less";
+      errors.description = m.feedback_errorDescriptionTooLong({ max: 5000 });
     }
     if (!formData.email.trim()) {
-      errors.email = "Email is required";
+      errors.email = m.feedback_errorEmailRequired();
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
+      errors.email = m.feedback_errorEmailInvalid();
     } else if (!MailChecker.isValid(formData.email)) {
-      errors.email = "Disposable email addresses are not allowed";
+      errors.email = m.feedback_errorEmailDisposable();
     }
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -127,7 +132,7 @@ function FeedbackModal() {
         captureEvent(FEEDBACK_RATE_LIMITED, { window: "server" });
         setStatus("rate_limited");
       } else {
-        setError(err instanceof Error ? err.message : "Something went wrong");
+        setError(err instanceof Error ? err.message : m.feedback_errorTitle());
         setStatus("error");
       }
     }
@@ -154,18 +159,14 @@ function FeedbackModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-lg p-0 overflow-hidden gap-0" showCloseButton={true}>
-        <DialogTitle className="sr-only">Send Feedback</DialogTitle>
-        <DialogDescription className="sr-only">
-          Report a bug, request a feature, or share general feedback.
-        </DialogDescription>
+        <DialogTitle className="sr-only">{m.feedback_modalTitle()}</DialogTitle>
+        <DialogDescription className="sr-only">{m.feedback_dialogDescription()}</DialogDescription>
 
         <div className="flex flex-col max-h-[80vh]">
           {/* Header */}
           <div className="px-6 pt-6 pb-2">
-            <h2 className="text-lg font-semibold text-foreground">Send Feedback</h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              Help us improve Calca by sharing your thoughts.
-            </p>
+            <h2 className="text-lg font-semibold text-foreground">{m.feedback_modalTitle()}</h2>
+            <p className="text-sm text-muted-foreground mt-1">{m.feedback_subtitle()}</p>
           </div>
 
           {/* Content */}
@@ -174,10 +175,10 @@ function FeedbackModal() {
               <div className="flex flex-col items-center text-center py-8 gap-4">
                 <CheckCircle2 className="w-12 h-12 text-emerald-500" />
                 <div className="space-y-1">
-                  <p className="text-base font-medium text-foreground">Thank you!</p>
-                  <p className="text-sm text-muted-foreground">
-                    Your feedback has been posted to the discussion.
+                  <p className="text-base font-medium text-foreground">
+                    {m.feedback_successTitle()}
                   </p>
+                  <p className="text-sm text-muted-foreground">{m.feedback_successDescription()}</p>
                 </div>
                 <a
                   href={result.commentUrl}
@@ -185,12 +186,12 @@ function FeedbackModal() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
                 >
-                  View on GitHub Discussions
+                  {m.feedback_viewOnGithub()}
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
-                <p className="text-xs text-muted-foreground">Powered by GitHub Discussions</p>
+                <p className="text-xs text-muted-foreground">{m.feedback_poweredBy()}</p>
                 <Button variant="outline" onClick={() => setOpen(false)}>
-                  Close
+                  {m.feedback_close()}
                 </Button>
               </div>
             )}
@@ -201,13 +202,15 @@ function FeedbackModal() {
                   <MessageSquare className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-base font-medium text-foreground">Slow down!</p>
+                  <p className="text-base font-medium text-foreground">
+                    {m.feedback_rateLimitedTitle()}
+                  </p>
                   <p className="text-sm text-muted-foreground">
-                    You&apos;ve submitted too many reports. Please try again later.
+                    {m.feedback_rateLimitedDescription()}
                   </p>
                 </div>
                 <Button variant="outline" onClick={() => setOpen(false)}>
-                  Close
+                  {m.feedback_close()}
                 </Button>
               </div>
             )}
@@ -218,18 +221,18 @@ function FeedbackModal() {
                   <X className="w-6 h-6 text-destructive" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-base font-medium text-foreground">Something went wrong</p>
+                  <p className="text-base font-medium text-foreground">{m.feedback_errorTitle()}</p>
                   <p className="text-sm text-muted-foreground">
-                    {error || "Failed to submit feedback"}
+                    {error || m.feedback_errorFallback()}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={handleRetry}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1" />
-                    Try Again
+                    {m.feedback_tryAgain()}
                   </Button>
                   <Button variant="ghost" onClick={() => setOpen(false)}>
-                    Close
+                    {m.feedback_close()}
                   </Button>
                 </div>
               </div>
@@ -251,7 +254,7 @@ function FeedbackModal() {
                       }`}
                     >
                       {tab.icon}
-                      {tab.label}
+                      {tab.label()}
                     </Button>
                   ))}
                 </div>
@@ -259,14 +262,14 @@ function FeedbackModal() {
                 {/* Title */}
                 <div className="space-y-1.5">
                   <Label htmlFor="feedback-title">
-                    Title
+                    {m.feedback_fieldTitle()}
                     <span className="text-destructive ml-0.5">*</span>
                   </Label>
                   <Input
                     id="feedback-title"
                     value={formData.title}
                     onChange={(e) => updateField("title", e.target.value)}
-                    placeholder="Short summary of your feedback"
+                    placeholder={m.feedback_titlePlaceholder()}
                     maxLength={200}
                     aria-invalid={!!validationErrors.title}
                   />
@@ -285,14 +288,14 @@ function FeedbackModal() {
                 {/* Description */}
                 <div className="space-y-1.5">
                   <Label htmlFor="feedback-description">
-                    Description
+                    {m.feedback_fieldDescription()}
                     <span className="text-destructive ml-0.5">*</span>
                   </Label>
                   <Textarea
                     id="feedback-description"
                     value={formData.description}
                     onChange={(e) => updateField("description", e.target.value)}
-                    placeholder="Describe your feedback in detail..."
+                    placeholder={m.feedback_descriptionPlaceholder()}
                     maxLength={5000}
                     rows={5}
                     aria-invalid={!!validationErrors.description}
@@ -314,7 +317,7 @@ function FeedbackModal() {
                 {/* Email */}
                 <div className="space-y-1.5">
                   <Label htmlFor="feedback-email">
-                    Email
+                    {m.feedback_fieldEmail()}
                     <span className="text-destructive ml-0.5">*</span>
                   </Label>
                   <Input
@@ -322,7 +325,7 @@ function FeedbackModal() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => updateField("email", e.target.value)}
-                    placeholder="your@email.com"
+                    placeholder={m.feedback_emailPlaceholder()}
                     aria-invalid={!!validationErrors.email}
                   />
                   <div className="flex justify-between">
@@ -344,7 +347,7 @@ function FeedbackModal() {
                       size="sm"
                     />
                     <Label htmlFor="feedback-system-info" className="text-sm cursor-pointer">
-                      Include system information
+                      {m.feedback_includeSystemInfo()}
                     </Label>
                   </div>
                   {formData.includeSystemInfo && (
@@ -361,18 +364,18 @@ function FeedbackModal() {
           {(status === "idle" || status === "submitting") && (
             <div className="px-6 py-4 border-t border-border flex justify-end gap-2">
               <Button variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting}>
-                Cancel
+                {m.feedback_cancel()}
               </Button>
               <Button onClick={handleSubmit} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <span className="animate-spin mr-1.5">⟳</span>
-                    Submitting...
+                    {m.feedback_submitting()}
                   </>
                 ) : (
                   <>
                     <Send className="w-3.5 h-3.5 mr-1" />
-                    Submit
+                    {m.feedback_submit()}
                   </>
                 )}
               </Button>

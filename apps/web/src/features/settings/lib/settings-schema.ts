@@ -1,6 +1,8 @@
 import type { ProviderType } from "@app/core/ai/providers";
 import { z } from "zod";
 
+import { m } from "#/lib/i18n";
+
 const providerTypeSchema = z.enum(["anthropic", "openai-compatible"] satisfies ProviderType[]);
 
 const modelInfoSchema = z.object({
@@ -59,10 +61,14 @@ export type SettingsOutput = z.output<typeof settingsSchema>;
 // ---------------------------------------------------------------------------
 
 /** Validates an API key has minimum length of 10 characters. */
-export const apiKeyValidationSchema = z.string().min(10, "API key must be at least 10 characters");
+export const apiKeyValidationSchema = z
+  .string()
+  .min(10, { error: () => m.settings_errorApiKeyTooShort() });
 
 /** Validates model is non-empty string. */
-export const modelValidationSchema = z.string().min(1, "Model is required");
+export const modelValidationSchema = z
+  .string()
+  .min(1, { error: () => m.settings_errorModelRequired() });
 
 /**
  * Validates that the selected model exists in the provider's models array.
@@ -74,6 +80,6 @@ export function validateModelInProvider(
 ): string | null {
   const slashIndex = model.indexOf("/");
   const modelId = slashIndex > 0 ? model.slice(slashIndex + 1) : model;
-  const exists = providerModels.some((m) => m.id === modelId);
-  return exists ? null : "Selected model is not available for this provider";
+  const exists = providerModels.some((mod) => mod.id === modelId);
+  return exists ? null : m.settings_errorModelUnavailable();
 }
