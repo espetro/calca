@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Separator } from "#/shared/components/ui/separator";
 import { Textarea } from "#/shared/components/ui/textarea";
@@ -61,7 +62,7 @@ const CommentThread = ({ comment, onClose, onReply }: CommentThreadProps) => {
           {comment.number}
         </span>
         <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">
-          Comment #{comment.number}
+          {m.comments_commentNumber({ number: comment.number })}
         </span>
         <Button
           variant="ghost"
@@ -113,7 +114,7 @@ const CommentThread = ({ comment, onClose, onReply }: CommentThreadProps) => {
                     style={{ animationDelay: "300ms" }}
                   />
                 </div>
-                <span className="text-[11px] text-gray-400">Revising...</span>
+                <span className="text-[11px] text-gray-400">{m.comments_revising()}</span>
               </div>
             </div>
           </div>
@@ -134,7 +135,7 @@ const CommentThread = ({ comment, onClose, onReply }: CommentThreadProps) => {
                 handleSubmit();
               }
             }}
-            placeholder="Reply with another revision..."
+            placeholder={m.comments_replyPlaceholder()}
             disabled={isWorking}
             className="flex-1 text-[13px] text-gray-800 placeholder-gray-400/60 bg-white/60 backdrop-blur-sm rounded-xl px-3 py-2 outline-none resize-none border border-white/40 focus:border-blue-300/60 focus:bg-white/80 transition-all disabled:opacity-50"
             rows={1}

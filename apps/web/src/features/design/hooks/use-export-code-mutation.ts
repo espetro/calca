@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
+import { m } from "#/lib/i18n";
 
 const MUTATION_KEY = ["/api/export"] as const;
 
@@ -18,7 +19,7 @@ const exportCode = async (params: ExportCodeProps) => {
     json: params,
   });
   if (!response.ok) {
-    throw new Error(await apiErrorMessage(response, "Export failed"));
+    throw new Error(await apiErrorMessage(response, m.export_failed()));
   }
   return await response.json();
 };
