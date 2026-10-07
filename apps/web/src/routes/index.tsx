@@ -47,6 +47,7 @@ import { SettingsDialog } from "#/features/settings/ui/settings-dialog";
 import { exportCanvas, IMPORT_ACCEPT, readCanvasFile } from "#/lib/export";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
+import type { Comment } from "#/shared/types";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 import { ErrorBoundary } from "#/widgets/error-boundary";
 import { useKeyboardShortcuts } from "#/widgets/keyboard-shortcuts";
@@ -167,6 +168,16 @@ function HomeInner() {
       }
     },
     [selectedIds, clipboard, groups],
+  );
+
+  // Stable ctx dep for React Flow — an inline arrow re-fires RF's
+  // onSelectionChange sync on every render.
+  const handleClickComment = useCallback(
+    (comment: Comment, iterationId: string) => {
+      setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
+      setActiveCommentIterationId(comment ? iterationId : null);
+    },
+    [setActiveComment, setActiveCommentIterationId],
   );
 
   useMountEffect(() => {
@@ -315,10 +326,7 @@ function HomeInner() {
           setDraggingImageId={setDraggingImageId}
           pipelineStages={pipelineStages}
           onAddComment={setCommentDraft}
-          onClickComment={(comment, iterationId) => {
-            setActiveComment((prev) => (prev?.id === comment.id ? null : comment));
-            setActiveCommentIterationId(comment ? iterationId : null);
-          }}
+          onClickComment={handleClickComment}
           onImageDrop={handleImageDrop}
           onContextMenu={handleContextMenu}
           emptyTitle={m.canvas_emptyTitle()}
