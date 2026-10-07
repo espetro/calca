@@ -148,7 +148,7 @@ setTimeout(reportHeight, 2000);
       onClick={handleClick}
       onMouseDown={onMouseDown}
       className={`relative bg-white rounded-xl shadow-md border overflow-hidden transition-shadow ${
-        isSelected ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg" : "border-gray-200/80"
+        isSelected ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg" : "border-border/60"
       } ${
         isCommentMode
           ? "cursor-crosshair ring-2 ring-blue-400/20 hover:ring-blue-400/40"
@@ -206,10 +206,10 @@ const STATUS_COLORS = {
     ping: "bg-emerald-400/30",
   },
   waiting: {
-    bg: "bg-gray-400",
+    bg: "bg-muted-foreground",
     shadow: "rgba(156,163,175,0.4)",
-    anchor: "bg-gray-400/60",
-    ping: "bg-gray-400/30",
+    anchor: "bg-muted-foreground/60",
+    ping: "bg-muted-foreground/30",
   },
   working: {
     bg: "bg-amber-500",

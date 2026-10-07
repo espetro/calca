@@ -86,11 +86,11 @@ export function PresetButton() {
       {isOpen && (
         <div
           ref={panelRef}
-          className="absolute right-full mr-3 top-1/2 -translate-y-1/2 z-[60] w-[240px] max-h-[calc(100vh-180px)] overflow-y-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-[0_12px_48px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] p-4"
+          className="absolute right-full mr-3 top-1/2 -translate-y-1/2 z-[60] w-[240px] max-h-[calc(100vh-180px)] overflow-y-auto bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-glass p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <CurrentIcon className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-semibold text-gray-800">Designer Preset</span>
+            <CurrentIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-semibold text-foreground">Designer Preset</span>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -104,7 +104,7 @@ export function PresetButton() {
                   className={`flex items-center gap-2 text-left text-[12px] font-medium px-3 py-2 rounded-lg transition-all ${
                     settings.systemPromptPreset === preset.id
                       ? "bg-chart-1/90 text-white shadow-sm"
-                      : "bg-white/50 text-gray-600 hover:bg-white/80"
+                      : "bg-glass-bg/60 text-muted-foreground hover:bg-glass-bg"
                   }`}
                 >
                   <PresetIcon className="w-4 h-4 shrink-0" />

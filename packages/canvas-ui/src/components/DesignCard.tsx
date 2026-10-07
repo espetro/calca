@@ -39,7 +39,7 @@ export function DesignCard({
       }}
     >
       <div className="mb-2 flex items-center gap-2 group/label">
-        <span className="text-xs font-medium text-gray-500/80 bg-white/60 backdrop-blur-sm px-2.5 py-0.5 rounded-lg border border-white/40">
+        <span className="text-xs font-medium bg-card/70 backdrop-blur-sm px-2.5 py-0.5 rounded-lg border border-border/50 text-muted-foreground">
           {iteration.label}
         </span>
       </div>
