@@ -61,3 +61,4 @@ frames-out/
 
 # intl-ai local findings cache (lockfile shards under intl-ai.lock.d/ ARE committed)
 .intl-ai/
+.worktrees/
