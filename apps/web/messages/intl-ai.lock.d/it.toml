@@ -1,0 +1,2940 @@
+version = 1
+
+[entries."$schema"]
+value = "https://inlang.com/schema/inlang-message-format"
+source_hash = "62c9a2913c055860736635eda124e12ec287195f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.banner_addApiKey]
+value = "Aggiungi la tua chiave API nelle Impostazioni per iniziare a progettare"
+source_hash = "46d8799b435dacca4a59e62c6409e9386c64b1c2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.canvas_emptyDescription]
+value = "Niente qui ancora. Avvia un nuovo progetto o importa qualcosa per ricalcare."
+source_hash = "d53f9dd1d825e83e07ebdcc0caf73af2593dd460"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.canvas_emptyTitle]
+value = "Calca"
+source_hash = "e477ce30fc8a5c8aa6cabe9c54fec1f9576355d2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.canvashud_resetView]
+value = "Reimposta vista"
+source_hash = "80d8db7ad9bc7297fa4167a5e24e481c8b529848"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.canvashud_zoomIn]
+value = "Zoom avanti"
+source_hash = "4fc05f2763ba31e2d3be5f08e7d0bab5d5dcbf78"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.canvashud_zoomOut]
+value = "Zoom indietro"
+source_hash = "a4ae4b24a1f5369c2bff61abdbc221170e4b27d8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.canvashud_zoomToFit]
+value = "Adatta alla vista"
+source_hash = "be866a8e867398648cdf09d8a972d5bbc745c029"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.cancel"]
+value = "Annulla"
+source_hash = "77dfd2135f4db726c47299bb55be26f7f4525a46"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.commentNumber"]
+value = "Commento #{number}"
+source_hash = "5e5ca3d5818677343b5c8d9de199bf29ab39459f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.describeRevision"]
+value = "Descrivi la tua revisione..."
+source_hash = "b85801ca9ab25f5f1858b6c54acf753a4864f99b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.doneMessage"]
+value = "Fatto! Ho aggiornato il design."
+source_hash = "b4b49ac1955730e665306277ac2fcc1afbf2e1be"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.replyPlaceholder"]
+value = "Rispondi con un'altra revisione..."
+source_hash = "6e17e0a7cf37cf4d1d1385324beab7f86ffda9de"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.revise"]
+value = "Revisiona ↵"
+source_hash = "26e0e83ad7f63fda8e988bdfce697755fef59693"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.revising"]
+value = "In revisione..."
+source_hash = "509ba584bb0c8ecdcbec4ebccac896df64e828f9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.revisionComment"]
+value = "Commento di revisione"
+source_hash = "8decbbc582e99d49254244b93ef35652d8b52f85"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.revisionFailed"]
+value = "Revisione fallita: {error}. Riprova."
+source_hash = "952b00bb5193fbfa1367b832e4b42c42c7d88214"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."comments.unknownError"]
+value = "Errore sconosciuto"
+source_hash = "e5fd9aa24c9417e7332e6f25936ae2a6ec8f1524"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_customRemix]
+value = "Personalizza…"
+source_hash = "dce04fd315530c73a93ee565f67a370dae10ab30"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_designFallback]
+value = "Design"
+source_hash = "59b035367211a9382930b2a4c13637dbc33c4f32"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_presetBold]
+value = "🔥 Più audace"
+source_hash = "6fee11ac86fec1cf35f8e9a218b55fc8c521775d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_presetColors]
+value = "🎨 Colori diversi"
+source_hash = "2c31440b2602dd23cdca27e0dd7784dbf846b4f6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_presetLayouts]
+value = "📐 Layout diversi"
+source_hash = "8c80003976ee599bf72cfac4d4ab6a454dbaf40b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_presetMinimal]
+value = "✨ Più minimale"
+source_hash = "d422573ce23c055c5a00faa931cb0b2c7528efa6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_presetTypography]
+value = "🔤 Tipografia diversa"
+source_hash = "d9f7779daf43e5786b0e84ce67ef3776eb0bdff5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_quickRemix]
+value = "Remix rapido"
+source_hash = "5c9613c60b2f95e151be98f6689728e9b2e89b09"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.contexttoolbar_remix]
+value = "Remix"
+source_hash = "eb322a59267d9b753fd1e0c7b9f4a22dc3968348"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.defaultDesignLabel"]
+value = "design"
+source_hash = "056f118278992da3361a3d5ffeb9db40e4db0998"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorCheckSettings"]
+value = "Controlla le Impostazioni o riprova"
+source_hash = "2846c875eeac91e76826abb0647e48f8dbfd06e1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorGenerateFailed"]
+value = "Generazione fallita"
+source_hash = "e7fe98ea8e70873f5b8cf9cbd9e03582d49a83c6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorNoFrameResult"]
+value = "Nessun risultato frame ricevuto dal workflow"
+source_hash = "302c1ee96b6346a72918195e228548a4bdf147cc"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorNoResponseBody"]
+value = "Nessun corpo di risposta"
+source_hash = "7762c0ae864945e951a80c09fc424afec1348322"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorRevisionOptions"]
+value = "La revisione richiede opzioni"
+source_hash = "c280f4d75312554f4dbb968032de6decbfcfa9d1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorRevisionRequest"]
+value = "Richiesta di revisione fallita"
+source_hash = "a0f8f6e8b53864ff1f4ddb767cc94e689a45f915"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorUnknownStream"]
+value = "Errore stream sconosciuto"
+source_hash = "c7c0ce2a8071786ed32508b7e9612a32ced64ae7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorWorkflowFailed"]
+value = "Workflow fallito"
+source_hash = "6deccca602e712e252b6990f6033d5a370837db1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.errorWorkflowRequest"]
+value = "Richiesta workflow fallita"
+source_hash = "52d7952f52f458b5b0bb09a0ea13aafb047fe9e1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.remixLabel"]
+value = "Remix di {source}"
+source_hash = "e28b258e6151a7e7c7c456fc4bf70d454be18c57"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.remixLabelNumbered"]
+value = "Remix {index} di {source}"
+source_hash = "9515069f2fce482df58fe5fb83d9ba8ea8497654"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.revisedLabel"]
+value = "Revisionato"
+source_hash = "19532649f9b38e20c459ce4625600856bd7facee"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.statusCanceled"]
+value = "Generazione annullata"
+source_hash = "f0d7b09c297c6f9188ce8d53e6c30dcde514520b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.statusComplete"]
+value = "Workflow completato"
+source_hash = "f0bba3cbab2d2e202ef14c5e4a755479940ec2c7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.statusReady"]
+value = "{done} di {total} variazioni pronte"
+source_hash = "8ac1f6c47577a7af2c328f8d60592726e4ebc56a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.statusStarting"]
+value = "Avvio workflow..."
+source_hash = "6246dfc8a8fdb7c0f032fbe45d92d3547c7f4cc2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.statusStep"]
+value = "{label}…"
+source_hash = "60f7eeec312a00cf227295b4d1ce5a84c5b5661c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.statusVariation"]
+value = "{label} · variazione {current} di {total}"
+source_hash = "82bf1615cbe62e772c4bceb70cf3d48f266450b9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepAddingImages"]
+value = "Aggiunta immagini"
+source_hash = "889df52d8ade8f0d2afdfdaedda4f150ce2367a0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepCritique"]
+value = "Scrittura critica"
+source_hash = "6f55f3de9b2a135840b7851921da8ec0b48d454b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepGeneratingLayout"]
+value = "Generazione layout"
+source_hash = "30d5266aee110f745f17063abee2c5dd302929cd"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepPlanningConcepts"]
+value = "Pianificazione concetti"
+source_hash = "50017deac4ad866e6e4aad34c78f3845ff3ed742"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepProcessingFrames"]
+value = "Elaborazione frame"
+source_hash = "9e8b3862723647dda3bbd15e014bfbb5381f6ab8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepReviewingDesign"]
+value = "Revisione design"
+source_hash = "fd49d53d193255945824799a935b54861beb441d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepSummarizing"]
+value = "Riassunto risultati"
+source_hash = "4debb94e7eae31864c6f7082b879034b855b1dc7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.stepWrappingUp"]
+value = "Completamento"
+source_hash = "1ea79d6e6f4d7547a74b5be4b620fb97f6b83c66"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.summaryGenerating"]
+value = "Generazione riassunto..."
+source_hash = "058a8c25bd772392424384c5d594b8937e807f4f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.summaryUnavailable"]
+value = "Riassunto non disponibile"
+source_hash = "0bee06b1e23c4486e2a6ea62dabd097be2066adc"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."design.versionLabel"]
+value = "v{index}"
+source_hash = "00076adbd317d70ea39a4caf63192c7711f2dbba"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.dialog_clearCanvasConfirm]
+value = "Cancella canvas"
+source_hash = "31843b21534314adb48959a494b193c3004cd446"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.dialog_keepDesigning]
+value = "Continua a progettare"
+source_hash = "0af2c7c85f1d55b8852960a1613e1f280efdbc6e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.dialog_resetDescription]
+value = "Questo cancellerà il tuo canvas attuale. I design generati andranno persi."
+source_hash = "9f8b061677e06138e4ed69f0aae4c5cc8ef5dc05"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.dialog_resetTitle]
+value = "Avvia una nuova sessione?"
+source_hash = "26c9660a0f00f46139fc49b2a6dd0be85b8761ec"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.error_title]
+value = "Qualcosa è andato storto"
+source_hash = "8d886c0ba6f2b683daba5f19568a316226ce3e4c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.error_tryAgain]
+value = "Riprova"
+source_hash = "042c862e4467d7d057cced262e6869dd75c22b7d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.error_unexpected]
+value = "Si è verificato un errore imprevisto."
+source_hash = "4444a27dbde47be58fb894509c0318825c0f0058"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.errors_unknown]
+value = "Errore sconosciuto"
+source_hash = "e5fd9aa24c9417e7332e6f25936ae2a6ec8f1524"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.cancel"]
+value = "Annulla"
+source_hash = "77dfd2135f4db726c47299bb55be26f7f4525a46"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.codeSection"]
+value = "Codice"
+source_hash = "adac69379a626c2436948a4ef1792c7d719ef929"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.converting"]
+value = "Conversione in corso..."
+source_hash = "bee506ba25625757f8c0eaccd888a240da399c79"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.copy"]
+value = "Copia"
+source_hash = "af74f7c5362aaee985bf8cda3dd75fc80751ce51"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.copyAsImage"]
+value = "Copia come immagine"
+source_hash = "5e6bcf0afd7ac7f9295939bd1a2d588af5c359a6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.download"]
+value = "Scarica"
+source_hash = "a479c9c34e878d07b4d67a73a48f432ad7dc53c8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.export"]
+value = "Esporta"
+source_hash = "f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.failed"]
+value = "Esportazione fallita"
+source_hash = "d6c17e9bd70b6f0dbdd12991d80b01055265538b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.imageSection"]
+value = "Immagine"
+source_hash = "50e19fda0d5b4b74a4a1a1d584e56578693a4ea4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries."export.previewTitle"]
+value = "{format} Esporta"
+source_hash = "2fda75d9c942db31cf4b9a9ba000c47d25d75b14"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.export_importedLabel]
+value = "Importato"
+source_hash = "434eb26f4835b699c5bbfe751657f0da2407270e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.export_invalidFileMissingGroups]
+value = "File {ext} non valido: array di gruppi mancante"
+source_hash = "ef9c23a304c65df59f9d0d97a00f497018c7f1cd"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.export_invalidFileNotObject]
+value = "File non valido: non è un oggetto"
+source_hash = "6659805b87303306b7e649546ef5b90c2b2fd407"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.export_parseFailed]
+value = "Impossibile analizzare il file {ext}: {message}"
+source_hash = "578d261aff60952fb5ca0def07980312259bf397"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_buttonLabel]
+value = "Segnala un bug o condividi un feedback"
+source_hash = "1f8dcff8aae776a54fc49741f2306d8eb5dbe7e5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_cancel]
+value = "Annulla"
+source_hash = "77dfd2135f4db726c47299bb55be26f7f4525a46"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_close]
+value = "Chiudi"
+source_hash = "bbfa773e5a63a5ea58c9b6207e608ca0120e592a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_descriptionPlaceholder]
+value = "Descrivi il tuo feedback in dettaglio..."
+source_hash = "47bc960776f81500aa767666fe80d55bd8ca5a76"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_dialogDescription]
+value = "Segnala un bug, richiedi una funzionalità o condividi un feedback generale."
+source_hash = "bb527fb5fb66c9767af57cd7f3ab340c86ad2379"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_emailPlaceholder]
+value = "tua@email.com"
+source_hash = "2894efbef0be72c5d572bcd17f30b0755a820fac"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorDescriptionRequired]
+value = "La descrizione è obbligatoria"
+source_hash = "b8177e6ba07cea3fc02b9d0b4c342807605c89cc"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorDescriptionTooLong]
+value = "La descrizione deve essere di {max} caratteri o meno"
+source_hash = "a03d452cc62624c1d1c593461fe6693842016139"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorEmailDisposable]
+value = "Gli indirizzi email usa e getta non sono consentiti"
+source_hash = "e976acaddf3bfbdb60a68de2366813bbb6f28a35"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorEmailInvalid]
+value = "Inserisci un indirizzo email valido"
+source_hash = "0802635ce77d19479c72833599c37a977494d3ec"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorEmailRequired]
+value = "L'email è obbligatoria"
+source_hash = "4da1d591c49e895131ce66f5b488149cd53d651b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorFallback]
+value = "Invio feedback fallito"
+source_hash = "7c645986a03208d21fc85805f96ab6641ec78136"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorHttp]
+value = "HTTP {status}"
+source_hash = "2dcf67788098bb788d6cd0a065a74f7d11a28a19"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorRateDailyMax]
+value = "Limite giornaliero di invii raggiunto. Riprova domani."
+source_hash = "bb5a83b2f21caddc2d4272809761fbfbeb98c1df"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorRateSessionMax]
+value = "Invii massimi raggiunti per questa sessione. Aggiorna la pagina per inviarne altri."
+source_hash = "1f5881423503c33e0d9a3b7dd6dfa8ca8a70e8f6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorRateSpam]
+value = "Rilevati troppi invii. Attendi 30 minuti prima di riprovare."
+source_hash = "33ebcdf53b4fa35d8efa8b9c61957e651db04376"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorRateWait]
+value = "Attendi prima di inviare di nuovo"
+source_hash = "a5646a7aaade085d38a49f2737062de958a70902"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorTitle]
+value = "Qualcosa è andato storto"
+source_hash = "8d886c0ba6f2b683daba5f19568a316226ce3e4c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorTitleRequired]
+value = "Il titolo è obbligatorio"
+source_hash = "2485113d0248101eb3042f6f4e3572bc516f5073"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorTitleTooLong]
+value = "Il titolo deve essere di {max} caratteri o meno"
+source_hash = "76c87b593601c9f03cba8613568d183266735835"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_errorUnknown]
+value = "Errore sconosciuto"
+source_hash = "e5fd9aa24c9417e7332e6f25936ae2a6ec8f1524"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_fieldDescription]
+value = "Descrizione"
+source_hash = "55f8ebc805e65b5b71ddafdae390e3be2bcd69af"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_fieldEmail]
+value = "Email"
+source_hash = "84add5b2952787581cb9a8851eef63d1ec75d22b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_fieldTitle]
+value = "Titolo"
+source_hash = "768e0c1c69573fb588f61f1308a015c11468e05f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_includeSystemInfo]
+value = "Includi informazioni di sistema"
+source_hash = "370814cb79730291fda9217ed8b199c3dff37479"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_modalTitle]
+value = "Invia Feedback"
+source_hash = "083a7a6a0cebf7c804b75e3095d950b21aadc1ab"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_poweredBy]
+value = "Alimentato da GitHub Discussions"
+source_hash = "eda63f95f39876448fc45b5a4d5be362034a49c5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_rateLimitedDescription]
+value = "Hai inviato troppi report. Riprova più tardi."
+source_hash = "47c0b63eb7ae28922f792fe802ef0a759ac01f70"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_rateLimitedTitle]
+value = "Rallenta!"
+source_hash = "d0710165113fc588f7e1503036e70d2602d99075"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_submit]
+value = "Invia"
+source_hash = "2dacf65959849884a011f36f76a04eebea94c5ea"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_submitting]
+value = "Invio in corso..."
+source_hash = "46a1a6919d196b4d95a74a37cc19f2ed4c66d0eb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_subtitle]
+value = "Aiutaci a migliorare Calca condividendo i tuoi pensieri."
+source_hash = "76a790830446194fb6e4fa7b4fae451452d1f0ec"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_successDescription]
+value = "Il tuo feedback è stato pubblicato nella discussione."
+source_hash = "9e77c0e497f7e3b72061ed29e59efa1d96d25b4b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_successTitle]
+value = "Grazie!"
+source_hash = "184eb63a906e3136190bfe5ddab6df3340bd9b91"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_sysInfoAppVersion]
+value = "Versione App"
+source_hash = "055c4ce8bd6d79181202f482177f481c12e11904"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_sysInfoOs]
+value = "SO"
+source_hash = "de8aa86286dbb8eb74d2748c7b6d4486d0458203"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_sysInfoScreen]
+value = "Schermo"
+source_hash = "5cc847f94fce70460ef24ebed241931a778ccc62"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_sysInfoUrl]
+value = "URL"
+source_hash = "0e2d9b0777a485c1276de0803c12a7d76fbc5c39"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_tabBug]
+value = "Segnalazione Bug"
+source_hash = "4fc8025dcaaee24bb3a364c664b5e74cf69879dd"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_tabFeature]
+value = "Richiesta Funzionalità"
+source_hash = "8bc6f61646a6e2617a2254c5342b9f91126f3b12"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_tabGeneral]
+value = "Feedback Generale"
+source_hash = "9610002f4474c4da2de8cce3e052883ae983c0a8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_titlePlaceholder]
+value = "Breve riassunto del tuo feedback"
+source_hash = "d4041d390902d10eecfbbc03695b39d497a24a1d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_tryAgain]
+value = "Riprova"
+source_hash = "cef2fe093b68fa970c7d3d9b72c1699814a06f7d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.feedback_viewOnGithub]
+value = "Visualizza su GitHub Discussions"
+source_hash = "1f6070e82dc77a80c66ab3c1ced00e3842d36af3"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_designerPreset]
+value = "Preset Designer"
+source_hash = "ae13a5b9f841202f069d3b68ba8129a1a24c35d6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_drawArea]
+value = "Area di Disegno"
+source_hash = "b18c6ff545e0988189969db502aae136c79cb00f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_editComponent]
+value = "Modifica Componente"
+source_hash = "1088a7213a62d774bef746896417f053535a2f9b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_select]
+value = "Seleziona – V"
+source_hash = "4227f1b8c88bb7cc03b37d202f1c2d8e6e802b89"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_systemPrompt]
+value = "Prompt di Sistema"
+source_hash = "7bb6c10d1ac2ec96957bd1972fce8b5fc5f25b56"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_systemPromptDescription]
+value = "Anteposto a ogni generazione. Usalo per linee guida del brand, competenze di design o override di stile."
+source_hash = "175e873592678439dade01b978ebad08c878bdbc"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.modesidebar_systemPromptPlaceholder]
+value = """
+Aggiungi istruzioni personalizzate per il designer AI...
+
+es. "Sei un designer di annunci Facebook. Usa 1200x628, testo minimo, gerarchia visiva forte...""""
+source_hash = "703a9aee1549af513fab2215cff1a46eed71f4b9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_apiKeyLabel]
+value = "Chiave API Anthropic"
+source_hash = "300b3b91f93879b63e090eaa49e110250baf4c0c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_apiKeyPlaceholder]
+value = "sk-ant-..."
+source_hash = "c7a8c334eef5d1749fface7d42c66f9ae5e8cf36"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_apiKeyRequired]
+value = "Alimenta la generazione di design con Claude."
+source_hash = "ca04dd1864e8e459400d89696372a6ca63260410"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_dalleLabel]
+value = "DALL·E — illustrazioni personalizzate"
+source_hash = "1b2b92cc4bab58ecb15eaa797c93b1c0f9cb14c1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_featureCompare]
+value = "Confronta variazioni — Vedi fino a 4 design diversi affiancati"
+source_hash = "0b2feb979bba35e479aba32423ded2412fa2002e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_featureDesignAi]
+value = "Progetta con AI — Genera splendidi concetti HTML/CSS da linguaggio naturale"
+source_hash = "65afc5e7f09094d241fb387da0b7bf5ef725a48a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_featureExport]
+value = "Esporta ovunque — Copia codice o salva come immagini"
+source_hash = "43ed1240bf8b5bb0e0479e8f7387342e107209ec"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_geminiLabel]
+value = "Gemini — asset e pattern di design"
+source_hash = "7ca77a015653e836a5bbbe71a2ec93d0b33b99f8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_getKey]
+value = "Ottieni una chiave su console.anthropic.com →"
+source_hash = "800f309288ae613da161377735f5b3f8bbd34995"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_getKeyShort]
+value = "Ottieni chiave →"
+source_hash = "e5656cebaa9dce6cd3340a4b444759b77f3f7546"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_getStarted]
+value = "Inizia →"
+source_hash = "14a720305c74213a2783241b9612d6549b503c13"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_hide]
+value = "Nascondi"
+source_hash = "34d8b60fe25332f7b98585e82e753eaf502c3e50"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_imageSources]
+value = "Fonti Immagine"
+source_hash = "89cc495916cb95e3e6e93418aae34ee560e5dc05"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_imageSourcesDescription]
+value = "Aggiungi una di queste chiavi per abilitare immagini reali. Claude sceglie automaticamente la fonte migliore per ogni immagine."
+source_hash = "cca76a1f6ed871840b3bfef94d4999945fb13030"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_imageSourcesOptional]
+value = "opzionale — abilita immagini reali nei design"
+source_hash = "cc4533d15e34c12b96393c4af94d2b32894092f0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_privacyNote]
+value = "Le chiavi sono archiviate localmente nel tuo browser. Non vengono mai inviate ai nostri server — le chiamate API vanno direttamente ad Anthropic e Google."
+source_hash = "3217cb17333d33af6e05f583896932b6ef48a093"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_show]
+value = "Mostra"
+source_hash = "d97d1ee339e4eeaba8cac91dca37c8b4ec8f5501"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_skip]
+value = "Salta per ora"
+source_hash = "6fc09607aee5054d496df8d8ff690c10952ebc12"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_takeTour]
+value = "Fai il tour"
+source_hash = "176859e975d53c41959426f1eed868dee7f78ff6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_unsplashLabel]
+value = "Unsplash — foto reali"
+source_hash = "69c00badf65e68aa1f26cc604d96eb354ce4bac0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_welcomeDescription]
+value = "Inizia a disegnare, o porta un design che vuoi ricalcare. Nessuna configurazione necessaria."
+source_hash = "b56815811b891bf8fc6674187bb8f7d19b5b505b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_welcomeModalDescription]
+value = "Il tuo compagno di design potenziato dall'IA. Descrivi cosa vuoi e guarda come splendidi concetti prendono vita sulla tua tela."
+source_hash = "45fdc6f36b80131ce8f93b4a356c00c15e4052f6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_welcomeModalTitle]
+value = "Benvenuto in Calca!"
+source_hash = "bcca65d773737775ed0d6bae831bae9436abbd33"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.onboarding_welcomeTitle]
+value = "Benvenuto in Calca."
+source_hash = "15b75db96b24620878f5e5fff76eac3a4eeb4919"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_addMedia]
+value = "Aggiungi media"
+source_hash = "b19a8ed96853d1d769539f9e7199f556e7c43ff0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_build]
+value = "✦ Costruisci"
+source_hash = "298e13eda20f1b5770a5e75951d9811d05ef5f6f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_buildMode]
+value = "Modalità Costruzione"
+source_hash = "ef3930fd499f1e044109d4076287428a9781c1a4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_cancel]
+value = "Annulla (Esc)"
+source_hash = "9c2c5ec068ee95a6dd66e4c7913c1a2939901731"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_critiqueToggle]
+value = "Ciclo di critica"
+source_hash = "ca3d04b12d6657f14ee11b411b6d0bde066e8869"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_critiqueToggleDesc]
+value = "Frame sequenziali con revisione AI tra ciascuno. Più lento e usa più token."
+source_hash = "0de45a54b506b8cfccd5fc70b83e087318fb6f11"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_decreaseVariations]
+value = "Diminuisci variazioni"
+source_hash = "15e725f98a524617de284ad9091e20c2c612981b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_detailed]
+value = "Dettagliato"
+source_hash = "c9d88a87a5bb898a0501c982193cd5a2f598ef11"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_detailedMode]
+value = "Modalità Dettagliata"
+source_hash = "91d523c5c218a9eb7d1f4ab167639122f92a9c19"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_detailedModeDesc]
+value = "Layout Tailwind più ricchi con una palette semantica disciplinata. Ideale per modelli capaci."
+source_hash = "0f430131a46747cab16ff561a2b53435fc126ce2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_errorImageTooLarge]
+value = "L'immagine deve essere di 5 MB o inferiore"
+source_hash = "467e0df1a89b60bdfbf8f05176d3f553474f06c7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_errorInvalidImage]
+value = "File immagine non valido"
+source_hash = "7d11bb6953cf57d3d95b919d84dac3605954ce22"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_fast]
+value = "Veloce"
+source_hash = "8db6a2f1d3b7e19e518ffa8979d7ad15359af460"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_fastMode]
+value = "Modalità Veloce"
+source_hash = "97a02eb4b27d811b4d08a278738d9488dd3f864e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_fastModeDesc]
+value = "HTML semantico-token compatto. Ottimizzato per modelli deboli e gratuiti — economico e affidabile."
+source_hash = "14d91a8c5deb30fff1b411cf2d2fbbebdfa62860"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_generating]
+value = "Generazione in corso..."
+source_hash = "81362292e8ba662f8692cc03756cdb2e83806220"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_generationMode]
+value = "Modalità Generazione"
+source_hash = "d4e81c05c569b847dcac52d820e545c9fcf8c71a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_ideate]
+value = "◈ Ideazione"
+source_hash = "485c688fe55d6f28acf759411a8ecce4ce03f275"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_ideateMode]
+value = "Modalità Ideazione"
+source_hash = "1463419e7439552ab2e27ff3e4c4c331fa3f5305"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_imageFallback]
+value = "immagine"
+source_hash = "0e76292794888d4f1fa75fb3aff4ca27c58f56a6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_increaseVariations]
+value = "Aumenta variazioni"
+source_hash = "04ce93c201bf28fd0c6bcbaa0bc7fd78b7fe5461"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_placeholder]
+value = "Descrivi un design..."
+source_hash = "dd28c4e5dbcb09fc56e5a23ea3c776c538cdb73c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_placeholderRemix]
+value = "Descrivi le modifiche da apportare…"
+source_hash = "36ca2dc86ebd454714727dc01929b89a9ac73b2e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_promptAriaLabel]
+value = "Prompt"
+source_hash = "a817d7eb8e0f1dab755ab5203a082e5c3c094fce"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_remixFallback]
+value = "design"
+source_hash = "056f118278992da3361a3d5ffeb9db40e4db0998"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_remixing]
+value = "Remix in corso"
+source_hash = "2c37b9c634b487577e16d777a227e7b9042fd83f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_removeImage]
+value = "Rimuovi immagine"
+source_hash = "5f94b03c2e6a8ff4713b2a3e8d25479e558fba12"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_send]
+value = "Invia (Invio)"
+source_hash = "e8c0ddbecd59778b12ff4489508cb6693635b041"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_variations]
+value = "Variazioni"
+source_hash = "4fba657a2566a29bb2eae7ad600ea97c18865719"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_variationsPerPrompt]
+value = "Variazioni per prompt"
+source_hash = "157edd031ca93b8b504fa3affd66beae9b0a01d4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_variationsTooltip]
+value = "Numero di variazioni di design da generare"
+source_hash = "f59d3110ac536a31b53f440967bcf5d42aefb436"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptbar_visionWarning]
+value = "Questo modello potrebbe non supportare l'input di immagini"
+source_hash = "b7d3bdf758f0c9b5915305586c255b6125ca06d3"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_bannerAdLabel]
+value = "Annuncio Banner"
+source_hash = "c1a8af4afeef973db203b9d629789f4c7839599b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_bannerAdText]
+value = "Un annuncio banner web (formato leaderboard 728x90) per un prodotto SaaS. Nome del prodotto, proposta di valore in una riga e un pulsante CTA 'Prova Gratis'. Pulito, non affollato."
+source_hash = "a47da7d2e46001a5bbe19c1226168cfc65591d1f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_blogPostLabel]
+value = "Layout Post Blog"
+source_hash = "88cd9e4713d9fa5980da1b054876b6fa20aff5a7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_blogPostText]
+value = "Una pagina di post del blog con titolo dell'articolo, avatar e biografia dell'autore, data di pubblicazione, immagine in evidenza, testo del corpo con titoli e paragrafi, e una sezione post correlati in fondo."
+source_hash = "46ff19d6519b3656d9174a40d326007a8c27f527"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_catMarketing]
+value = "Marketing"
+source_hash = "e0c534a05742cb00dc61fd7a287ca60edf0922d2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_catPages]
+value = "Pagine Complete"
+source_hash = "e36dffa822c945e1bf16fd626d174b99cbdc0375"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_catUi]
+value = "Componenti UI"
+source_hash = "9e3e7a4f75928d267f25d4f127fc2c2af363a4e3"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_copied]
+value = "Copiato ✓"
+source_hash = "1664a484ce9ba0f4c2c652d47133bc5de60ceda1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_copy]
+value = "Copia"
+source_hash = "af74f7c5362aaee985bf8cda3dd75fc80751ce51"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_dashboardLabel]
+value = "Layout Dashboard"
+source_hash = "a9392782d2460c294d8a47226d292066a04ff331"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_dashboardText]
+value = "Una dashboard di analisi con navigazione laterale, riga di statistiche superiore (4 schede metriche), un grafico ad area grande e una tabella di attività recenti sotto. Tema scuro o chiaro, visualizzazione dati pulita."
+source_hash = "2533eedd06d555a4e60009836465e3ed390b575c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_emailHeaderLabel]
+value = "Intestazione Email"
+source_hash = "8b08084c8be9dd0ec222ac09f190d8b8a0c11e8d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_emailHeaderText]
+value = "Una sezione header/hero di email per una newsletter di prodotto. Logo aziendale, titolo di annuncio in grassetto, breve descrizione e un pulsante CTA prominente. Funziona a 600px di larghezza."
+source_hash = "67059c7be4578691e39efdddc1c0f44711211ecb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_featureSectionLabel]
+value = "Sezione Funzionalità"
+source_hash = "03ab6c8d5c3745549c4936125a70b94bc6dc2bc3"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_featureSectionText]
+value = "Una sezione di funzionalità di prodotto con tre colonne. Ogni colonna ha un'icona, un titolo della funzionalità e una breve descrizione. Layout a griglia pulito con spaziatura costante. Includi un titolo di sezione sopra."
+source_hash = "de593f83d7c3f60544f48da5cc8341f6e9dbd8ba"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_heroSectionLabel]
+value = "Sezione Hero SaaS"
+source_hash = "51b72b7bd4bc4a840e60a035e5db7cc4facf8932"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_heroSectionText]
+value = "Una sezione hero di landing page SaaS con un titolo grande, sottotitolo, campo di inserimento email con pulsante CTA e un'area per screenshot del prodotto o illustrazione astratta sotto. Badge di fiducia in fondo."
+source_hash = "61b81cdd1c3b9b7bb1bb5cf4feaf35096b127ad1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_loginFormLabel]
+value = "Modulo di Accesso"
+source_hash = "e0d487981a52520d27b10ecf4be8c044c49f5655"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_loginFormText]
+value = "Un modulo di accesso moderno con campi email e password, casella di controllo 'Ricordami', link 'password dimenticata' e un pulsante di accesso primario. Includi opzioni di accesso social (Google, GitHub)."
+source_hash = "1f1cbc397f03b1662fd11b4538405366818f484a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_modalDialogLabel]
+value = "Dialogo Modale"
+source_hash = "c492147263f803c9fb4fb1e90734daf1f2591b34"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_modalDialogText]
+value = "Una finestra di dialogo modale di conferma con icona di avviso, titolo, testo descrittivo e due pulsanti di azione (Annulla e Conferma). Sfondo con sovrapposizione semitrasparente."
+source_hash = "b6b134bc063a2102b90fd78f1c1843f53071e2f0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_navBarLabel]
+value = "Barra di Navigazione"
+source_hash = "e90e3ded7520a25b76eea969e5244a5e06c79db8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_navBarText]
+value = "Una barra di navigazione superiore reattiva con logo, link di navigazione (Home, Funzionalità, Prezzi, Documenti), campo di ricerca e un menu a discesa con avatar utente. Pulito e minimale."
+source_hash = "ee8bea91b22bec44f5b5a1d012ff1163339f42c8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_pricingCardsLabel]
+value = "Schede Prezzi"
+source_hash = "ece7e21110a6ed725f6523b79097039514160eea"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_pricingCardsText]
+value = "Tre schede di piani tariffari affiancate — Starter, Pro, Enterprise. Ognuna con elenco funzionalità, prezzo e pulsante CTA. La scheda centrale dovrebbe essere evidenziata come opzione consigliata."
+source_hash = "88d035c07bb26985d822f88a5c46b1c17384d2ee"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_pricingPageLabel]
+value = "Pagina Prezzi"
+source_hash = "0300e13daaebee5b9b464efa4d5547c13ce9f5b7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_pricingPageText]
+value = "Una pagina di prezzi completa con un interruttore per fatturazione mensile/annuale, tre schede di piano con elenchi di confronto funzionalità, una sezione FAQ sotto e un banner CTA per l'enterprise."
+source_hash = "991e5fd63321f50eee27cef65517ae193a6d0f9d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_settingsPanelLabel]
+value = "Pannello Impostazioni"
+source_hash = "e75840a70e9d649eb4360a4a8b2e1103452a0ae3"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_settingsPanelText]
+value = "Un pannello di impostazioni account con sezione profilo (avatar, nome, email), interruttori notifiche, selettore tema (chiaro/scuro) e una zona pericolosa con pulsante elimina account."
+source_hash = "efdb109995119d9a7998802a1b4839f662a5aadd"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_socialCardLabel]
+value = "Scheda Social Media"
+source_hash = "970fb89288ed9089a43978000e49d11a590c4cbe"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_socialCardText]
+value = "Una scheda di annuncio sui social media (rapporto 1200x630) per il lancio di un prodotto. Titolo audace, nome del prodotto, breve slogan e uno sfondo a gradiente o colore solido. Accattivante e condivisibile."
+source_hash = "630d4d52b12d0db0e47de6ab270b25f5f71e0cfe"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_title]
+value = "Libreria Prompt"
+source_hash = "6f0c8a2388ce935101fb1dd9bcb07ee840f547be"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_toastLabel]
+value = "Notifiche Toast"
+source_hash = "757011e57ad1e225616355afbac4459892fbaf2e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_toastText]
+value = "Un set di componenti di notifica toast — varianti successo, errore, avviso e informativo. Layout impilato con icone, testo del messaggio e pulsanti di chiusura. Angoli arrotondati, ombre sottili."
+source_hash = "d24d82398930463c4a6e73bde2d351e2d443fc76"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.promptlib_usePrompt]
+value = "Usa prompt →"
+source_hash = "95c2a9f40e0160f17b69f3ef87cef53ba6f29c48"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.route_importFailed]
+value = "Importazione file fallita"
+source_hash = "1d74913c10c9ce6d13b17976c9e0171faddeeca8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutAppName]
+value = "Calca"
+source_hash = "e477ce30fc8a5c8aa6cabe9c54fec1f9576355d2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutBuiltBy]
+value = "di Joaquin Terrasa"
+source_hash = "912e1714d99cf58c9c875dac55d8ee9a4a1d28f0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutBuiltWith]
+value = "Costruito con"
+source_hash = "be425609b87ac0b02c9c77d31414c6b17cfdc0cb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutGithubRepo]
+value = "Repository GitHub"
+source_hash = "e5531adae3c84603f2287c4a3d32bcf612b2962c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutLicenseHeading]
+value = "Licenza"
+source_hash = "3229609e15436ec51bcf00818a69a84dbc58a0c2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutLicenseText]
+value = "Open source sotto"
+source_hash = "704b413c4d20104ea1af50dea0aeb0d3157ed8a9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutLinksHeading]
+value = "Link"
+source_hash = "014bcd654c60d5250fad2123b073b9c0ac3340f6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutReportIssue]
+value = "Segnala un problema"
+source_hash = "bd7b4f006d4d8e2caa2a092135c97a364e56b028"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutTagline]
+value = "Strumento di design AI per il web"
+source_hash = "d6f4c7b4ace4c2ef9f42a5e9b5c202457b0c9d28"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutTwitter]
+value = "X / Twitter"
+source_hash = "1ba62c15fac58bbdc60c59813299095fbca71603"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aboutWebsite]
+value = "Sito Web (in arrivo)"
+source_hash = "971915e13129b8a44bb1d4dab506e7b312e20321"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_accentColorDescription]
+value = "Scegli il tuo colore d'accento preferito"
+source_hash = "46cfa2f26ab3258af398f211df9836a38e7d135c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_accentColorLabel]
+value = "Colore d'accento personalizzato"
+source_hash = "1982acaf6e8a04ca616970815e789b49f6a49598"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_addProvider]
+value = "Aggiungi Provider"
+source_hash = "eb3851b63ffe31d6477d09f70ae8efa87110cef6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_aiProviderLabel]
+value = "Provider AI"
+source_hash = "188b430cdfa77a6a864776297145491d865cfb99"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_analyticsDescription]
+value = "Aiutaci a migliorare Calca condividendo modelli di utilizzo anonimi. Nessun prompt o design viene mai condiviso."
+source_hash = "76a8571cdb63dc8c51680490a83c939467f20f71"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_analyticsLabel]
+value = "Analisi"
+source_hash = "25bc96295797b5371aa0625196d597ef03a952de"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiKeyLabel]
+value = "Chiave API"
+source_hash = "47acd2028cf81b5da88ddeedb2aea4eca4b71fbd"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiKeyPlaceholderAnthropic]
+value = "sk-ant-..."
+source_hash = "c7a8c334eef5d1749fface7d42c66f9ae5e8cf36"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiKeyPlaceholderGeneric]
+value = "chiave API..."
+source_hash = "af2d4eb2079faf9cd1f506bec0d1ccbf0b4081f5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiKeyPlaceholderSk]
+value = "sk-..."
+source_hash = "ec3810e10fb78db55ce38b9c18d1c3eb1db739e0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiKeysDescription]
+value = "Aggiungi chiavi API per abilitare la generazione di design AI e le fonti di immagini."
+source_hash = "abc10d6a3f6f9447f0ef5fdd73c190fe31c64407"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiKeysHeading]
+value = "Chiavi API"
+source_hash = "e18ffc8d675b3373609c75f5cc1a7a229b887ed6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiTypeLabel]
+value = "Tipo API"
+source_hash = "4646a9dbee0a247d5aae0db053085c08d7d593cb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiTypeOptionAnthropic]
+value = "Compatibile Anthropic"
+source_hash = "8b9b1b04a0b7fb69f816178469c9c6ecfaa14877"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_apiTypeOptionOpenai]
+value = "Compatibile OpenAI"
+source_hash = "b10d74b5bb37c5ca2fda6aa4bac22f8a6a9018a0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_appearanceHeading]
+value = "Aspetto"
+source_hash = "41def7a0febe741da87c5b79ce78ce27b83f3ae7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_baseUrlLabel]
+value = "URL Base"
+source_hash = "1dbd61f556fe3f920e0c1bc1a21ce34dd73099d6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_baseUrlPlaceholderAnthropic]
+value = "https://api.anthropic.com/v1"
+source_hash = "318256b8fbab69104a0f984ee4f9e07fb528c274"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_baseUrlPlaceholderOpenai]
+value = "https://api.openai.com/v1"
+source_hash = "06afbb309409328d3b5e768e89ad260e05b16cbf"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_cancel]
+value = "Annulla"
+source_hash = "77dfd2135f4db726c47299bb55be26f7f4525a46"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_comingSoon]
+value = "Prossimamente"
+source_hash = "e4115be258dbdd1661c5f1ff14670c19ef1048da"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_configuredProviders]
+value = "Provider Configurate"
+source_hash = "daa179772eec21234a4247a6bc4f02edbd140083"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_connectionFailed]
+value = "Connessione fallita"
+source_hash = "202caaa87055b40a1dfd11ac8219f77640725ea4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_dialogDescription]
+value = "Configura le tue preferenze Calca, inclusi provider AI, tema e opzioni di personalizzazione."
+source_hash = "6cd2f6817e761b888403b2448114a6a5f407005d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_errorApiKeyTooShort]
+value = "La chiave API deve essere lunga almeno 10 caratteri"
+source_hash = "744b408753af7faea577c35e30a923ea6d6d1336"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_errorModelRequired]
+value = "Il modello è obbligatorio"
+source_hash = "6a6f4eaf3c25bd57f66765b4e7335ea25dbeaf64"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_errorModelUnavailable]
+value = "Il modello selezionato non è disponibile per questo provider"
+source_hash = "0335c3cdf9a227cb325ac9bf90f0e4b756eec88c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_errorProbeFailed]
+value = "Probe fallito"
+source_hash = "e230808b9dd82f5e5628f72187750e63896c9914"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_errorUnknown]
+value = "Errore sconosciuto"
+source_hash = "e5fd9aa24c9417e7332e6f25936ae2a6ec8f1524"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_fontSizeDescription]
+value = "Regola la dimensione del carattere dell'interfaccia"
+source_hash = "c80c93eb8140b4e977a45d26c2b33c43d8e90df5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_fontSizeLabel]
+value = "Dimensione carattere"
+source_hash = "83ca9e48c37ce2609d056bf5d47318b25471f7b0"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_geminiApiKeyLabel]
+value = "Chiave API Gemini"
+source_hash = "44e797bf551eb8f456b5bdabe5f915f8610b1533"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_geminiApiKeyPlaceholder]
+value = "AIza..."
+source_hash = "1ccebc9638f47c80fc388173e346b2fa51178cca"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_hideApiKey]
+value = "Nascondi chiave API"
+source_hash = "29538b53771fff5bad78e3a48a3a8f88c2f141d2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_languageDescription]
+value = "Scegli la tua lingua preferita"
+source_hash = "f9d875aa34ef6782d7846da8846f8339be1ad7b5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_languageLabel]
+value = "Lingua"
+source_hash = "89b86ab0e66f527166d98df92ddbcf5416ed58f6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_modelLabel]
+value = "Modello"
+source_hash = "68c2cc7f0ceaa3e499ecb4db331feb4debbbcc23"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_modelsCount]
+value = "{count} modelli"
+source_hash = "e1aaf4b4f9d4d0ef2f9337123af937a48c5ded90"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_navAbout]
+value = "Informazioni"
+source_hash = "6b21fb791ac05170893860c248401cd24a59b732"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_navAriaLabel]
+value = "Sezioni impostazioni"
+source_hash = "2e7109bda2f0209824330776015f79937c94012e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_navGeneral]
+value = "Generale"
+source_hash = "9239ee2cda84eca4c3440e2a7b50148af67da3d4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_navPersonalization]
+value = "Personalizzazione"
+source_hash = "f203458ed70f830ecf62ab5ec4fd43db183fc0d2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_navSkills]
+value = "Competenze"
+source_hash = "e09212c7d3eaa769fbcf66f82a6263794e715931"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_navSoonBadge]
+value = "IN ARRIVO"
+source_hash = "540a681e8a3366c386408500bcdaf7884ac5588a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_newProvider]
+value = "Nuovo Provider"
+source_hash = "c5bd42b847ef8de53f3e7737c7235d8222769e6f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_noModelsAvailable]
+value = "Nessun modello disponibile"
+source_hash = "1f1c8bbc393beb59d4d49d5952fca336f0f7eae8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_noModelsMatch]
+value = 'Nessun modello corrisponde a "{query}"'
+source_hash = "e64a5681f51639afbb7696c7cdd6a9d269a7c9c6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_noProvidersConfigured]
+value = "Nessun provider configurato"
+source_hash = "f285ca35e103109b446aa71089a08f0daae18cf2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_openaiApiKeyLabel]
+value = "Chiave API OpenAI"
+source_hash = "ed05045c1666dd556d9a09f9eb6889f42a81aa5a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_presetBrandLabel]
+value = "Designer Brand"
+source_hash = "640f40f66ec00d55b766a00e3d7a2c536e4d1f92"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_presetCustomLabel]
+value = "Personalizzato"
+source_hash = "081ae3fdc403609cf6e760849ebb14117b7a50cb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_presetEmailLabel]
+value = "Designer Email"
+source_hash = "f07a07f06fe0da47d4edd5f5e3d473dddde2bfab"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_presetMarketingLabel]
+value = "Designer Sito Marketing"
+source_hash = "b86f86634ae1735344f2be9bc8d0f245597c27f4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_presetPresentationLabel]
+value = "Designer Presentazione"
+source_hash = "8b73afb98c7c272f72a7dc6547aff3958a45d8ed"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_presetUiuxLabel]
+value = "Designer UI/UX"
+source_hash = "a3c75d305b6c5c08342e9a7a05f42e684f6609b5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerApiKeyLabel]
+value = "Chiave API {provider}"
+source_hash = "7b2a5385b24fe7f95aa5f35b5c34c859ee132e49"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerIdHint]
+value = "Solo lettere minuscole, numeri e trattini"
+source_hash = "eb1ab896246072f67b2f16e47e63041921cd20d6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerIdLabel]
+value = "ID Provider"
+source_hash = "610992ef9948a19f75b65d85fa2b7c72f5d3143d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerIdPlaceholder]
+value = "mio-provider"
+source_hash = "7a83a2611021dafaee3f3c3d01ab81ba30189948"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerNameAnthropic]
+value = "Anthropic"
+source_hash = "b780a23b530ef6bb5c3b722a0c9c5e3abf222e8b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerNameGeneric]
+value = "Provider"
+source_hash = "7ceee3f3615a2bbe4ce0ac5a269a311e4821daf4"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_providerNameOpenai]
+value = "Compatibile OpenAI"
+source_hash = "7652a74278534d68fa4a9e3f6ff1de6d4ff52627"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_removeProvider]
+value = "Rimuovi {provider}"
+source_hash = "4e0546ddea5ea0e96ffd42469b6a7caa2382ea8f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetButton]
+value = "Reimposta"
+source_hash = "44c57abd888a66b36d4b7c902134063e4a097223"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetConfirmDescription]
+value = "Questo eliminerà permanentemente tutte le tue impostazioni, i design del canvas, le chiavi API e le preferenze. L'app si ricaricherà con le impostazioni predefinite."
+source_hash = "439d3b3e8bf015a430a7f0c3fb6852a39a76df28"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetDescription]
+value = "Cancella tutte le impostazioni, i dati del canvas e le preferenze. Questa azione non può essere annullata."
+source_hash = "716c676586b3a8383508018e697bc2be1af920cb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetEverythingDescription]
+value = "Questo eliminerà permanentemente tutte le tue impostazioni, i design del canvas, le chiavi API e le preferenze."
+source_hash = "6117e18abefaba15001cf56b843ea30f7b0d30fe"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetEverythingLabel]
+value = "Reimposta Tutto"
+source_hash = "2d6cd073edd70d7ab35c0bfa4e56cf0a28699b49"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetTitle]
+value = "Reimposta alle Impostazioni di Fabbrica"
+source_hash = "379ea2e67ba167714078e10f5b79261c3bb801d7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_resetting]
+value = "Reimpostazione in corso..."
+source_hash = "ee41f75047a17902f5b1efdfeb585c2e313d6651"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_restartTour]
+value = "Riavvia il tour"
+source_hash = "ccbea24ae21b387ad0681739e95eea183a24a27f"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_save]
+value = "Salva"
+source_hash = "efc007a393f66cdb14d57d385822a3d9e36ef873"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_sectionComingSoon]
+value = "Impostazioni di {title} in arrivo"
+source_hash = "4b4337642b5c9fa3492180a78ce943ed692e4fdf"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_selectModel]
+value = "Seleziona un modello"
+source_hash = "9eea858822f89e789291abac3402364aa665670c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_selectProvider]
+value = "Seleziona un provider"
+source_hash = "7829c2bdd074b4dca8e66b05d1acea680295138a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_selectProviderFirst]
+value = "Seleziona prima un provider"
+source_hash = "f4e5ad08bfe2e5205a2a892400d43623c74bc93c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_showApiKey]
+value = "Mostra chiave API"
+source_hash = "8d24e5afd2e9b40d21e4300c893a486aab979795"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_testConnection]
+value = "Testa Connessione"
+source_hash = "580f6ab716ab4ca98336529d5348d0e45ed4a61b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_testFoundModels]
+value = "Trovati {count} modelli"
+source_hash = "e667e011300860e8a5c47fb116f8e22793deb23b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_testing]
+value = "Test in corso..."
+source_hash = "15ccc83272b12dee61d5eb873dffb952da3da318"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_themeDark]
+value = "Scuro"
+source_hash = "ae1ef01432946b8976b9b58575b3390ab7644db2"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_themeHeading]
+value = "Tema"
+source_hash = "a797e30923ac1be590300ce6b08e63b4e6dc6688"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_themeLight]
+value = "Chiaro"
+source_hash = "a36ef8aba22905e2d2efbf1ac1d6230d5761859d"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_themeSystem]
+value = "Sistema"
+source_hash = "bc0792d8dc81e8aa30b987246a5ce97c40cd6833"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_title]
+value = "Impostazioni"
+source_hash = "c7f73bb54d928922c3838bb789ee9fb8a5b1eb37"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_tutorialDescription]
+value = "Ripeti il tutorial per conoscere le funzionalità di Calca."
+source_hash = "72fe7b0a0f0c7b07b57f0575732166063fa1e831"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_tutorialLabel]
+value = "Tutorial"
+source_hash = "2701a94c0eb55cbd958a87dff3e959673ff1bf53"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_unsplashApiKeyLabel]
+value = "Chiave API Unsplash"
+source_hash = "d62a01060688d675a8f72a9ba83805fb77253bfe"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.settings_unsplashApiKeyPlaceholder]
+value = "Chiave di accesso..."
+source_hash = "d2dad9dee8d36a561ac1209cb9b8fbafbc7660b5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.shared_close]
+value = "Chiudi"
+source_hash = "bbfa773e5a63a5ea58c9b6207e608ca0120e592a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.toolbar_clearCanvas]
+value = "Cancella Canvas"
+source_hash = "885e0d680096047da2f5b1fc56358e7f8de1a58a"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.toolbar_exportDesign]
+value = "Esporta .design"
+source_hash = "08d303a423dcb560bf5352eb7780eb048b2043cd"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.toolbar_importDesign]
+value = "Importa .design"
+source_hash = "b830628d0fd264ef930be2ab1fd49e6fda046607"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.toolbar_menu]
+value = "Menu"
+source_hash = "57f5f5efbc5990f5230aa95359042338b856707b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.toolbar_noModel]
+value = "Nessun modello selezionato"
+source_hash = "5a32929ddf180eae85335637197c00fec5119b7e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_addProviderContent]
+value = "Puoi aggiungere qui una nuova chiave API per un provider. Dovrai fornire l'URL base e la chiave API del provider."
+source_hash = "cc9526fb6e889e394436b4d98b6e79a518df1180"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_addProviderTitle]
+value = "Aggiungi un Provider"
+source_hash = "2f748bec9644f5bf0539343a533e5110ca8c3a6b"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_allSetContent]
+value = "Puoi riavviare questo tour in qualsiasi momento da Impostazioni → Generale."
+source_hash = "f506c8f4a49843720498b4d4a43a52fa05dbdf51"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_allSetTitle]
+value = "Tutto Pronto!"
+source_hash = "c3c01819058ae9857a2782e5570d03b30f4200d1"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_done]
+value = "Fatto"
+source_hash = "e9b450d14bc2363d292c84f17cfad5cfbd58a458"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_next]
+value = "Avanti →"
+source_hash = "2f04eb152234ce377abc6088380393ae0159c9e9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_promptBarContent]
+value = "Questa è la barra dei prompt. Digita qui la tua idea di design e premi Invio o fai clic sulla freccia per generare."
+source_hash = "8e5a586a590b1792499c78790dae4a965bb74339"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_promptBarTitle]
+value = "La Barra dei Prompt"
+source_hash = "db066acce0e14b0a9b06368228897ccf074ad467"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_providerContent]
+value = "Seleziona il tuo provider AI dal menu a discesa. Se non vedi provider, dovrai aggiungerne uno prima."
+source_hash = "0d38522bb35df3ff5eca8792c3da69e7c2d475e3"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_providerTitle]
+value = "Provider AI"
+source_hash = "188b430cdfa77a6a864776297145491d865cfb99"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_skipTour]
+value = "Salta tour"
+source_hash = "57bc79e3c90750111965137ed4f6e3c45662712e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step1Desc]
+value = "Digita qualsiasi design — una landing page, un annuncio Instagram, una schermata di app. Sii specifico su colori, stile e contenuto."
+source_hash = "ad53ca4101b4215c3dd06c7a798c78bca86501a9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step1Title]
+value = "Descrivi il tuo design"
+source_hash = "7b71b001ab1f315fe5491db94a63cac0438b7444"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step2Desc]
+value = "Premi Invio o fai clic su Genera. Calca crea più variazioni, ognuna imparando dalla precedente."
+source_hash = "b5bad9c84f3f7900c201d322e1cf5b17e2db78ff"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step2Title]
+value = "Genera"
+source_hash = "fc45f9b7a9a6e8b48f0e28821ec1981804dd1eb6"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step3Desc]
+value = "Ogni frame è un design HTML/CSS rifinito. Sposta e ingrandisci la tela per esplorare."
+source_hash = "10d5d789391534bc6b5e45e18472e4825a2b2996"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step3Title]
+value = "I tuoi design"
+source_hash = "512f47d4eba1145549830ffffbdbc65f41d49863"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step4Desc]
+value = "Vuoi un'interpretazione diversa? Remix un frame con una nuova direzione."
+source_hash = "3cf1663173acc315e559652ae742f88c0d27acb9"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step4Title]
+value = "Remix"
+source_hash = "eb322a59267d9b753fd1e0c7b9f4a22dc3968348"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step5Desc]
+value = "Fai clic ovunque su un design per lasciare un feedback. Calca rivedrà solo quella parte."
+source_hash = "12176e9a4223cbc5597069856ff27a38ec5eda41"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step5Title]
+value = "Clicca per Commentare"
+source_hash = "544a2402412473298b70bfe0f01b61b0b6e65a13"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step6Desc]
+value = "Esporta in componenti Figma, Tailwind CSS o React."
+source_hash = "4ca6c7ad6f533a508a5b893fc725410d32fde272"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_step6Title]
+value = "Esporta"
+source_hash = "f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_stepLabel]
+value = "Passo"
+source_hash = "dc416e1088e4bf094dfc9abe0210e0288f5a169e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_toolbarContent]
+value = "Usa la barra degli strumenti per regolare le impostazioni, visualizzare le variazioni ed esportare i tuoi design."
+source_hash = "6f6acbffe9a5489d3bcb9f3548c7f2fe01808a5e"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_toolbarTitle]
+value = "Barra degli Strumenti"
+source_hash = "212af41073666530ad8bf245becce259a0964242"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_unsplashContent]
+value = "Aggiungi qui la tua chiave API Unsplash per abilitare la generazione di immagini nei tuoi design."
+source_hash = "3c58c5195d64f527415db797081fae7ed8992a4c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_unsplashTitle]
+value = "Chiave API Unsplash"
+source_hash = "d62a01060688d675a8f72a9ba83805fb77253bfe"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.tour_waitingMessage]
+value = "Genera il tuo primo design per continuare il tour"
+source_hash = "e4e58e9b27c93eed6f805e67be8c69667606f92c"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_availablePrefix]
+value = "Aggiornamento"
+source_hash = "fb91e24fa52d8d2b32937bf04d843f730319a902"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_availableSuffix]
+value = "disponibile"
+source_hash = "7b231a50a498ef151e291795f46f56bee569eae5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_currentVersion]
+value = "(corrente: v{version})"
+source_hash = "8bfbaf901aaf8c1f5a0f2da8acd364299e1479cb"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_dismiss]
+value = "Ignora notifica aggiornamento"
+source_hash = "1878da6d6838c2dc221fedbfafd19d24f75211e5"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_download]
+value = "Scarica"
+source_hash = "a479c9c34e878d07b4d67a73a48f432ad7dc53c8"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_downloading]
+value = "Download aggiornamento in corso..."
+source_hash = "89822fc0fa9eaa132a3d9f11ee25c668b97a2307"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_readyToInstall]
+value = "Pronto per l'installazione"
+source_hash = "0bd33df8e509c7837075508487416b15c94bbd54"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_restartInstall]
+value = "Riavvia e Installa"
+source_hash = "4133be26598734c2a59a386335e508e922c332df"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_rpcNotFound]
+value = "Metodo RPC {method} non trovato"
+source_hash = "36529ab47d3d7e619fd10f59258d44d0e115fa78"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
+
+[entries.update_unavailable]
+value = "Aggiornatore non disponibile"
+source_hash = "31f3951639cb93cc7ee5c138c06c076410b600d7"
+origin = "ai"
+reviewed = false
+model = "google/gemini-2.5-flash-lite"
+updated_at = "2026-10-08T13:10:04Z"
