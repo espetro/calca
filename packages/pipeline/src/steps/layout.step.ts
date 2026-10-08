@@ -1,6 +1,10 @@
 import { streamAnthropic } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import { buildNewPrompt, buildRevisionUserContent } from "@app/core/prompts/layout";
+import {
+  buildFastPrompt,
+  buildNewPrompt,
+  buildRevisionUserContent,
+} from "@app/core/prompts/layout";
 import { validateLayout } from "@app/shared";
 import { type ImagePart, type ModelMessage, type TextPart } from "ai";
 
@@ -23,6 +27,7 @@ export const layoutStep: Step<LayoutInput, LayoutOutput> = async (input, ctx: St
     baseURL,
     providerType,
     frameIndex,
+    mode,
   } = input;
 
   const useModel = model;
@@ -38,7 +43,10 @@ export const layoutStep: Step<LayoutInput, LayoutOutput> = async (input, ctx: St
     restoreFn = restore;
     userContent = buildRevisionUserContent(systemPrompt, stripped, prompt, String(revision));
   } else {
-    userContent = buildNewPrompt(systemPrompt, critique, prompt, "", []);
+    userContent =
+      mode === "fast"
+        ? buildFastPrompt(systemPrompt, critique, prompt)
+        : buildNewPrompt(systemPrompt, critique, prompt, "", []);
   }
 
   const userParts: (TextPart | ImagePart)[] = [];
@@ -97,7 +105,9 @@ RULES FOR USER IMAGES:
     providerType: providerType as ProviderType | undefined,
     baseURL,
     messages,
-    maxTokens: 16384,
+    // "fast" mode emits compact semantic-token skeleton HTML — a ~6k cap is
+    // ample and keeps weak models from filling budget with verbose markup.
+    maxTokens: mode === "fast" ? 6144 : 16384,
     enableCaching: true,
     systemPrompt: systemPrompt || "",
     functionId,

@@ -41,12 +41,17 @@ export const settingsSchema = z.object({
   systemPrompt: z.string(),
   systemPromptPreset: z.string(),
   conceptCount: z.number(),
+  /** @deprecated Retained for persisted-settings migration — use
+   * `generationMode` + `critiqueMode`. */
   quickMode: z.boolean(),
+  generationMode: z.enum(["fast", "detailed"]).optional(),
   showZoomControls: z.boolean(),
   providers: z.array(providerConfigSchema),
   ideateModel: z.string().optional(),
   isIdeating: z.boolean(),
   variations: z.number(),
+  /** Critique loop toggle — sequential frames with per-frame review +
+   * critique feedback. Applies to both generation modes. */
   critiqueMode: z.boolean(),
   selectedImages: z.array(selectedImageSchema),
   theme: themeSchema,

@@ -325,9 +325,13 @@ export function PromptBar({
 
                 <div className="flex items-center gap-2">
                   <CritiqueModeButton
-                    quickMode={settings.quickMode}
-                    onQuickModeChange={(quickMode) =>
-                      setSettings((prev) => ({ ...prev, quickMode }))
+                    generationMode={settings.generationMode ?? "detailed"}
+                    onGenerationModeChange={(generationMode) =>
+                      setSettings((prev) => ({ ...prev, generationMode }))
+                    }
+                    critiqueMode={settings.critiqueMode}
+                    onCritiqueModeChange={(critiqueMode) =>
+                      setSettings((prev) => ({ ...prev, critiqueMode }))
                     }
                     showCritiqueMode={showCritiqueMode}
                     onToggle={handleToggleCritiqueMode}

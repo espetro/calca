@@ -73,6 +73,69 @@ OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL styling v
   );
 }
 
+/**
+ * "Fast" mode prompt — semantic-token skeleton HTML for weak/free models.
+ * One small <style> block defines design tokens + a handful of classes; the
+ * markup itself is plain semantic HTML. No Tailwind, no CDN — far fewer
+ * output tokens and a much smaller search space than utility markup.
+ */
+export function buildFastPrompt(
+  systemPrompt: string | undefined,
+  critique: string | undefined,
+  prompt: string,
+): string {
+  const critiqueBlock = critique
+    ? `\n\nIMPROVEMENT FEEDBACK from previous variation (apply these learnings):\n${critique}\n`
+    : "";
+  const customBlock = systemPrompt
+    ? `\n\nADDITIONAL INSTRUCTIONS FROM USER:\n${systemPrompt}\n`
+    : "";
+
+  return `You are a world-class visual designer. Generate a clean, polished HTML design using semantic CSS design tokens.${customBlock}${critiqueBlock}
+
+Design request: "${prompt}"
+
+CSS ARCHITECTURE — MANDATORY, keep it small:
+Output exactly ONE <style> block at the top, then plain semantic HTML. In the <style> block define ONLY these design tokens on :root and a small set of reusable classes:
+
+<style>
+  :root {
+    --bg: <page background>;
+    --surface: <card/panel background>;
+    --fg: <primary text>;
+    --muted: <secondary text>;
+    --accent: <one accent color>;
+    --radius: <corner radius>;
+  }
+  /* then ~8-12 classes that USE the tokens: .page, .card, .btn, .btn-primary,
+     .badge, .hero, .grid, .stack, .title, .subtitle, .meta — pick what fits */
+</style>
+
+Rules:
+- Style everything via those classes + tokens — NO utility frameworks, NO Tailwind, NO external CSS/JS, NO CDN links
+- Inline style attributes only for one-off dimensions
+- Keep the <style> block under ~60 lines; prefer fewer, well-named classes
+- Semantic HTML elements (<header>, <main>, <section>, <nav>, <h1>-<h3>, <p>, <button>)
+- Consistent spacing via a small scale (8px multiples)
+
+IMAGE PLACEHOLDERS — include 1-3 for real imagery, EXACT format:
+<div data-placeholder="DESCRIPTION" data-ph-w="WIDTH" data-ph-h="HEIGHT" data-img-source="SOURCE" data-img-query="SEARCH_TERMS" style="width:WIDTHpx;height:HEIGHTpx" class="ph">
+  <span>DESCRIPTION</span>
+</div>
+(data-placeholder = image prompt, data-ph-w/h = pixel size, data-img-source = "unsplash"|"dalle"|"gemini", data-img-query = 3-5 word search)
+
+SIZE — output a size comment on the FIRST line:
+<!--size:WIDTHxHEIGHT-->
+
+NO MOTION — no animations, transitions, @keyframes, hover effects.
+
+OUTPUT:
+- First line: <!--size:WIDTHxHEIGHT-->
+- Then the <style> block, then HTML — no explanation, no markdown, no code fences
+- Self-contained, no external dependencies
+- Generate exactly ONE design`;
+}
+
 export function buildNewPrompt(
   systemPrompt: string | undefined,
   critique: string | undefined,
@@ -129,6 +192,7 @@ TAILWIND CSS — USE UTILITY CLASSES:
 - Use arbitrary value syntax for custom values: bg-[#hex], w-[Npx], text-[Npx], etc.
 - Use Tailwind v4 syntax (standard utility classes)
 - Small inline styles are acceptable ONLY for truly dynamic values that cannot be expressed in Tailwind (e.g., CSS custom properties, calc() expressions)
+- Semantic palette: pick ONE accent hue + a neutral ramp and reuse those same color utilities everywhere (e.g., every accent uses bg-emerald-500/text-emerald-600) instead of scattering many different colors
 
 DESIGN QUALITY RULES:
 - Rich color palettes, gradients, accent colors
@@ -190,11 +254,10 @@ ABSOLUTELY NO MOTION — no CSS animations, transitions, @keyframes, hover effec
 SIZE — output a size comment on the FIRST line:
 <!--size:WIDTHxHEIGHT-->
 
-TAILWIND CSS — USE UTILITY CLASSES:
-- Apply ALL styling via Tailwind utility classes on the class attribute (e.g., class="p-4 bg-blue-500 rounded-lg shadow-md")
-- Do NOT use <style> tags — everything must be Tailwind classes
-- Use arbitrary value syntax for custom values: bg-[#hex], w-[Npx], text-[Npx], etc.
-- Small inline styles are acceptable ONLY for truly dynamic values that cannot be expressed in Tailwind
+STYLING — MATCH THE EXISTING APPROACH:
+- If the existing HTML uses Tailwind utility classes, keep styling via Tailwind (arbitrary values bg-[#hex], w-[Npx] allowed; no <style> tags)
+- If the existing HTML uses a <style> block with CSS variables/classes, edit that same block and its classes — do NOT introduce Tailwind
+- Small inline styles are acceptable ONLY for truly dynamic values
 
 DESIGNER COMMENT — on the LAST line, add a brief comment about what you did:
 <!--otto:Your brief, friendly comment here-->
@@ -205,5 +268,5 @@ Examples:
 
 Keep it to 1-2 short sentences. Be helpful, specific, and conversational — like a design teammate.
 
-OUTPUT: HTML only — no explanation, no markdown, no code fences. ALL styling via Tailwind utility classes — NO <style> tags.`;
+OUTPUT: HTML only — no explanation, no markdown, no code fences.`;
 }

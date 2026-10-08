@@ -205,9 +205,23 @@ function HomeInner() {
   });
 
   useMountEffect(() => {
-    const quickMode = new URLSearchParams(window.location.search).get("quickMode");
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode");
+    const critique = params.get("critique");
+    const quickMode = params.get("quickMode"); // legacy: true = detailed+no critique
+    if (mode === "fast" || mode === "detailed") {
+      setSettings((prev) => ({ ...prev, generationMode: mode }));
+    }
+    if (critique === "true" || critique === "false") {
+      setSettings((prev) => ({ ...prev, critiqueMode: critique === "true" }));
+    }
     if (quickMode === "true" || quickMode === "false") {
-      setSettings((prev) => ({ ...prev, quickMode: quickMode === "true" }));
+      setSettings((prev) => ({
+        ...prev,
+        quickMode: quickMode === "true",
+        generationMode: "detailed",
+        critiqueMode: quickMode === "false",
+      }));
     }
   });
 

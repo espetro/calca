@@ -50,6 +50,7 @@ const createDefaultSettings = (): Settings => {
     systemPromptPreset: "custom",
     conceptCount: 1,
     quickMode: true,
+    generationMode: "detailed",
     showZoomControls: false,
     providers: envProvider ? [envProvider] : [],
     ideateModel: undefined,
@@ -61,6 +62,14 @@ const createDefaultSettings = (): Settings => {
     onboardingCompleted: false,
     analyticsEnabled: true,
   };
+};
+
+/** Old persisted settings have `quickMode` (true = parallel "Quick", false =
+ * sequential "Critique loop"). Map onto the new taxonomy: both become
+ * `detailed` output, and the old sequential path becomes the critique toggle. */
+const migrateGenerationMode = (parsed: Partial<Settings>): Partial<Settings> => {
+  if (parsed.generationMode) return {};
+  return { generationMode: "detailed", critiqueMode: parsed.quickMode === false };
 };
 
 const migrateModelFormat = (parsed: Partial<Settings>): Partial<Settings> => {
@@ -107,7 +116,10 @@ const createStorage = () => {
           cachedSettings = defaults;
           return cachedSettings;
         }
-        const migrated = migrateModelFormat(result.data);
+        const migrated = {
+          ...migrateModelFormat(result.data),
+          ...migrateGenerationMode(result.data),
+        };
         const merged = { ...defaults, ...result.data, ...migrated };
         const envProvider = createEnvProvider();
         if (envProvider && !merged.providers.some((p) => p.isEnv)) {

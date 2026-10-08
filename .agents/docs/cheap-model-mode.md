@@ -1,5 +1,18 @@
 # Cheap-model mode — external vs internal UX blockers
 
+> **Status: shipped** — implemented as the `fast` / `detailed` mode split
+> with a `critique` toggle (this branch). `WorkflowInputSchema.mode` is now
+> `"fast" | "detailed"` plus `critique: boolean`. Fast = semantic-token
+> skeleton HTML (`buildFastPrompt`, ~6k max tokens, ≤2 variations, text-first
+> summary). Detailed = the former Quick pipeline with a disciplined semantic
+> palette. Critique is orthogonal: on either mode it switches frames to the
+> sequential review+critique loop (the former "sequential" mode).
+>
+> Deferred per request: exploring non-React output targets for Detailed
+> (Svelte/Alpine) and user-supplied component libs — the framework
+> exploration is a research item, not built here.
+
+
 Assessment of why free-tier models (the BYOK demo's most likely first-run
 experience — e.g. OpenRouter `:free` variants) produce a broken-feeling
 generation UX, and whether a low-complexity "easy/skeleton" generation mode is

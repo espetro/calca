@@ -1,23 +1,29 @@
 import { useViewportSize } from "@mantine/hooks";
 import { useWindowEvent } from "@mantine/hooks";
-import { RefreshCw, Zap } from "lucide-react";
+import { Layers, RefreshCw, Zap } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
+type GenerationMode = "fast" | "detailed";
+
 interface CritiqueModeButtonProps {
-  quickMode: boolean;
-  onQuickModeChange: (quickMode: boolean) => void;
+  generationMode: GenerationMode;
+  onGenerationModeChange: (mode: GenerationMode) => void;
+  critiqueMode: boolean;
+  onCritiqueModeChange: (enabled: boolean) => void;
   showCritiqueMode: boolean;
   onToggle: () => void;
   dataTour?: string;
 }
 
 export function CritiqueModeButton({
-  quickMode,
-  onQuickModeChange,
+  generationMode,
+  onGenerationModeChange,
+  critiqueMode,
+  onCritiqueModeChange,
   showCritiqueMode,
   onToggle,
   dataTour,
@@ -55,6 +61,63 @@ export function CritiqueModeButton({
 
   useWindowEvent("mousedown", handleClickOutside);
 
+  const isFast = generationMode === "fast";
+
+  const ModeOption = ({
+    mode,
+    icon,
+    title,
+    description,
+  }: {
+    mode: GenerationMode;
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+  }) => {
+    const active = generationMode === mode;
+    const palette = mode === "fast" ? "quick" : "critique";
+    return (
+      <Button
+        variant="ghost"
+        onClick={() => onGenerationModeChange(mode)}
+        className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left whitespace-normal transition-all hover:bg-background/60 ${
+          active ? "border" : "bg-background/40"
+        }`}
+        style={
+          active
+            ? {
+                background: `var(--mode-${palette}-bg)`,
+                borderColor: `var(--mode-${palette}-fg)`,
+              }
+            : { background: `var(--mode-${palette}-bg-subtle)` }
+        }
+      >
+        <div
+          className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{
+            background: active
+              ? `var(--mode-${palette}-icon-bg)`
+              : `var(--mode-${palette}-bg-subtle)`,
+            color: `var(--mode-${palette}-fg)`,
+          }}
+        >
+          {icon}
+        </div>
+        <div className="flex-1 min-w-0 whitespace-normal">
+          <div className="text-[12px] font-semibold" style={{ color: `var(--mode-${palette}-fg)` }}>
+            {title}
+          </div>
+          <div
+            className="text-[10px] leading-relaxed mt-0.5"
+            style={{ color: `var(--mode-${palette}-fg)`, opacity: 0.7 }}
+          >
+            {description}
+          </div>
+        </div>
+      </Button>
+    );
+  };
+
   return (
     <Popover
       open={showCritiqueMode}
@@ -70,14 +133,15 @@ export function CritiqueModeButton({
           data-tour={dataTour}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all"
           style={
-            quickMode
+            isFast
               ? { background: "var(--mode-quick-bg)", color: "var(--mode-quick-fg)" }
               : { background: "var(--mode-critique-bg)", color: "var(--mode-critique-fg)" }
           }
           title={m.promptbar_generationMode()}
         >
-          {quickMode ? <Zap className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
-          <span>{quickMode ? m.promptbar_quick() : m.promptbar_critique()}</span>
+          {isFast ? <Zap className="w-3.5 h-3.5" /> : <Layers className="w-3.5 h-3.5" />}
+          <span>{isFast ? m.promptbar_fast() : m.promptbar_detailed()}</span>
+          {critiqueMode && <RefreshCw className="w-3 h-3 opacity-60" />}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -90,92 +154,47 @@ export function CritiqueModeButton({
           {m.promptbar_generationMode()}
         </div>
         <div className="space-y-2">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              onQuickModeChange(false);
-              onToggle();
-            }}
-            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left whitespace-normal transition-all hover:bg-background/60 ${
-              !quickMode ? "border" : "bg-background/40"
-            }`}
-            style={
-              !quickMode
-                ? {
-                    background: "var(--mode-critique-bg)",
-                    borderColor: "var(--mode-critique-fg)",
-                  }
-                : { background: "var(--mode-critique-bg-subtle)" }
-            }
+          <ModeOption
+            mode="fast"
+            icon={<Zap className="w-4 h-4" />}
+            title={m.promptbar_fastMode()}
+            description={m.promptbar_fastModeDesc()}
+          />
+          <ModeOption
+            mode="detailed"
+            icon={<Layers className="w-4 h-4" />}
+            title={m.promptbar_detailedMode()}
+            description={m.promptbar_detailedModeDesc()}
+          />
+        </div>
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={critiqueMode}
+            onClick={() => onCritiqueModeChange(!critiqueMode)}
+            className="w-full flex items-center gap-3 p-1.5 rounded-lg text-left transition-colors hover:bg-background/60"
           >
             <div
-              className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center`}
-              style={
-                !quickMode
-                  ? {
-                      background: "var(--mode-critique-icon-bg)",
-                      color: "var(--mode-critique-fg)",
-                    }
-                  : {
-                      background: "var(--mode-critique-bg-subtle)",
-                      color: "var(--mode-critique-fg)",
-                    }
-              }
+              className={`relative w-7 h-4 rounded-full transition-colors ${
+                critiqueMode ? "bg-emerald-500" : "bg-muted-foreground/30"
+              }`}
             >
-              <RefreshCw className="w-4 h-4" />
+              <span
+                className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white transition-transform ${
+                  critiqueMode ? "translate-x-3" : ""
+                }`}
+              />
             </div>
-            <div className="flex-1 min-w-0 whitespace-normal">
-              <div
-                className="text-[12px] font-semibold"
-                style={{ color: "var(--mode-critique-fg)" }}
-              >
-                {m.promptbar_critiqueLoop()}
+            <div className="flex-1 min-w-0">
+              <div className="text-[12px] font-semibold text-foreground">
+                {m.promptbar_critiqueToggle()}
               </div>
-              <div
-                className="text-[10px] leading-relaxed mt-0.5"
-                style={{ color: "var(--mode-critique-fg)", opacity: 0.7 }}
-              >
-                {m.promptbar_critiqueLoopDesc()}
+              <div className="text-[10px] leading-relaxed text-muted-foreground">
+                {m.promptbar_critiqueToggleDesc()}
               </div>
             </div>
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              onQuickModeChange(true);
-              onToggle();
-            }}
-            className={`w-full h-auto flex items-start gap-3 p-2.5 rounded-xl text-left whitespace-normal transition-all hover:bg-background/60 ${
-              quickMode ? "border" : "bg-background/40"
-            }`}
-            style={
-              quickMode
-                ? { background: "var(--mode-quick-bg)", borderColor: "var(--mode-quick-fg)" }
-                : { background: "var(--mode-quick-bg-subtle)" }
-            }
-          >
-            <div
-              className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center`}
-              style={
-                quickMode
-                  ? { background: "var(--mode-quick-icon-bg)", color: "var(--mode-quick-fg)" }
-                  : { background: "var(--mode-quick-bg-subtle)", color: "var(--mode-quick-fg)" }
-              }
-            >
-              <Zap className="w-4 h-4" />
-            </div>
-            <div className="flex-1 min-w-0 whitespace-normal">
-              <div className="text-[12px] font-semibold" style={{ color: "var(--mode-quick-fg)" }}>
-                {m.promptbar_quickMode()}
-              </div>
-              <div
-                className="text-[10px] leading-relaxed mt-0.5"
-                style={{ color: "var(--mode-quick-fg)", opacity: 0.7 }}
-              >
-                {m.promptbar_quickModeDesc()}
-              </div>
-            </div>
-          </Button>
+          </button>
         </div>
       </PopoverContent>
     </Popover>

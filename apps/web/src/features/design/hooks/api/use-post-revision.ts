@@ -116,7 +116,7 @@ const postRevision = async ({ prompt, signal, options, derived, systemPrompt }: 
         baseURL: derived.baseURL || undefined,
         conceptCount: 1,
         existingHtml: options.existingHtml,
-        mode: "quick",
+        mode: "detailed",
         model: derived.model,
         prompt,
         providerType: derived.providerType || undefined,

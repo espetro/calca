@@ -158,7 +158,8 @@ interface WorkflowStreamParams {
   groupId: string;
   positions: Point[];
   conceptCount: number;
-  mode: "quick" | "sequential";
+  mode: "fast" | "detailed";
+  critique?: boolean;
   model?: string;
   apiKey?: string;
   baseURL?: string;
@@ -201,6 +202,7 @@ export const useWorkflowStream = () => {
         positions,
         conceptCount,
         mode,
+        critique,
         model,
         apiKey,
         baseURL,
@@ -239,10 +241,9 @@ export const useWorkflowStream = () => {
       };
       setGroups((prev) => [...prev, newGroup]);
 
-      const frameStepNames: PipelineStepName[] =
-        mode === "quick"
-          ? ["plan", "layout", "images"]
-          : ["plan", "layout", "images", "review", "critique"];
+      const frameStepNames: PipelineStepName[] = critique
+        ? ["plan", "layout", "images", "review", "critique"]
+        : ["plan", "layout", "images"];
 
       const iterIds: string[] = [];
       for (let i = 0; i < conceptCount; i++) {
@@ -338,6 +339,7 @@ export const useWorkflowStream = () => {
               existingHtml,
               geminiKey,
               mode,
+              critique,
               model,
               openaiKey,
               prompt,

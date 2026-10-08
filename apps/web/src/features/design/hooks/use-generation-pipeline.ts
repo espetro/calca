@@ -117,7 +117,13 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
           ? [...canvasImgDataUrls, ...promptBarImages]
           : undefined;
 
-      const iterationCount = settings.conceptCount || 4;
+      const generationMode = settings.generationMode ?? "detailed";
+      // "fast" mode targets weak/free models — clamp variations so a run
+      // stays well inside tight rate limits.
+      const iterationCount = Math.min(
+        settings.conceptCount || 4,
+        generationMode === "fast" ? 2 : 10,
+      );
       const positions = getGridPositions(canvas, groups, iterationCount);
       const groupId = `group-${Date.now()}`;
 
@@ -126,9 +132,10 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         baseURL: derived.baseURL || undefined,
         conceptCount: iterationCount,
         contextImages,
+        critique: settings.critiqueMode,
         geminiKey: settings.geminiKey || undefined,
         groupId,
-        mode: settings.quickMode ? "quick" : "sequential",
+        mode: generationMode,
         model: derived.model,
         openaiKey: settings.openaiKey || undefined,
         positions,
@@ -162,7 +169,7 @@ export const useGenerationPipeline = (canvas: CanvasLike) => {
         existingHtml: sourceIteration.html,
         geminiKey: settings.geminiKey || undefined,
         groupId,
-        mode: "quick",
+        mode: settings.generationMode ?? "detailed",
         model: derived.model,
         openaiKey: settings.openaiKey || undefined,
         positions,
