@@ -1,5 +1,14 @@
 # @calca/pipeline
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @app/shared@0.8.0
+  - @app/core@0.8.0
+  - @app/logger@0.8.0
+
 ## 1.0.5
 
 ### Patch Changes

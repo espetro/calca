@@ -1,5 +1,12 @@
 # @calca/mcp
 
+## 0.8.0
+
+### Patch Changes
+
+- @calca/canvas-base@0.8.0
+- @calca/mcp-core@0.8.0
+
 ## 0.7.5
 
 ### Patch Changes

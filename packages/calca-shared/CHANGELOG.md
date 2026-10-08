@@ -1,5 +1,11 @@
 # @calca/shared
 
+## 0.8.0
+
+### Minor Changes
+
+- Generation modes: `fast` / `detailed` + orthogonal `critique` toggle (replaces quick/sequential). Fast emits compact semantic-token skeleton HTML optimized for free/weak models; critique runs the sequential review loop on either mode. Also: self-healing frame heights, summary fallbacks for models without structured output, "Summary unavailable" status, and output guards for free-model prose leaks.
+
 ## 0.7.5
 
 ### Patch Changes

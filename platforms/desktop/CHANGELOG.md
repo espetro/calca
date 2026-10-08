@@ -1,5 +1,12 @@
 # @app/electrobun
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @app/server@0.8.0
+
 ## 0.7.5
 
 ### Patch Changes

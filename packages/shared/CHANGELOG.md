@@ -1,5 +1,16 @@
 # @app/shared
 
+## 0.8.0
+
+### Minor Changes
+
+- Generation modes: `fast` / `detailed` + orthogonal `critique` toggle (replaces quick/sequential). Fast emits compact semantic-token skeleton HTML optimized for free/weak models; critique runs the sequential review loop on either mode. Also: self-healing frame heights, summary fallbacks for models without structured output, "Summary unavailable" status, and output guards for free-model prose leaks.
+
+### Patch Changes
+
+- Updated dependencies
+  - @calca/shared@0.8.0
+
 ## 0.7.5
 
 ### Patch Changes
@@ -71,11 +82,14 @@
 ### Minor Changes
 
 - ### Features
+
   - **Zod Schemas**: Added shared schemas for layout, review, critique, and summary validation
   - **Type Consolidation**: Consolidated Settings type across the monorepo
 
   ### Tests
+
   - Added layout schema unit tests
 
   ### Docs
+
   - Added package-specific AGENTS.md documentation

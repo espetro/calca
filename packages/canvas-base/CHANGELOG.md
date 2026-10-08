@@ -1,5 +1,7 @@
 # @calca/canvas-base
 
+## 0.8.0
+
 ## 0.7.5
 
 ### Patch Changes

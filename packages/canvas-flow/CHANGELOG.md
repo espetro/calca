@@ -1,5 +1,14 @@
 # @calca/canvas-flow
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @calca/canvas-ui@0.8.0
+  - @calca/shared@0.8.0
+  - @calca/canvas-base@0.8.0
+
 ## 0.7.5
 
 ### Patch Changes

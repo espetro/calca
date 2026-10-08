@@ -1,5 +1,21 @@
 # @app/web
 
+## 0.8.0
+
+### Minor Changes
+
+- Generation modes: `fast` / `detailed` + orthogonal `critique` toggle (replaces quick/sequential). Fast emits compact semantic-token skeleton HTML optimized for free/weak models; critique runs the sequential review loop on either mode. Also: self-healing frame heights, summary fallbacks for models without structured output, "Summary unavailable" status, and output guards for free-model prose leaks.
+
+### Patch Changes
+
+- Updated dependencies
+  - @app/shared@0.8.0
+  - @app/core@0.8.0
+  - @calca/canvas-flow@0.8.0
+  - @app/analytics@0.8.0
+  - @app/logger@0.8.0
+  - @calca/canvas-base@0.8.0
+
 ## 0.7.5
 
 ### Patch Changes
@@ -148,6 +164,7 @@
 ### Minor Changes
 
 - ### Features
+
   - **Prompt Bar Redesign**: Complete rewrite with composition API, floating preset buttons, popover UIs for variations and critique mode, image integration with AI pipeline, and custom hooks for viewport/window events
   - **Design Summary UI**: Added summary list, dialog, and wired into canvas page
   - **Canvas Improvements**: Decomposed page.tsx into widgets, added rubber-band selection, resize handles with dimension overlay
@@ -157,11 +174,13 @@
   - **Toolbar**: Added provider-prefixed model name resolution in display
 
   ### Fixes
+
   - Fixed stale iframe height measurements and reduced visual jumps in design rendering
   - Fixed onboarding backdrop click handler to dismiss modal
   - Fixed config to load .env from repo root using dotenv
 
   ### Refactors
+
   - Extracted useClickOutside hook and cleaned up unused code
   - Deduplicated HTML parsing utilities into design/lib
   - Migrated page.tsx from useState/hooks to Jotai atoms

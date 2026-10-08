@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- **Generation modes**: `fast` / `detailed` + orthogonal `critique` toggle replaces the quick/sequential pair. Fast emits compact semantic-token skeleton HTML (no Tailwind/CDN, ~6k tokens, ≤2 frames, text-first summary) tuned for free/weak models like OpenRouter `:free`; Detailed keeps Tailwind output with a disciplined semantic palette; the critique loop runs on either mode.
+- **Robustness**: self-healing frame heights, summary fallbacks for models without structured output, "Summary unavailable" status after finished runs, and layout output guards for free-model prose leaks + dropped `<style>` blocks.
+- **Settings**: model ID input is now a type-to-filter combobox; `generationMode`/`critiqueMode` settings migrate from `quickMode`; `?mode=&critique=` URL params.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
