@@ -121,10 +121,12 @@ setTimeout(reportHeight, 2000);
         e.data.gen === currentGen
       ) {
         const h = Math.min(Math.max(e.data.height, 50), 12_000);
-        if (!iteration.height || iteration.height === 0 || Math.abs(h - iteration.height) > 30) {
-          setContentHeight(h);
-          measuredRef.current = true;
-        }
+        measuredRef.current = true;
+        // Always reconcile against the displayed height, not the pipeline's
+        // claimed `iteration.height`: an early pre-layout report can collapse
+        // the frame to ~100px, and the later correct measure must be allowed
+        // to heal it even when it happens to match the claimed height.
+        setContentHeight((prev) => (Math.abs(h - prev) > 4 ? h : prev));
       }
     };
     window.addEventListener("message", onMessage);

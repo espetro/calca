@@ -110,6 +110,7 @@
   "settings_selectProviderFirst": "Select a provider first",
   "settings_modelLabel": "Model",
   "settings_noModelsAvailable": "No models available",
+  "settings_noModelsMatch": "No models match \"{query}\"",
   "settings_selectModel": "Select a model",
   "settings_configuredProviders": "Configured Providers",
   "settings_modelsCount": "{count} models",

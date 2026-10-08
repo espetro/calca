@@ -2,18 +2,21 @@ import { groupsAtom } from "@calca/canvas-flow";
 import { useAtom } from "jotai";
 import { ChevronDownIcon } from "lucide-react";
 
-import { openSummaryIdAtom } from "#/features/design/state/generation-atoms";
+import { isGeneratingAtom, openSummaryIdAtom } from "#/features/design/state/generation-atoms";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
 export function SummaryList() {
   const [groups] = useAtom(groupsAtom);
+  const [isGenerating] = useAtom(isGeneratingAtom);
   const [openId, setOpenId] = useAtom(openSummaryIdAtom);
 
   const visibleGroups = groups.filter((group) => {
-    const hasCompletedIteration = group.iterations.some((it) => !it.isLoading && it.html);
     const hasSummary = Boolean(group.summary);
-    return hasCompletedIteration || hasSummary;
+    if (hasSummary) return true;
+    // "Generating summary…" placeholder: only while a generation is actually
+    // running — otherwise a failed/absent summary pins the row forever.
+    return isGenerating && group.iterations.some((it) => !it.isLoading && it.html);
   });
 
   if (visibleGroups.length === 0) {
