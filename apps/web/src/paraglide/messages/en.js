@@ -2736,6 +2736,17 @@ export const design_summaryGenerating = () => `Generating summary...`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const design_summaryUnavailable = () => `Summary unavailable`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const design_errorWorkflowRequest = () => `Workflow request failed`
 
 

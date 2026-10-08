@@ -248,6 +248,7 @@
     "defaultDesignLabel": "design",
     "revisedLabel": "Revised",
     "summaryGenerating": "Generating summary...",
+    "summaryUnavailable": "Summary unavailable",
     "errorWorkflowRequest": "Workflow request failed",
     "errorNoResponseBody": "No response body",
     "errorUnknownStream": "Unknown stream error",

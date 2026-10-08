@@ -20,6 +20,7 @@ import {
   genStartedAtAtom,
   genStatusAtom,
   openSummaryIdAtom,
+  summaryAttemptedAtom,
 } from "#/features/design/state/generation-atoms";
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
 import { m } from "#/lib/i18n";
@@ -182,6 +183,7 @@ export const useWorkflowStream = () => {
   const setGenStatus = useSetAtom(genStatusAtom);
   const setGenStartedAt = useSetAtom(genStartedAtAtom);
   const setOpenSummaryId = useSetAtom(openSummaryIdAtom);
+  const setSummaryAttempted = useSetAtom(summaryAttemptedAtom);
 
   const abortRef = useRef<AbortController | null>(null);
   const generationStartTimeRef = useRef<number>(0);
@@ -240,6 +242,7 @@ export const useWorkflowStream = () => {
         prompt,
       };
       setGroups((prev) => [...prev, newGroup]);
+      setSummaryAttempted((prev) => new Set(prev).add(groupId));
 
       const frameStepNames: PipelineStepName[] = critique
         ? ["plan", "layout", "images", "review", "critique"]

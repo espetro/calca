@@ -2,7 +2,11 @@ import { groupsAtom } from "@calca/canvas-flow";
 import { useAtom } from "jotai";
 import { ChevronDownIcon } from "lucide-react";
 
-import { isGeneratingAtom, openSummaryIdAtom } from "#/features/design/state/generation-atoms";
+import {
+  isGeneratingAtom,
+  openSummaryIdAtom,
+  summaryAttemptedAtom,
+} from "#/features/design/state/generation-atoms";
 import { m } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 
@@ -10,13 +14,14 @@ export function SummaryList() {
   const [groups] = useAtom(groupsAtom);
   const [isGenerating] = useAtom(isGeneratingAtom);
   const [openId, setOpenId] = useAtom(openSummaryIdAtom);
+  const [attemptedIds] = useAtom(summaryAttemptedAtom);
 
   const visibleGroups = groups.filter((group) => {
     const hasSummary = Boolean(group.summary);
     if (hasSummary) return true;
-    // "Generating summary…" placeholder: only while a generation is actually
-    // running — otherwise a failed/absent summary pins the row forever.
-    return isGenerating && group.iterations.some((it) => !it.isLoading && it.html);
+    // Pending/unavailable rows only for groups that ran this session —
+    // historical groups without summaries stay hidden.
+    return attemptedIds.has(group.id) && group.iterations.some((it) => !it.isLoading && it.html);
   });
 
   if (visibleGroups.length === 0) {
@@ -31,7 +36,12 @@ export function SummaryList() {
       {visibleGroups.map((group) => {
         const hasSummary = Boolean(group.summary);
         const isOpen = hasSummary && openId === group.id;
-        const title = group.summary?.title ?? m.design_summaryGenerating();
+        // A finished run that produced no summary gets an honest status
+        // instead of a forever-pending "Generating summary…" placeholder.
+        const summaryFailed = !hasSummary && !isGenerating;
+        const title =
+          group.summary?.title ??
+          (summaryFailed ? m.design_summaryUnavailable() : m.design_summaryGenerating());
 
         return (
           <div key={group.id}>
