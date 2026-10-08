@@ -37,14 +37,18 @@ export interface Settings {
   systemPrompt: string;
   systemPromptPreset: string;
   conceptCount: number;
+  /** @deprecated Retained for persisted-settings migration — use
+   * `generationMode` + `critiqueMode`. */
   quickMode: boolean;
+  generationMode?: "fast" | "detailed";
   showZoomControls: boolean;
   providers: ProviderConfig[];
   ideateModel?: string;
   isIdeating: boolean;
   /** @deprecated Use conceptCount instead */
   variations: number;
-  /** @deprecated Use quickMode instead */
+  /** Critique loop toggle — sequential frames with per-frame review +
+   * critique feedback. Applies to both generation modes. */
   critiqueMode: boolean;
   selectedImages: SelectedImage[];
   theme: Theme;

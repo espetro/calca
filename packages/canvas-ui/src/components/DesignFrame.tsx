@@ -62,13 +62,16 @@ export function DesignFrame({
   const measurementGenRef = useRef(0);
 
   const frameW = width || iteration.width || FRAME_WIDTH;
+  // Skeleton-mode frames carry their own `<style>` block and no Tailwind
+  // utilities — skip the CDN script so they load with zero network deps.
+  const needsTailwind = iteration.html ? !iteration.html.includes("<style") : true;
   const srcdoc =
     iteration.html && !iteration.isLoading
       ? `<!DOCTYPE html>
 <html style="height:auto;overflow:hidden;"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="${getTailwindScriptSrc()}"></script>
+  ${needsTailwind ? `<script src="${getTailwindScriptSrc()}"></script>` : ""}
   <style>
     html, body { margin: 0; padding: 0; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: hidden; }
     body { background: white; width: ${frameW}px; }

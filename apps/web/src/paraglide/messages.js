@@ -5203,6 +5203,27 @@ export const design_summaryGenerating = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const design_summaryUnavailable = (params = {}, options = {}) => {
+	return {
+		en: en.design_summaryUnavailable
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "en" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const design_errorWorkflowRequest = (params = {}, options = {}) => {
 	return {
 		en: en.design_errorWorkflowRequest
@@ -6505,9 +6526,9 @@ export const promptbar_generationMode = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_quick = (params = {}, options = {}) => {
+export const promptbar_fast = (params = {}, options = {}) => {
 	return {
-		en: en.promptbar_quick
+		en: en.promptbar_fast
 	}[options.languageTag ?? languageTag()]()
 }
 
@@ -6526,9 +6547,9 @@ export const promptbar_quick = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_critique = (params = {}, options = {}) => {
+export const promptbar_detailed = (params = {}, options = {}) => {
 	return {
-		en: en.promptbar_critique
+		en: en.promptbar_detailed
 	}[options.languageTag ?? languageTag()]()
 }
 
@@ -6547,9 +6568,9 @@ export const promptbar_critique = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_critiqueLoop = (params = {}, options = {}) => {
+export const promptbar_critiqueToggle = (params = {}, options = {}) => {
 	return {
-		en: en.promptbar_critiqueLoop
+		en: en.promptbar_critiqueToggle
 	}[options.languageTag ?? languageTag()]()
 }
 
@@ -6568,9 +6589,9 @@ export const promptbar_critiqueLoop = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_critiqueLoopDesc = (params = {}, options = {}) => {
+export const promptbar_critiqueToggleDesc = (params = {}, options = {}) => {
 	return {
-		en: en.promptbar_critiqueLoopDesc
+		en: en.promptbar_critiqueToggleDesc
 	}[options.languageTag ?? languageTag()]()
 }
 
@@ -6589,9 +6610,9 @@ export const promptbar_critiqueLoopDesc = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_quickMode = (params = {}, options = {}) => {
+export const promptbar_fastMode = (params = {}, options = {}) => {
 	return {
-		en: en.promptbar_quickMode
+		en: en.promptbar_fastMode
 	}[options.languageTag ?? languageTag()]()
 }
 
@@ -6610,9 +6631,51 @@ export const promptbar_quickMode = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_quickModeDesc = (params = {}, options = {}) => {
+export const promptbar_detailedMode = (params = {}, options = {}) => {
 	return {
-		en: en.promptbar_quickModeDesc
+		en: en.promptbar_detailedMode
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "en" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_fastModeDesc = (params = {}, options = {}) => {
+	return {
+		en: en.promptbar_fastModeDesc
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "en" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_detailedModeDesc = (params = {}, options = {}) => {
+	return {
+		en: en.promptbar_detailedModeDesc
 	}[options.languageTag ?? languageTag()]()
 }
 

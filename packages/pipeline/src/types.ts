@@ -7,7 +7,12 @@ import type { TokenAggregator } from "./telemetry";
 
 export const WorkflowInputSchema = z.object({
   prompt: z.string(),
-  mode: z.enum(["quick", "sequential"]),
+  /** Output contract: "fast" = semantic-token skeleton HTML (cheap/free
+   * models), "detailed" = full Tailwind utility markup. */
+  mode: z.enum(["fast", "detailed"]),
+  /** When true, frames run sequentially and each gets a review + critique
+   * pass whose feedback feeds the next frame. Applies to both modes. */
+  critique: z.boolean().optional(),
   conceptCount: z.number().optional(),
   model: z.string().optional(),
   apiKey: z.string().optional(),
@@ -86,6 +91,8 @@ export const LayoutInputSchema = z.object({
   baseURL: z.string().optional(),
   providerType: z.string().optional(),
   frameIndex: z.number().optional(),
+  /** Output contract forwarded from the workflow input. */
+  mode: z.enum(["fast", "detailed"]).optional(),
 });
 
 export const LayoutOutputSchema = z.object({
@@ -167,6 +174,7 @@ export const SummaryInputSchema = z.object({
   model: z.string().optional(),
   prompt: z.string(),
   providerType: z.string().optional(),
+  mode: z.enum(["fast", "detailed"]).optional(),
 });
 
 export const SummaryOutputSchema = z.object({

@@ -44,12 +44,9 @@ export async function designPipeline(
   stepCtx.emit({ type: "step", step: "plan", status: "success", output: plan });
 
   const frames: FrameResult[] = [];
-  if (input.mode === "quick") {
-    const results = await Promise.allSettled(
-      plan.concepts.map((concept, i) => runFrame(concept, i, undefined, input, stepCtx)),
-    );
-    frames.push(...results.map((r, i) => (r.status === "fulfilled" ? r.value : errorFrame(i))));
-  } else {
+  if (input.critique) {
+    // Critique pass enabled: frames run sequentially so each frame's
+    // critique feeds the next layout — the "critique loop".
     let prev: string | undefined;
     for (let i = 0; i < plan.concepts.length; i++) {
       if (ctx.signal.aborted) break;
@@ -57,6 +54,11 @@ export async function designPipeline(
       frames.push(f);
       prev = f.critique;
     }
+  } else {
+    const results = await Promise.allSettled(
+      plan.concepts.map((concept, i) => runFrame(concept, i, undefined, input, stepCtx)),
+    );
+    frames.push(...results.map((r, i) => (r.status === "fulfilled" ? r.value : errorFrame(i))));
   }
 
   stepCtx.emit({ type: "step", step: "frameOrchestrator", status: "success", output: { frames } });
@@ -158,7 +160,7 @@ async function runFrame(
 
     let final = imaged;
     let critique: string | undefined;
-    if (input.mode !== "quick") {
+    if (input.critique) {
       ctx.emit({ type: "step", step: "review", status: "running", frameIndex: i });
       const reviewed = await wrapStep(
         "review",

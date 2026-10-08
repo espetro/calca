@@ -32,7 +32,7 @@ function parseSummaryText(text: string | undefined): SummaryData | undefined {
 }
 
 export const summaryStep: Step<SummaryInput, SummaryOutput> = async (input, ctx: StepContext) => {
-  const { html, prompt, labels, model, apiKey, baseURL, providerType } = input;
+  const { html, prompt, labels, model, apiKey, baseURL, providerType, mode } = input;
 
   const { stripped } = stripBase64Images(html);
 
@@ -42,6 +42,34 @@ export const summaryStep: Step<SummaryInput, SummaryOutput> = async (input, ctx:
       content: buildSummaryPrompt(prompt, stripped, labels ?? []),
     },
   ];
+
+  // "fast" mode targets weak/free models that can't satisfy `Output.object`
+  // at all — go straight to a plain text completion and parse leniently.
+  if (mode === "fast") {
+    try {
+      const { result } = await generateWithFallback({
+        apiKey,
+        model: model,
+        messages,
+        maxTokens: 512,
+        providerType: providerType as ProviderType | undefined,
+        baseURL,
+        functionId: "summary",
+        output: Output.text(),
+        onFinish: (event) => ctx.tokenUsage?.add(event.usage),
+      });
+      const summary = parseSummaryText(result.text);
+      if (summary) return { summary };
+      ctx.logger.warn("Summary validation failed:", {
+        raw: stripReasoningBlocks(result.text ?? "").slice(0, 200),
+      });
+    } catch (error) {
+      ctx.logger.warn("Summary text fallback failed:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+    return { summary: undefined };
+  }
 
   const { result } = await generateWithFallback({
     apiKey,

@@ -20,6 +20,7 @@ import {
   genStartedAtAtom,
   genStatusAtom,
   openSummaryIdAtom,
+  summaryAttemptedAtom,
 } from "#/features/design/state/generation-atoms";
 import { apiClient, apiErrorMessage } from "#/lib/api-client";
 import { m } from "#/lib/i18n";
@@ -158,7 +159,8 @@ interface WorkflowStreamParams {
   groupId: string;
   positions: Point[];
   conceptCount: number;
-  mode: "quick" | "sequential";
+  mode: "fast" | "detailed";
+  critique?: boolean;
   model?: string;
   apiKey?: string;
   baseURL?: string;
@@ -181,6 +183,7 @@ export const useWorkflowStream = () => {
   const setGenStatus = useSetAtom(genStatusAtom);
   const setGenStartedAt = useSetAtom(genStartedAtAtom);
   const setOpenSummaryId = useSetAtom(openSummaryIdAtom);
+  const setSummaryAttempted = useSetAtom(summaryAttemptedAtom);
 
   const abortRef = useRef<AbortController | null>(null);
   const generationStartTimeRef = useRef<number>(0);
@@ -201,6 +204,7 @@ export const useWorkflowStream = () => {
         positions,
         conceptCount,
         mode,
+        critique,
         model,
         apiKey,
         baseURL,
@@ -238,11 +242,11 @@ export const useWorkflowStream = () => {
         prompt,
       };
       setGroups((prev) => [...prev, newGroup]);
+      setSummaryAttempted((prev) => new Set(prev).add(groupId));
 
-      const frameStepNames: PipelineStepName[] =
-        mode === "quick"
-          ? ["plan", "layout", "images"]
-          : ["plan", "layout", "images", "review", "critique"];
+      const frameStepNames: PipelineStepName[] = critique
+        ? ["plan", "layout", "images", "review", "critique"]
+        : ["plan", "layout", "images"];
 
       const iterIds: string[] = [];
       for (let i = 0; i < conceptCount; i++) {
@@ -338,6 +342,7 @@ export const useWorkflowStream = () => {
               existingHtml,
               geminiKey,
               mode,
+              critique,
               model,
               openaiKey,
               prompt,

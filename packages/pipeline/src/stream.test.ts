@@ -111,7 +111,12 @@ describe("designPipelineStream", () => {
   it("streams a successful workflow to completion", async () => {
     setupMocks();
 
-    const stream = designPipelineStream({ prompt: "a card", mode: "sequential", model: "model" });
+    const stream = designPipelineStream({
+      prompt: "a card",
+      mode: "detailed",
+      critique: true,
+      model: "model",
+    });
     const parts = await readStream(stream);
 
     const workflowParts = parts.filter((p) => p.type === "data-workflow");
@@ -135,7 +140,7 @@ describe("designPipelineStream", () => {
       ),
     });
 
-    const stream = designPipelineStream({ prompt: "a card", mode: "quick", model: "model" });
+    const stream = designPipelineStream({ prompt: "a card", mode: "detailed", model: "model" });
     const parts = await readStream(stream);
 
     const last = parts.filter((p) => p.type === "data-workflow").pop() as unknown as {
@@ -157,7 +162,7 @@ describe("designPipelineStream", () => {
       },
     );
 
-    const stream = designPipelineStream({ prompt: "a card", mode: "quick", model: "model" });
+    const stream = designPipelineStream({ prompt: "a card", mode: "detailed", model: "model" });
     const parts = await readStream(stream);
 
     const last = parts.filter((p) => p.type === "data-workflow").pop() as unknown as {

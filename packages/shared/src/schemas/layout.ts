@@ -66,4 +66,23 @@ export const validateLayout = (raw: string) => {
   return LayoutParsedSchema.parse(parsed);
 };
 
+const payloadTagPattern =
+  /<(?:!DOCTYPE|html|head|style|div|section|main|body|meta|link|header|footer|nav|article|aside|h[1-6]|p|span|ul|ol|li|form|button|a|img|figure|table|svg)[>\s/]/i;
+
+/** Final deterministic gate for model-emitted markup, applied after whichever
+ * extractor ran. Weak models sometimes emit raw chain-of-thought prose (no
+ * `<think>` tags for the stripper to catch) with stray markup mixed in — this
+ * trims to the markup window and returns null when no real tag survives, so
+ * callers can fail the frame instead of rendering a text blob. */
+export const ensureHtmlPayload = (raw: string): string | null => {
+  let html = stripReasoningBlocks(raw).trim();
+  const firstTag = html.indexOf("<");
+  if (firstTag === -1) return null;
+  html = html.slice(firstTag);
+  const lastGt = html.lastIndexOf(">");
+  if (lastGt === -1) return null;
+  html = html.slice(0, lastGt + 1).trim();
+  return payloadTagPattern.test(html) ? html : null;
+};
+
 export type LayoutOutput = z.infer<typeof LayoutParsedSchema>;

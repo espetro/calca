@@ -28,6 +28,11 @@ export const remixTargetAtom = atom<DesignIteration | null>(null);
 // automatically when a generation's summary lands, toggled by user clicks.
 export const openSummaryIdAtom = atom<string | null>(null);
 
+// Group ids whose generation ran this session (marked at stream start). Lets
+// SummaryList show "Summary unavailable" for finished runs that produced no
+// summary without resurrecting placeholder rows for historical groups.
+export const summaryAttemptedAtom = atom<Set<string>>(new Set<string>());
+
 const selectedIdsBaseAtom = atom<Set<string>>(new Set<string>());
 
 // Selection writes also maintain the remix chip: a single selected generated

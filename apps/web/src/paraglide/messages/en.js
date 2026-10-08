@@ -2736,6 +2736,17 @@ export const design_summaryGenerating = () => `Generating summary...`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const design_summaryUnavailable = () => `Summary unavailable`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const design_errorWorkflowRequest = () => `Workflow request failed`
 
 
@@ -3418,7 +3429,7 @@ export const promptbar_generationMode = () => `Generation mode`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_quick = () => `Quick`
+export const promptbar_fast = () => `Fast`
 
 
 
@@ -3429,7 +3440,7 @@ export const promptbar_quick = () => `Quick`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_critique = () => `Critique`
+export const promptbar_detailed = () => `Detailed`
 
 
 
@@ -3440,7 +3451,7 @@ export const promptbar_critique = () => `Critique`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_critiqueLoop = () => `Critique Loop`
+export const promptbar_critiqueToggle = () => `Critique loop`
 
 
 
@@ -3451,7 +3462,7 @@ export const promptbar_critiqueLoop = () => `Critique Loop`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_critiqueLoopDesc = () => `Sequential generation with AI feedback between each frame. Each design learns from the previous one.`
+export const promptbar_critiqueToggleDesc = () => `Sequential frames with AI review between each. Slower and uses more tokens.`
 
 
 
@@ -3462,7 +3473,7 @@ export const promptbar_critiqueLoopDesc = () => `Sequential generation with AI f
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_quickMode = () => `Quick Mode`
+export const promptbar_fastMode = () => `Fast Mode`
 
 
 
@@ -3473,7 +3484,29 @@ export const promptbar_quickMode = () => `Quick Mode`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const promptbar_quickModeDesc = () => `Generate all designs in parallel without critique. Faster but less refined.`
+export const promptbar_detailedMode = () => `Detailed Mode`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_fastModeDesc = () => `Compact semantic-token HTML. Optimized for weak and free models — cheap and dependable.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const promptbar_detailedModeDesc = () => `Richer Tailwind layouts with a disciplined semantic palette. Best for capable models.`
 
 
 

@@ -1,7 +1,11 @@
 import { streamAnthropic } from "@app/core/ai/client";
 import type { ProviderType } from "@app/core/ai/providers";
-import { buildNewPrompt, buildRevisionUserContent } from "@app/core/prompts/layout";
-import { validateLayout } from "@app/shared";
+import {
+  buildFastPrompt,
+  buildNewPrompt,
+  buildRevisionUserContent,
+} from "@app/core/prompts/layout";
+import { ensureHtmlPayload, validateLayout } from "@app/shared";
 import { type ImagePart, type ModelMessage, type TextPart } from "ai";
 
 import { parseHtmlWithSize } from "../lib/parse-html";
@@ -23,6 +27,7 @@ export const layoutStep: Step<LayoutInput, LayoutOutput> = async (input, ctx: St
     baseURL,
     providerType,
     frameIndex,
+    mode,
   } = input;
 
   const useModel = model;
@@ -38,7 +43,10 @@ export const layoutStep: Step<LayoutInput, LayoutOutput> = async (input, ctx: St
     restoreFn = restore;
     userContent = buildRevisionUserContent(systemPrompt, stripped, prompt, String(revision));
   } else {
-    userContent = buildNewPrompt(systemPrompt, critique, prompt, "", []);
+    userContent =
+      mode === "fast"
+        ? buildFastPrompt(systemPrompt, critique, prompt)
+        : buildNewPrompt(systemPrompt, critique, prompt, "", []);
   }
 
   const userParts: (TextPart | ImagePart)[] = [];
@@ -97,7 +105,9 @@ RULES FOR USER IMAGES:
     providerType: providerType as ProviderType | undefined,
     baseURL,
     messages,
-    maxTokens: 16384,
+    // "fast" mode emits compact semantic-token skeleton HTML — a ~6k cap is
+    // ample and keeps weak models from filling budget with verbose markup.
+    maxTokens: mode === "fast" ? 6144 : 16384,
     enableCaching: true,
     systemPrompt: systemPrompt || "",
     functionId,
@@ -134,6 +144,25 @@ RULES FOR USER IMAGES:
       result = validateLayout(fullText);
     } catch {
       result = parseHtmlWithSize(fullText, { extractComments: true });
+    }
+
+    // Weak models sometimes emit reasoning prose with stray markup mixed in —
+    // the lenient fallback parser accepts it, so gate the final payload: fail
+    // the frame rather than store a text blob as HTML.
+    const payloadHtml = ensureHtmlPayload(result.html);
+    if (!payloadHtml) {
+      throw new Error("Layout output is not HTML");
+    }
+    result = { ...result, html: payloadHtml };
+
+    // A revision of a semantic-`<style>` frame can drop the style block while
+    // keeping class names — re-attach the source block so the frame stays
+    // styled instead of silently going unstyled.
+    if (isRevision && existingHtml) {
+      const sourceStyle = existingHtml.match(/<style[\s\S]*?<\/style>/i);
+      if (sourceStyle && !/<style[\s\S]*?<\/style>/i.test(result.html)) {
+        result = { ...result, html: `${sourceStyle[0]}\n${result.html}` };
+      }
     }
 
     if (restoreFn) {

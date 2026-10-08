@@ -68,7 +68,8 @@ async function readStream(
 function buildInput(overrides?: Record<string, unknown>): Record<string, unknown> {
   return {
     prompt: "a pricing card",
-    mode: "sequential",
+    mode: "detailed",
+    critique: true,
     model: "claude-model",
     ...overrides,
   };
@@ -189,7 +190,12 @@ describe("handleWorkflow", () => {
   });
 
   it("passes the full request body to the pipeline", async () => {
-    const body = { conceptCount: 4, mode: "quick", prompt: "hero section", model: "claude-model" };
+    const body = {
+      conceptCount: 4,
+      mode: "detailed",
+      prompt: "hero section",
+      model: "claude-model",
+    };
     const ctx = createMockContext(body);
     const response = await handleWorkflow(ctx);
     await readStream(response);
