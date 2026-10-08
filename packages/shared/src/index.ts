@@ -1,4 +1,5 @@
 export {
+  ensureHtmlPayload,
   LayoutSchema,
   LayoutParsedSchema,
   validateLayout,

@@ -11,6 +11,14 @@
 > Deferred per request: exploring non-React output targets for Detailed
 > (Svelte/Alpine) and user-supplied component libs — the framework
 > exploration is a research item, not built here.
+>
+> **Robustness guards added after free-model e2e** (`openrouter/free`):
+> `ensureHtmlPayload` gates the layout step's final output — frames whose
+> model leaked raw chain-of-thought prose (not `<think>`-tagged, so
+> `stripReasoningBlocks` can't catch it) fail cleanly instead of storing a
+> text blob; revision frames that had a `<style>` block but dropped it get
+> the source block re-attached; `DesignFrame` skips the Tailwind CDN
+> injection when the frame carries its own `<style>` block.
 
 
 Assessment of why free-tier models (the BYOK demo's most likely first-run

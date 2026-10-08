@@ -5,7 +5,7 @@ import {
   buildNewPrompt,
   buildRevisionUserContent,
 } from "@app/core/prompts/layout";
-import { validateLayout } from "@app/shared";
+import { ensureHtmlPayload, validateLayout } from "@app/shared";
 import { type ImagePart, type ModelMessage, type TextPart } from "ai";
 
 import { parseHtmlWithSize } from "../lib/parse-html";
@@ -144,6 +144,25 @@ RULES FOR USER IMAGES:
       result = validateLayout(fullText);
     } catch {
       result = parseHtmlWithSize(fullText, { extractComments: true });
+    }
+
+    // Weak models sometimes emit reasoning prose with stray markup mixed in —
+    // the lenient fallback parser accepts it, so gate the final payload: fail
+    // the frame rather than store a text blob as HTML.
+    const payloadHtml = ensureHtmlPayload(result.html);
+    if (!payloadHtml) {
+      throw new Error("Layout output is not HTML");
+    }
+    result = { ...result, html: payloadHtml };
+
+    // A revision of a semantic-`<style>` frame can drop the style block while
+    // keeping class names — re-attach the source block so the frame stays
+    // styled instead of silently going unstyled.
+    if (isRevision && existingHtml) {
+      const sourceStyle = existingHtml.match(/<style[\s\S]*?<\/style>/i);
+      if (sourceStyle && !/<style[\s\S]*?<\/style>/i.test(result.html)) {
+        result = { ...result, html: `${sourceStyle[0]}\n${result.html}` };
+      }
     }
 
     if (restoreFn) {
