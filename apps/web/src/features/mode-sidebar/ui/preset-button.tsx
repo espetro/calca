@@ -91,7 +91,9 @@ export function PresetButton() {
         >
           <div className="flex items-center gap-2 mb-3">
             <CurrentIcon className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-semibold text-foreground">{m.modesidebar_designerPreset()}</span>
+            <span className="text-sm font-semibold text-foreground">
+              {m.modesidebar_designerPreset()}
+            </span>
           </div>
 
           <div className="flex flex-col gap-1.5">

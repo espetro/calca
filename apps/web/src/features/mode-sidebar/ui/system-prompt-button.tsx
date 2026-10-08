@@ -32,7 +32,9 @@ const SystemPromptDialog = ({ systemPrompt, ref }: SystemPromptDialogProps) => {
     >
       <div className="flex items-center gap-2 mb-3">
         <MessageSquare className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-semibold text-foreground">{m.modesidebar_systemPrompt()}</span>
+        <span className="text-sm font-semibold text-foreground">
+          {m.modesidebar_systemPrompt()}
+        </span>
       </div>
 
       <Textarea
@@ -41,7 +43,9 @@ const SystemPromptDialog = ({ systemPrompt, ref }: SystemPromptDialogProps) => {
         placeholder={m.modesidebar_systemPromptPlaceholder()}
         className="w-full h-32 px-4 py-3 rounded-xl bg-card/70 border border-border/50 text-[13px] text-foreground placeholder:text-muted-foreground outline-none focus:border-ring/60 focus:ring-1 focus:ring-ring/30 resize-y font-mono"
       />
-      <p className="mt-2 text-[10px] text-muted-foreground">{m.modesidebar_systemPromptDescription()}</p>
+      <p className="mt-2 text-[10px] text-muted-foreground">
+        {m.modesidebar_systemPromptDescription()}
+      </p>
     </div>
   );
 };
