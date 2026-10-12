@@ -48,6 +48,9 @@ interface CanvasAreaProps {
   draggingImageId: string | null;
   setDraggingImageId: (id: string | null) => void;
   pipelineStages?: Record<string, PipelineStatus>;
+  /** Localized copy for the per-frame failure card. */
+  frameErrorTitle?: string;
+  frameErrorHint?: string;
   onAddComment: (draft: {
     iterationId: string;
     position: Point;
@@ -89,6 +92,8 @@ export const CanvasArea = ({
   draggingImageId: _draggingImageId,
   setDraggingImageId,
   pipelineStages,
+  frameErrorTitle,
+  frameErrorHint,
   onAddComment,
   onClickComment,
   onImageDrop,
@@ -249,6 +254,8 @@ export const CanvasArea = ({
 
   const ctx = useMemo(
     () => ({
+      frameErrorHint,
+      frameErrorTitle,
       isSelectMode,
       isCommentMode,
       selectedIds,
@@ -256,7 +263,16 @@ export const CanvasArea = ({
       onAddComment,
       onClickComment,
     }),
-    [isSelectMode, isCommentMode, selectedIds, pipelineStages, onAddComment, onClickComment],
+    [
+      frameErrorHint,
+      frameErrorTitle,
+      isSelectMode,
+      isCommentMode,
+      selectedIds,
+      pipelineStages,
+      onAddComment,
+      onClickComment,
+    ],
   );
 
   return (

@@ -12,6 +12,9 @@ export interface CalcaCanvasContext {
   isCommentMode: boolean;
   selectedIds: Set<string>;
   pipelineStages?: Record<string, PipelineStatus>;
+  /** Localized copy for the per-frame failure card. */
+  frameErrorTitle?: string;
+  frameErrorHint?: string;
   onAddComment: (draft: {
     iterationId: string;
     position: Point;
@@ -66,14 +69,16 @@ export const calcaViews: CanvasViews<CalcaCanvasContext> = {
       nodeType: "designFrame",
       position: propsPoint,
       size: (record) => {
-        const { width, height, isLoading } = record.props as {
+        const { width, height, isLoading, iteration } = record.props as {
           width?: number;
           height?: number;
           isLoading?: boolean;
+          iteration?: DesignIteration;
         };
+        const failed = iteration?.status === "error" || !iteration?.html?.trim();
         return {
           width: width ?? 480,
-          height: isLoading ? 320 : (height ?? 320),
+          height: isLoading ? 320 : failed ? 140 : (height ?? 320),
         };
       },
       data: (record, ctx) => {
@@ -86,6 +91,8 @@ export const calcaViews: CanvasViews<CalcaCanvasContext> = {
           isCommentMode: ctx.isCommentMode,
           isDragging: false,
           isSelectMode: ctx.isSelectMode,
+          errorHint: ctx.frameErrorHint,
+          errorTitle: ctx.frameErrorTitle,
           iteration,
           onAddComment: ctx.onAddComment,
           onClickComment: ctx.onClickComment,

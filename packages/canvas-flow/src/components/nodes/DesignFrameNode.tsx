@@ -9,6 +9,8 @@ export type DesignFrameNodeData = {
   isSelectMode: boolean;
   isDragging: boolean;
   pipelineStatus?: PipelineStatus;
+  errorTitle?: string;
+  errorHint?: string;
   onAddComment: (draft: {
     iterationId: string;
     position: { x: number; y: number };
@@ -53,6 +55,8 @@ export function DesignFrameNode({ data, selected }: NodeProps<DesignFrameNodeTyp
           isDragging={data.isDragging}
           isSelected={selected}
           scale={zoom}
+          errorTitle={data.errorTitle}
+          errorHint={data.errorHint}
           onAddComment={handleAddComment}
           onClickComment={onClickComment}
         />

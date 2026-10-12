@@ -12,6 +12,8 @@ export interface DesignIteration {
   comments: Comment[];
   isLoading?: boolean;
   isRegenerating?: boolean;
+  /** Set when generation failed — the frame renders a failure card, not html. */
+  status?: "error";
 }
 
 export interface SummaryData {
