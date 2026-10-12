@@ -57,7 +57,11 @@ const resolveLocale = (): AvailableLanguageTag => {
   return sourceLanguageTag;
 };
 
-export const getLocale = languageTag;
+// Indirection matters: paraglide's `languageTag` is a mutable `let` that
+// `setLanguageTag` REPLACES. `export const getLocale = languageTag` would
+// permanently bind the initial (source-tag) function — callers would always
+// read "en" while m.*() resolves the real locale.
+export const getLocale = (): AvailableLanguageTag => languageTag();
 
 /**
  * Explicit user override — persists to localStorage and syncs `<html lang>`
