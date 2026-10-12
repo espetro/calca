@@ -245,7 +245,9 @@ async function runFrame(
 
 function errorFrame(index: number): FrameResult {
   return {
-    html: `<div style="padding:32px;color:#666;font-family:system-ui"><p style="font-size:14px">⚠ Frame ${index + 1} failed</p></div>`,
+    // Empty html — the client marks the iteration failed and renders a
+    // proper failure card instead of a tiny gray-text placeholder.
+    html: "",
     label: `Variation ${index + 1}`,
   };
 }

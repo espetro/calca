@@ -24,6 +24,9 @@ interface DesignFrameProps {
   isSelected?: boolean;
   isDragging?: boolean;
   scale?: number;
+  /** Failure-card copy — apps pass localized strings. */
+  errorTitle?: string;
+  errorHint?: string;
   onClick?: (e: React.MouseEvent) => void;
   onMouseDown?: (e: React.MouseEvent) => void;
   onAddComment?: (
@@ -46,6 +49,8 @@ export function DesignFrame({
   isSelected,
   isDragging,
   scale = 1,
+  errorTitle = "Generation failed",
+  errorHint,
   onClick,
   onMouseDown,
   onAddComment,
@@ -140,7 +145,14 @@ setTimeout(reportHeight, 2000);
     onClick?.(e);
   };
 
-  const frameHeight = iteration.isLoading ? 320 : contentHeight;
+  // Failed/empty frames render a failure card — never a white box. The legacy
+  // placeholder pattern covers error cards persisted by older builds.
+  const isError =
+    iteration.status === "error" ||
+    (!iteration.isLoading &&
+      (!iteration.html?.trim() || iteration.html.includes('style="padding:32px;color:#666')));
+
+  const frameHeight = iteration.isLoading ? 320 : isError ? 140 : contentHeight;
 
   return (
     <div
@@ -181,6 +193,26 @@ setTimeout(reportHeight, 2000);
             <span className="text-[11px] font-medium text-muted-foreground/70">Generating…</span>
           </div>
         </>
+      ) : isError ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 px-6 text-center">
+          <svg
+            className="w-5 h-5 text-muted-foreground/70"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+            />
+          </svg>
+          <span className="text-[12px] font-medium text-muted-foreground">{errorTitle}</span>
+          {errorHint ? (
+            <span className="text-[11px] text-muted-foreground/60">{errorHint}</span>
+          ) : null}
+        </div>
       ) : (
         <iframe
           ref={iframeRef}

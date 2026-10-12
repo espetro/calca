@@ -339,6 +339,8 @@ function HomeInner() {
           draggingImageId={draggingImageId}
           setDraggingImageId={setDraggingImageId}
           pipelineStages={pipelineStages}
+          frameErrorTitle={m.design_errorGenerateFailed()}
+          frameErrorHint={m.design_errorCheckSettings()}
           onAddComment={setCommentDraft}
           onClickComment={handleClickComment}
           onImageDrop={handleImageDrop}

@@ -470,11 +470,14 @@ export const useWorkflowStream = () => {
                   if (existing.id !== iterId) {
                     return existing;
                   }
+                  // Empty/absent html means the frame failed — mark it so the
+                  // node renders a failure card instead of a white box.
                   return {
                     ...existing,
                     height: frame.height || existing.height,
-                    html: frame.html || `<p>${m.design_errorGenerateFailed()}</p>`,
+                    html: frame.html || "",
                     isLoading: false,
+                    status: frame.html ? undefined : ("error" as const),
                     // Pipeline emits only generic "Variation N" — keep
                     // our lineage-aware label unless a real name arrives.
                     label: /^Variation \d+$/.test(frame.label)
@@ -623,10 +626,9 @@ export const useWorkflowStream = () => {
                       }
                       return {
                         ...existing,
-                        html: `<div style="padding:32px;color:#666;font-family:system-ui">
-                          <p style="font-size:14px">⚠ ${errorText}</p>
-                        </div>`,
+                        html: "",
                         isLoading: false,
+                        status: "error" as const,
                       };
                     }),
                   };
@@ -748,11 +750,9 @@ export const useWorkflowStream = () => {
                 }));
                 return {
                   ...iter,
-                  html: `<div style="padding:32px;color:#666;font-family:system-ui">
-                    <p style="font-size:14px">⚠ ${msg}</p>
-                    <p style="font-size:12px;margin-top:8px;color:#999">${m.design_errorCheckSettings()}</p>
-                  </div>`,
+                  html: "",
                   isLoading: false,
+                  status: "error" as const,
                 };
               }),
             };
