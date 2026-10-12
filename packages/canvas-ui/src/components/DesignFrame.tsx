@@ -153,7 +153,7 @@ setTimeout(reportHeight, 2000);
       onClick={handleClick}
       onMouseDown={onMouseDown}
       className={`relative bg-white rounded-xl shadow-md border overflow-hidden transition-shadow ${
-        isSelected ? "ring-2 ring-blue-500 border-blue-400/50 shadow-lg" : "border-border/60"
+        isSelected ? "border-blue-400/50 shadow-lg" : "border-border/60"
       } ${
         isCommentMode
           ? "cursor-crosshair ring-2 ring-blue-400/20 hover:ring-blue-400/40"
@@ -163,7 +163,19 @@ setTimeout(reportHeight, 2000);
               : "cursor-grab hover:shadow-lg"
             : ""
       } ${className}`}
-      style={{ ...style, height: frameHeight, width: frameW }}
+      style={{
+        ...style,
+        height: frameHeight,
+        width: frameW,
+        // Selection ring lives in node coordinates — normalize its width against
+        // canvas zoom so it stays ~3px on screen at any zoom level.
+        ...(isSelected
+          ? {
+              outline: `${Math.max(2, 3 / scale)}px solid rgb(59 130 246)`,
+              outlineOffset: 2 / scale,
+            }
+          : null),
+      }}
     >
       {iteration.isLoading ? (
         <>

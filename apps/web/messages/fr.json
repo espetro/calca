@@ -69,16 +69,14 @@
   "error_unexpected": "Une erreur inattendue s'est produite.",
   "errors_unknown": "Erreur inconnue",
   "export": {
-    "cancel": "Annuler",
     "codeSection": "Code",
-    "converting": "Conversion...",
-    "copy": "Copier",
     "copyAsImage": "Copier en tant qu'image",
-    "download": "Télécharger",
     "export": "Exporter",
     "failed": "Échec de l'exportation",
     "imageSection": "Image",
-    "previewTitle": "Export {format}"
+    "copied": "Copié dans le presse-papiers",
+    "copyHtml": "Copier le HTML",
+    "html": "Fichier HTML"
   },
   "export_importedLabel": "Importé",
   "export_invalidFileMissingGroups": "Fichier {ext} invalide : tableau de groupes manquant",

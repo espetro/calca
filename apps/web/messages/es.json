@@ -69,16 +69,14 @@
   "error_unexpected": "Ocurrió un error inesperado.",
   "errors_unknown": "Error desconocido",
   "export": {
-    "cancel": "Cancelar",
     "codeSection": "Código",
-    "converting": "Convirtiendo...",
-    "copy": "Copiar",
     "copyAsImage": "Copiar como imagen",
-    "download": "Descargar",
     "export": "Exportar",
     "failed": "Fallo al exportar",
     "imageSection": "Imagen",
-    "previewTitle": "Exportación {format}"
+    "copied": "Copiado al portapapeles",
+    "copyHtml": "Copiar HTML",
+    "html": "Archivo HTML"
   },
   "export_importedLabel": "Importado",
   "export_invalidFileMissingGroups": "Archivo {ext} inválido: falta el array de grupos",

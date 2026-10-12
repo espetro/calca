@@ -69,16 +69,14 @@
   "error_unexpected": "予期しないエラーが発生しました。",
   "errors_unknown": "不明なエラー",
   "export": {
-    "cancel": "キャンセル",
     "codeSection": "コード",
-    "converting": "変換中...",
-    "copy": "コピー",
     "copyAsImage": "画像としてコピー",
-    "download": "ダウンロード",
     "export": "エクスポート",
     "failed": "エクスポート失敗",
     "imageSection": "画像",
-    "previewTitle": "{format} エクスポート"
+    "copied": "クリップボードにコピーしました",
+    "copyHtml": "HTMLをコピー",
+    "html": "HTMLファイル"
   },
   "export_importedLabel": "インポート済み",
   "export_invalidFileMissingGroups": "無効な {ext} ファイル: groups 配列がありません",

@@ -1,5 +1,6 @@
 import * as m from "#/paraglide/messages.js";
 import {
+  availableLanguageTags,
   isAvailableLanguageTag,
   languageTag,
   onSetLanguageTag,
@@ -8,8 +9,21 @@ import {
 } from "#/paraglide/runtime.js";
 import type { AvailableLanguageTag } from "#/paraglide/runtime.js";
 
-export { m };
+export { m, availableLanguageTags };
 export type { AvailableLanguageTag };
+
+/** Endonyms — each language labelled in itself, so users can always find their own. */
+export const LANGUAGE_NAMES: Record<string, string> = {
+  de: "Deutsch",
+  en: "English",
+  es: "Español",
+  fr: "Français",
+  it: "Italiano",
+  ja: "日本語",
+  nl: "Nederlands",
+  "pt-br": "Português (Brasil)",
+  "zh-hans": "简体中文",
+};
 
 const LOCALE_STORAGE_KEY = "calca-locale";
 
@@ -43,7 +57,11 @@ const resolveLocale = (): AvailableLanguageTag => {
   return sourceLanguageTag;
 };
 
-export const getLocale = languageTag;
+// Indirection matters: paraglide's `languageTag` is a mutable `let` that
+// `setLanguageTag` REPLACES. `export const getLocale = languageTag` would
+// permanently bind the initial (source-tag) function — callers would always
+// read "en" while m.*() resolves the real locale.
+export const getLocale = (): AvailableLanguageTag => languageTag();
 
 /**
  * Explicit user override — persists to localStorage and syncs `<html lang>`

@@ -69,16 +69,14 @@
   "error_unexpected": "Si è verificato un errore imprevisto.",
   "errors_unknown": "Errore sconosciuto",
   "export": {
-    "cancel": "Annulla",
     "codeSection": "Codice",
-    "converting": "Conversione in corso...",
-    "copy": "Copia",
     "copyAsImage": "Copia come immagine",
-    "download": "Scarica",
     "export": "Esporta",
     "failed": "Esportazione fallita",
     "imageSection": "Immagine",
-    "previewTitle": "{format} Esporta"
+    "copied": "Copiato negli appunti",
+    "copyHtml": "Copia HTML",
+    "html": "File HTML"
   },
   "export_importedLabel": "Importato",
   "export_invalidFileMissingGroups": "File {ext} non valido: array di gruppi mancante",

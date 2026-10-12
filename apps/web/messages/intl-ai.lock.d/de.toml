@@ -520,14 +520,6 @@ reviewed = false
 model = "google/gemini-2.5-flash-lite"
 updated_at = "2026-10-08T13:09:10Z"
 
-[entries."export.cancel"]
-value = "Abbrechen"
-source_hash = "77dfd2135f4db726c47299bb55be26f7f4525a46"
-origin = "ai"
-reviewed = false
-model = "google/gemini-2.5-flash-lite"
-updated_at = "2026-10-08T13:09:10Z"
-
 [entries."export.codeSection"]
 value = "Code"
 source_hash = "adac69379a626c2436948a4ef1792c7d719ef929"
@@ -536,21 +528,13 @@ reviewed = false
 model = "google/gemini-2.5-flash-lite"
 updated_at = "2026-10-08T13:09:10Z"
 
-[entries."export.converting"]
-value = "Konvertiere..."
-source_hash = "bee506ba25625757f8c0eaccd888a240da399c79"
+[entries."export.copied"]
+value = "In die Zwischenablage kopiert"
+source_hash = "0e7383487387213f8f33b310d457c956a84efa2d"
 origin = "ai"
 reviewed = false
 model = "google/gemini-2.5-flash-lite"
-updated_at = "2026-10-08T13:09:10Z"
-
-[entries."export.copy"]
-value = "Kopieren"
-source_hash = "af74f7c5362aaee985bf8cda3dd75fc80751ce51"
-origin = "ai"
-reviewed = false
-model = "google/gemini-2.5-flash-lite"
-updated_at = "2026-10-08T13:09:10Z"
+updated_at = "2026-10-12T16:01:28Z"
 
 [entries."export.copyAsImage"]
 value = "Als Bild kopieren"
@@ -560,13 +544,13 @@ reviewed = false
 model = "google/gemini-2.5-flash-lite"
 updated_at = "2026-10-08T13:09:10Z"
 
-[entries."export.download"]
-value = "Herunterladen"
-source_hash = "a479c9c34e878d07b4d67a73a48f432ad7dc53c8"
+[entries."export.copyHtml"]
+value = "HTML kopieren"
+source_hash = "ee05a8c0300996d55614464945b1226f9c3ccc09"
 origin = "ai"
 reviewed = false
 model = "google/gemini-2.5-flash-lite"
-updated_at = "2026-10-08T13:09:10Z"
+updated_at = "2026-10-12T16:01:28Z"
 
 [entries."export.export"]
 value = "Exportieren"
@@ -584,17 +568,17 @@ reviewed = false
 model = "google/gemini-2.5-flash-lite"
 updated_at = "2026-10-08T13:09:10Z"
 
-[entries."export.imageSection"]
-value = "Bild"
-source_hash = "50e19fda0d5b4b74a4a1a1d584e56578693a4ea4"
+[entries."export.html"]
+value = "HTML-Datei"
+source_hash = "1eb94426147db2de476ce765871e0fe917612e31"
 origin = "ai"
 reviewed = false
 model = "google/gemini-2.5-flash-lite"
-updated_at = "2026-10-08T13:09:10Z"
+updated_at = "2026-10-12T16:01:28Z"
 
-[entries."export.previewTitle"]
-value = "{format} Export"
-source_hash = "2fda75d9c942db31cf4b9a9ba000c47d25d75b14"
+[entries."export.imageSection"]
+value = "Bild"
+source_hash = "50e19fda0d5b4b74a4a1a1d584e56578693a4ea4"
 origin = "ai"
 reviewed = false
 model = "google/gemini-2.5-flash-lite"
