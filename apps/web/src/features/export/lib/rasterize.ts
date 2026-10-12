@@ -1,4 +1,4 @@
-import { buildStandaloneHtml, EXPORT_ROOT_ID } from "./standalone-html";
+import { buildStandaloneHtml, buildSvgFromDocument } from "./standalone-html";
 
 const EXPORT_SCALE = 3;
 const RENDER_SURFACE_HEIGHT = 800;
@@ -23,13 +23,14 @@ const waitForImages = (doc: Document) =>
 export interface RenderedFrame {
   canvas: HTMLCanvasElement;
   height: number;
+  svg: string;
 }
 
 /**
- * Renders a frame's HTML off-screen and rasterizes ONLY the frame root.
- * The render surface is kept at a normal viewport height and the root is
- * measured — sizing the surface to a huge fixed height made `100vh`/`h-full`
- * content stretch and produced mostly-blank, oversized captures.
+ * Renders a frame's HTML off-screen and rasterizes ONLY the document body at
+ * its measured content height. The render surface is a normal viewport height;
+ * sizing it huge let `100vh`/`h-full` content stretch into mostly-blank
+ * oversized captures.
  */
 export const renderFrame = async (html: string, width: number): Promise<RenderedFrame> => {
   const blobUrl = URL.createObjectURL(
@@ -47,17 +48,16 @@ export const renderFrame = async (html: string, width: number): Promise<Rendered
     });
 
     const doc = iframe.contentDocument;
-    const root = doc?.getElementById(EXPORT_ROOT_ID);
-    if (!doc || !root) throw new Error("Export frame did not render");
+    if (!doc?.body) throw new Error("Export frame did not render");
 
     await waitForImages(doc);
     await doc.fonts?.ready;
     // Tailwind's runtime compiles utilities asynchronously after load.
     await sleep(SETTLE_MS);
 
-    const height = Math.max(1, Math.ceil(root.getBoundingClientRect().height));
+    const height = Math.max(1, Math.ceil(doc.body.getBoundingClientRect().height));
     const html2canvas = (await import("html2canvas-pro")).default;
-    const canvas = await html2canvas(root, {
+    const canvas = await html2canvas(doc.body, {
       backgroundColor: "#ffffff",
       height,
       scale: EXPORT_SCALE,
@@ -65,7 +65,9 @@ export const renderFrame = async (html: string, width: number): Promise<Rendered
       width,
       windowWidth: width,
     });
-    return { canvas, height };
+    // Serialize BEFORE the iframe detaches — computed styles die with it.
+    const svg = buildSvgFromDocument(doc, width, height);
+    return { canvas, height, svg };
   } finally {
     iframe.remove();
     URL.revokeObjectURL(blobUrl);

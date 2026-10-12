@@ -4,6 +4,11 @@
   "private": false,
   "description": "calca CLI — MCP playground server for AI agents",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/espetro/calca",
+    "directory": "packages/mcp"
+  },
   "bin": {
     "calca": "./dist/cli.mjs"
   },
@@ -45,10 +50,5 @@
     "tsdown": "^0.23.0",
     "typescript": "catalog:",
     "vitest": "catalog:"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/espetro/calca",
-    "directory": "packages/mcp"
   }
 }
