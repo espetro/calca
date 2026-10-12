@@ -3,15 +3,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { useMountEffect } from "../utils/use-mount-effect";
 
-const getTailwindScriptSrc = (): string => {
-  if (
-    typeof window !== "undefined" &&
-    (window as unknown as { __CALCA_DESKTOP__?: boolean }).__CALCA_DESKTOP__
-  ) {
-    return `${window.location.origin}/tailwindcss.js`;
-  }
-  return "https://cdn.tailwindcss.com";
-};
+// The Tailwind runtime is bundled with the app (apps/web/public + desktop
+// resources) — no CDN fetch, works offline and inside srcdoc/blob contexts.
+const getTailwindScriptSrc = (): string => `${window.location.origin}/tailwindcss.js`;
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH;

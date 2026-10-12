@@ -9,7 +9,7 @@ import { m } from "#/lib/i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
 import { canvasToBlob, renderFrame } from "../lib/rasterize";
-import { buildStandaloneHtml, buildSvg, downloadBlob, slugify } from "../lib/standalone-html";
+import { buildStandaloneHtml, downloadBlob, slugify } from "../lib/standalone-html";
 
 type ImageExportFormat = "png" | "jpg" | "svg" | "copy-image";
 type CodeExportFormat = "html" | "copy-html";
@@ -55,11 +55,8 @@ const runExport = async (format: ExportFormat, html: string, label: string, widt
       toast.success(m.export_copied());
       return;
     case "svg": {
-      const { height } = await renderFrame(html, width);
-      downloadBlob(
-        new Blob([buildSvg(html, width, height)], { type: "image/svg+xml" }),
-        `${name}.svg`,
-      );
+      const { svg } = await renderFrame(html, width);
+      downloadBlob(new Blob([svg], { type: "image/svg+xml" }), `${name}.svg`);
       return;
     }
     case "png":
