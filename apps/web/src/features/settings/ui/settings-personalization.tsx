@@ -1,3 +1,4 @@
+import { useSetAtom } from "jotai";
 import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
 
 import {
@@ -5,7 +6,7 @@ import {
   getLocale,
   LANGUAGE_NAMES,
   m,
-  setLocale,
+  setLocaleAtom,
   type AvailableLanguageTag,
 } from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
@@ -34,6 +35,7 @@ interface SettingsPersonalizationProps {
 }
 
 export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonalizationProps) {
+  const setLocale = useSetAtom(setLocaleAtom);
   return (
     <div className="space-y-8">
       <div className="space-y-3">
@@ -74,8 +76,6 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
           onValueChange={(tag) => {
             if (tag === getLocale()) return;
             setLocale(tag as AvailableLanguageTag);
-            // Compiled messages aren't reactive — reload to re-render every string.
-            window.location.reload();
           }}
         >
           <SelectTrigger className="w-[170px] h-8" aria-label={m.settings_languageLabel()}>

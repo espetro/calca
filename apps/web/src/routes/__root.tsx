@@ -20,6 +20,7 @@ const ReactQueryDevtools = lazy(() =>
 );
 
 import { settingsAtom } from "#/features/settings/state/settings-atoms";
+import { localeAtom } from "#/lib/i18n";
 import queryClient from "#/lib/services/api";
 import { useMountEffect } from "#/shared/utils/use-mount-effect";
 import { UpdateNotification } from "#/widgets/update-notification/UpdateNotification";
@@ -30,6 +31,9 @@ const GA_ID = import.meta.env.VITE_GA_ID;
 
 function RootLayout() {
   const settings = useAtomValue(settingsAtom);
+  // Live locale: re-renders the tree on language switch — no reload, so
+  // in-flight generations are never destroyed.
+  useAtomValue(localeAtom);
   const [devtoolsReady, setDevtoolsReady] = useState(false);
 
   const prevProviderRef = useRef(settings.providerType);

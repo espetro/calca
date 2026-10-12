@@ -1,3 +1,5 @@
+import { atom } from "jotai";
+
 import * as m from "#/paraglide/messages.js";
 import {
   availableLanguageTags,
@@ -62,6 +64,20 @@ const resolveLocale = (): AvailableLanguageTag => {
 // permanently bind the initial (source-tag) function — callers would always
 // read "en" while m.*() resolves the real locale.
 export const getLocale = (): AvailableLanguageTag => languageTag();
+
+/**
+ * Reactive locale — a jotai atom the root layout subscribes to so the whole
+ * tree re-renders with the new locale instead of reloading the page.
+ * Reloading mid-generation used to silently destroy in-flight work (nothing
+ * persists until `html` lands, and the SW pipeline keeps running orphaned).
+ */
+export const localeAtom = atom<AvailableLanguageTag>(languageTag());
+
+/** Write atom — switch locale and notify subscribers. Use from components. */
+export const setLocaleAtom = atom(null, (_get, set, tag: AvailableLanguageTag) => {
+  setLocale(tag);
+  set(localeAtom, languageTag());
+});
 
 /**
  * Explicit user override — persists to localStorage and syncs `<html lang>`
