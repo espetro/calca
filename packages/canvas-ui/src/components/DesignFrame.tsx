@@ -5,7 +5,9 @@ import { useMountEffect } from "../utils/use-mount-effect";
 
 // The Tailwind runtime is bundled with the app (apps/web/public + desktop
 // resources) — no CDN fetch, works offline and inside srcdoc/blob contexts.
-const getTailwindScriptSrc = (): string => `${window.location.origin}/tailwindcss.js`;
+// Resolve off document.baseURI so it lands under the app's base path
+// (/app/tailwindcss.js on Pages, /tailwindcss.js in dev and on desktop).
+const getTailwindScriptSrc = (): string => new URL("tailwindcss.js", document.baseURI).href;
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH;

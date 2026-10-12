@@ -3,6 +3,11 @@
   "version": "0.8.0",
   "private": false,
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/espetro/calca",
+    "directory": "packages/canvas-base"
+  },
   "files": [
     "dist"
   ],
@@ -35,10 +40,5 @@
     "tsdown": "^0.23.0",
     "typescript": "catalog:",
     "vitest": "catalog:"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/espetro/calca",
-    "directory": "packages/canvas-base"
   }
 }
