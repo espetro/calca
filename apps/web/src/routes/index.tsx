@@ -346,15 +346,7 @@ function HomeInner() {
           emptyTitle={m.canvas_emptyTitle()}
           emptyDescription={m.canvas_emptyDescription()}
           toolbar={
-            selectedIds.size === 1 ? (
-              <ContextToolbar
-                onRemix={pipeline.handleRemix}
-                apiKey={derived.apiKey || undefined}
-                model={derived.model}
-                providerType={derived.providerType || undefined}
-                baseURL={derived.baseURL || undefined}
-              />
-            ) : null
+            selectedIds.size === 1 ? <ContextToolbar onRemix={pipeline.handleRemix} /> : null
           }
         />
       </ErrorBoundary>

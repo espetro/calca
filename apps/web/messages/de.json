@@ -69,16 +69,14 @@
   "error_unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
   "errors_unknown": "Unbekannter Fehler",
   "export": {
-    "cancel": "Abbrechen",
     "codeSection": "Code",
-    "converting": "Konvertiere...",
-    "copy": "Kopieren",
     "copyAsImage": "Als Bild kopieren",
-    "download": "Herunterladen",
     "export": "Exportieren",
     "failed": "Export fehlgeschlagen",
     "imageSection": "Bild",
-    "previewTitle": "{format} Export"
+    "copied": "In die Zwischenablage kopiert",
+    "copyHtml": "HTML kopieren",
+    "html": "HTML-Datei"
   },
   "export_importedLabel": "Importiert",
   "export_invalidFileMissingGroups": "Ungültige {ext}-Datei: Gruppen-Array fehlt",

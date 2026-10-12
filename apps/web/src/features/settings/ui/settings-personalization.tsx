@@ -1,6 +1,13 @@
 import { Globe, Monitor, Moon, Palette, Sun, Type } from "lucide-react";
 
-import { m } from "#/lib/i18n";
+import {
+  availableLanguageTags,
+  getLocale,
+  LANGUAGE_NAMES,
+  m,
+  setLocale,
+  type AvailableLanguageTag,
+} from "#/lib/i18n";
 import { Button } from "#/shared/components/ui/button";
 import { Label } from "#/shared/components/ui/label";
 import {
@@ -62,19 +69,26 @@ export function SettingsPersonalization({ settings, onUpdate }: SettingsPersonal
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium text-muted-foreground border border-border/70 px-2 py-0.5 rounded-full">
-            {m.settings_comingSoon()}
-          </span>
-          <Select disabled value="en">
-            <SelectTrigger className="w-[120px] h-8">
-              <SelectValue placeholder="English" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="en">English</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select
+          value={getLocale()}
+          onValueChange={(tag) => {
+            if (tag === getLocale()) return;
+            setLocale(tag as AvailableLanguageTag);
+            // Compiled messages aren't reactive — reload to re-render every string.
+            window.location.reload();
+          }}
+        >
+          <SelectTrigger className="w-[170px] h-8" aria-label={m.settings_languageLabel()}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {availableLanguageTags.map((tag) => (
+              <SelectItem key={tag} value={tag}>
+                {LANGUAGE_NAMES[tag] ?? tag}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <Separator />

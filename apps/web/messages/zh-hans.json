@@ -69,16 +69,14 @@
   "error_unexpected": "发生意外错误。",
   "errors_unknown": "未知错误",
   "export": {
-    "cancel": "取消",
     "codeSection": "代码",
-    "converting": "正在转换...",
-    "copy": "复制",
     "copyAsImage": "复制为图像",
-    "download": "下载",
     "export": "导出",
     "failed": "导出失败",
     "imageSection": "图像",
-    "previewTitle": "{format} 导出"
+    "copied": "已复制到剪贴板",
+    "copyHtml": "复制HTML",
+    "html": "HTML文件"
   },
   "export_importedLabel": "已导入",
   "export_invalidFileMissingGroups": "无效的 {ext} 文件：缺少 groups 数组",

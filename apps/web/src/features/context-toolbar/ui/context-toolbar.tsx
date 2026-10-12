@@ -10,19 +10,9 @@ import { RemixButton } from "./remix-button";
 
 interface ContextToolbarProps {
   onRemix: (iteration: DesignIteration, remixPrompt: string) => void;
-  apiKey?: string;
-  model?: string;
-  providerType?: string;
-  baseURL?: string;
 }
 
-export function ContextToolbar({
-  onRemix,
-  apiKey,
-  model,
-  providerType,
-  baseURL,
-}: ContextToolbarProps) {
+export function ContextToolbar({ onRemix }: ContextToolbarProps) {
   const selectedIds = useAtomValue(selectedIdsAtom);
   const groups = useAtomValue(groupsAtom);
 
@@ -53,10 +43,6 @@ export function ContextToolbar({
         html={iteration.html ?? ""}
         label={iteration.label ?? m.contexttoolbar_designFallback()}
         width={iteration.width ?? 480}
-        apiKey={apiKey}
-        model={model}
-        providerType={providerType}
-        baseURL={baseURL}
       />
     </div>
   );

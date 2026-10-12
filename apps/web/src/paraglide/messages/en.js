@@ -3000,62 +3000,40 @@ export const export_copyAsImage = () => `Copy as Image`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
-export const export_converting = () => `Converting...`
-
-
-
-
-	
-/**
- * 
- * @returns {string}
- */
-/* @__NO_SIDE_EFFECTS__ */
-export const export_copy = () => `Copy`
-
-
-
-
-	
-/**
- * 
- * @returns {string}
- */
-/* @__NO_SIDE_EFFECTS__ */
-export const export_download = () => `Download`
-
-
-
-
-	
-/**
- * 
- * @returns {string}
- */
-/* @__NO_SIDE_EFFECTS__ */
-export const export_cancel = () => `Cancel`
-
-
-
-
-	
-/**
- * @param {{ format: NonNullable<unknown> }} params
- * @returns {string}
- */
-/* @__NO_SIDE_EFFECTS__ */
-export const export_previewTitle = (params) => `${params.format} Export`
-
-
-
-
-	
-/**
- * 
- * @returns {string}
- */
-/* @__NO_SIDE_EFFECTS__ */
 export const export_failed = () => `Export failed`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_html = () => `HTML file`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_copyHtml = () => `Copy HTML`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const export_copied = () => `Copied to clipboard`
 
 
 

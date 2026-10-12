@@ -1,368 +1,156 @@
 import { getLogger } from "@app/logger";
-import { ChevronDown, Clipboard, Download, Loader, LucideProps } from "lucide-react";
+import { ChevronDown, Clipboard, ClipboardCopy, Download, Loader, LucideProps } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
-import { BsFiletypeJpg, BsFiletypePng, BsFiletypeSvg } from "react-icons/bs";
+import { BsFiletypeHtml, BsFiletypeJpg, BsFiletypePng, BsFiletypeSvg } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib";
-import { SiReact, SiTailwindcss } from "react-icons/si";
+import { toast } from "sonner";
 
-import useExportCodeMutation from "#/features/design/hooks/use-export-code-mutation";
 import { m } from "#/lib/i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
 
-type CodeExportFormat = "tailwind" | "react";
-type ImageExportFormat = "svg" | "png" | "jpg" | "copy-image";
+import { canvasToBlob, renderFrame } from "../lib/rasterize";
+import { buildStandaloneHtml, buildSvg, downloadBlob, slugify } from "../lib/standalone-html";
 
-type ExportFormat = CodeExportFormat | ImageExportFormat;
+type ImageExportFormat = "png" | "jpg" | "svg" | "copy-image";
+type CodeExportFormat = "html" | "copy-html";
+type ExportFormat = ImageExportFormat | CodeExportFormat;
 
-interface Preview {
-  format: ExportFormat;
-  code: string;
-}
-
-interface MenuOption<T extends string = string> {
+interface MenuOption<T extends string> {
   id: T;
   label: () => string;
   icon: (_: LucideProps | IconBaseProps) => ReactNode;
-  ext?: string;
 }
 
 const logger = getLogger(["calca", "web", "export"]);
 
-const CODE_FORMATS: MenuOption<CodeExportFormat>[] = [
-  { ext: "html", icon: SiTailwindcss, id: "tailwind", label: () => "Tailwind" },
-  { ext: "tsx", icon: SiReact, id: "react", label: () => "React" },
-];
-
 const IMAGE_FORMATS: MenuOption<ImageExportFormat>[] = [
-  { icon: BsFiletypeSvg, ext: "svg", id: "svg", label: () => "SVG" },
   { icon: BsFiletypePng, id: "png", label: () => "PNG" },
   { icon: BsFiletypeJpg, id: "jpg", label: () => "JPG" },
+  { icon: BsFiletypeSvg, id: "svg", label: () => "SVG" },
   { icon: Clipboard, id: "copy-image", label: m.export_copyAsImage },
 ];
 
-const ALL_FORMATS = [...CODE_FORMATS, ...IMAGE_FORMATS];
-
-async function htmlToImageBlob(
-  html: string,
-  width: number,
-  type: "image/png" | "image/jpeg",
-): Promise<Blob> {
-  // Use a same-origin blob URL in an iframe so we can access its DOM
-  const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:white;width:${width}px;}</style></head><body>${html}</body></html>`;
-  const blob = new Blob([fullHtml], { type: "text/html" });
-  const blobUrl = URL.createObjectURL(blob);
-
-  const iframe = document.createElement("iframe");
-  iframe.style.cssText = `position:fixed;left:-9999px;top:0;width:${width}px;height:12000px;border:none;`;
-  document.body.appendChild(iframe);
-
-  try {
-    // Load via blob URL (same-origin, so we can access contentDocument)
-    await new Promise<void>((resolve, reject) => {
-      iframe.onload = () => resolve();
-      iframe.onerror = () => reject(new Error("Failed to load iframe"));
-      iframe.src = blobUrl;
-    });
-
-    const doc = iframe.contentDocument;
-    if (!doc) {
-      throw new Error("No iframe document");
-    }
-
-    // Wait for images
-    const images = doc.querySelectorAll("img");
-    await Promise.all(
-      [...images].map(
-        (img) =>
-          new Promise<void>((resolve) => {
-            if (img.complete) {
-              return resolve();
-            }
-            img.onload = () => resolve();
-            img.onerror = () => resolve();
-            setTimeout(resolve, 3000);
-          }),
-      ),
-    );
-
-    // Wait for fonts to load in the iframe context
-    if (doc.fonts && doc.fonts.ready) {
-      await doc.fonts.ready;
-    }
-
-    await new Promise((r) => setTimeout(r, 500));
-
-    const { body } = doc;
-    const h = body.scrollHeight;
-    iframe.style.height = h + "px";
-
-    // Small delay after resize
-    await new Promise((r) => setTimeout(r, 100));
-
-    // Use html2canvas-pro for faithful DOM rasterization.
-    // Html-to-image uses SVG foreignObject which measures text differently
-    // And causes line breaks that don't exist in the live canvas.
-    const html2canvas = (await import("html2canvas-pro")).default;
-    const canvas = await html2canvas(body, {
-      allowTaint: true,
-      backgroundColor: null,
-      height: h,
-      scale: 2,
-      useCORS: true,
-      width,
-    });
-
-    return new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error("Canvas toBlob failed"))),
-        type,
-        0.95,
-      );
-    });
-  } finally {
-    document.body.removeChild(iframe);
-    URL.revokeObjectURL(blobUrl);
-  }
-}
-
-const LoadingIndicator = () => {
-  return (
-    <div className="fixed top-16 left-1/2 -translate-x-1/2 mt-2 bg-glass-bg backdrop-blur-2xl rounded-xl border border-glass-border shadow-glass px-3 py-2 z-30 flex items-center gap-2">
-      <Loader className="w-3 h-3 animate-spin ml-auto text-primary" />
-      <span className="text-[12px] text-muted-foreground">{m.export_converting()}</span>
-    </div>
-  );
-};
-
-interface PreviewPanelProps {
-  label: string;
-  preview: Preview;
-  onCancel: () => void;
-}
-
-const PreviewPanel = ({ label, preview, onCancel }: PreviewPanelProps) => {
-  const handleCopy = useCallback(() => {
-    if (!preview) {
-      return;
-    }
-    navigator.clipboard.writeText(preview.code);
-  }, [preview]);
-
-  const handleDownload = useCallback(() => {
-    if (!preview) {
-      return;
-    }
-    const fmt = ALL_FORMATS.find((f) => f.id === preview.format);
-    const mime = preview.format === "svg" ? "image/svg+xml" : "text/plain";
-    const blob = new Blob([preview.code], { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${label.toLowerCase().replace(/\s+/g, "-")}.${fmt?.ext || "txt"}`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [preview, label]);
-
-  return (
-    <div className="fixed top-16 left-1/2 -translate-x-1/2 mt-2 bg-glass-bg backdrop-blur-2xl rounded-2xl border border-glass-border shadow-glass z-30 w-[420px] max-w-[80vw]">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/40">
-        <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
-          {m.export_previewTitle({
-            format: ALL_FORMATS.find((f) => f.id === preview.format)?.label() ?? "",
-          })}
-        </span>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={handleCopy}
-            className="text-[11px] font-medium text-muted-foreground hover:text-foreground px-2.5 py-1 rounded-lg hover:bg-foreground/5 transition-all"
-          >
-            {m.export_copy()}
-          </button>
-          <button
-            onClick={handleDownload}
-            className="text-[11px] font-medium text-primary-foreground bg-primary/90 hover:bg-primary px-2.5 py-1 rounded-lg transition-all"
-          >
-            {m.export_download()}
-          </button>
-          <button
-            onClick={onCancel}
-            className="text-muted-foreground hover:text-foreground px-1.5 py-1 rounded-lg hover:bg-foreground/5 ml-1 transition-all"
-          >
-            {m.export_cancel()}
-          </button>
-        </div>
-      </div>
-      <pre className="p-4 text-[12px] leading-relaxed text-foreground font-mono overflow-auto max-h-[320px] whitespace-pre-wrap break-all">
-        {preview.code}
-      </pre>
-    </div>
-  );
-};
+const CODE_FORMATS: MenuOption<CodeExportFormat>[] = [
+  { icon: BsFiletypeHtml, id: "html", label: m.export_html },
+  { icon: ClipboardCopy, id: "copy-html", label: m.export_copyHtml },
+];
 
 interface ExportMenuProps {
   html: string;
   label: string;
   width?: number;
-  apiKey?: string;
-  model?: string;
-  providerType?: string;
-  baseURL?: string;
 }
 
-export function ExportMenu({
-  html,
-  label,
-  width = 480,
-  apiKey,
-  model,
-  providerType,
-  baseURL,
-}: ExportMenuProps) {
-  const [exporting, setExporting] = useState<ExportFormat | null>(null);
-  const [preview, setPreview] = useState<Preview | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+const runExport = async (format: ExportFormat, html: string, label: string, width: number) => {
+  const name = slugify(label);
 
-  const { mutateAsync } = useExportCodeMutation();
+  switch (format) {
+    case "html": {
+      const doc = buildStandaloneHtml(html, width, label);
+      downloadBlob(new Blob([doc], { type: "text/html" }), `${name}.html`);
+      return;
+    }
+    case "copy-html":
+      await navigator.clipboard.writeText(buildStandaloneHtml(html, width, label));
+      toast.success(m.export_copied());
+      return;
+    case "svg": {
+      const { height } = await renderFrame(html, width);
+      downloadBlob(
+        new Blob([buildSvg(html, width, height)], { type: "image/svg+xml" }),
+        `${name}.svg`,
+      );
+      return;
+    }
+    case "png":
+    case "jpg":
+    case "copy-image": {
+      const { canvas } = await renderFrame(html, width);
+      const blob = await canvasToBlob(canvas, format === "jpg" ? "image/jpeg" : "image/png");
+      if (format !== "copy-image") {
+        downloadBlob(blob, `${name}.${format}`);
+        return;
+      }
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        toast.success(m.export_copied());
+      } catch (error) {
+        logger.warn("Clipboard image write failed, downloading instead", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+        downloadBlob(blob, `${name}.png`);
+      }
+    }
+  }
+};
+
+export function ExportMenu({ html, label, width = 480 }: ExportMenuProps) {
+  const [exporting, setExporting] = useState<ExportFormat | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleExport = useCallback(
     async (format: ExportFormat) => {
+      setMenuOpen(false);
       setExporting(format);
-
       try {
-        // Image exports — client-side
-        if (format === "png" || format === "jpg" || format === "copy-image") {
-          const mimeType = format === "jpg" ? "image/jpeg" : "image/png";
-          const blob = await htmlToImageBlob(html, width, mimeType as "image/png" | "image/jpeg");
-
-          if (format === "copy-image") {
-            try {
-              await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-            } catch (error) {
-              logger.error("Clipboard write failed, falling back to download", {
-                error: error instanceof Error ? error.message : String(error),
-              });
-              // Fallback: download instead
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = `${label.toLowerCase().replace(/\s+/g, "-")}.png`;
-              a.click();
-              URL.revokeObjectURL(url);
-            }
-            setExporting(null);
-            return;
-          }
-
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `${label.toLowerCase().replace(/\s+/g, "-")}.${format}`;
-          a.click();
-          URL.revokeObjectURL(url);
-          setExporting(null);
-          return;
-        }
-
-        // Code exports — API call
-        const data = await mutateAsync({
-          apiKey,
-          baseURL: baseURL || undefined,
-          format,
-          html,
-          model,
-          providerType: providerType || undefined,
-        });
-        if ("error" in data) {
-          throw new Error(data.error);
-        }
-        setPreview({ code: data.result, format });
+        await runExport(format, html, label, width);
       } catch (error) {
         logger.error("Export failed", {
           error: error instanceof Error ? error.message : String(error),
+          format,
         });
-        if (format === "png" || format === "jpg" || format === "copy-image") {
-          // Can't show preview for image failures
-          logger.error("Image export failed");
-        } else {
-          const message = error instanceof Error ? error.message : m.export_failed();
-          setPreview({ code: `// ${message.replace(/\s+/g, " ")}`, format });
-        }
+        toast.error(m.export_failed());
       } finally {
         setExporting(null);
       }
     },
-    [html, width, label, mutateAsync],
+    [html, label, width],
   );
 
-  const handleCancel = () => setPreview(null);
+  const renderSection = <T extends ExportFormat>(title: string, options: MenuOption<T>[]) => (
+    <>
+      <div className="px-2.5 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+        {title}
+      </div>
+      {options.map((fmt) => (
+        <button
+          key={fmt.id}
+          onClick={() => handleExport(fmt.id)}
+          disabled={exporting !== null}
+          className="w-full rounded-lg text-[13px] text-foreground hover:bg-foreground/5 cursor-pointer text-left px-2.5 py-1.5 flex items-center gap-2 disabled:opacity-40"
+        >
+          <fmt.icon className="h-4 w-4" />
+          <span>{fmt.label()}</span>
+          {exporting === fmt.id && <Loader className="w-3 h-3 animate-spin ml-auto text-primary" />}
+        </button>
+      ))}
+    </>
+  );
 
   return (
-    <>
-      <Popover open={menuOpen} onOpenChange={setMenuOpen}>
-        <PopoverTrigger asChild>
-          <button className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-muted-foreground hover:bg-foreground/5 hover:text-foreground transition-all duration-200 rounded-xl group">
+    <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+      <PopoverTrigger asChild>
+        <button className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-muted-foreground hover:bg-foreground/5 hover:text-foreground transition-all duration-200 rounded-xl group">
+          {exporting ? (
+            <Loader className="w-4 h-4 animate-spin" />
+          ) : (
             <Download className="w-4 h-4" />
-            <span>{m.export_export()}</span>
-            <ChevronDown className="w-3 h-3 transition-transform group-data-[state=open]:rotate-180" />
-          </button>
-        </PopoverTrigger>
+          )}
+          <span>{m.export_export()}</span>
+          <ChevronDown className="w-3 h-3 transition-transform group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
 
-        <PopoverContent
-          align="center"
-          side="bottom"
-          sideOffset={8}
-          className="w-[240px] bg-glass-bg backdrop-blur-2xl border border-glass-border shadow-glass p-1 rounded-xl"
-        >
-          <div className="px-2.5 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            {m.export_imageSection()}
-          </div>
-          {IMAGE_FORMATS.map((fmt) => (
-            <button
-              key={fmt.id}
-              onClick={() => {
-                handleExport(fmt.id);
-                setMenuOpen(false);
-              }}
-              disabled={exporting !== null}
-              className="w-full rounded-lg text-[13px] text-foreground hover:bg-foreground/5 cursor-pointer text-left px-2.5 py-1.5 flex items-center gap-2 disabled:opacity-40"
-            >
-              <fmt.icon className="h-4 w-4" />
-              <span>{fmt.label()}</span>
-              {exporting === fmt.id && (
-                <Loader className="w-3 h-3 animate-spin ml-auto text-primary" />
-              )}
-            </button>
-          ))}
-          <div className="my-1 border-t border-border/30" />
-
-          <div className="px-2.5 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            {m.export_codeSection()}
-          </div>
-          {CODE_FORMATS.map((fmt) => (
-            <button
-              key={fmt.id}
-              onClick={() => {
-                handleExport(fmt.id);
-                setMenuOpen(false);
-              }}
-              disabled={exporting !== null}
-              className="w-full rounded-lg text-[13px] text-foreground hover:bg-foreground/5 cursor-pointer text-left px-2.5 py-1.5 flex items-center gap-2 disabled:opacity-40"
-            >
-              <fmt.icon className="h-4 w-4" />
-              <span>{fmt.label()}</span>
-              {exporting === fmt.id && (
-                <Loader className="w-3 h-3 animate-spin ml-auto text-primary" />
-              )}
-            </button>
-          ))}
-        </PopoverContent>
-      </Popover>
-
-      {/* Loading indicator */}
-      {exporting && <LoadingIndicator />}
-
-      {/* Preview panel */}
-      {preview && <PreviewPanel label={label} preview={preview} onCancel={handleCancel} />}
-    </>
+      <PopoverContent
+        align="center"
+        side="bottom"
+        sideOffset={8}
+        className="w-[240px] bg-glass-bg backdrop-blur-2xl border border-glass-border shadow-glass p-1 rounded-xl"
+      >
+        {renderSection(m.export_imageSection(), IMAGE_FORMATS)}
+        <div className="my-1 border-t border-border/30" />
+        {renderSection(m.export_codeSection(), CODE_FORMATS)}
+      </PopoverContent>
+    </Popover>
   );
 }

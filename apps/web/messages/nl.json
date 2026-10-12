@@ -69,16 +69,14 @@
   "error_unexpected": "Er is een onverwachte fout opgetreden.",
   "errors_unknown": "Onbekende fout",
   "export": {
-    "cancel": "Annuleren",
     "codeSection": "Code",
-    "converting": "Converteren...",
-    "copy": "Kopiëren",
     "copyAsImage": "Kopiëren als afbeelding",
-    "download": "Downloaden",
     "export": "Exporteren",
     "failed": "Exporteren mislukt",
     "imageSection": "Afbeelding",
-    "previewTitle": "{format} Export"
+    "copied": "Gekopieerd naar klembord",
+    "copyHtml": "HTML kopiëren",
+    "html": "HTML-bestand"
   },
   "export_importedLabel": "Geïmporteerd",
   "export_invalidFileMissingGroups": "Ongeldig {ext} bestand: ontbrekende groepen array",

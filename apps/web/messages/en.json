@@ -276,12 +276,10 @@
     "imageSection": "Image",
     "codeSection": "Code",
     "copyAsImage": "Copy as Image",
-    "converting": "Converting...",
-    "copy": "Copy",
-    "download": "Download",
-    "cancel": "Cancel",
-    "previewTitle": "{format} Export",
-    "failed": "Export failed"
+    "failed": "Export failed",
+    "html": "HTML file",
+    "copyHtml": "Copy HTML",
+    "copied": "Copied to clipboard"
   },
   "route_importFailed": "Failed to import file",
   "error_title": "Something went wrong",
