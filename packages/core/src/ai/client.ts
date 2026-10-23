@@ -16,6 +16,9 @@ interface CacheEntry {
 
 const promptCache = new Map<string, CacheEntry>();
 
+/** Distinguishes "no system prompt" from an empty-string prompt in cache keys. */
+export const NO_SYSTEM_PROMPT_SENTINEL = "__NO_SYSTEM_PROMPT__";
+
 // LRU eviction: remove oldest entry when cache is full
 function evictIfNeeded(): void {
   if (promptCache.size >= CACHE_MAX_ENTRIES) {
@@ -47,13 +50,15 @@ async function sha256hex(data: string): Promise<string> {
 }
 
 // Generate cache key from system prompt + provider type + model + user messages hash
-async function generateCacheKey(
+export async function generateCacheKey(
   systemPrompt: string | undefined,
   providerType: ProviderType,
   model: string,
   userMessages: string,
 ): Promise<string> {
-  const systemHash = await sha256hex(systemPrompt || "");
+  // Sentinel distinguishes "no system prompt" from an empty-string prompt so
+  // undefined and "" don't collide to the same hash (port of d7272623).
+  const systemHash = await sha256hex(systemPrompt ?? NO_SYSTEM_PROMPT_SENTINEL);
   const messagesHash = await sha256hex(userMessages);
   return `${systemHash}:${providerType}:${model}:${messagesHash}`;
 }
