@@ -11,5 +11,6 @@ export const main = defineCommand({
   subCommands: {
     mcp: () => import("./commands/mcp").then((r) => r.mcpCommand),
     open: () => import("./commands/open").then((r) => r.openCommand),
+    skill: () => import("./commands/skill").then((r) => r.skillCommand),
   },
 });
