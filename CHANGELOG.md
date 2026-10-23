@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- **Format / source-plugin system**: designs are no longer hardcoded to Tailwind. New `@calca/format` seam (`FormatDef`, `FormatRegistry`) and `@calca/format-html-tailwind` built-in package, now on Tailwind v4 (`@tailwindcss/browser`) for both web and desktop (replaces the v3 play-CDN bundle). Frames accept a resolved `FrameEnv` (scripts, styles, html attrs, custom CSS, animation policy).
+- **Bring your own stack**: drop a manifest in `.calca/formats/` (project) or `~/.calca/formats/` (user) - e.g. daisyUI via `extends: "html-tailwind"` with `styles`, `data-theme` attr and prompt snippets. Discovery walks from the working directory to home (nearest wins, merge-chain per format id); `CALCA_FORMATS` / `calca mcp --formats` override. The MCP `canvas.formats` tool lists what an agent can use.
+- **Agent ergonomics**: `canvas.show_variations` pushes 1-8 side-by-side design variations in one call (row/column/grid); agent skill packaging ships with the CLI (`calca skill [--copy <dir>]`); 3rd-party getting-started guide in `docs/agents/getting-started.md`.
+- **Desktop**: the desktop shell resolves the same `.calca/formats` manifests for the open project and serves them to the web UI.
+- **Web settings**: custom frame CSS, html attrs (e.g. `data-theme`) and animation toggle under Settings > Design frames.
+
+### Fixed
+
+- SSE generation streams keep alive (30s comments) - fixes intermittent stalls in long generations, especially through the service-worker runtime (#86).
+- AI client cache-key no longer collides empty vs missing system prompts.
+- Abort checks before each expensive pipeline sub-step.
+
+
 ## 0.8.0
 
 ### Minor Changes

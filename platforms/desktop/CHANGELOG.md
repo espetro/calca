@@ -1,5 +1,13 @@
 # @app/electrobun
 
+## 0.9.0
+
+### Patch Changes
+
+- Updated dependencies [72f4177]
+  - @calca/format@0.9.0
+  - @app/server@0.9.0
+
 ## 0.8.0
 
 ### Patch Changes
