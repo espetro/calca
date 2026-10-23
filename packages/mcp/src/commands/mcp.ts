@@ -20,12 +20,21 @@ export const mcpCommand = defineCommand({
       description: "Agent principal id for command origins and leases",
       default: "mcp-agent",
     },
+    formats: {
+      type: "string",
+      description:
+        "Directory of output format manifests to load (default: discover .calca/formats dirs)",
+    },
   },
   subCommands: {
     install: () => import("../install").then((r) => r.installCommand),
   },
   async run({ args }) {
-    const session = await loadSession({ file: args.file, agentId: args.agent });
+    const session = await loadSession({
+      file: args.file,
+      agentId: args.agent,
+      formatsDir: args.formats,
+    });
     const server = createCalcaMcpServer(session);
     const transport = new StdioServerTransport();
     await server.connect(transport);

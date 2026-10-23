@@ -11,6 +11,7 @@ import {
   type RecordId,
   type ShapeRecord,
 } from "@calca/canvas-base";
+import { createFormatRegistry, resolveFormatEnv } from "@calca/format";
 
 import { MAX_LEASE_TTL_MS, MAX_OPS_PER_CALL, type CanvasSession, type Proposal } from "./session";
 
@@ -534,4 +535,43 @@ export const canvasArrange = async (
   }
   const change = session.store.apply(commands, { origin: "agent" });
   return { applied: true, commands, affected: affectedOf(change), requestId };
+};
+
+export interface FormatsResultFormat {
+  id: string;
+  extends?: string;
+  exporters?: string[];
+  frameEnv: unknown;
+  promptSnippets?: Record<string, string>;
+  sourcePath: string;
+}
+
+export interface FormatsResult {
+  formats: FormatsResultFormat[];
+  warnings: string[];
+}
+
+/**
+ * List the session's discovered output formats with their resolved frame
+ * envs. Read-only; warnings surface unresolvable `extends` chains.
+ */
+export const canvasFormats = async (session: CanvasSession): Promise<FormatsResult> => {
+  const warnings: string[] = [];
+  const registry = createFormatRegistry(session.formats.map((f) => f.def));
+  const formats: FormatsResultFormat[] = session.formats.map(({ def, sourcePath }) => {
+    const base = {
+      id: def.id,
+      ...(def.extends ? { extends: def.extends } : {}),
+      ...(def.exporters ? { exporters: def.exporters } : {}),
+      ...(def.promptSnippets ? { promptSnippets: def.promptSnippets } : {}),
+      sourcePath,
+    };
+    try {
+      return { ...base, frameEnv: resolveFormatEnv(registry, def.id) };
+    } catch (error) {
+      warnings.push(`format "${def.id}": ${(error as Error).message}`);
+      return { ...base, frameEnv: def.frameEnv };
+    }
+  });
+  return { formats, warnings };
 };

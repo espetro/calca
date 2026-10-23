@@ -3,6 +3,7 @@ import {
   canvasApply,
   canvasArrange,
   canvasComment,
+  canvasFormats,
   canvasLease,
   canvasPropose,
   canvasRead,
@@ -271,6 +272,27 @@ export const toolContract: ToolContractEntry[] = [
       openWorldHint: false,
     },
     handler: (session, args) => canvasShowVariations(session, args as never),
+  },
+  {
+    name: "canvas.formats",
+    description:
+      "List the output formats available to this session (discovered from " +
+      ".calca/formats dirs and the user's home). Returns each format's id, " +
+      "extends parent, exporters, resolved frameEnv (scripts/styles/theme), " +
+      "promptSnippets and sourcePath, plus warnings for skipped manifests. " +
+      KAN_RULES,
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+    handler: (session) => canvasFormats(session),
   },
 ];
 

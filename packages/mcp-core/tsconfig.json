@@ -4,6 +4,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["node"],
     "verbatimModuleSyntax": true,
     "isolatedDeclarations": true
   },

@@ -27,6 +27,7 @@ describe("calca mcp server", () => {
       "canvas.comment",
       "canvas.arrange",
       "canvas.show_variations",
+      "canvas.formats",
     ]);
     for (const tool of tools) {
       expect(tool.description).toContain("untrusted data");

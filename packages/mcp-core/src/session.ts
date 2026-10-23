@@ -6,6 +6,7 @@ import {
   type RecordId,
   type ShapeDef,
 } from "@calca/canvas-base";
+import type { FormatDef } from "@calca/format";
 
 /** Hard cap on commands accepted by one mutation call. */
 export const MAX_OPS_PER_CALL = 100;
@@ -40,6 +41,12 @@ export interface Proposal {
  * synced store replaces the in-memory one and leases/proposals ride along
  * on the same seam.
  */
+/** A discovered format definition plus the manifest file it came from. */
+export interface SessionFormat {
+  def: FormatDef;
+  sourcePath: string;
+}
+
 export interface SessionShared {
   /** recordId → lease. Expired entries are pruned lazily on access. */
   leases: Map<RecordId, Lease>;
@@ -63,6 +70,8 @@ export interface CanvasSessionOptions {
   agentId?: string;
   shared?: SessionShared;
   defs?: ShapeDef[];
+  /** Discovered output formats exposed via the `canvas.formats` tool. */
+  formats?: SessionFormat[];
   /** Injectable clock (epoch ms) — tests advance it to expire leases. */
   now?: () => number;
 }
@@ -80,6 +89,8 @@ export class CanvasSession {
   readonly shared: SessionShared;
   /** Records this principal considers selected; drives `canvas.read` scope `selection`. */
   readonly selection: Set<RecordId> = new Set<RecordId>();
+  /** Discovered output formats (nearest-first), for `canvas.formats`. */
+  readonly formats: SessionFormat[];
   readonly now: () => number;
 
   constructor(options: CanvasSessionOptions = {}) {
@@ -88,6 +99,7 @@ export class CanvasSession {
     if (options.store && options.snapshot) this.store.load(options.snapshot);
     this.agentId = options.agentId ?? `agent-${++sessionCounter}`;
     this.shared = options.shared ?? createSessionShared();
+    this.formats = options.formats ?? [];
     this.now = options.now ?? Date.now;
   }
 

@@ -1,11 +1,18 @@
 export { CanvasSession, createCanvasSession, createSessionShared } from "./session";
 export { MAX_LEASE_TTL_MS, MAX_OPS_PER_CALL } from "./session";
-export type { CanvasSessionOptions, Lease, Proposal, SessionShared } from "./session";
+export type {
+  CanvasSessionOptions,
+  Lease,
+  Proposal,
+  SessionFormat,
+  SessionShared,
+} from "./session";
 
 export {
   canvasApply,
   canvasArrange,
   canvasComment,
+  canvasFormats,
   canvasLease,
   canvasPropose,
   canvasRead,
@@ -19,6 +26,8 @@ export type {
   ArrangeArgs,
   CommentArgs,
   ErrorCode,
+  FormatsResult,
+  FormatsResultFormat,
   LeaseArgs,
   MutationResult,
   ProposeArgs,

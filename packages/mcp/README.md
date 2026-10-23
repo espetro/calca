@@ -36,3 +36,60 @@ npx -y @calca/mcp mcp install claude-code # write host config (prints with --pri
 ## License
 
 Apache-2.0
+
+## Custom formats
+
+Output formats are declarative JSON manifests describing how an artifact is framed (scripts, styles, theme attributes) and which exporters it supports. They are discovered from `.calca/formats` directories.
+
+### Discovery rules
+
+1. Starting at the working directory, every ancestor directory is checked for `<dir>/.calca/formats`. The walk never stops at repository boundaries (`.git` is irrelevant) and terminates at the filesystem root and at the user's home directory.
+2. `<home>/.calca/formats` is always appended as the last (lowest-priority) source.
+3. Directories are merged nearest-first: when the same format id appears in several directories, the deepest (nearest) definition wins.
+4. A manifest may `extends` another format id. When that id is present in the loaded chain, the frame env is resolved parent-first (defaults applied last).
+5. Setting `CALCA_FORMATS=<dir>` disables discovery and loads that single directory verbatim.
+6. `calca mcp --formats <dir>` loads that directory as the single source for the session, overriding discovery.
+
+Malformed manifests are skipped with a warning; they never abort the session.
+
+### `canvas.formats` tool
+
+Read-only tool listing the formats available to the session:
+
+```json
+{
+  "formats": [
+    {
+      "id": "daisy",
+      "extends": "html-tailwind",
+      "exporters": ["html"],
+      "frameEnv": { "styles": ["daisyui.css"], "attrs": { "data-theme": "light" } },
+      "promptSnippets": { "layout": "use daisyUI component classes" },
+      "sourcePath": "/path/to/.calca/formats/daisy.json"
+    }
+  ],
+  "warnings": []
+}
+```
+
+### Example: daisyUI manifest
+
+`.calca/formats/daisy.json`:
+
+```json
+{
+  "id": "daisy",
+  "extends": "html-tailwind",
+  "exporters": ["html"],
+  "frameEnv": {
+    "styles": ["https://unpkg.com/daisyui@5/daisyui.css"],
+    "attrs": { "data-theme": "light" },
+    "customCssPassthrough": true
+  },
+  "promptSnippets": {
+    "layout": "Build the UI with daisyUI component classes (btn, card, navbar, modal)."
+  }
+}
+```
+
+Load it with `calca mcp --formats ./.calca/formats`, or drop it into `~/.calca/formats` to make it available everywhere.
