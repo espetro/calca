@@ -7,6 +7,7 @@ import {
   canvasPropose,
   canvasRead,
   canvasRelease,
+  canvasShowVariations,
 } from "./tools";
 
 export interface JsonSchemaObject {
@@ -218,6 +219,58 @@ export const toolContract: ToolContractEntry[] = [
     },
     annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true },
     handler: (session, args) => canvasArrange(session, args as never),
+  },
+  {
+    name: "canvas.show_variations",
+    description:
+      "Composite: create a titled group of design variations laid out side by side. " +
+      "Each variation becomes a 'design-frame' record carrying props.iteration " +
+      "(the app renders its HTML preview) and a shared props.groupId. Capped at 8 " +
+      "variations; layout is 'row' (default), 'column', or 'grid'; gap is px " +
+      "(default 64); viewport is the top-left origin (default {x:0,y:0}). " +
+      "Example: {title:'Landing heroes', variations:[{label:'A', html:'<div>…</div>', width:480, height:320},{label:'B', html:'<div>…</div>'}], layout:'row'}. " +
+      "Returns frameIds and groupId. " +
+      KAN_RULES,
+    inputSchema: {
+      type: "object",
+      properties: {
+        title: { type: "string", description: "Group title / generation prompt" },
+        variations: {
+          type: "array",
+          minItems: 1,
+          maxItems: 8,
+          items: {
+            type: "object",
+            properties: {
+              label: { type: "string" },
+              html: { type: "string", description: "HTML/CSS preview markup" },
+              width: { type: "number", description: "px, default 480" },
+              height: { type: "number", description: "px, default 320" },
+            },
+            required: ["label", "html"],
+            additionalProperties: false,
+          },
+        },
+        layout: { type: "string", enum: ["row", "column", "grid"] },
+        gap: { type: "number", description: "px between frames, default 64" },
+        viewport: {
+          type: "object",
+          properties: { x: { type: "number" }, y: { type: "number" } },
+          required: ["x", "y"],
+          additionalProperties: false,
+        },
+        requestId: REQUEST_ID_SCHEMA,
+      },
+      required: ["title", "variations"],
+      additionalProperties: false,
+    },
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+    handler: (session, args) => canvasShowVariations(session, args as never),
   },
 ];
 

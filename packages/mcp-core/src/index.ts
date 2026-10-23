@@ -10,6 +10,8 @@ export {
   canvasPropose,
   canvasRead,
   canvasRelease,
+  canvasShowVariations,
+  MAX_VARIATIONS,
 } from "./tools";
 export type {
   Affected,
@@ -22,6 +24,8 @@ export type {
   ProposeArgs,
   ReadArgs,
   ReleaseArgs,
+  ShowVariationsArgs,
+  ShowVariationsVariation,
   ToolError,
 } from "./tools";
 

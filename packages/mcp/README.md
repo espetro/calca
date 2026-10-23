@@ -15,7 +15,21 @@ npx -y @calca/mcp mcp install claude-code # write host config (prints with --pri
 
 ## Commands
 
-- `calca mcp` — serve the canvas tool contract over stdio (`canvas.read`, `canvas.propose`, `canvas.apply`, `canvas.lease`, `canvas.release`, `canvas.comment`, `canvas.arrange`). `--file` loads/saves a JSON snapshot; `--agent` sets the principal id used for command origins and leases.
+- `calca mcp` — serve the canvas tool contract over stdio (see the tool table below). `--file` loads/saves a JSON snapshot; `--agent` sets the principal id used for command origins and leases.
+
+### Tools
+
+| Tool                     | Purpose                                                                  |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `canvas.read`            | Read canvas state (summary / viewport / selection / full)                |
+| `canvas.apply`           | Apply canvas commands immediately                                        |
+| `canvas.propose`         | Record a proposal (default mutation mode)                                |
+| `canvas.lease`           | Take exclusive soft leases on record ids                                 |
+| `canvas.release`         | Release this principal's leases                                          |
+| `canvas.comment`         | Attach a comment to a record                                             |
+| `canvas.arrange`         | Lay out shapes as row / column / grid                                    |
+| `canvas.show_variations` | Create a titled group of design variations laid out side by side (max 8) |
+
 - `calca mcp install <host>` — merge `calca` into the host's MCP config. Hosts: `claude-code`, `cursor`, `gemini-cli`, `opencode`, `codex`.
 - `calca open <file>` — board summary (record counts by type). Full visual open lands with the web build (Phase 3).
 

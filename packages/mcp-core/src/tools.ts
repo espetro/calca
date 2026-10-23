@@ -319,6 +319,146 @@ export const canvasComment = async (
   return { applied: true, commands, affected: affectedOf(change), requestId };
 };
 
+export interface ShowVariationsVariation {
+  label: string;
+  html: string;
+  width?: number;
+  height?: number;
+}
+
+export interface ShowVariationsArgs {
+  title: string;
+  variations: ShowVariationsVariation[];
+  layout?: "row" | "column" | "grid";
+  gap?: number;
+  viewport?: Point;
+  requestId?: string;
+}
+
+export const MAX_VARIATIONS = 8;
+
+const DEFAULT_FRAME_WIDTH = 480;
+const DEFAULT_FRAME_HEIGHT = 320;
+
+/**
+ * Composite tool: materialize a set of design variations as a side-by-side
+ * group of `design-frame` records. Frames carry a shared `props.groupId` and
+ * a `props.iteration` object shaped like the app's `DesignIteration`, so the
+ * React Flow adapter renders them identically to app-generated frames.
+ */
+export const canvasShowVariations = async (
+  session: CanvasSession,
+  args: ShowVariationsArgs,
+): Promise<(MutationResult & { frameIds: RecordId[]; groupId: string }) | ToolError> => {
+  if (typeof args.title !== "string" || args.title.length === 0) {
+    return err("invalid", "title is required");
+  }
+  if (!Array.isArray(args.variations) || args.variations.length === 0) {
+    return err("invalid", "variations must be a non-empty array");
+  }
+  if (args.variations.length > MAX_VARIATIONS) {
+    return err("invalid", `variations must not exceed ${MAX_VARIATIONS}`);
+  }
+  for (const v of args.variations) {
+    if (!isRecord(v) || typeof v.label !== "string" || typeof v.html !== "string") {
+      return err("invalid", "each variation requires string `label` and `html`");
+    }
+    if (v.width !== undefined && typeof v.width !== "number") {
+      return err("invalid", "variation width must be a number");
+    }
+    if (v.height !== undefined && typeof v.height !== "number") {
+      return err("invalid", "variation height must be a number");
+    }
+  }
+  const layout = args.layout ?? "row";
+  if (layout !== "row" && layout !== "column" && layout !== "grid") {
+    return err("invalid", "layout must be 'row', 'column', or 'grid'");
+  }
+  const gap = typeof args.gap === "number" ? args.gap : 64;
+  const viewport = isPoint(args.viewport) ? args.viewport : { x: 0, y: 0 };
+
+  const groupId = `group-${crypto.randomUUID()}`;
+  const requestId = args.requestId ?? `show-variations-${crypto.randomUUID()}`;
+  if (!session.claimRequest(requestId)) {
+    return { applied: false, commands: [], requestId, reason: "duplicate", frameIds: [], groupId };
+  }
+
+  const frames = args.variations.map((v) => ({
+    id: `frame-${crypto.randomUUID()}`,
+    label: v.label,
+    html: v.html,
+    width: v.width ?? DEFAULT_FRAME_WIDTH,
+    height: v.height ?? DEFAULT_FRAME_HEIGHT,
+  }));
+
+  const cols = layout === "grid" ? Math.ceil(Math.sqrt(frames.length)) : 1;
+  const cellW = (layout === "row" ? Math.max(...frames.map((f) => f.width)) : 0) + gap;
+  const cellH = (layout === "column" ? Math.max(...frames.map((f) => f.height)) : 0) + gap;
+  const offsetOf = (i: number): Point => {
+    switch (layout) {
+      case "row":
+        return { x: viewport.x + i * cellW, y: viewport.y };
+      case "column":
+        return { x: viewport.x, y: viewport.y + i * cellH };
+      default:
+        return {
+          x: viewport.x + (i % cols) * (Math.max(...frames.map((f) => f.width)) + gap),
+          y: viewport.y + Math.floor(i / cols) * (Math.max(...frames.map((f) => f.height)) + gap),
+        };
+    }
+  };
+
+  const commands: Command[] = frames.map((frame, i) => {
+    const position = offsetOf(i);
+    const record: ShapeRecord = {
+      id: frame.id,
+      type: "design-frame",
+      parentId: null,
+      index: session.store.nextIndex(null),
+      props: {
+        position,
+        width: frame.width,
+        height: frame.height,
+        isLoading: false,
+        groupId,
+        iteration: {
+          id: frame.id,
+          label: frame.label,
+          html: frame.html,
+          width: frame.width,
+          height: frame.height,
+          position,
+          prompt: args.title,
+          comments: [],
+          isLoading: false,
+        },
+      },
+    };
+    return { op: "create-shape", record };
+  });
+
+  // All ids are freshly generated, so a lease conflict is only possible in a
+  // pathological id collision — checked anyway for pipeline symmetry.
+  const blocked = session.foreignLeaseIds(frames.map((f) => f.id));
+  if (blocked.length > 0) {
+    return err("leased", `records leased to another principal: ${blocked.join(", ")}`, blocked);
+  }
+
+  try {
+    const change = session.store.apply(commands, { origin: "agent" });
+    return {
+      applied: true,
+      commands,
+      affected: affectedOf(change),
+      requestId,
+      frameIds: frames.map((f) => f.id),
+      groupId,
+    };
+  } catch (error) {
+    return err("invalid", error instanceof Error ? error.message : String(error));
+  }
+};
+
 export interface ArrangeArgs {
   ids: RecordId[];
   mode: "row" | "column" | "grid";
