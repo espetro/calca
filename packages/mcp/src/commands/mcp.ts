@@ -26,9 +26,6 @@ export const mcpCommand = defineCommand({
         "Directory of output format manifests to load (default: discover .calca/formats dirs)",
     },
   },
-  subCommands: {
-    install: () => import("../install").then((r) => r.installCommand),
-  },
   async run({ args }) {
     const session = await loadSession({
       file: args.file,

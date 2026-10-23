@@ -12,5 +12,6 @@ export const main = defineCommand({
     mcp: () => import("./commands/mcp").then((r) => r.mcpCommand),
     open: () => import("./commands/open").then((r) => r.openCommand),
     skill: () => import("./commands/skill").then((r) => r.skillCommand),
+    install: () => import("./install").then((r) => r.installCommand),
   },
 });
