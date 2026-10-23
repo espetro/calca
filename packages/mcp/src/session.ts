@@ -1,9 +1,54 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 
 import type { CanvasSnapshot } from "@calca/canvas-base";
-import { resolveFormats } from "@calca/format";
+import { resolveFormats, HTML_TAILWIND_FORMAT_ID, type FormatDef } from "@calca/format";
 import { createCanvasSession, type CanvasSession, type SessionFormat } from "@calca/mcp-core";
 import { consola } from "consola";
+
+/**
+ * Built-in `html-tailwind` definition seeded into every session so project
+ * manifests can `extends` it without bundling the Tailwind runtime. The
+ * logical `calca:tailwind` script token is resolved to a real URL by the
+ * host at render time (see `@calca/format-html-tailwind`).
+ */
+const BUILTIN_FORMATS = [
+  {
+    def: {
+      exporters: ["standalone-html"],
+      frameEnv: {
+        animations: "none" as const,
+        attrs: {},
+        bodyBackground: "white",
+        customCssPassthrough: true,
+        scripts: ["calca:tailwind"],
+      },
+      id: HTML_TAILWIND_FORMAT_ID,
+    },
+    sourcePath: "builtin:html-tailwind",
+  },
+];
+
+/**
+ * Resolve manifest-relative asset paths (`./`, `../`) against the manifest's
+ * own directory so consumers receive directly loadable URLs. Logical tokens
+ * (`calca:*`), bare ids and absolute paths pass through untouched. Built-in
+ * definitions carry a `builtin:` source path and are left alone.
+ */
+function absolutizeAssets(sourcePath: string, def: FormatDef): FormatDef {
+  if (sourcePath.startsWith("builtin:")) return def;
+  const dir = dirname(sourcePath);
+  const fix = (p: string): string => (p.startsWith("./") || p.startsWith("../") ? join(dir, p) : p);
+  const frameEnv = def.frameEnv;
+  return {
+    ...def,
+    frameEnv: {
+      ...frameEnv,
+      ...(frameEnv.scripts ? { scripts: frameEnv.scripts.map(fix) } : {}),
+      ...(frameEnv.styles ? { styles: frameEnv.styles.map(fix) } : {}),
+    },
+  };
+}
 
 export interface LoadSessionOptions {
   file?: string;
@@ -18,11 +63,15 @@ export interface LoadSessionOptions {
  * `process.cwd()`. Warnings are logged, never fatal.
  */
 export function loadFormats(formatsDir?: string): SessionFormat[] {
+  const baseDefs = BUILTIN_FORMATS.map((f) => f.def);
   const result = formatsDir
-    ? resolveFormats({ env: { CALCA_FORMATS: formatsDir } })
-    : resolveFormats({ startDir: process.cwd() });
+    ? resolveFormats({ baseDefs, env: { CALCA_FORMATS: formatsDir } })
+    : resolveFormats({ baseDefs, startDir: process.cwd() });
   for (const warning of result.warnings) consola.warn(warning);
-  return result.sources;
+  return [...BUILTIN_FORMATS, ...result.sources].map(({ def, sourcePath }) => ({
+    def: absolutizeAssets(sourcePath, def),
+    sourcePath,
+  }));
 }
 
 export async function loadSession(options: LoadSessionOptions): Promise<CanvasSession> {

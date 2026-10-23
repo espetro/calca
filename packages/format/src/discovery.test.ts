@@ -214,6 +214,11 @@ describe("resolveFormats", () => {
 });
 
 describe("homedir injection", () => {
+  it("does not throw when home does not exist", () => {
+    const missing = join(root, "no-such-home");
+    const dirs = discoverFormatDirs({ startDir: root, home: missing });
+    expect(dirs.every((d) => !d.includes("no-such-home"))).toBe(true);
+  });
   it("defaults home to os.homedir(), never $HOME env", () => {
     // Discovery with default home must terminate and include the real home
     // formats dir only if it exists — just assert it does not throw and

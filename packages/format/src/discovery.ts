@@ -19,6 +19,11 @@ export interface DiscoverFormatDirsOptions {
   home?: string;
   /** Environment variables consulted for `CALCA_FORMATS`. Defaults to `process.env`. */
   env?: Record<string, string | undefined>;
+  /**
+   * Built-in definitions registered at lowest precedence so discovered
+   * manifests can `extends` them. Never listed as sources.
+   */
+  baseDefs?: FormatDef[];
 }
 
 export interface ResolveFormatsResult {
@@ -37,13 +42,26 @@ export interface ResolveFormatsResult {
  * deduplicated. When `env.CALCA_FORMATS` is set and non-empty it is
  * returned verbatim as the single source — the caller validates existence.
  */
+/**
+ * `realpathSync` that tolerates a missing path — returns the resolved
+ * absolute path as-is. Discovery must never throw because a home or start
+ * directory does not exist.
+ */
+const safeRealpath = (path: string): string => {
+  try {
+    return realpathSync(path);
+  } catch {
+    return resolve(path);
+  }
+};
+
 export const discoverFormatDirs = (options: DiscoverFormatDirsOptions = {}): string[] => {
   const env = options.env ?? process.env;
   const override = env.CALCA_FORMATS?.trim();
   if (override) return [override];
 
-  const home = realpathSync(options.home ?? homedir());
-  let current = realpathSync(resolve(options.startDir ?? process.cwd()));
+  const home = safeRealpath(options.home ?? homedir());
+  let current = safeRealpath(resolve(options.startDir ?? process.cwd()));
 
   const found: string[] = [];
   const seen = new Set<string>();
@@ -114,7 +132,7 @@ export const resolveFormats = (options: DiscoverFormatDirsOptions = {}): Resolve
   }
 
   // Register shallowest-first so the nearest definition overwrites.
-  const registry = createFormatRegistry();
+  const registry = createFormatRegistry(options.baseDefs ?? []);
   for (const { def } of [...sources].reverse()) registry.register(def);
 
   // Pre-resolve `extends` chains that are fully present in the registry.

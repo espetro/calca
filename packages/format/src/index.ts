@@ -12,3 +12,10 @@ export type {
   ResolveFormatsResult,
 } from "./discovery";
 export { discoverFormatDirs, loadFormatsFromDir, resolveFormats } from "./discovery";
+
+/**
+ * Id of the built-in `html-tailwind` output format. Runtime-neutral — the
+ * concrete definition lives in `@calca/format-html-tailwind`; the MCP seam
+ * only needs the id so manifests can `extends` it.
+ */
+export const HTML_TAILWIND_FORMAT_ID = "html-tailwind";
