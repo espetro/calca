@@ -65,7 +65,7 @@ jobs:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
       - run: bun install
-      - run: bunx turbo build --filter=@calca/shared --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow --filter=@calca/mcp-core --filter=@calca/mcp
+      - run: bunx turbo build --filter=@calca/shared --filter=@calca/format --filter=@calca/format-html-tailwind --filter=@calca/canvas-base --filter=@calca/canvas-ui --filter=@calca/canvas-flow --filter=@calca/mcp-core --filter=@calca/mcp
       - name: Publish publishable @calca/* packages
         # Trusted publishing (OIDC) replaces a stored NPM_TOKEN: npm CLI >=11.5.1
         # negotiates it from id-token: write, and adds provenance attestations.
@@ -74,7 +74,9 @@ jobs:
         run: |
           set -e
           out=$(mktemp -d)
-          for pkg in calca-shared canvas-base canvas-ui canvas-flow mcp-core mcp; do
+          # Dep order matters: format-html-tailwind packs a workspace:* dep on
+          # format, so format must be packed (and its tarball rewritten) first.
+          for pkg in calca-shared format format-html-tailwind canvas-base canvas-ui canvas-flow mcp-core mcp; do
             (cd "packages/$pkg" && bun pm pack --destination "$out" >/dev/null)
           done
           for tgz in "$out"/*.tgz; do
