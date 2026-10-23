@@ -87,7 +87,16 @@ jobs:
               echo "skip: $spec already published"
               continue
             fi
-            npm publish "$tgz" --access public --provenance
+            # Trusted publishing (OIDC) only works for packages that already
+            # have a trusted publisher configured on npm. Brand-new packages
+            # (e.g. @calca/format in v0.9.1) 404 on PUT until they exist, so
+            # fall back to the classic NPM_TOKEN, which auto-creates packages
+            # in a scope it owns. Token path loses provenance, but existing
+            # packages keep the OIDC/provenance path.
+            if ! npm publish "$tgz" --access public --provenance; then
+              echo "OIDC publish failed for $spec, retrying with NPM_TOKEN"
+              NODE_AUTH_TOKEN="${{ secrets.NPM_TOKEN }}" npm publish "$tgz" --access public
+            fi
           done
 
   binaries:
