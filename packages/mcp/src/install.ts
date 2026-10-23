@@ -67,25 +67,29 @@ export const installCommand = defineCommand({
     },
   },
   async run({ args }) {
-    const host = HOSTS[args.host];
-    if (!host) {
-      consola.error(
-        `unknown host "${args.host}" — expected one of: ${Object.keys(HOSTS).join(", ")}`,
-      );
-      process.exit(1);
-    }
-    const path = host.configPath();
-    if (args.print) {
-      if (host.format === "toml") {
-        consola.log(TOML_ENTRY);
-      } else {
-        consola.log(JSON.stringify({ calca: SERVER_ENTRY }, null, 2));
-      }
-      return;
-    }
-    await installHost(host, path);
+    await runInstall({ host: args.host, print: args.print });
   },
 });
+
+export const runInstall = async (opts: { host: string; print?: boolean }): Promise<void> => {
+  const host = HOSTS[opts.host];
+  if (!host) {
+    consola.error(
+      `unknown host "${opts.host}" — expected one of: ${Object.keys(HOSTS).join(", ")}`,
+    );
+    process.exit(1);
+  }
+  const path = host.configPath();
+  if (opts.print) {
+    if (host.format === "toml") {
+      consola.log(TOML_ENTRY);
+    } else {
+      consola.log(JSON.stringify({ calca: SERVER_ENTRY }, null, 2));
+    }
+    return;
+  }
+  await installHost(host, path);
+};
 
 async function installHost(host: HostConfig, path: string): Promise<void> {
   await mkdir(dirname(path), { recursive: true });

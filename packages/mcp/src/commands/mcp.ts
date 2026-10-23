@@ -26,7 +26,18 @@ export const mcpCommand = defineCommand({
         "Directory of output format manifests to load (default: discover .calca/formats dirs)",
     },
   },
-  async run({ args }) {
+  async run(ctx) {
+    // Back-compat: `calca mcp install <host>` routes to the top-level install
+    // command (docs/skills reference this form). Positionals land in args._
+    // because citty no longer sees "install" as an mcp subcommand.
+    if (ctx.args._?.[0] === "install") {
+      const { runInstall } = await import("../install");
+      return runInstall({
+        host: ctx.args._[1] as string,
+        print: ctx.args.print === true,
+      });
+    }
+    const { args } = ctx;
     const session = await loadSession({
       file: args.file,
       agentId: args.agent,
