@@ -1009,6 +1009,116 @@ export const settings_navAbout = () => `概要`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const settings_navFrames = () => `デザインフレーム`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssLabel = () => `カスタム CSS`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssDescription = () => `すべてのデザインフレームに追加される CSS。アクティブな出力形式がカスタム CSS を許可する必要があります。`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssPlaceholder = () => `/* 例: body font-family Inter, sans-serif */`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsLabel = () => `フレーム属性`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsDescription = () => `フレームのルート要素に追加する HTML 属性。1 行につき 1 つ、name="value" の形式 (例: data-theme="dark")。`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsPlaceholder = () => `data-theme="dark"`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsLabel = () => `アニメーションを許可`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsDescription = () => `デザインフレーム内で CSS アニメーションとトランジションを許可します。`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesNote = () => `フレームのリソースは新しく描画されたフレームに適用され、設定変更時に更新されます。`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const settings_navSoonBadge = () => `近日公開`
 
 

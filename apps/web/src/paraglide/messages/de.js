@@ -1009,6 +1009,116 @@ export const settings_navAbout = () => `Info`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const settings_navFrames = () => `Design-Frames`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssLabel = () => `Eigenes CSS`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssDescription = () => `CSS, das in jedes Design-Frame eingefügt wird. Erfordert, dass das aktive Ausgabeformat eigenes CSS erlaubt.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssPlaceholder = () => `/* z. B. body font-family Inter, sans-serif */`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsLabel = () => `Frame-Attribute`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsDescription = () => `Zusätzliche HTML-Attribute auf der Frame-Wurzel, eine pro Zeile als name="value" (z. B. data-theme="dark").`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsPlaceholder = () => `data-theme="dark"`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsLabel = () => `Animationen erlauben`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsDescription = () => `CSS-Animationen und Übergänge in Design-Frames zulassen.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesNote = () => `Frame-Ressourcen gelten für neu gerenderte Frames und werden bei der nächsten Änderung der Einstellungen aktualisiert.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const settings_navSoonBadge = () => `SO BALD`
 
 

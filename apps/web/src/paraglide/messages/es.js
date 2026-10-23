@@ -1009,6 +1009,116 @@ export const settings_navAbout = () => `Acerca de`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const settings_navFrames = () => `Frames de diseño`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssLabel = () => `CSS personalizado`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssDescription = () => `CSS añadido dentro de cada frame de diseño. Requiere que el formato de salida activo permita CSS personalizado.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssPlaceholder = () => `/* p. ej. body font-family Inter, sans-serif */`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsLabel = () => `Atributos del frame`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsDescription = () => `Atributos HTML adicionales en la raíz del frame, uno por línea como name="value" (p. ej. data-theme="dark").`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsPlaceholder = () => `data-theme="dark"`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsLabel = () => `Permitir animaciones`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsDescription = () => `Permitir animaciones y transiciones CSS dentro de los frames de diseño.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesNote = () => `Los recursos del frame se aplican a los frames recién renderizados y se actualizan al cambiar los ajustes.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const settings_navSoonBadge = () => `PRÓX.`
 
 

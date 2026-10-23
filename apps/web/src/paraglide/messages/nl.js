@@ -1009,6 +1009,116 @@ export const settings_navAbout = () => `Over`
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const settings_navFrames = () => `Ontwerpframes`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssLabel = () => `Eigen CSS`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssDescription = () => `CSS dat in elk ontwerpframe wordt ingevoegd. Vereist dat het actieve uitvoerformaat eigen CSS toestaat.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssPlaceholder = () => `/* bv. body font-family Inter, sans-serif */`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsLabel = () => `Frame-attributen`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsDescription = () => `Extra HTML-attributen op de frame-wortel, één per regel als name="value" (bv. data-theme="dark").`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsPlaceholder = () => `data-theme="dark"`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsLabel = () => `Animaties toestaan`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsDescription = () => `CSS-animaties en overgangen toestaan in ontwerpframes.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesNote = () => `Frame-resources gelden voor nieuw gerenderde frames en worden bij de volgende instellingswijziging vernieuwd.`
+
+
+
+
+	
+/**
+ * 
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const settings_navSoonBadge = () => `BINNENKORT`
 
 

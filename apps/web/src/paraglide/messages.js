@@ -2634,6 +2634,296 @@ export const settings_navAbout = (params = {}, options = {}) => {
  * @returns {string}
  */
 /* @__NO_SIDE_EFFECTS__ */
+export const settings_navFrames = (params = {}, options = {}) => {
+	return {
+		de: de.settings_navFrames,
+		en: en.settings_navFrames,
+		es: es.settings_navFrames,
+		fr: fr.settings_navFrames,
+		it: it.settings_navFrames,
+		ja: ja.settings_navFrames,
+		nl: nl.settings_navFrames,
+		"pt-br": pt_br.settings_navFrames,
+		"zh-hans": zh_hans.settings_navFrames
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssLabel = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesCssLabel,
+		en: en.settings_framesCssLabel,
+		es: es.settings_framesCssLabel,
+		fr: fr.settings_framesCssLabel,
+		it: it.settings_framesCssLabel,
+		ja: ja.settings_framesCssLabel,
+		nl: nl.settings_framesCssLabel,
+		"pt-br": pt_br.settings_framesCssLabel,
+		"zh-hans": zh_hans.settings_framesCssLabel
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssDescription = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesCssDescription,
+		en: en.settings_framesCssDescription,
+		es: es.settings_framesCssDescription,
+		fr: fr.settings_framesCssDescription,
+		it: it.settings_framesCssDescription,
+		ja: ja.settings_framesCssDescription,
+		nl: nl.settings_framesCssDescription,
+		"pt-br": pt_br.settings_framesCssDescription,
+		"zh-hans": zh_hans.settings_framesCssDescription
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesCssPlaceholder = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesCssPlaceholder,
+		en: en.settings_framesCssPlaceholder,
+		es: es.settings_framesCssPlaceholder,
+		fr: fr.settings_framesCssPlaceholder,
+		it: it.settings_framesCssPlaceholder,
+		ja: ja.settings_framesCssPlaceholder,
+		nl: nl.settings_framesCssPlaceholder,
+		"pt-br": pt_br.settings_framesCssPlaceholder,
+		"zh-hans": zh_hans.settings_framesCssPlaceholder
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsLabel = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesAttrsLabel,
+		en: en.settings_framesAttrsLabel,
+		es: es.settings_framesAttrsLabel,
+		fr: fr.settings_framesAttrsLabel,
+		it: it.settings_framesAttrsLabel,
+		ja: ja.settings_framesAttrsLabel,
+		nl: nl.settings_framesAttrsLabel,
+		"pt-br": pt_br.settings_framesAttrsLabel,
+		"zh-hans": zh_hans.settings_framesAttrsLabel
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsDescription = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesAttrsDescription,
+		en: en.settings_framesAttrsDescription,
+		es: es.settings_framesAttrsDescription,
+		fr: fr.settings_framesAttrsDescription,
+		it: it.settings_framesAttrsDescription,
+		ja: ja.settings_framesAttrsDescription,
+		nl: nl.settings_framesAttrsDescription,
+		"pt-br": pt_br.settings_framesAttrsDescription,
+		"zh-hans": zh_hans.settings_framesAttrsDescription
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAttrsPlaceholder = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesAttrsPlaceholder,
+		en: en.settings_framesAttrsPlaceholder,
+		es: es.settings_framesAttrsPlaceholder,
+		fr: fr.settings_framesAttrsPlaceholder,
+		it: it.settings_framesAttrsPlaceholder,
+		ja: ja.settings_framesAttrsPlaceholder,
+		nl: nl.settings_framesAttrsPlaceholder,
+		"pt-br": pt_br.settings_framesAttrsPlaceholder,
+		"zh-hans": zh_hans.settings_framesAttrsPlaceholder
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsLabel = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesAnimationsLabel,
+		en: en.settings_framesAnimationsLabel,
+		es: es.settings_framesAnimationsLabel,
+		fr: fr.settings_framesAnimationsLabel,
+		it: it.settings_framesAnimationsLabel,
+		ja: ja.settings_framesAnimationsLabel,
+		nl: nl.settings_framesAnimationsLabel,
+		"pt-br": pt_br.settings_framesAnimationsLabel,
+		"zh-hans": zh_hans.settings_framesAnimationsLabel
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesAnimationsDescription = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesAnimationsDescription,
+		en: en.settings_framesAnimationsDescription,
+		es: es.settings_framesAnimationsDescription,
+		fr: fr.settings_framesAnimationsDescription,
+		it: it.settings_framesAnimationsDescription,
+		ja: ja.settings_framesAnimationsDescription,
+		nl: nl.settings_framesAnimationsDescription,
+		"pt-br": pt_br.settings_framesAnimationsDescription,
+		"zh-hans": zh_hans.settings_framesAnimationsDescription
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
+export const settings_framesNote = (params = {}, options = {}) => {
+	return {
+		de: de.settings_framesNote,
+		en: en.settings_framesNote,
+		es: es.settings_framesNote,
+		fr: fr.settings_framesNote,
+		it: it.settings_framesNote,
+		ja: ja.settings_framesNote,
+		nl: nl.settings_framesNote,
+		"pt-br": pt_br.settings_framesNote,
+		"zh-hans": zh_hans.settings_framesNote
+	}[options.languageTag ?? languageTag()]()
+}
+
+
+
+/**
+ * This message has been compiled by [inlang paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+ *
+ * - Don't edit the message's code. Use [Sherlock (VS Code extension)](https://inlang.com/m/r7kp499g/app-inlang-ideExtension),
+ *   the [web editor](https://inlang.com/m/tdozzpar/app-inlang-finkLocalizationEditor) instead, or edit the translation files manually.
+ * 
+ * - The params are NonNullable<unknown> because the inlang SDK does not provide information on the type of a param (yet).
+ * 
+ * @param {{}} params
+ * @param {{ languageTag?: "de" | "en" | "es" | "fr" | "it" | "ja" | "nl" | "pt-br" | "zh-hans" }} options
+ * @returns {string}
+ */
+/* @__NO_SIDE_EFFECTS__ */
 export const settings_navSoonBadge = (params = {}, options = {}) => {
 	return {
 		de: de.settings_navSoonBadge,
