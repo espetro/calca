@@ -12,11 +12,11 @@ targets = ["es", "fr", "de", "pt-br", "it", "nl", "ja", "zh-hans"]
 
 [provider]
 kind = "http"
-# Any OpenAI-compatible chat-completions endpoint. OpenRouter is the expected
-# default — a cheap model keeps a full 8-locale fill well under $1.
-# Set INTL_AI_MODEL to a cheap tier model, e.g. google/gemini-2.5-flash-lite.
+# Any OpenAI-compatible chat-completions endpoint. Currently Zhipu BigModel
+# (GLM), whose key format matches the repo's env file; glm-4.5-flash is free.
+# base_url was originally https://openrouter.ai/api/v1.
 # Point base_url elsewhere to use another provider (OpenAI, LM Studio, ...).
-base_url = "https://openrouter.ai/api/v1"
+base_url = "https://open.bigmodel.cn/api/paas/v4"
 model = "${env:INTL_AI_MODEL}"
 api_key = "${env:INTL_AI_API_KEY}"
 
