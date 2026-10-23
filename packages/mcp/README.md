@@ -53,17 +53,17 @@ If you don't have a board yet, point `--file` at a path that doesn't exist: the 
 
 All tools are namespaced `canvas.*`. Names and semantics come from the contract in [`@calca/mcp-core`](../mcp-core/src/contract.ts):
 
-| Tool                     | Description                                                                       |
-| ------------------------ | --------------------------------------------------------------------------------- |
-| `canvas.read`            | Read canvas state (scope: `summary`, viewport, selection, or full).               |
-| `canvas.apply`           | Apply canvas commands immediately; can land a pending proposal via `proposalId`.  |
+| Tool                     | Description                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| `canvas.read`            | Read canvas state (scope: `summary`, viewport, selection, or full).                       |
+| `canvas.apply`           | Apply canvas commands immediately; can land a pending proposal via `proposalId`.          |
 | `canvas.propose`         | Default mutation mode: record a proposal (title + rationale + commands) without mutating. |
-| `canvas.lease`           | Take exclusive soft leases on record ids (TTL clamped to 30000 ms).               |
-| `canvas.release`         | Release this principal's leases on the given record ids early.                    |
-| `canvas.comment`         | Attach a comment to a record (creates a `comment` shape record).                  |
-| `canvas.arrange`         | Lay out shapes as a `row`, `column`, or `grid` with an optional gap.              |
-| `canvas.show_variations` | Create a titled group of design variations laid out side by side (max 8).         |
-| `canvas.formats`         | List the output formats available to the session.                                 |
+| `canvas.lease`           | Take exclusive soft leases on record ids (TTL clamped to 30000 ms).                       |
+| `canvas.release`         | Release this principal's leases on the given record ids early.                            |
+| `canvas.comment`         | Attach a comment to a record (creates a `comment` shape record).                          |
+| `canvas.arrange`         | Lay out shapes as a `row`, `column`, or `grid` with an optional gap.                      |
+| `canvas.show_variations` | Create a titled group of design variations laid out side by side (max 8).                 |
+| `canvas.formats`         | List the output formats available to the session.                                         |
 
 ## Custom formats
 
