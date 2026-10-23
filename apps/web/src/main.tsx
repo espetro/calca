@@ -10,6 +10,7 @@ import ReactDOM from "react-dom/client";
 import { selectedIdsAtom } from "#/features/design/state/generation-atoms";
 import { canvasImagesAtom } from "#/features/design/state/images-atoms";
 import { feedbackModalOpenAtom } from "#/features/feedback/store";
+import { hydrateDesktopFormats } from "#/lib/desktop-formats";
 import { initLocale } from "#/lib/i18n";
 import { ensureApiWorker } from "#/lib/sw";
 
@@ -22,6 +23,10 @@ initLocale();
 // Static deployments host /api inside a service worker — start registering
 // early so it is active before the first API call.
 void ensureApiWorker();
+
+// Desktop shell: register output formats discovered for the current project
+// directory (best-effort, before first render so frames resolve correctly).
+await hydrateDesktopFormats();
 
 if (!window.__electrobun) {
   document.addEventListener("contextmenu", (e) => e.preventDefault());

@@ -1,10 +1,12 @@
 import { readFileSync } from "fs";
+import { homedir } from "os";
 import { resolve } from "path";
 
 import serverApp from "@app/server/app";
 
 import { VITE_DEV_URL, HOST } from "./constants";
 import { getErrorPageHtml } from "./error-page";
+import { getDesktopFormats, getFormatAssetPath } from "./formats";
 import { versionInfo } from "./version";
 
 let devMode = false;
@@ -92,8 +94,48 @@ function serveStaticFile(pathname: string): Response {
   }
 }
 
+/**
+ * Directory the desktop app resolves `.calca/formats` manifests from.
+ * `CALCA_PROJECT_DIR` points at the opened project folder; the user's home
+ * directory is the fallback so `~/.calca/formats` still applies.
+ */
+export function getProjectDir(): string {
+  const fromEnv = process.env.CALCA_PROJECT_DIR?.trim();
+  return fromEnv || homedir();
+}
+
+function serveFormatAsset(pathname: string): Response {
+  const id = pathname.replace("/formats-assets/", "");
+  const filePath = getFormatAssetPath(id);
+  if (!filePath) {
+    return new Response("Not Found", { status: 404 });
+  }
+  try {
+    const content = readFileSync(filePath);
+    return new Response(content, {
+      headers: { "Content-Type": getContentType(filePath) },
+    });
+  } catch {
+    return new Response("Not Found", { status: 404 });
+  }
+}
+
 export async function handleFetch(request: Request): Promise<Response> {
   const url = new URL(request.url);
+
+  // Formats resolved for the current project directory — consumed by the
+  // web app at startup to register project output formats.
+  if (url.pathname === "/api/formats") {
+    const payload = getDesktopFormats(getProjectDir());
+    return new Response(JSON.stringify(payload), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // Assets referenced by project format manifests (CSS/JS next to them).
+  if (url.pathname.startsWith("/formats-assets/")) {
+    return serveFormatAsset(url.pathname);
+  }
 
   if (url.pathname.startsWith("/api/") || url.pathname === "/health") {
     return serverApp.fetch(request);

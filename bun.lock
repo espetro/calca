@@ -410,6 +410,7 @@
       "version": "0.8.0",
       "dependencies": {
         "@app/server": "workspace:*",
+        "@calca/format": "workspace:*",
         "@logtape/file": "^2.0.5",
         "@logtape/logtape": "^2.0.5",
         "electrobun": "^1.18.1",
