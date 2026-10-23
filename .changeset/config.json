@@ -20,6 +20,7 @@
       "@calca/canvas-ui",
       "@calca/canvas-flow",
       "@calca/format",
+      "@calca/format-html-tailwind",
       "@calca/mcp-core",
       "@calca/mcp"
     ]

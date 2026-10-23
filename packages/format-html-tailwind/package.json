@@ -1,0 +1,49 @@
+{
+  "name": "@calca/format-html-tailwind",
+  "version": "0.8.0",
+  "private": false,
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/espetro/calca",
+    "directory": "packages/format-html-tailwind"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown && bun ./scripts/copy-assets.ts",
+    "assets": "bun ./scripts/copy-assets.ts",
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "oxlint --fix .",
+    "format": "oxfmt --write .",
+    "test": "vitest run --passWithNoTests",
+    "clean": "rm -rf dist",
+    "pretest": "bun run build",
+    "validate": "bun ../../scripts/validate.ts --cwd $INIT_CWD",
+    "check:pack": "publint && attw --pack . --profile esm-only"
+  },
+  "dependencies": {
+    "@calca/format": "workspace:*"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.0",
+    "@standard-schema/spec": "^1.0.0",
+    "@tailwindcss/browser": "^4.1.18",
+    "publint": "^0.3.0",
+    "tsdown": "^0.23.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
