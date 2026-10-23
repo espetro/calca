@@ -11,7 +11,6 @@ import OnboardingBanner from "#/features/canvas-hud/ui/onboarding-banner";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
 import { ContextToolbar } from "#/features/context-toolbar";
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
-import { getFrameEnv } from "#/features/design/lib/frame-env";
 import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import {
   activeCommentAtom,
@@ -19,6 +18,7 @@ import {
   commentDraftAtom,
   draggingIdAtom,
 } from "#/features/design/state/comment-atoms";
+import { frameEnvAtom } from "#/features/design/state/frame-env-atoms";
 import {
   draggingImageIdAtom,
   pendingPromptAtom,
@@ -88,8 +88,9 @@ function HomeInner() {
   const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
   const spaceHeld = useAtomValue(spaceHeldAtom);
   const pipelineStages = useAtomValue(pipelineStagesAtom);
-  // Output-format driven frame rendering (scripts, styles, animations policy).
-  const frameEnv = useMemo(() => getFrameEnv(), []);
+  // Output-format driven frame rendering (scripts, styles, animations policy,
+  // user frame resources) — re-resolves on settings change via the atom.
+  const frameEnv = useAtomValue(frameEnvAtom);
   const clipboard = useAtomValue(clipboardAtom);
   const setCommentDraft = useSetAtom(commentDraftAtom);
   const setActiveComment = useSetAtom(activeCommentAtom);

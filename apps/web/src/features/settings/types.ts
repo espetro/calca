@@ -54,4 +54,11 @@ export interface Settings {
   theme: Theme;
   onboardingCompleted: boolean;
   analyticsEnabled: boolean;
+  /** Custom CSS appended to every design frame (requires the active
+   * format to allow `customCssPassthrough`). */
+  customCss?: string;
+  /** Extra HTML attributes on the frame root, e.g. `data-theme`. */
+  frameAttrs?: Record<string, string>;
+  /** Allow CSS animations/transitions inside design frames. */
+  animationsAllowed: boolean;
 }

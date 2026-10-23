@@ -57,6 +57,9 @@ export const settingsSchema = z.object({
   theme: themeSchema,
   onboardingCompleted: z.boolean(),
   analyticsEnabled: z.boolean(),
+  customCss: z.string().optional(),
+  frameAttrs: z.record(z.string(), z.string()).optional(),
+  animationsAllowed: z.boolean().optional(),
 });
 
 export type SettingsInput = z.input<typeof settingsSchema>;

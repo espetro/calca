@@ -1,10 +1,16 @@
-import { Info, Palette, RotateCcw, Settings, Wrench } from "lucide-react";
+import { Frame, Info, Palette, RotateCcw, Settings, Wrench } from "lucide-react";
 
 import { m } from "#/lib/i18n";
 import { cn } from "#/lib/utils";
 import { Badge } from "#/shared/components/ui/badge";
 
-export type SettingsSection = "general" | "personalization" | "skills" | "about" | "reset";
+export type SettingsSection =
+  | "general"
+  | "personalization"
+  | "frames"
+  | "skills"
+  | "about"
+  | "reset";
 
 interface SettingsSidebarProps {
   activeSection: SettingsSection;
@@ -30,6 +36,13 @@ const SECTIONS: {
     id: "personalization",
     get label() {
       return m.settings_navPersonalization();
+    },
+  },
+  {
+    icon: Frame,
+    id: "frames",
+    get label() {
+      return m.settings_navFrames();
     },
   },
   {

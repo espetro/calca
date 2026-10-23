@@ -61,6 +61,7 @@ const createDefaultSettings = (): Settings => {
     theme: "system",
     onboardingCompleted: false,
     analyticsEnabled: true,
+    animationsAllowed: false,
   };
 };
 
@@ -92,6 +93,16 @@ const migrateModelFormat = (parsed: Partial<Settings>): Partial<Settings> => {
   return updates;
 };
 
+/** Frame resources were introduced without a schema version marker; older
+ * persisted settings simply lack the new fields. Defaults come from
+ * `createDefaultSettings()` via the storage merge, but `animationsAllowed`
+ * is defaulted here explicitly so persisted `false` is preserved while an
+ * absent value resolves to the default. */
+const migrateFrameResources = (parsed: Partial<Settings>): Partial<Settings> => {
+  if (parsed.animationsAllowed !== undefined) return {};
+  return { animationsAllowed: false };
+};
+
 const createStorage = () => {
   const defaults = createDefaultSettings();
   let cachedSettings: Settings | null = null;
@@ -119,6 +130,7 @@ const createStorage = () => {
         const migrated = {
           ...migrateModelFormat(result.data),
           ...migrateGenerationMode(result.data),
+          ...migrateFrameResources(result.data),
         };
         const merged = { ...defaults, ...result.data, ...migrated };
         const envProvider = createEnvProvider();
@@ -180,3 +192,13 @@ export const resetToFactoryAtom = atom(null, async (_get, set) => {
   await resetToFactory();
   window.location.reload();
 });
+
+/**
+ * Settings slice that influences design-frame rendering. Consumed by the
+ * frame-env atom so frame resources stay reactive to settings changes.
+ */
+export const frameEnvSettingsAtom = atom((get) => ({
+  animationsAllowed: get(settingsAtom).animationsAllowed,
+  customCss: get(settingsAtom).customCss,
+  frameAttrs: get(settingsAtom).frameAttrs,
+}));

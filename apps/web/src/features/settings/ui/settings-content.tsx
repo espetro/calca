@@ -6,6 +6,7 @@ import { Separator } from "#/shared/components/ui/separator";
 
 import { settingsAtom, updateSettingsAtom } from "../state/settings-atoms";
 import { SettingsAbout } from "./settings-about";
+import { SettingsFrames } from "./settings-frames";
 import { SettingsGeneral } from "./settings-general";
 import { SettingsPersonalization } from "./settings-personalization";
 import { SettingsReset } from "./settings-reset";
@@ -51,6 +52,7 @@ export function SettingsContent({ onOpenChange, defaultSection }: SettingsConten
         {activeSection === "personalization" && (
           <SettingsPersonalization settings={settings} onUpdate={updateSettings} />
         )}
+        {activeSection === "frames" && <SettingsFrames settings={settings} />}
         {activeSection === "skills" && <PlaceholderContent title={m.settings_navSkills()} />}
         {activeSection === "about" && <SettingsAbout />}
         {activeSection === "reset" && <SettingsReset />}
