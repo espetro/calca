@@ -175,6 +175,7 @@ describe("contract", () => {
       "canvas.release",
       "canvas.comment",
       "canvas.arrange",
+      "canvas.show_variations",
     ]);
     for (const t of toolContract) {
       expect(t.inputSchema.type).toBe("object");
