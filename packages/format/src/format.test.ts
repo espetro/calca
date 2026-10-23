@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { createFormatRegistry, mergeFormatEnvs, resolveFormatEnv, type FormatDef } from "./format";
+import {
+  createFormatRegistry,
+  mergeFormatEnvs,
+  resolveFormatEnv,
+  resolveFormatExporters,
+  type FormatDef,
+} from "./format";
 import { parseManifest } from "./manifest";
 
 const base: FormatDef = {
@@ -116,6 +122,17 @@ describe("resolveFormatEnv", () => {
     const def = registry.get("c")!;
     expect(def.promptSnippets).toEqual({ review: "child review" });
     expect(def.exporters).toEqual(["pdf"]);
+  });
+
+  it("resolveFormatExporters inherits exporters from the chain root when the leaf omits them", () => {
+    const parent: FormatDef = { id: "p", frameEnv: {}, exporters: ["png"] };
+    const child: FormatDef = { id: "c", extends: "p", frameEnv: {} };
+    const registry = createFormatRegistry([parent, child]);
+    expect(resolveFormatExporters(registry, "c")).toEqual(["png"]);
+    expect(resolveFormatExporters(registry, "p")).toEqual(["png"]);
+    expect(resolveFormatExporters(registry, "ghost")).toBeUndefined();
+    const noExporters = createFormatRegistry([{ id: "bare", frameEnv: {} }]);
+    expect(resolveFormatExporters(noExporters, "bare")).toBeUndefined();
   });
 
   it("throws on unknown format id", () => {

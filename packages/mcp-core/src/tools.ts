@@ -11,7 +11,7 @@ import {
   type RecordId,
   type ShapeRecord,
 } from "@calca/canvas-base";
-import { createFormatRegistry, resolveFormatEnv } from "@calca/format";
+import { createFormatRegistry, resolveFormatEnv, resolveFormatExporters } from "@calca/format";
 
 import { MAX_LEASE_TTL_MS, MAX_OPS_PER_CALL, type CanvasSession, type Proposal } from "./session";
 
@@ -556,7 +556,7 @@ export interface FormatsResult {
  * envs. Read-only; warnings surface unresolvable `extends` chains.
  */
 export const canvasFormats = async (session: CanvasSession): Promise<FormatsResult> => {
-  const warnings: string[] = [];
+  const warnings: string[] = [...session.formatWarnings];
   const registry = createFormatRegistry(session.formats.map((f) => f.def));
   const formats: FormatsResultFormat[] = session.formats.map(({ def, sourcePath }) => {
     const base = {
@@ -567,11 +567,16 @@ export const canvasFormats = async (session: CanvasSession): Promise<FormatsResu
       sourcePath,
     };
     try {
-      return { ...base, frameEnv: resolveFormatEnv(registry, def.id) };
+      const exporters = def.exporters ?? resolveFormatExporters(registry, def.id);
+      return {
+        ...base,
+        ...(exporters ? { exporters } : {}),
+        frameEnv: resolveFormatEnv(registry, def.id),
+      };
     } catch (error) {
       warnings.push(`format "${def.id}": ${(error as Error).message}`);
       return { ...base, frameEnv: def.frameEnv };
     }
   });
-  return { formats, warnings };
+  return { formats, warnings: [...new Set(warnings)] };
 };

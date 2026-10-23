@@ -3,7 +3,12 @@
  * declarative manifest parsing. Zero runtime dependencies.
  */
 export type { FrameEnv, FormatDef, FormatRegistry } from "./format";
-export { createFormatRegistry, mergeFormatEnvs, resolveFormatEnv } from "./format";
+export {
+  createFormatRegistry,
+  mergeFormatEnvs,
+  resolveFormatEnv,
+  resolveFormatExporters,
+} from "./format";
 export type { FormatManifest } from "./manifest";
 export { parseManifest } from "./manifest";
 export type {

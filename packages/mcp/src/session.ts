@@ -62,16 +62,17 @@ export interface LoadSessionOptions {
  * used verbatim as the single source; otherwise discovery walks up from
  * `process.cwd()`. Warnings are logged, never fatal.
  */
-export function loadFormats(formatsDir?: string): SessionFormat[] {
+export function loadFormats(formatsDir?: string): { formats: SessionFormat[]; warnings: string[] } {
   const baseDefs = BUILTIN_FORMATS.map((f) => f.def);
   const result = formatsDir
     ? resolveFormats({ baseDefs, env: { CALCA_FORMATS: formatsDir } })
     : resolveFormats({ baseDefs, startDir: process.cwd() });
   for (const warning of result.warnings) consola.warn(warning);
-  return [...BUILTIN_FORMATS, ...result.sources].map(({ def, sourcePath }) => ({
+  const formats = [...BUILTIN_FORMATS, ...result.sources].map(({ def, sourcePath }) => ({
     def: absolutizeAssets(sourcePath, def),
     sourcePath,
   }));
+  return { formats, warnings: result.warnings };
 }
 
 export async function loadSession(options: LoadSessionOptions): Promise<CanvasSession> {
@@ -88,14 +89,19 @@ export async function loadSession(options: LoadSessionOptions): Promise<CanvasSe
     }
   }
 
-  const formats = loadFormats(options.formatsDir);
+  const { formats, warnings: formatWarnings } = loadFormats(options.formatsDir);
   if (formats.length > 0) {
     consola.info(
       `loaded ${formats.length} output format(s): ${formats.map((f) => f.def.id).join(", ")}`,
     );
   }
 
-  const session = createCanvasSession({ snapshot, agentId: options.agentId, formats });
+  const session = createCanvasSession({
+    snapshot,
+    agentId: options.agentId,
+    formats,
+    formatWarnings,
+  });
 
   if (options.file) {
     const file = options.file;

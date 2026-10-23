@@ -78,4 +78,43 @@ describe("canvas.formats", () => {
     expect(res.warnings[0]).toContain("ghost");
     expect(res.formats[0]?.id).toBe("orphan");
   });
+
+  it("surfaces session-level discovery warnings alongside runtime warnings", async () => {
+    const session = createCanvasSession({
+      formats: [
+        { def: { id: "orphan", extends: "ghost", frameEnv: {} }, sourcePath: "/tmp/o.json" },
+      ],
+      formatWarnings: ["formats: skipping /tmp/bad.json: unexpected token"],
+    });
+    const res = (await callTool(session, "canvas.formats", {})) as {
+      formats: { id: string; frameEnv: unknown }[];
+      warnings: string[];
+    };
+    expect(res.warnings).toContain("formats: skipping /tmp/bad.json: unexpected token");
+    expect(res.warnings.some((w) => w.includes("ghost"))).toBe(true);
+  });
+
+  it("inherits exporters from the extends chain when the leaf has none", async () => {
+    const session = createCanvasSession({
+      formats: [
+        {
+          def: {
+            id: "root",
+            frameEnv: {},
+            exporters: ["standalone-html"],
+          },
+          sourcePath: "/tmp/root.json",
+        },
+        {
+          def: { id: "leaf", extends: "root", frameEnv: {} },
+          sourcePath: "/tmp/leaf.json",
+        },
+      ],
+    });
+    const res = (await callTool(session, "canvas.formats", {})) as {
+      formats: { id: string; exporters?: string[] }[];
+      warnings: string[];
+    };
+    expect(res.formats.find((f) => f.id === "leaf")?.exporters).toEqual(["standalone-html"]);
+  });
 });

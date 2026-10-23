@@ -98,6 +98,34 @@ export const mergeFormatEnvs = (
  * and unknown parents throw.
  */
 export const resolveFormatEnv = (registry: FormatRegistry, id: string): FrameEnv => {
+  const chain = resolveExtendsChain(registry, id);
+
+  let env: Partial<FrameEnv> = {};
+  for (const def of chain.reverse()) {
+    env = mergeFormatEnvs(env, def.frameEnv);
+  }
+  return { ...ENV_DEFAULTS, ...env, attrs: env.attrs ?? {} };
+};
+
+/**
+ * Resolve the `exporters` for a format id: the leaf's own list when set,
+ * otherwise the first list found walking the `extends` chain toward the
+ * root. Unknown formats (or chains without any exporters) return undefined.
+ */
+export const resolveFormatExporters = (
+  registry: FormatRegistry,
+  id: string,
+): string[] | undefined => {
+  const chain = resolveExtendsChainLenient(registry, id);
+  if (!chain) return undefined;
+  return chain.find((def) => def.exporters !== undefined)?.exporters;
+};
+
+/**
+ * Walk the `extends` chain of `id`, leaf-first. Throws on unknown formats
+ * and on cycles.
+ */
+const resolveExtendsChain = (registry: FormatRegistry, id: string): FormatDef[] => {
   const chain: FormatDef[] = [];
   const seen = new Set<string>();
   let current: string | undefined = id;
@@ -116,10 +144,17 @@ export const resolveFormatEnv = (registry: FormatRegistry, id: string): FrameEnv
     chain.push(def);
     current = def.extends;
   }
+  return chain;
+};
 
-  let env: Partial<FrameEnv> = {};
-  for (const def of chain.reverse()) {
-    env = mergeFormatEnvs(env, def.frameEnv);
+/**
+ * Like `resolveExtendsChain` but returns null instead of throwing when the
+ * chain is broken (unknown parent or cycle).
+ */
+const resolveExtendsChainLenient = (registry: FormatRegistry, id: string): FormatDef[] | null => {
+  try {
+    return resolveExtendsChain(registry, id);
+  } catch {
+    return null;
   }
-  return { ...ENV_DEFAULTS, ...env, attrs: env.attrs ?? {} };
 };

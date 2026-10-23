@@ -72,6 +72,8 @@ export interface CanvasSessionOptions {
   defs?: ShapeDef[];
   /** Discovered output formats exposed via the `canvas.formats` tool. */
   formats?: SessionFormat[];
+  /** Non-fatal discovery problems (manifest parse errors etc.) surfaced by `canvas.formats`. */
+  formatWarnings?: string[];
   /** Injectable clock (epoch ms) — tests advance it to expire leases. */
   now?: () => number;
 }
@@ -91,6 +93,8 @@ export class CanvasSession {
   readonly selection: Set<RecordId> = new Set<RecordId>();
   /** Discovered output formats (nearest-first), for `canvas.formats`. */
   readonly formats: SessionFormat[];
+  /** Discovery warnings from manifest loading, for `canvas.formats`. */
+  readonly formatWarnings: string[];
   readonly now: () => number;
 
   constructor(options: CanvasSessionOptions = {}) {
@@ -100,6 +104,7 @@ export class CanvasSession {
     this.agentId = options.agentId ?? `agent-${++sessionCounter}`;
     this.shared = options.shared ?? createSessionShared();
     this.formats = options.formats ?? [];
+    this.formatWarnings = options.formatWarnings ?? [];
     this.now = options.now ?? Date.now;
   }
 
