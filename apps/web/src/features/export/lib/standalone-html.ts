@@ -1,4 +1,8 @@
-import tailwindJs from "./tailwind-cdn.js?raw";
+// The Tailwind v4 browser runtime, copied next to this file at dev/build time
+// by the `calca-copy-frame-runtime` Vite plugin (source:
+// @calca/format-html-tailwind package assets). Inlined so downloaded files and
+// blob:-document renders work with zero network access.
+import tailwindJs from "./tailwindcss.runtime.js?raw";
 
 /** Skeleton (Fast mode) frames ship their own `<style>` block and no Tailwind utilities. */
 export const needsTailwind = (html: string): boolean => !html.includes("<style");

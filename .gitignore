@@ -62,3 +62,8 @@ frames-out/
 # intl-ai local findings cache (lockfile shards under intl-ai.lock.d/ ARE committed)
 .intl-ai/
 .worktrees/
+
+# Generated at dev/build time from @calca/format-html-tailwind package assets
+apps/web/public/tailwindcss.js
+apps/web/src/features/export/lib/tailwindcss.runtime.js
+packages/format-html-tailwind/dist/

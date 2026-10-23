@@ -1,18 +1,54 @@
-import { resolve } from "path";
-import { fileURLToPath } from "url";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 import { paraglide } from "@inlang/paraglide-js-adapter-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 
 import { version } from "./package.json";
 
 dotenv.config({ path: "../../.env" });
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __dirname = new URL(".", import.meta.url).pathname;
+
+// The Tailwind v4 browser runtime for design frames ships with
+// @calca/format-html-tailwind (package assets). Copy it into the public dir
+// (served as /tailwindcss.js) and next to the export lib (inlined into
+// standalone HTML via ?raw). Generated at dev start and on every build.
+const RUNTIME_PKG = "@calca/format-html-tailwind";
+
+const resolveRuntimeFile = (): string => {
+  const candidates = [
+    // Workspace link (bun/npm/yarn hoist the workspace package here).
+    resolve(__dirname, "../node_modules", RUNTIME_PKG, "dist/assets/tailwindcss.js"),
+    // Hoisted store copy.
+    resolve(__dirname, "../../node_modules", RUNTIME_PKG, "dist/assets/tailwindcss.js"),
+    // Monorepo root / sibling check (independent of node_modules layout).
+    resolve(__dirname, "../../packages/format-html-tailwind", "dist/assets/tailwindcss.js"),
+  ];
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+  throw new Error(
+    `Tailwind runtime not found for ${RUNTIME_PKG}. Run \`bun run --cwd packages/format-html-tailwind assets\`.`,
+  );
+};
+
+const copyFrameRuntimePlugin = (): Plugin => ({
+  name: "calca-copy-frame-runtime",
+  buildStart() {
+    const runtime = resolveRuntimeFile();
+    const publicTarget = resolve(__dirname, "public/tailwindcss.js");
+    mkdirSync(dirname(publicTarget), { recursive: true });
+    copyFileSync(runtime, publicTarget);
+    const rawTarget = resolve(__dirname, "src/features/export/lib/tailwindcss.runtime.js");
+    mkdirSync(dirname(rawTarget), { recursive: true });
+    copyFileSync(runtime, rawTarget);
+  },
+});
 
 // Auto-expose all VITE_* environment variables to the client bundle.
 // Non-prefixed vars (e.g. LOG_LEVEL) must be mapped explicitly below.
@@ -46,6 +82,7 @@ export default defineConfig({
     react(),
     tanstackRouter(),
     tailwindcss(),
+    copyFrameRuntimePlugin(),
   ],
   resolve: {
     alias: [{ find: "#", replacement: resolve(__dirname, "./src") }],

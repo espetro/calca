@@ -11,6 +11,7 @@ import OnboardingBanner from "#/features/canvas-hud/ui/onboarding-banner";
 import { useCommentHandlers } from "#/features/comments/hooks/use-comment-handlers";
 import { ContextToolbar } from "#/features/context-toolbar";
 import { useGenerationPipeline } from "#/features/design/hooks/use-generation-pipeline";
+import { getFrameEnv } from "#/features/design/lib/frame-env";
 import { clipboardAtom } from "#/features/design/state/clipboard-atoms";
 import {
   activeCommentAtom,
@@ -87,6 +88,8 @@ function HomeInner() {
   const [draggingImageId, setDraggingImageId] = useAtom(draggingImageIdAtom);
   const spaceHeld = useAtomValue(spaceHeldAtom);
   const pipelineStages = useAtomValue(pipelineStagesAtom);
+  // Output-format driven frame rendering (scripts, styles, animations policy).
+  const frameEnv = useMemo(() => getFrameEnv(), []);
   const clipboard = useAtomValue(clipboardAtom);
   const setCommentDraft = useSetAtom(commentDraftAtom);
   const setActiveComment = useSetAtom(activeCommentAtom);
@@ -341,6 +344,7 @@ function HomeInner() {
           pipelineStages={pipelineStages}
           frameErrorTitle={m.design_errorGenerateFailed()}
           frameErrorHint={m.design_errorCheckSettings()}
+          frameEnv={frameEnv}
           onAddComment={setCommentDraft}
           onClickComment={handleClickComment}
           onImageDrop={handleImageDrop}

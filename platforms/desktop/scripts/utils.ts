@@ -1,3 +1,4 @@
+import { accessSync } from "fs";
 import { copyFile, readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 
@@ -17,16 +18,37 @@ export const logger = getLogger(["calca", "build"]);
 /** Preloads Design Artifact dependencies so we don't need to pull them from a CDN on every item */
 export const loadArtifactDependencies = async (source: string) => {
   logger.info("==> Copying Tailwind CSS browser bundle...");
-  // devDep of this package — Bun links it under platforms/desktop/node_modules,
-  // not the repo-root store
-  const tailwindSource = resolve(
-    DESKTOP_DIR,
-    "node_modules",
-    "@tailwindcss",
-    "browser",
-    "dist",
-    "index.global.js",
-  );
+  // Preferred source: the v4 runtime shipped by @calca/format-html-tailwind
+  // (workspace package assets). Falls back to this package's own devDep.
+  const tailwindCandidates = [
+    resolve(
+      REPO_ROOT,
+      "packages",
+      "format-html-tailwind",
+      "dist",
+      "assets",
+      "tailwindcss.js",
+    ),
+    resolve(
+      DESKTOP_DIR,
+      "node_modules",
+      "@tailwindcss",
+      "browser",
+      "dist",
+      "index.global.js",
+    ),
+  ];
+  const tailwindSource = tailwindCandidates.find((candidate) => {
+    try {
+      accessSync(candidate);
+      return true;
+    } catch {
+      return false;
+    }
+  });
+  if (!tailwindSource) {
+    throw new Error("loadArtifactDependencies: no Tailwind runtime found");
+  }
 
   const tailwindTarget = resolve(source, "tailwindcss.js");
   await copyFile(tailwindSource, tailwindTarget);

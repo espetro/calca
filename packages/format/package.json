@@ -21,10 +21,6 @@
     "./browser": {
       "types": "./dist/browser.d.mts",
       "import": "./dist/browser.mjs"
-    },
-    "./node": {
-      "types": "./dist/node.d.mts",
-      "import": "./dist/node.mjs"
     }
   },
   "publishConfig": {
