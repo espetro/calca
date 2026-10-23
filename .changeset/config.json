@@ -19,6 +19,7 @@
       "@calca/canvas-base",
       "@calca/canvas-ui",
       "@calca/canvas-flow",
+      "@calca/format",
       "@calca/mcp-core",
       "@calca/mcp"
     ]

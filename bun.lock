@@ -270,6 +270,18 @@
         "vitest": "catalog:",
       },
     },
+    "packages/format": {
+      "name": "@calca/format",
+      "version": "0.8.0",
+      "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.0",
+        "@standard-schema/spec": "^1.0.0",
+        "publint": "^0.3.0",
+        "tsdown": "^0.23.0",
+        "typescript": "catalog:",
+        "vitest": "catalog:",
+      },
+    },
     "packages/logger": {
       "name": "@app/logger",
       "version": "0.8.0",
@@ -549,6 +561,8 @@
     "@calca/canvas-flow": ["@calca/canvas-flow@workspace:packages/canvas-flow"],
 
     "@calca/canvas-ui": ["@calca/canvas-ui@workspace:packages/canvas-ui"],
+
+    "@calca/format": ["@calca/format@workspace:packages/format"],
 
     "@calca/mcp": ["@calca/mcp@workspace:packages/mcp"],
 
