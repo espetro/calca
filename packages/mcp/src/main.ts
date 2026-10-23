@@ -1,4 +1,4 @@
-import { defineCommand } from "citty";
+import { defineCommand, runMain } from "citty";
 
 import { version } from "../package.json" with { type: "json" };
 
@@ -15,3 +15,7 @@ export const main = defineCommand({
     install: () => import("./install").then((r) => r.installCommand),
   },
 });
+
+if (import.meta.main) {
+  await runMain(main);
+}
