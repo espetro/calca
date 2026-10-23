@@ -109,8 +109,12 @@ async function runFrame(
   ctx: StepContext,
 ): Promise<FrameResult> {
   return withActiveFrameSpan(i, concept.name, async () => {
+    // Abort check before each expensive sub-step enables early termination.
+    const abortError = () => new DOMException("Aborted", "AbortError");
+
     const conceptStr = concept.direction ? `${concept.name}: ${concept.direction}` : concept.name;
 
+    if (ctx.signal.aborted) throw abortError();
     ctx.emit({ type: "step", step: "layout", status: "running", frameIndex: i });
     const { html, width, height, comment } = await wrapStep(
       "layout",
@@ -134,6 +138,7 @@ async function runFrame(
       output: { html, width, height, comment },
     });
 
+    if (ctx.signal.aborted) throw abortError();
     ctx.emit({ type: "step", step: "images", status: "running", frameIndex: i });
     const { html: imaged } = await wrapStep(
       "images",
@@ -161,6 +166,7 @@ async function runFrame(
     let final = imaged;
     let critique: string | undefined;
     if (input.critique) {
+      if (ctx.signal.aborted) throw abortError();
       ctx.emit({ type: "step", step: "review", status: "running", frameIndex: i });
       const reviewed = await wrapStep(
         "review",
@@ -190,6 +196,7 @@ async function runFrame(
         output: reviewed,
       });
 
+      if (ctx.signal.aborted) throw abortError();
       ctx.emit({ type: "step", step: "critique", status: "running", frameIndex: i });
       try {
         critique = (
