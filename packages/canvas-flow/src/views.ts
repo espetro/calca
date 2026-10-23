@@ -1,4 +1,5 @@
 import type { ShapeRecord } from "@calca/canvas-base";
+import type { FrameEnv } from "@calca/format/browser";
 import type { CanvasImage, Comment, DesignIteration, PipelineStatus, Point } from "@calca/shared";
 
 import type { CanvasViews } from "./adapter";
@@ -15,6 +16,10 @@ export interface CalcaCanvasContext {
   /** Localized copy for the per-frame failure card. */
   frameErrorTitle?: string;
   frameErrorHint?: string;
+  /** Resolved frame environment for the active output format. */
+  frameEnv?: FrameEnv;
+  /** Per-frame CSS appended last (requires `frameEnv.customCssPassthrough`). */
+  frameCustomCss?: string;
   onAddComment: (draft: {
     iterationId: string;
     position: Point;
@@ -93,6 +98,8 @@ export const calcaViews: CanvasViews<CalcaCanvasContext> = {
           isSelectMode: ctx.isSelectMode,
           errorHint: ctx.frameErrorHint,
           errorTitle: ctx.frameErrorTitle,
+          frameEnv: ctx.frameEnv,
+          customCss: ctx.frameCustomCss,
           iteration,
           onAddComment: ctx.onAddComment,
           onClickComment: ctx.onClickComment,

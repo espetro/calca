@@ -1,4 +1,5 @@
 import type { Command, ShapeRecord } from "@calca/canvas-base";
+import type { FrameEnv } from "@calca/format/browser";
 import type {
   CanvasImage,
   Comment,
@@ -51,6 +52,10 @@ interface CanvasAreaProps {
   /** Localized copy for the per-frame failure card. */
   frameErrorTitle?: string;
   frameErrorHint?: string;
+  /** Resolved frame environment for the active output format. */
+  frameEnv?: FrameEnv;
+  /** Per-frame CSS appended last (requires frameEnv.customCssPassthrough). */
+  frameCustomCss?: string;
   onAddComment: (draft: {
     iterationId: string;
     position: Point;
@@ -94,6 +99,8 @@ export const CanvasArea = ({
   pipelineStages,
   frameErrorTitle,
   frameErrorHint,
+  frameEnv,
+  frameCustomCss,
   onAddComment,
   onClickComment,
   onImageDrop,
@@ -256,6 +263,8 @@ export const CanvasArea = ({
     () => ({
       frameErrorHint,
       frameErrorTitle,
+      frameEnv,
+      frameCustomCss,
       isSelectMode,
       isCommentMode,
       selectedIds,
@@ -266,6 +275,8 @@ export const CanvasArea = ({
     [
       frameErrorHint,
       frameErrorTitle,
+      frameEnv,
+      frameCustomCss,
       isSelectMode,
       isCommentMode,
       selectedIds,

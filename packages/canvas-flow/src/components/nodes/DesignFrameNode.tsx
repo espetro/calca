@@ -1,4 +1,5 @@
 import { DesignFrame, DEFAULT_FRAME_WIDTH, PipelineStatusOverlay } from "@calca/canvas-ui";
+import type { FrameEnv } from "@calca/format/browser";
 import type { Comment as CommentType, DesignIteration, PipelineStatus } from "@calca/shared";
 import { useViewport, type Node, type NodeProps } from "@xyflow/react";
 
@@ -11,6 +12,10 @@ export type DesignFrameNodeData = {
   pipelineStatus?: PipelineStatus;
   errorTitle?: string;
   errorHint?: string;
+  /** Resolved frame environment (output-format driven rendering). */
+  frameEnv?: FrameEnv;
+  /** Per-frame CSS appended last (requires frameEnv.customCssPassthrough). */
+  customCss?: string;
   onAddComment: (draft: {
     iterationId: string;
     position: { x: number; y: number };
@@ -23,8 +28,16 @@ export type DesignFrameNodeData = {
 export type DesignFrameNodeType = Node<DesignFrameNodeData, "designFrame">;
 
 export function DesignFrameNode({ data, selected }: NodeProps<DesignFrameNodeType>) {
-  const { iteration, isCommentMode, isSelectMode, pipelineStatus, onAddComment, onClickComment } =
-    data;
+  const {
+    iteration,
+    isCommentMode,
+    isSelectMode,
+    pipelineStatus,
+    onAddComment,
+    onClickComment,
+    frameEnv,
+    customCss,
+  } = data;
   const { zoom } = useViewport();
 
   const handleAddComment = (
@@ -57,6 +70,8 @@ export function DesignFrameNode({ data, selected }: NodeProps<DesignFrameNodeTyp
           scale={zoom}
           errorTitle={data.errorTitle}
           errorHint={data.errorHint}
+          frameEnv={frameEnv}
+          customCss={customCss}
           onAddComment={handleAddComment}
           onClickComment={onClickComment}
         />

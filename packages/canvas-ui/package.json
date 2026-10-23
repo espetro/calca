@@ -33,6 +33,7 @@
     "check:pack": "publint && attw --pack . --profile esm-only"
   },
   "dependencies": {
+    "@calca/format": "workspace:*",
     "@calca/shared": "workspace:*",
     "lucide-react": "^1.8.0"
   },

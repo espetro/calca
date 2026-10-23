@@ -1,3 +1,4 @@
+import type { FrameEnv } from "@calca/format/browser";
 import type { Comment as CommentType, DesignIteration } from "@calca/shared";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,6 +9,9 @@ import { useMountEffect } from "../utils/use-mount-effect";
 // Resolve off document.baseURI so it lands under the app's base path
 // (/app/tailwindcss.js on Pages, /tailwindcss.js in dev and on desktop).
 const getTailwindScriptSrc = (): string => new URL("tailwindcss.js", document.baseURI).href;
+
+/** Logical script token resolved to the bundled Tailwind runtime URL. */
+export const TAILWIND_SCRIPT_TOKEN = "calca:tailwind";
 
 export const DEFAULT_FRAME_WIDTH = 480;
 const FRAME_WIDTH = DEFAULT_FRAME_WIDTH;
@@ -27,6 +31,12 @@ interface DesignFrameProps {
   /** Failure-card copy — apps pass localized strings. */
   errorTitle?: string;
   errorHint?: string;
+  /** Resolved frame environment (output-format driven rendering). When
+   *  omitted the frame keeps its legacy hardcoded Tailwind behavior. */
+  frameEnv?: FrameEnv;
+  /** Per-frame CSS passthrough, appended last. Requires
+   *  `frameEnv.customCssPassthrough`. */
+  customCss?: string;
   onClick?: (e: React.MouseEvent) => void;
   onMouseDown?: (e: React.MouseEvent) => void;
   onAddComment?: (
@@ -51,6 +61,8 @@ export function DesignFrame({
   scale = 1,
   errorTitle = "Generation failed",
   errorHint,
+  frameEnv,
+  customCss,
   onClick,
   onMouseDown,
   onAddComment,
@@ -66,20 +78,45 @@ export function DesignFrame({
   // Skeleton-mode frames carry their own `<style>` block and no Tailwind
   // utilities — skip the CDN script so they load with zero network deps.
   const needsTailwind = iteration.html ? !iteration.html.includes("<style") : true;
+  // Frame-env rendering: token-resolved scripts, stylesheet links, env-driven
+  // body background, root attrs, animation policy, and custom-CSS passthrough.
+  // Without a frameEnv the legacy hardcoded template below is used verbatim.
+  const headExtras = frameEnv
+    ? [
+        ...frameEnv.scripts
+          // The Tailwind runtime is only needed when the frame has no own
+          // `<style>` block (skeleton frames ship their styles inline).
+          .filter((src) => needsTailwind || src !== TAILWIND_SCRIPT_TOKEN)
+          .map(
+            (src) =>
+              `<script src="${src === TAILWIND_SCRIPT_TOKEN ? getTailwindScriptSrc() : src}"></script>`,
+          ),
+        ...frameEnv.styles.map((href) => `<link rel="stylesheet" href="${href}">`),
+      ].join("\n  ")
+    : "";
+  const envAttrs = frameEnv?.attrs
+    ? Object.entries(frameEnv.attrs)
+        .map(([key, value]) => ` ${key}="${value.replace(/"/g, "&quot;")}"`)
+        .join("")
+    : "";
+  const allowAnimations = frameEnv?.animations === "allow";
+  const envCustomCss = frameEnv?.customCssPassthrough && customCss ? `\n    ${customCss}` : "";
   const srcdoc =
     iteration.html && !iteration.isLoading
       ? `<!DOCTYPE html>
-<html style="height:auto;overflow:hidden;"><head>
+<html style="height:auto;overflow:hidden;"${envAttrs}><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  ${needsTailwind ? `<script src="${getTailwindScriptSrc()}"></script>` : ""}
+  ${frameEnv ? headExtras : needsTailwind ? `<script src="${getTailwindScriptSrc()}"></script>` : ""}
   <style>
     html, body { margin: 0; padding: 0; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: hidden; }
-    body { background: white; width: ${frameW}px; }
+    body { background: ${frameEnv?.bodyBackground ?? "white"}; width: ${frameW}px; }
     #calca-measure { width: ${frameW}px; overflow: hidden; }
     img, video, svg { max-width: 100%; height: auto; display: block; object-fit: cover; }
-    * { animation: none !important; transition: none !important; }
-    [style*="100vh"], [style*="min-height: 100vh"], [style*="height: 100vh"] { height: auto !important; min-height: 0 !important; }
+    ${allowAnimations ? "" : "* { animation: none !important; transition: none !important; }"}
+    [style*="100vh"], [style*="min-height: 100vh"], [style*="height: 100vh"] { height: auto !important; min-height: 0 !important; }${
+      frameEnv?.inlineCss ? `\n    ${frameEnv.inlineCss}` : ""
+    }${envCustomCss}
   </style>
 </head><body><div id="calca-measure" data-gen="${measurementGenRef.current}">${iteration.html}</div>
 <script>
