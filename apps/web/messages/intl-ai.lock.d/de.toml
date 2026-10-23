@@ -2099,6 +2099,69 @@ reviewed = false
 model = "google/gemini-2.5-flash-lite"
 updated_at = "2026-10-08T13:09:10Z"
 
+[entries.settings_framesAnimationsDescription]
+value = "CSS-Animationen und Übergänge in Design-Frames zulassen."
+source_hash = "18564431cbba9dbd00c0e0b17f3dc50baf569d6d"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesAnimationsLabel]
+value = "Animationen erlauben"
+source_hash = "d56a5599fba97e9e4fd481b1a086c821eb1514d9"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesAttrsDescription]
+value = 'Zusätzliche HTML-Attribute auf der Frame-Wurzel, eine pro Zeile als name="value" (z. B. data-theme="dark").'
+source_hash = "6b23b6ee119bd5ab9b77203de63d69b7de3bdd11"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesAttrsLabel]
+value = "Frame-Attribute"
+source_hash = "18dcae6d2aaaf4fbbe779563face96c4aac9516b"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesAttrsPlaceholder]
+value = 'data-theme="dark"'
+source_hash = "474e34b18b8dc18a3e7d6b8beca9df8e1623e94b"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesCssDescription]
+value = "CSS, das in jedes Design-Frame eingefügt wird. Erfordert, dass das aktive Ausgabeformat eigenes CSS erlaubt."
+source_hash = "457fd0a62b063429f517c7a3b190ce9924b31ef7"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesCssLabel]
+value = "Eigenes CSS"
+source_hash = "d787663b1faa01b6b759bf6131c5b416b9e04516"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesCssPlaceholder]
+value = "/* z. B. body font-family Inter, sans-serif */"
+source_hash = "0323270065c899f42fcde35d0af2cc5774802afb"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
+[entries.settings_framesNote]
+value = "Frame-Ressourcen gelten für neu gerenderte Frames und werden bei der nächsten Änderung der Einstellungen aktualisiert."
+source_hash = "395c5e68084161ef7f63947abda7792427539661"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
+
 [entries.settings_geminiApiKeyLabel]
 value = "Gemini API-Schlüssel"
 source_hash = "44e797bf551eb8f456b5bdabe5f915f8610b1533"
@@ -2170,6 +2233,13 @@ origin = "ai"
 reviewed = false
 model = "google/gemini-2.5-flash-lite"
 updated_at = "2026-10-08T13:09:10Z"
+
+[entries.settings_navFrames]
+value = "Design-Frames"
+source_hash = "6d70e99d5e8bbe700af3ab06853b2bb5606c1c3b"
+origin = "human"
+reviewed = false
+updated_at = "2026-10-23T22:50:12Z"
 
 [entries.settings_navGeneral]
 value = "Allgemein"
