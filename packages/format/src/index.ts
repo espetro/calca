@@ -6,3 +6,9 @@ export type { FrameEnv, FormatDef, FormatRegistry } from "./format";
 export { createFormatRegistry, mergeFormatEnvs, resolveFormatEnv } from "./format";
 export type { FormatManifest } from "./manifest";
 export { parseManifest } from "./manifest";
+export type {
+  DiscoveredFormat,
+  DiscoverFormatDirsOptions,
+  ResolveFormatsResult,
+} from "./discovery";
+export { discoverFormatDirs, loadFormatsFromDir, resolveFormats } from "./discovery";
